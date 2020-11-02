@@ -4,6 +4,7 @@ Feature: Report namespace are respected
 		Given I have an admins user group with all rights
 		And I am logged in
 		And I am on the main page
+		And I check for cookie bar
 
 	Scenario Outline: HTML reports are restricted
 		Given these actions are denied
@@ -21,6 +22,7 @@ Feature: Report namespace are respected
 			|:read.report.histogram.html|Hey, Einstein! I'm on your side!|Histogram   |
 			|:read.report.summary.html  |Do a barrel roll!               |Summary     |
 
+	@unreliable_el7
 	Scenario: PDF Availability reports are restricted
 		Given these actions are denied
 			|action                | message                       |
@@ -38,6 +40,7 @@ Feature: Report namespace are respected
 		When I click "As PDF"
 		Then I should see "Hold still and lemme shoot you."
 
+	@unreliable_el7
 	Scenario: PDF SLA reports are restricted
 		Given these actions are denied
 			|action                  |message                               |
@@ -55,6 +58,7 @@ Feature: Report namespace are respected
 		When I click "As PDF"
 		Then I should see "We'll just see about that, Star Wolf."
 
+	@unreliable_el7
 	Scenario: PDF summary reports are restricted
 		Given these actions are denied
 			|action                  | message                     |

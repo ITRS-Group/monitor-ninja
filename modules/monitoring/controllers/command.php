@@ -19,9 +19,10 @@ class Command_Controller extends Authenticated_Controller
 	 *
 	 * @return string
 	 */
-	public function exec_custom_command()
-	{
+	public function exec_custom_command () {
+
 		$this->auto_render=false;
+
 		$command_name = $this->input->get('command', null);
 		$table = $this->input->get('table', null);
 		$key = $this->input->get('key', null);
@@ -37,10 +38,14 @@ class Command_Controller extends Authenticated_Controller
 		}
 
 		$result = $object->submit_custom_command($command_name);
-		if(!$result['status']) {
-			echo "Script failed:" . nl2br($result['output']);
-			return;
-		}
-		echo nl2br($result['output']);
+		$result['output'] = nl2br(html::specialchars($result['output']));
+
+		$view = new View('json', array(
+			'success' => $result['status'],
+			'value' => $result
+		));
+
+		$view->render(true);
+
 	}
 }

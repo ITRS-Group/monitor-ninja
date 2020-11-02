@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+
 /**
  * Alert History controller
  * This is just a special case of the recent alert view in the summary controller
@@ -10,7 +11,7 @@ class Alert_history_Controller extends Summary_Controller
 	public function index($input = false)
 	{
 		if (isset($_SESSION['report_err_msg'])) {
-			$this->template->content = _("<h1>You're not authorized to see any hosts, so I can't show you a history of their alerts.</h1>\n<p>But then, you <i>were</i> allowed to log in, so I bet something is broken. Please contact <a href=\"mailto:support@op5.com\">support@op5.com</a> with any information you have.</p>");
+			$this->template->content = _("<h1>You're not authorized to see any hosts, so I can't show you a history of their alerts.</h1>\n<p>But then, you <i>were</i> allowed to log in, so I bet something is broken. Please contact <a href=\"https://www.op5.com/support\">OP5 Support</a> with any information you have.</p>");
 			unset($_SESSION['report_err_msg']);
 		}
 		else {
@@ -27,7 +28,6 @@ class Alert_history_Controller extends Summary_Controller
 		$this->options['page'] = $pagination->current_page;
 
 		$this->options['summary_type'] = Summary_options::RECENT_ALERTS;
-		$this->template->js[] = 'modules/reports/views/alert_history/js/alert_history.js';
 		$real_output_format = $this->options['output_format'];
 		if ($this->options['output_format'] === 'pdf')
 			$this->options['output_format'] = 'html';
@@ -45,6 +45,19 @@ class Alert_history_Controller extends Summary_Controller
 		if ($real_output_format == 'pdf') {
 			return $this->generate_pdf();
 		}
+	}
+
+	public function edit_settings($input = false){
+		$this->setup_options_obj($input);
+		/* with_chrome attribute would be checked in test environment */
+		if($this->input->get('with_chrome')) {
+			$this->template->content = $this->add_view('reports/edit_settings');
+			$template = $this->template->content;
+		}else {
+			$this->template = $this->add_view('reports/edit_settings');
+			$template = $this->template;
+		}
+		$template->report_options = $this->add_view('alert_history/options');
 	}
 
 	/**

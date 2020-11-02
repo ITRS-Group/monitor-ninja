@@ -5,10 +5,10 @@
 	<?php foreach($defined_report_types as $report_type => $report_type_label) { ?>
 	<div id="scheduled_<?php echo $report_type ?>_reports">
 		<table class="padd-table" id="<?php echo $report_type ?>_scheduled_reports_table">
-			<caption><?php echo _('Your scheduled '.$report_type_label.' Reports') ?></caption>
+			<caption><?php echo _('Your scheduled '.$report_type_label) ?></caption>
 			<thead id="<?php echo $report_type ?>_headers">
 				<tr class="setup">
-					<th><?php echo _('Interval') ?></th>
+					<th><?php echo _('Schedule') ?></th>
 					<th><?php echo _('Report') ?></th>
 					<th><?php echo _('Recipients') ?></th>
 					<th><?php echo _('Filename') ?></th>
@@ -26,7 +26,7 @@
 <?php } # Note: attributes with empty values here are assumed to be filled in ?>
 	<table id="schedule_template" style="display: none">
 		<tr id="">
-			<td class="period_select" title="<?php echo _('Double click to edit') ?>"></td>
+			<td class="period_select"></td>
 			<td class="report_name"></td>
 			<td class="iseditable recipients" title="<?php echo _('Double click to edit') ?>"></td>
 			<td class="iseditable filename" title="<?php echo _('Double click to edit') ?>"></td>

@@ -85,3 +85,7 @@ body, .container, .content {
 /* line 73, ../base-sass/print.sass */
 .toggle-long-output {
   display: none; }
+
+/* line 76, ../base-sass/print.sass */
+.cc-window {
+  display: none; }

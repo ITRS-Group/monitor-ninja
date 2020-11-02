@@ -1,3 +1,4 @@
+@unreliable_el7
 Feature: Scheduled reports
 	Test that reports can be scheduled, that scheduled can be deleted, that
 	deleting schedules deletes reports...
@@ -37,6 +38,8 @@ Feature: Scheduled reports
 			| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
 		And I am logged in
+		And I am on the main page
+		And I check for cookie bar
 
 	@reports
 	Scenario: Save avail report
@@ -62,7 +65,7 @@ Feature: Scheduled reports
 		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
-		When I select "Weekly" from "Report interval"
+		When I select "Week" from "every_text"
 		And I select "saved test report" from "Select report"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
@@ -93,10 +96,10 @@ Feature: Scheduled reports
 		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
-		And "Weekly" should be selected from "Report interval"
+		And "Day" should be selected from "every_text"
 		When I select "saved test report" from "Select report"
-		Then "Filename" should contain "saved_test_report_Weekly.pdf"
-		When I select "Monthly" from "Report interval"
+		Then "Filename" should contain "saved_test_report_Daily.pdf"
+		When I select "Month" from "every_text"
 		Then "Filename" should contain "saved_test_report_Monthly.pdf"
 		When I enter "dev@op5.com" into "Recipients"
 		And I click "Save"
@@ -154,7 +157,7 @@ Feature: Scheduled reports
 		Then I should see "Report was successfully saved"
 
 	@reports
-	Scenario: Schedule SLA report
+	Scenario: Schedule SLA report on first day of every second month
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		When I click "Schedule reports"
@@ -162,14 +165,17 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
 		When I select "saved test report" from "Select report"
-		And I select "Weekly" from "Report interval"
+		And I select "Month" from "every_text"
+		And I choose "sch-first-day-month"
+		And I enter "2" into "every_no"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
 		And I click "Save"
 		Then I shouldn't see "There are no scheduled SLA reports"
-		And I should see "saved_test_report_Weekly.pdf"
+		And I should see "saved_test_report_Monthly.pdf"
 		And I should see "dev@op5.com"
+		And I should see "Every 2 months on the first day of month at 12:00"
 
 	@reports
 	Scenario: View scheduled SLA report
@@ -256,7 +262,7 @@ Feature: Scheduled reports
 		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
 		When I select "saved test report" from "Select report"
-		And I select "Weekly" from "Report interval"
+		And I select "Week" from "every_text"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"

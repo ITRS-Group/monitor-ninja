@@ -10,14 +10,14 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	public function get_table() {
 		return $this->table;
 	}
-	
+
 	/**
 	 * Get the columns available in the query
 	 */
 	public function get_columns() {
 		return $this->columns;
 	}
-	
+
 	// entry: program := * query end
 	/**
 	 * Visit the given grammar rule
@@ -122,7 +122,15 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	public function visit_match_all() {
 		return null;
 	}
-	
+
+	// match_all: match := * none
+	/**
+	 * Visit the given grammar rule
+	 */
+	public function visit_match_none() {
+		return null;
+	}
+
 	// match_field_in: match := * name in string
 	/**
 	 * Visit the given grammar rule
@@ -226,7 +234,7 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	public function visit_match_eq($name0, $arg_num_string2) {
 		return null;
 	}
-	
+
 	// set_descr_name: Êset_descr := * string
 	/**
 	 * Visit the given grammar rule
@@ -234,7 +242,7 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	public function visit_set_descr_name($string0) {
 		return null;
 	}
-	
+
 	// set_descr_query: Êset_descr := * query
 	/**
 	 * Visit the given grammar rule
@@ -242,7 +250,7 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	public function visit_set_descr_query($query0) {
 		return null;
 	}
-	
+
 	// field_name: field := * name
 	/**
 	 * Visit the given grammar rule
@@ -250,7 +258,7 @@ class LSFilterMetadataVisitor extends LSFilterVisitor {
 	public function visit_field_name($name0) {
 		return null;
 	}
-	
+
 	// field_obj: field := * name dot field
 	/**
 	 * Visit the given grammar rule

@@ -17,13 +17,12 @@ class Histogram_Controller extends Base_reports_Controller
 	public $type = 'histogram';
 
 	/**
-	*	Setup options for histogram report
-	*/
+	 * Setup options for histogram report
+	 */
 	public function index($input = false)
 	{
 		$this->setup_options_obj($input);
 
-		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('reports/setup');
 		$template = $this->template->content;
 		if(isset($_SESSION['report_err_msg'])) {
@@ -38,10 +37,6 @@ class Histogram_Controller extends Base_reports_Controller
 		}
 		$template->scheduled_info = $scheduled_info;
 		$template->report_options = $this->add_view('histogram/options');
-
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
 
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
@@ -59,13 +54,6 @@ class Histogram_Controller extends Base_reports_Controller
 	public function generate($input = false)
 	{
 		$this->setup_options_obj($input);
-		$this->template->disable_refresh = true;
-		$this->template->js[] = 'application/media/js/jquery.flot.min.js';
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = 'application/media/js/excanvas.compiled.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/histogram/js/histogram.js';
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 		$rpt = new Summary_Reports_Model($this->options);
 
@@ -177,10 +165,22 @@ class Histogram_Controller extends Base_reports_Controller
 		$this->generate_toolbar();
 	}
 
+	public function edit_settings($input = false){
+		$this->setup_options_obj($input);
+		/* with_chrome attribute would be checked in test environment */
+		if($this->input->get('with_chrome')) {
+			$this->template->content = $this->add_view('reports/edit_settings');
+			$template = $this->template->content;
+		}else {
+			$this->template = $this->add_view('reports/edit_settings');
+			$template = $this->template;
+		}
+		$template->report_options = $this->add_view('histogram/options');
+	}
+
 	/**
-	*	Replace all integer indicies with proper
-	* 	translated strings
-	*/
+	 * Replace all integer indicies with proper translated strings
+	 */
 	private function _get_xaxis_ticks($data)
 	{
 		$return = false;
@@ -210,8 +210,8 @@ class Histogram_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	Prepare data structore for use in histogram
-	*/
+	 * Prepare data structore for use in histogram
+	 */
 	private function _prepare_graph_data($data)
 	{
 		$return = array();

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Local token for EOF, which doesn't exist in the PHP tokenizer natively.
+ */
+define('T_LOCAL_EOF', -1);
+
+/**
  * A token, as formatted as php method token_get_all.
  * Used to generalize the token between terminals and tokens.
  */
@@ -342,8 +347,11 @@ class php_miner_file extends php_miner_block {
 	}
 	private function next_token() {
 		for(;;) {
-			if ($this->position >= count( $this->tokens ))
+			/* If we're at the end of the file, add a EOF token */
+			if ($this->position >= count( $this->tokens )) {
+				$this->current_token = new php_miner_token(array(T_LOCAL_EOF, '', -1));
 				return false;
+			}
 
 			$this->current_token = new php_miner_token( $this->tokens[$this->position] );
 			$this->position ++;
@@ -413,6 +421,53 @@ class php_miner_statement_class extends php_miner_statement {
 		$this->name = $tmptokens[1]->string;
 	}
 }
+
+
+/**
+ * The special statement "interface" matches and mines out all interfaces from a
+ * statement block
+ * Example:
+ * // Parse a file
+ * $file = php_miner_file::parse_file("my_file.php");
+ * // Mine out all classes in the file, recursive
+ * $ifs = $file->extract("php_miner_statement_interface", true);
+ * foreach($ifs as $if) {
+ * echo "Found interface: " . $if->name . "\n";
+ * }
+ */
+class php_miner_statement_interface extends php_miner_statement {
+	public $name = false;
+
+	/**
+	 * Generate a php_miner_statement_class if$statement is a valid class.
+	 * return false otherwise.
+	 * Used as filter method in php_miner_block::extract()
+	 *
+	 * @param php_miner_statement $stmt
+	 * @return php_miner_statement_class|boolean
+	 */
+	public static function factory(php_miner_statement $stmt) {
+		foreach ( $stmt->tokens as $token ) {
+			if ($token->is_token( T_INTERFACE )) {
+				return new self( $stmt );
+			}
+		}
+		return false;
+	}
+	public function __construct(php_miner_statement $stmt) {
+		$this->docstring = $stmt->docstring;
+		$this->tokens = $stmt->tokens;
+		$this->block_statements = $stmt->block_statements;
+
+		$tmptokens = $this->tokens;
+		/* @var $tmptokens php_miner_token[] */
+		while ( ! $tmptokens[0]->is_token( T_INTERFACE ) ) {
+			$prefix = array_shift( $tmptokens );
+		}
+		$this->name = $tmptokens[1]->string;
+	}
+}
+
 class php_miner_statement_function extends php_miner_statement {
 	public $name = false;
 	public $is_abstract = false;

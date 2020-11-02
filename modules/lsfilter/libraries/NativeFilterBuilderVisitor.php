@@ -14,7 +14,7 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 			}
 		}
 		return true;
-  }
+	}
 
 	/**
 	 * Visit an or node
@@ -26,7 +26,7 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 			}
 		}
 		return false;
-  }
+	}
 
 	/**
 	 * Visit an value match node
@@ -35,6 +35,11 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 		$field = $filt->get_field();
 		$lhs = $data;
 		foreach (explode(".", $field) as $k) {
+			if(!isset($lhs[$k])) {
+				/* Field doesn't exist, thus undefined (=null) */
+				$lhs = null;
+				break;
+			}
 			$lhs = $lhs[$k];
 		}
 		$value = $filt->get_value();
@@ -42,41 +47,41 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 		if( empty($value) ) {
 			/* Special case on empty valued regexp */
 			switch( $op ) {
-				case '!~~':
-				case '!~':
-					return false; /* Matches nothing */
-				case '~~':
-				case '~':
-					return true; /* Matches everything */
+			case '!~~':
+			case '!~':
+				return false; /* Matches nothing */
+			case '~~':
+			case '~':
+				return true; /* Matches everything */
 			}
 			/* Otherwise drop through */
 		}
 
 		switch( $op ) {
-			case '!~~':
-				return !preg_match("/" . $value . "/i", $lhs);
-			case '!~':
-				return !preg_match("/" . $value . "/", $lhs);
-			case '~~':
-				return preg_match("/" . $value . "/i", $lhs);
-			case '~':
-				return preg_match("/" . $value . "/", $lhs);
-			case '!=~':
-				return strtolower($lhs) != strtolower($value);
-			case '=~':
-				return strtolower($lhs) == strtolower($value);
-			case '=':
-				return $lhs == $value;
-			case '!=':
-				return $lhs != $value;
-			case '>=':
-				return $lhs >= $value;
-			case '<=':
-				return $lhs <= $value;
-			case '>':
-				return $lhs > $value;
-			case '<':
-				return $lhs < $value;
+		case '!~~':
+			return !preg_match("/" . $value . "/i", $lhs);
+		case '!~':
+			return !preg_match("/" . $value . "/", $lhs);
+		case '~~':
+			return preg_match("/" . $value . "/i", $lhs);
+		case '~':
+			return preg_match("/" . $value . "/", $lhs);
+		case '!=~':
+			return strtolower($lhs) != strtolower($value);
+		case '=~':
+			return strtolower($lhs) == strtolower($value);
+		case '=':
+			return $lhs == $value;
+		case '!=':
+			return $lhs != $value;
+		case '>=':
+			return $lhs >= $value;
+		case '<=':
+			return $lhs <= $value;
+		case '>':
+			return $lhs > $value;
+		case '<':
+			return $lhs < $value;
 		}
 
 		throw new ORMException("Unknown binary operator '$op'!");

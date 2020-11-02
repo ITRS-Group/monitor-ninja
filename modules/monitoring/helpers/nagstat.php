@@ -140,12 +140,48 @@ class nagstat {
 	const HOST_NOTIFICATION	= 0; /**< The notification was for a host */
 	const SERVICE_NOTIFICATION	= 1; /**< The notification was for a service */
 
+	/**
+	 * Processes an ORM object into the stdObject format expected by
+	 * nagstat::process_macros, due to other repositories still depending on
+	 * the signature of process_macros
+	 *
+	 * @param $object Object_Model
+	 * @return stdObject
+	 */
+	public static function preprocess_orm_object (Object_Model $object) {
+
+		$properties = array();
+
+		foreach($object->export() as $prop => $value) {
+			if(is_array($value)) {
+				/**
+				 * If sequential, indexed, array we should not manipulate the property names.
+				 */
+				if (array_reduce(array_keys($value), function ($is_seq, $key) {
+					if (is_int($key)) return true;
+					return $is_seq;
+				}, false)) {
+					$properties[$prop] = $value;
+					continue;
+				}
+
+				foreach($value as $prop_key => $prop_value) {
+					$properties[$prop."_".$prop_key] = $prop_value;
+				}
+			} else {
+				$properties[$prop] = $value;
+			}
+		}
+
+		return (object) $properties;
+
+	}
 
 	/**
 	 * Process macros for host- or service objects
 	 */
-	public static function process_macros($string=false, $obj=false, $objtype=false)
-	{
+	public static function process_macros($string=false, $obj=false, $objtype=false) {
+
 		if (empty($string) || empty($obj)) {
 			return $string;
 		}

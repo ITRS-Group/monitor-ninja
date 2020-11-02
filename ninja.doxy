@@ -1,9 +1,8 @@
 PROJECT_NAME = ninja
 PROJECT_NUMBER = git
 
-INPUT            = application/models application/helpers xdoc/ modules
+INPUT            = application/models application/helpers modules
 EXCLUDE_PATTERNS = */modules/*/views/* */modules/*/vendor/*
-DOTFILE_DIRS     = xdoc
 QUIET            = YES
 RECURSIVE        = YES
 FILE_PATTERNS    = *.php *.dox

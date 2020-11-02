@@ -13,13 +13,27 @@ class config
 	const CONFIG_NOT_FOUND = null;
 
 	/**
-        *       Fetch config item from db or config file
-        *       If $page is set it will fetch for a page-specific
-        *       setting for current user
-        */
-	public static function get($config_str=false, $page='', $save=false)
+	 * Fetch config item from db or config file
+	 * @param $config_str string The setting to get
+	 * @param $page Deprecated, do not use
+	 * @param $save Deprecated, do not use
+	 * @return the value of the setting, or CONFIG_NOT_FOUND if not found
+	 */
+	public static function get($config_str, $page='', $save=false)
 	{
 		$config_str = trim($config_str);
+		if ($page !== '') {
+			flag::deprecated('$page parameter in config::get', 'The $page
+				parameter is of no use here. If you really want a page-specific
+				setting, use Ninja_setting_Model::fetch_page_setting()');
+		}
+		if ($save !== false) {
+			flag::deprecated('$save parameter in config::get', 'The $save
+				parameter is of no use here. If you really want to save a
+				setting, use Ninja_setting_Model::save_page_setting()');
+
+		}
+
 		if (empty($config_str) || !is_string($config_str)) {
 			return false;
 		}
@@ -31,9 +45,9 @@ class config
 		$setting = self::CONFIG_NOT_FOUND;
 
 		try {
-			$cfg = Ninja_setting_Model::fetch_page_setting($config_str, $page);
+			$cfg = Ninja_setting_Model::fetch_page_setting($config_str);
 		} catch (Kohana_Database_Exception $e) {
-			op5log::instance('ninja')->log('error', "Cannot fetch setting '$config_str' for page '$page': " . $e->getMessage());
+			op5log::instance('ninja')->log('error', "Cannot fetch setting '$config_str': " . $e->getMessage());
 			return $setting;
 		}
 		if ($cfg!==false) {
@@ -45,9 +59,6 @@ class config
 			$setting = Kohana::config($config_str, false, false);
 			if (is_array($setting) && empty($setting)) {
 				$setting = false;
-			} elseif ($save) {
-				# save to database and session as user setting
-				Ninja_setting_Model::save_page_setting($config_str, $page, $setting);
 			}
 		}
 		self::$cache[$config_str] = $setting;

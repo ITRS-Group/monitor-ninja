@@ -169,8 +169,16 @@ class ORMDriverSQL implements ORMDriverInterface {
 		$sql = 'UPDATE '.$structure['table'];
 		$sql .= $this->sql_join($filter, $structure);
 		$delim = " SET ";
+		$rename = isset($structure['rename']) ? $structure['rename'] : array();
 		foreach($values as $k => $v) {
-			$sql .= $delim . $k . " = " . $db->escape($v);
+			if (array_key_exists($k, $rename)) {
+				$k = $rename[$k];
+			}
+			/**
+			 * To remove the possibility of ambiguity when the table is joined, add
+			 * the updated table's name before the key
+			 */
+			$sql .= sprintf("%s%s.%s=%s", $delim, $structure['table'], $k, $db->escape($v));
 			$delim = ", ";
 		}
 
@@ -192,8 +200,13 @@ class ORMDriverSQL implements ORMDriverInterface {
 		$keys = array();
 		$esc_values = array();
 
+		$rename = isset($structure['rename']) ? $structure['rename'] : array();
 		foreach($values as $k => $v) {
-			$keys[] = $k;
+			if (array_key_exists($k, $rename)) {
+				$keys[] = $rename[$k];
+			} else {
+				$keys[] = $k;
+			}
 			$esc_values[] = $db->escape($v);
 		}
 

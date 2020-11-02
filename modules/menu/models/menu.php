@@ -26,283 +26,349 @@
  */
 class Menu_Model {
 
-  private $attributes = array("target" => "_self");
-  private $branch = array();
-  private $order = 100;
-  private $label;
-  private $href;
-  private $icon = "";
-  private $id;
-  private $label_contains_valid_html = false;
+	private static $insertion_order = 100;
+	private $attributes = array("target" => "_self");
+	private $branch = array();
+	private $is_separator = false;
+	private $order = 100;
+	private $label;
+	private $href;
+	private $icon = "";
+	private $id;
+	private $style = null;
+	private $label_contains_valid_html = false;
 
-  /**
-   * Instantiates a new Menu model node, children within the structure use
-   * the same model as the root node.
-   *
-   * @param $label       What label to display
-   * @param $href        What URL this item should link to
-   * @param $order       At what position should this item be rendered
-   *                             (relative to others at the same level), lower value is higher priority
-   * @param $icon        What icon to use, within ninja this is an icon-class
-   * @param $attributes  Additional attributes to add to the element
-   */
-  public function __construct ($label = NULL, $href = NULL, $order = 100, $icon = false, array $attributes = array()) {
+	/**
+	 * Instantiates a new Menu model node, children within the structure use
+	 * the same model as the root node.
+	 *
+	 * @param $label       What label to display
+	 * @param $href        What URL this item should link to
+	 * @param $order       At what position should this item be rendered
+	 *                             (relative to others at the same level), lower value is higher priority
+	 * @param $icon        What icon to use, within ninja this is an icon-class
+	 * @param $attributes  Additional attributes to add to the element
+	 */
+	public function __construct ($label = NULL, $href = NULL, $order = null, $icon = false, array $attributes = array()) {
 
-    $this->label = $label;
-    $this->order = $order;
-    $this->href = $href;
-    $this->icon = $icon;
+		if (is_null($order)) {
+			self::$insertion_order++;
+			$order = self::$insertion_order;
+		}
 
-    $this->attributes = array_merge($this->attributes, $attributes);
-    $this->id = $this->standardize($label);
+		$this->label = $label;
+		$this->order = $order;
+		$this->href = $href;
+		$this->icon = $icon;
 
-  }
+		$this->attributes = array_merge($this->attributes, $attributes);
+		$this->id = $this->standardize($label);
 
-  /**
-   * @return boolean
-   */
-  public function has_children () {
-    return (count($this->branch) > 0);
-  }
 
-  /**
-   * This nodes unique identifier
-   * @return string This nodes unique identifier
-   */
-  public function get_id () {
-    return $this->id;
-  }
+	}
 
-  /**
-   * Set the position of this node relative to the other node's order value
-   * within this level.
-   *
-   * @param $order  Relative order to render the item at in this level
-   * @return Menu_Model     Returns $this for chainability
-   */
-  public function set_order ($order) {
-    if (is_int($order)) { $this->order = $order; }
-    return $this;
-  }
+	/**
+	 * @return boolean
+	 */
+	public function has_children () {
+		return (count($this->branch) > 0);
+	}
 
-  /**
-   * Returns this nodes $order value
-   * @return integer  This nodes $order value
-   */
-  public function get_order () {
-    return $this->order;
-  }
+	/**
+	 * This nodes unique identifier
+	 * @return string This nodes unique identifier
+	 */
+	public function get_id () {
+		return $this->id;
+	}
 
-  /**
-   * Sets this nodes $icon value
-   *
-   * @param $icon   The icon value to set
-   * @return Menu_Model    Returns $this for chainability
-   */
-  public function set_icon ($icon) {
-    if (is_string($icon)) { $this->icon = $icon; }
-    return $this;
-  }
+	/**
+	 * Sets this menu item as a separator
+	 *
+	 * @param $title Optional title for separator
+	 */
+	public function set_separator ($title = null) {
+		$this->label = $title;
+		$this->is_separator = true;
+	}
 
-  /**
-   * Returns this nodes $icon value
-   * @return string  This nodes $icon value
-   */
-  public function get_icon () {
-    return $this->icon;
-  }
+	/**
+	 * Is this menu item a separator
+	 *
+	 * @return bool
+	 */
+	public function is_separator () {
+		return $this->is_separator;
+	}
 
-  /**
-   * Sets this nodes $href value
-   *
-   * @param $href   The href value to set
-   * @return Menu_Model    Returns $this for chainability
-   */
-  public function set_href ($href) {
-    if (is_string($href)) { $this->href = $href; }
-    return $this;
-  }
+	/**
+	 * Set the position of this node relative to the other node's order value
+	 * within this level.
+	 *
+	 * @param $order  Relative order to render the item at in this level
+	 * @return Menu_Model     Returns $this for chainability
+	 */
+	public function set_order ($order) {
+		if (is_int($order)) { $this->order = $order; }
+		return $this;
+	}
 
-  /**
-   * Returns this nodes $href value
-   * @return string  This nodes $href value
-   */
-  public function get_href () {
-    return $this->href;
-  }
+	/**
+	 * Returns this nodes $order value
+	 * @return integer  This nodes $order value
+	 */
+	public function get_order () {
+		return $this->order;
+	}
 
-  /**
-   * Sets this nodes $attributes value
-   *
-   * @param $attributes   The attributes value to set
-   * @return Menu_Model         Returns $this for chainability
-   */
-  public function set_attributes ($attributes) {
-    if (is_array($attributes)) { $this->attributes = array_merge($this->attributes, $attributes); }
-    return $this;
-  }
+	/**
+	 * Sets this nodes $icon value
+	 *
+	 * @param $icon   The icon value to set
+	 * @return Menu_Model    Returns $this for chainability
+	 */
+	public function set_icon ($icon) {
+		if (is_string($icon)) { $this->icon = $icon; }
+		return $this;
+	}
 
-  /**
-   * Sets this nodes $label value as "valid html", meaning that it does not
-   * need further escaping in the view layer. This complements @see set_label()
-   *
-   * @param $html   The label value to set
-   * @return Menu_Model     Returns $this for chainability
-   */
-  public function set_html_label ($html) {
-    if (is_string($html)) {
-      $this->label_contains_valid_html = true;
-      $this->label = $html;
-    }
-    return $this;
-  }
+	/**
+	 * Returns this nodes $icon value
+	 * @return string  This nodes $icon value
+	 */
+	public function get_icon () {
+		return $this->icon;
+	}
 
-  /**
-   * Returns this nodes $attributes value
-   * @return array  This nodes $attributes value
-   */
-  public function get_attributes () {
-    $this->attributes['data-menu-id'] = $this->get_id();
-    if ($this->has_children()) {
-      if (isset($this->attributes['class'])) {
-        $this->attributes['class'] .= ' menu-section';
-      } else {
-        $this->attributes['class'] = 'menu-section';
-      }
-    }
-    return $this->attributes;
-  }
+	/**
+	 * Sets this nodes $style value
+	 *
+	 * Valid styles is "normal" and "image"
+	 *
+	 * @param $style   The style value to set, null for inherit from parent
+	 * @return Menu_Model    Returns $this for chainability
+	 */
+	public function set_style ($style) {
+		$this->style = $style;
+		return $this;
+	}
 
-  /**
-   * Sets this nodes $label value
-   *
-   * @param $label   The label value to set
-   * @return Menu_Model     Returns $this for chainability
-   */
-  public function set_label ($label) {
-    if (is_string($label)) { $this->label = $label; }
-    return $this;
-  }
+	/**
+	 * Returns this nodes $style value
+	 * @return string  This nodes $style value
+	 */
+	public function get_style () {
+		return $this->style;
+	}
 
-  /**
-   * @return string proper html to use as an element
-   */
-  public function get_label_as_html() {
-    if($this->label_contains_valid_html) {
-      return $this->label;
-    }
-    return html::specialchars($this->label);
-  }
+	/**
+	 * Sets this nodes $href value
+	 *
+	 * @param $href   The href value to set
+	 * @return Menu_Model    Returns $this for chainability
+	 */
+	public function set_href ($href) {
+		if (is_string($href)) { $this->href = $href; }
+		return $this;
+	}
 
-  /**
-   * Returns this nodes child-nodes
-   * @return Menu_Model[]  This nodes child-nodes
-   */
-  public function get_branch () {
+	/**
+	 * Returns this nodes $href value
+	 * @return string  This nodes $href value
+	 */
+	public function get_href () {
+		return $this->href;
+	}
 
-    usort($this->branch, function ($a, $b) {
-      return ($a->get_order() === $b->get_order()) ? 0 : ($a->get_order() < $b->get_order()) ? -1 : 1;
-    });
+	/**
+	 * Sets this nodes $attributes value
+	 *
+	 * @param $attributes   The attributes value to set
+	 * @return Menu_Model         Returns $this for chainability
+	 */
+	public function set_attributes ($attributes) {
+		if (is_array($attributes)) { $this->attributes = array_merge($this->attributes, $attributes); }
+		return $this;
+	}
 
-    return $this->branch;
+	/**
+	 * Sets this nodes $label value as "valid html", meaning that it does not
+	 * need further escaping in the view layer. This complements @see set_label()
+	 *
+	 * @param $html   The label value to set
+	 * @return Menu_Model     Returns $this for chainability
+	 */
+	public function set_html_label ($html) {
+		if (is_string($html)) {
+			$this->label_contains_valid_html = true;
+			$this->label = $html;
+		}
+		return $this;
+	}
 
-  }
+	/**
+	 * Returns this nodes $attributes value
+	 * @return array  This nodes $attributes value
+	 */
+	public function get_attributes () {
+		$this->attributes['data-menu-id'] = $this->get_id();
+		if ($this->has_children()) {
+			if (isset($this->attributes['class'])) {
+				$this->attributes['class'] .= ' menu-section';
+			} else {
+				$this->attributes['class'] = 'menu-section';
+			}
+		}
+		return $this->attributes;
+	}
 
-  /**
-   * Standardizes a namespace segment string
-   * @param  [type] $name [description]
-   * @return [type]       [description]
-   */
-  private function standardize ($name) {
-    return strtolower(preg_replace('/[^\w]+/', '_', $name));
-  }
+	/**
+	 * Sets this nodes $label value
+	 *
+	 * @param $label   The label value to set
+	 * @return Menu_Model     Returns $this for chainability
+	 */
+	public function set_label ($label) {
+		if (is_string($label)) { $this->label = $label; }
+		return $this;
+	}
 
-  /**
-   * Returns the node reflected by the given namespace.
-   * If no node exists return null.
-   *
-   * @param $namespace     Full namespace to the node you wish to access
-   * @return Menu_Model              Returns the node identified by the namespace
-   * @return null                    If no node is found it returns null
-   */
-  public function get ($namespace) {
+	/**
+	 * @return string proper html to use as an element
+	 */
+	public function get_label_as_html() {
+		if($this->label_contains_valid_html) {
+			return $this->label;
+		}
+		return html::specialchars($this->label);
+	}
 
-    $namespace = explode('.', $namespace);
-    $last = count($namespace) - 1;
-    $point = $this;
+	/**
+	 * Returns this nodes child-nodes
+	 * @return Menu_Model[]  This nodes child-nodes
+	 */
+	public function get_branch () {
 
-    foreach ($namespace as $index => $name) {
+		usort($this->branch, function ($a, $b) {
+			return $a->get_order() - $b->get_order();
+		});
 
-      $id = $this->standardize($name);
-      foreach ($point->branch as $child) {
-        if ($child->id === $id) {
-          $point = $child;
-          if ($index === $last) {
-            return $point;
-          }
-          break;
-        }
-      }
+		return $this->branch;
 
-    }
+	}
 
-    return null;
+	/**
+	 * Standardizes a namespace segment string
+	 * @param  [type] $name [description]
+	 * @return [type]       [description]
+	 */
+	private function standardize ($name) {
+		return strtolower(preg_replace('/[^\w]+/', '_', $name));
+	}
 
-  }
+	/**
+	 * Returns the node reflected by the given namespace.
+	 * If no node exists return null.
+	 *
+	 * @param $namespace     Full namespace to the node you wish to access
+	 * @return Menu_Model              Returns the node identified by the namespace
+	 * @return null                    If no node is found it returns null
+	 */
+	public function get ($namespace) {
 
-  /**
-   * Traverses a namespace and instantiates dummy-nodes where required
-   * in order to reach the node that was requested and returns that node.
-   *
-   * @param  $namespace  The namespace to search for
-   * @return Menu_Model      The node the namespace identifies
-   */
-  private function build ($namespace) {
+		$namespace = explode('.', $namespace);
+		$last = count($namespace) - 1;
+		$point = $this;
 
-    $namespace = explode('.', $namespace);
-    $target = $this;
+		foreach ($namespace as $index => $name) {
 
-    for ($index = 0; $index < count($namespace); $index++) {
+			$id = $this->standardize($name);
+			foreach ($point->branch as $child) {
+				if ($child->id === $id) {
+					$point = $child;
+					if ($index === $last) {
+						return $point;
+					}
+					break;
+				}
+			}
 
-      $names = array_slice($namespace, 0, $index + 1);
-      $point = $target->get(implode('.', $names));
+		}
 
-      if (!$point) {
-        $point = new Menu_Model($namespace[$index]);
-        $target->branch[] = $point;
-      }
+		return null;
 
-      $target = $point;
+	}
 
-    }
+	/**
+	 * Traverses a namespace and instantiates dummy-nodes where required
+	 * in order to reach the node that was requested and returns that node.
+	 *
+	 * @param  $namespace  The namespace to search for
+	 * @return Menu_Model      The node the namespace identifies
+	 */
+	private function build ($namespace) {
 
-    return $target;
+		if($namespace === null)
+			return $this;
 
-  }
+		$namespace = explode('.', $namespace);
+		$target = $this;
 
-  /**
-   * Sets properties on the node identified by the namespace,
-   * if the node or hierarchy doesn'texist it will be created.
-   *
-   * See constructor for usage of parameters.
-   *
-   * @param $namespace   Full namespace to the node you wish to create or manipulate
-   * @param $href        Link href or null
-   * @param $order       Link order or null
-   * @param $icon        Link icon or null
-   * @param $attributes  Link attributes array or null
-   * @return Menu_Model  Returns $this for chainability
-   */
-  public function set ($namespace, $href = NULL, $order = NULL, $icon = false, array $attributes = array()) {
+		for ($index = 0; $index < count($namespace); $index++) {
 
-    $target = $this->build($namespace);
-    $target->set_icon($icon)
-      ->set_href($href)
-      ->set_order($order)
-      ->set_attributes($attributes);
+			$names = array_slice($namespace, 0, $index + 1);
+			$point = $target->get(implode('.', $names));
 
-    return $this;
+			if (!$point) {
+				$point = new Menu_Model($namespace[$index]);
+				$target->branch[] = $point;
+			}
 
-  }
+			$target = $point;
 
+		}
+
+		return $target;
+
+	}
+
+	/**
+	 * Sets properties on the node identified by the namespace,
+	 * if the node or hierarchy doesn'texist it will be created.
+	 *
+	 * See constructor for usage of parameters.
+	 *
+	 * @param $namespace   Full namespace to the node you wish to create or manipulate
+	 * @param $href        Link href or null
+	 * @param $order       Link order or null
+	 * @param $icon        Link icon or null
+	 * @param $attributes  Link attributes array or null
+	 * @return Menu_Model  Returns $this for chainability
+	 */
+	public function set ($namespace, $href = NULL, $order = NULL, $icon = false, array $attributes = array()) {
+
+		$target = $this->build($namespace);
+		$target->set_icon($icon)
+			->set_href($href)
+			->set_order($order)
+			->set_attributes($attributes);
+
+		return $this;
+
+	}
+
+	/**
+	 * Attach a submenu to a menu
+	 *
+	 * The submenu needs to have its orders, icons and other parametes set correctly
+	 *
+	 * @param $namespace   Full namespace to the node you wish to create or manipulate
+	 * @param $node        The subtree, either as Menu_Model or a View
+	 * @return Menu_Model  Returns $this for chainability
+	 */
+	public function attach($namespace, $node) {
+		$target = $this->build($namespace);
+		$target->branch[] = $node;
+		return $this;
+	}
 }

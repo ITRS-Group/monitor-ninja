@@ -128,6 +128,11 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		'include_alerts' => array(
 			'type' => 'bool',
 			'default' => false
+		),
+		'report_timezone' => array(
+			'type' => 'enum',
+			'default' => 'Europe/Stockholm',
+			'description' => 'Report timezone'
 		)
 	);
 
@@ -216,19 +221,14 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 				1 => _('Average'),
 				2 => _('Cluster mode (Best state)'));
 		if (isset($this->properties['rpttimeperiod'])) {
-			try {
-				$this->properties['rpttimeperiod']['options'] = Old_Timeperiod_Model::get_all();
-			} catch (ORMDriverException $e) {
-				$this->properties['rpttimeperiod']['options'] = array();
-			} catch (op5LivestatusException $ex) {
-				/* crashing because we didn't find any timperiods is
-				 * counter-productive, so let's try with "nothing" and hope it's
-				 * not required */
-				$this->properties['rpttimeperiod']['options'] = array();
+			$this->properties['rpttimeperiod']['options'] = array();
+			foreach(TimePeriodPool_Model::all() as $tp) {
+				$name = $tp->get_name();
+				$this->properties['rpttimeperiod']['options'][$name] = $name;
 			}
 		}
 		if (isset($this->properties['skin']))
-			$this->properties['skin']['default'] = config::get('config.current_skin', '*');
+			$this->properties['skin']['default'] = config::get('config.current_skin');
 
 		if (isset($this->properties['state_types'])) {
 			$this->properties['state_types']['description'] = _('Restrict events based on which state the event is in (soft vs hard)');
@@ -244,6 +244,10 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 		if (isset($this->properties['service_filter_status'])) {
 			$this->properties['service_filter_status']['options'] = Reports_Model::$service_states;
 			unset($this->properties['service_filter_status']['options'][-2]);
+		}
+		if (isset($this->properties['report_timezone'])) {
+			$this->properties['report_timezone']['options'] = reports::timezone_list();
+			$this->properties['report_timezone']['default'] = reports::default_timezone();
 		}
 		$this->rename_options = array(
 			't1' => 'start_time',
@@ -263,7 +267,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Public constructor, which optionally takes an iterable with properties to set
 	 */
-	public function __construct($options=false) {
+	public function __construct($options = false) {
 		$this->setup_properties();
 		if ($options)
 			$this->set_options($options);
@@ -401,112 +405,31 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	 */
 	protected function calculate_time($report_period)
 	{
-		// self::$now should only ever be set by test suites.
-		if (self::$now) {
+		if($report_period == 'custom') {
+			# we'll have "start_time" and "end_time" in
+			# the options when this happens
+			# Getting Edit changes report info
+			$report_info = $this->discover_options();
+			if(isset($report_info['start_time']) && isset($report_info['end_time'])) {
+				$this->options['start_time'] = $report_info['start_time'];
+				$this->options['end_time'] = $report_info['end_time'];
+			}
+			return true;
+		}
+
+		$now = time();
+		if(self::$now !== null) {
 			$now = self::$now;
-		} else {
-			$now = time();
-		}
-		$year_now 	= date('Y', $now);
-		$month_now 	= date('m', $now);
-		$day_now	= date('d', $now);
-		$week_now 	= date('W', $now);
-		$weekday_now = date('w', $now)-1;
-		$time_start	= false;
-		$time_end	= false;
-
-		switch ($report_period) {
-			case 'today':
-			       $time_start = mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			       $time_end 	= $now;
-			       break;
-			case 'last24hours':
-			       $time_start = mktime(date('H', $now), date('i', $now), date('s', $now), $month_now, $day_now -1, $year_now);
-			       $time_end 	= $now;
-			       break;
-			case 'yesterday':
-			       $time_start = mktime(0, 0, 0, $month_now, $day_now -1, $year_now);
-			       $time_end 	= mktime(0, 0, 0, $month_now, $day_now, $year_now);
-			       break;
-			case 'thisweek':
-			       $time_start = strtotime('today - '.$weekday_now.' days');
-			       $time_end 	= $now;
-			       break;
-			case 'last7days':
-			       $time_start	= strtotime('now - 7 days');
-			       $time_end	= $now;
-			       break;
-			case 'lastweek':
-			       $time_start = strtotime('midnight last monday -7 days');
-			       $time_end	= strtotime('midnight last monday');
-			       break;
-			case 'thismonth':
-			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			       $time_end	= $now;
-			       break;
-			case 'last31days':
-			       $time_start = strtotime('now - 31 days');
-			       $time_end	= $now;
-			       break;
-			case 'lastmonth':
-			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01 -1 month');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			       break;
-			case 'thisyear':
-			       $time_start = strtotime('midnight '.$year_now.'-01-01');
-			       $time_end	= $now;
-			       break;
-			case 'lastyear':
-			       $time_start = strtotime('midnight '.$year_now.'-01-01 -1 year');
-			       $time_end	= strtotime('midnight '.$year_now.'-01-01');
-			       break;
-			case 'last12months':
-			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -12 months');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			       break;
-			case 'last3months':
-			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -3 months');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			       break;
-			case 'last6months':
-			       $time_start	= strtotime('midnight '.$year_now.'-'.$month_now.'-01 -6 months');
-			       $time_end	= strtotime('midnight '.$year_now.'-'.$month_now.'-01');
-			       break;
-			case 'lastquarter':
-				$t = getdate($now);
-				if($t['mon'] <= 3){
-					$lqstart = 'midnight '.($t['year']-1)."-10-01";
-					$lqend = 'midnight '.($t['year'])."-01-01";
-				} elseif ($t['mon'] <= 6) {
-					$lqstart = 'midnight '.$t['year']."-01-01";
-					$lqend = 'midnight '.$t['year']."-04-01";
-				} elseif ($t['mon'] <= 9){
-					$lqstart = 'midnight '.$t['year']."-04-01";
-					$lqend = 'midnight '.$t['year']."-07-01";
-				} else {
-					$lqstart = 'midnight '.$t['year']."-07-01";
-					$lqend = 'midnight '.$t['year']."-10-01";
-				}
-				$time_start = strtotime($lqstart);
-				$time_end = strtotime($lqend);
-				break;
-			case 'custom':
-			       # we'll have "start_time" and "end_time" in
-			       # the options when this happens
-			       return true;
-			default:
-				# unknown option, ie bogosity
-				return false;
 		}
 
-		if($time_start > $now)
-			$time_start = $now;
-
-		if($time_end > $now)
-			$time_end = $now;
-
-		$this->options['start_time'] = $time_start;
-		$this->options['end_time'] = $time_end;
+		try {
+			$timestamps = time::get_limits($report_period, $now);
+		} catch (InvalidReportPeriod_Exception $e) {
+			op5log::instance('ninja')->log('error', "An invalid report period of '$report_period' was given");
+			return false;
+		}
+		$this->options['start_time'] = $timestamps[0];
+		$this->options['end_time'] = $timestamps[1];
 		return true;
 	}
 

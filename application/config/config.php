@@ -25,7 +25,7 @@ $config['index_page'] = 'index.php';
 * This string is shown throughout the GUI in various places
 * and this is the only place you will have to change it.
 */
-$config['product_name'] = 'Nagios';
+$config['product_name'] = 'Ninja';
 
 /**
  * Custom version info file. Format:
@@ -140,11 +140,6 @@ if (!is_file($config['pnp4nagios_config_path'])) {
 	$config['pnp4nagios_path'] = false;
 	$config['pnp4nagios_config_path'] = false;
 }
-
-/**
- * Default refresh rate for all pages
- */
-$config['page_refresh_rate'] = 90;
 
 /**
  * Control command line access to Ninja

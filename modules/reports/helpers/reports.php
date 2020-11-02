@@ -137,13 +137,6 @@ class reports
 		$js_strings .= "var _reports_confirm_delete_warning = '"._("Please note that this is a scheduled report and if you decide to delete it, \\n" .
 			"the corresponding schedule(s) will be deleted as well.\\n\\n Are you really sure that this is what you want?")."';\n";
 
-		$js_strings .= "Date.monthNames = ".json_encode(date::month_names()).";\n";
-		$js_strings .= 'Date.abbrMonthNames = '.json_encode(date::abbr_month_names()).";\n";
-		$js_strings .= 'Date.dayNames = '.json_encode(date::day_names()).";\n";
-		$js_strings .= 'Date.abbrDayNames = '.json_encode(date::abbr_day_names()).";\n";
-		$js_strings .= "Date.firstDayOfWeek = 1;\n";
-		$js_strings .= "Date.format = '".cal::get_calendar_format(false)."';\n";
-		$js_strings .= "var _start_date = '".date(cal::get_calendar_format(true), mktime(0,0,0,1, 1, 1996))."';\n";
 		$js_strings .= "var _reports_success = '"._('Success')."';\n";
 		$js_strings .= "var _reports_error = '"._('Error')."';\n";
 		$js_strings .= "var _reports_missing_objects = \""._("Some items in your saved report do not exist anymore and have been removed")."\";\n";
@@ -260,5 +253,51 @@ class reports
 		if (!$res)
 			return false;
 		return $res[0]['alias'];
+	}
+
+	/**
+	*Return utc/gmt no for timezone
+	*
+	*/
+	static function timezone_utc_no($time_zone){
+		$date = new DateTime("now", new DateTimeZone($time_zone) );
+		$utc_no = 'UTC/GMT ' . date_format($date, 'P');
+		return $utc_no;
+	}
+
+	/**
+	*Return default set timezone string
+	*
+	*/
+	 static function default_timezone()
+	{   
+	    $default_timezone = date_default_timezone_get();
+	    return $default_timezone;
+	}
+
+	/**
+	*Return the timezone list for report
+	*
+	*/
+	public function timezone_list(){
+		if (!apc_exists('timezone_list')){
+			ini_set('memory_limit', '256M');
+			$zones_array = array();
+			$sort_utc = array();
+			$final = array();
+			$timestamp = time();
+			$timezone_list = timezone_identifiers_list();
+			foreach($timezone_list as $key => &$zone) {
+			    $date = new DateTime("now", new DateTimeZone($zone) );
+			    $sort_utc[$zone] = (int)date_format($date, 'P');
+			    $zones_array[$zone] = '[ UTC/GMT ' . date_format($date, 'P') . ' ] - '. $zone;
+			}
+			asort($sort_utc);
+			foreach($sort_utc as $key => $value) {
+			    $final[$key] = $zones_array[$key];
+			}
+			apc_store('timezone_list', $final);
+		}
+	    return apc_fetch('timezone_list');
 	}
 }

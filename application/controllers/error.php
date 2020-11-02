@@ -12,21 +12,6 @@
  *  PARTICULAR PURPOSE.
  */
 class Error_Controller extends Ninja_Controller  {
-	public function __construct()
-	{
-		try {
-			parent::__construct();
-		} catch (ORMDriverException $e) {
-			// This will be handled from the Kohana class by showing a 503.
-			throw $e;
-		} catch (Exception $ex) {
-			op5log::instance()->log(
-				'ninja',
-				'warning',
-				'Exception in Error_Controller: ' . $e->getMessage()
-			);
-		}
-	}
 
 	public function show_403() {
 		if (PHP_SAPI !== 'cli')
@@ -42,15 +27,12 @@ class Error_Controller extends Ninja_Controller  {
 		$this->template->title = _('Page Not Found');
 	}
 
-	public function show_livestatus($exception) {
-		if (PHP_SAPI === 'cli') {
-			print("Livestatus error\n");
-			var_dump($exception);
-			return;
-		}
-		$this->template->content = $this->add_view('livestatus');
-		$this->template->title = _('Livestatus error');
-		if (!IN_PRODUCTION)
-			$this->template->content->exception = $exception;
+	public function show_503($exception) {
+		if (PHP_SAPI !== 'cli')
+			header('HTTP/1.1 503 Service unavailable');
+		$this->template->content = $this->add_view('503');
+		$this->template->content->exception = $exception;
+		$this->template->title = _('Service unavailable');
 	}
+
 }

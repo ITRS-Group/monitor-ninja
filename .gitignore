@@ -18,9 +18,18 @@ application/logs
 application/config/custom/*
 
 # Generated code
-modules/*/js
+**/hooks/load_js_bundles.php
+**/hooks/load_js_bundles.php
+**/media/js/bundle*.js
+**/src/js/generated
 modules/*/html
 modules/*/models/base
 modules/*/manifest/orm_*.php
 src/generators/*
 config/cucumber.yml
+classes.php
+views.php
+test/qunit/test_suite.html
+node_modules
+modules/nacoma
+modules/legacy_nacoma

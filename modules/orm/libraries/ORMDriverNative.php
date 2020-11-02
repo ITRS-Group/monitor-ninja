@@ -63,13 +63,24 @@ class ORMDriverNative implements ORMDriverInterface {
 		$model_type = $structure['class'] . '_Model';
 		$data = array();
 
+		if (intval($offset) !== 0 /*If it's zero, it doesn't matter */) {
+			throw new ORMDriverNativeException("Non-zero 'offset' specified (" . $offset . "), but not implemented");
+		}
+
+		$pools = array();
 		if (isset($this->storage[$table]) && count($this->storage[$table]) > 0) {
 			foreach ($this->storage[$table] as $row) {
+				if ($limit !== false && count($data) === intval($limit))
+					break;
+
 				foreach ($structure["structure"] as $field => $type) {
-					if (is_array($type)) {
+					if (is_array($type) && class_exists($type[0] . '_Model')) {
 						list($class_prefix, $field_prefix) = $type;
 						$pool_model = $class_prefix . 'Pool_Model';
-						$foreign_key = $pool_model::key_columns();
+						if(!isset($pools[$pool_model])) {
+							$pools[$pool_model] = new $pool_model();
+						}
+						$foreign_key = call_user_func(array($pools[$pool_model], "key_columns"));
 						if(isset($structure["relations"])) {
 							/* SQL explicit references */
 							foreach($structure["relations"] as $rel) {
@@ -81,7 +92,7 @@ class ORMDriverNative implements ORMDriverInterface {
 								}
 							}
 						} else {
-							/* Livestatus implicit referenses */
+							/* Livestatus implicit references */
 							$foreign_table = $pool_model::get_table();
 							$my_foreign_ref = array($field);
 						}
@@ -103,7 +114,19 @@ class ORMDriverNative implements ORMDriverInterface {
 				}
 			}
 		}
-		return new ArrayIterator($data);
+		$ai = new ArrayIterator($data);
+		foreach ($order as $ord) {
+			$ai->uasort(function ($a, $b) use($ord) {
+				if ($a->{'get_' . $ord}() < $b->{'get_' . $ord}()) {
+					return -1;
+				}
+				if ($a->{'get_' . $ord}() > $b->{'get_' . $ord}()) {
+					return 1;
+				}
+				return 0;
+			});
+		}
+		return $ai;
 	}
 
 	public function stats($table, $structure, $filter, $intersections)
@@ -167,9 +190,38 @@ class ORMDriverNative implements ORMDriverInterface {
 	public function insert_single($table, $structure, $values)
 	{
 		if (!isset($this->storage[$table])) $this->storage[$table] = array();
-		$result = array_push($this->storage[$table], $values) - 1;
+
+		/*
+		 * This is mainly used for mocking in tests. All tables either have
+		 * autoincrement id, or no id. Thus, update id is a safe bet
+		 *
+		 * The id should not be 0 during mocking as the default value of ints
+		 * in the ORM is 0 this will be seen as unchanged and therefor not
+		 * updated/saved to persist in the object baseclasses, leaving us with
+		 * empty indexes in for example object relations.
+		 */
+		$id = empty($this->storage[$table]) ? 1 : (max(array_keys($this->storage[$table]))+1);
+
+		/**
+		 * If the orm structure has only one key and that key is an integer in
+		 * the structure, find the max of that key and increment by one.
+		 */
+		if (count($structure['key']) === 1) {
+			$key = $structure['key'][0];
+			if ($structure['structure'][$key] === 'int') {
+				$ids = array_map(function ($data) use (&$key) {
+					return (isset($data[$key])) ? intval($data[$key]) : 0;
+				}, $this->storage[$table]);
+				$id = (count($ids)>0) ? max($ids) + 1 : 1;
+			}
+		}
+
+		$values['id'] = $id; /* tables is ordered from id=1, arrays from 0 */
+
+		$this->storage[$table][$id] = $values;
 		$this->persist($table);
-		return $result;
+
+		return $id;
 	}
 
 	/**
@@ -179,6 +231,10 @@ class ORMDriverNative implements ORMDriverInterface {
 	 * @param $table string
 	 */
 	protected function persist ($table) {
+		/* If there is no mockfile, we shouldn't persist. Probably unit tests then */
+		if($this->mockfile === null)
+			return;
+
 		$json_str = file_get_contents($this->mockfile);
 		if (!$json_str) {
 			$log->log("error", "Could not read mock data from '$this->mockfile'");

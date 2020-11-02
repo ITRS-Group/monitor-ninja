@@ -1,6 +1,5 @@
 <?php
 
-require_once( dirname(__FILE__).'/base/baseservicegroupset.php' );
 
 /**
  * Describes a set of objects from livestatus

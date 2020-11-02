@@ -1,7 +1,27 @@
-.big-number {
-  display: inline-block;
-  font-size: 65px;
-  line-height: 65px;
-  margin: 0 16px 8px 16px;
-  min-width: 75px;
+.state_summary-state .big-number {
+	display: inline-block;
+	font-size: 65px;
+	line-height: 65px;
+	margin: 14px 16px 15px 16px;
+	min-width: 75px;
+}
+
+.state_summary-state {
+	display: inline-block;
+	margin-top: 0px;
+}
+
+.state_summary-state .big-number {
+	text-transform: uppercase;
+}
+
+.state_summary-state .big-number-perfdata-uom {
+	text-transform: none;
+}
+
+p.explanation {
+	display: inline-block;
+	line-height: 85px;
+	font-weight: bold;
+	text-transform: uppercase;
 }

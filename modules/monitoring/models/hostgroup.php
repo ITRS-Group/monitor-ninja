@@ -1,6 +1,5 @@
 <?php
 
-require_once( dirname(__FILE__).'/base/basehostgroup.php' );
 
 /**
  * Describes a single object from livestatus
@@ -14,13 +13,8 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	public function get_host_stats() {
 		$set = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=');
 
-		if (config::get('checks.show_passive_as_active', '*')) {
-			$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1 or accept_passive_checks = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 0 and accept_passive_checks = 0');
-		} else {
-			$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 0');
-		}
+		$active_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 1');
+		$disabled_checks = ObjectPool_Model::get_by_query('[hosts] active_checks_enabled = 0');
 
 		$all              = ObjectPool_Model::get_by_query('[hosts] state!=999');
 		$pending          = ObjectPool_Model::get_by_query('[hosts] has_been_checked=0');
@@ -71,13 +65,8 @@ class HostGroup_Model extends BaseHostGroup_Model {
 	public function get_service_stats() {
 		$set = ServicePool_Model::all()->reduce_by('host.groups', $this->get_name(), '>=');
 
-		if (config::get('checks.show_passive_as_active', '*')) {
-			$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1 or accept_passive_checks = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 0 and accept_passive_checks = 0');
-		} else {
-			$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1');
-			$disabled_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 0');
-		}
+		$active_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 1');
+		$disabled_checks = ObjectPool_Model::get_by_query('[services] active_checks_enabled = 0');
 
 		$all              = ObjectPool_Model::get_by_query('[services] state!=999');
 		$pending          = ObjectPool_Model::get_by_query('[services] has_been_checked=0');
@@ -346,12 +335,13 @@ class HostGroup_Model extends BaseHostGroup_Model {
 				'status' => 0,
 				'output' => 'No hosts in hostgroup.'
 				);
+
 		foreach($hosts as $host) {
 			/* @var $host Host_Model */
 			$cur_result = $host->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment);
 
 			/* Keep those with errors... */
-			if($cur_result['status'] > $result['status'])
+			if($cur_result['status'] >= $result['status'])
 				$result = $cur_result;
 		}
 		return $result;
@@ -426,14 +416,13 @@ class HostGroup_Model extends BaseHostGroup_Model {
 		$services = HostPool_Model::all()->reduce_by('groups', $this->get_name(), '>=')->get_services();
 		$result = array(
 				'status' => 0,
-				'output' => 'No hosts in hostgroup.'
+				'output' => 'No services in hostgroup.'
 				);
 		foreach($services as $service) {
 			/* @var $host Service_Model */
 			$cur_result = $service->schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment);
-
 			/* Keep those with errors... */
-			if($cur_result['status'] > $result['status'])
+			if($cur_result['status'] >= $result['status'])
 				$result = $cur_result;
 		}
 		return $result;

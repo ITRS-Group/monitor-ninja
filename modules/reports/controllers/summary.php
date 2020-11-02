@@ -35,8 +35,8 @@ class Summary_Controller extends Base_reports_Controller
 	}
 
 	/**
-	*	Setup options for alert summary report
-	*/
+	 * Setup options for alert summary report
+	 */
 	public function index($input=false)
 	{
 		$this->setup_options_obj($input);
@@ -53,7 +53,6 @@ class Summary_Controller extends Base_reports_Controller
 			}
 		}
 
-		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('summary/setup');
 		$this->template->content->report_options = $this->add_view('summary/options');
 		$template = $this->template->content;
@@ -62,11 +61,6 @@ class Summary_Controller extends Base_reports_Controller
 			$template->error_msg = $_SESSION['report_err_msg'];
 			unset($_SESSION['report_err_msg']);
 		}
-
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
@@ -138,11 +132,6 @@ class Summary_Controller extends Base_reports_Controller
 			return;
 		}
 
-		$this->template->disable_refresh = true;
-		$this->template->js[] = 'application/media/js/jquery.datePicker.js';
-		$this->template->js[] = 'application/media/js/jquery.timePicker.js';
-		$this->template->js[] = 'modules/reports/views/reports/js/common.js';
-		$this->template->js[] = 'modules/reports/views/summary/js/summary.js';
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$views = array(
@@ -190,6 +179,19 @@ class Summary_Controller extends Base_reports_Controller
 			return $this->generate_pdf();
 		}
 		$this->generate_toolbar();
+	}
+
+	public function edit_settings($input = false){
+		$this->setup_options_obj($input);
+		/* with_chrome attribute would be checked in test environment */
+		if($this->input->get('with_chrome')) {
+			$this->template->content = $this->add_view('reports/edit_settings');
+			$template = $this->template->content;
+		}else {
+			$this->template = $this->add_view('reports/edit_settings');
+			$template = $this->template;
+		}
+		$template->report_options = $this->add_view('summary/options');
 	}
 
 }

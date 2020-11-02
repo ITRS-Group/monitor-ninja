@@ -7,7 +7,15 @@ $table_crashed = function($error_string) {
 	return null;
 };
 
-$content = '<div id="framework_error">';
+$content = '<!doctype html>';
+$content .= '<html>';
+$content .= '<head>';
+$content .= '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
+$content .= '<meta charset="UTF-8" />';
+$content .= '<title>'.Kohana::config('config.product_name').' - stack trace</title>';
+$content .= '</head>';
+$content .= '<body>';
+$content .= '<div id="framework_error">';
 $content .= '<h3>'.html::specialchars($error).'</h3>';
 $content .= '<p>'.html::specialchars($description).'</p>';
 $crash_info = null;
@@ -18,42 +26,42 @@ if($table = $table_crashed($message)) {
 if ( ! empty($line) AND ! empty($file)) {
 	$content .= '<p>'.Kohana::lang('core.error_file_line', $file, $line).'</p>';
 }
-$content .= '<p><code class="block">'.$message.'<code></p>';
+$content .= '<p><code class="block">'.$message.'</code></p>';
 if ( ! empty($trace)){
 	$content .= '<h3>'.Kohana::lang('core.stack_trace').'</h3>';
-	$content .= $trace;
+	$content .= "<code class='block'>".$trace."</code>";
 }
-$content .= '<p class="stats">'.Kohana::lang('core.stats_footer').'</p>';
+$content .= '<h2>System information</h2>';
 foreach(Kohana::config('exception.shell_commands') as $command) {
 	$output = null;
 	exec($command, $output, $exit_value);
-	$content .= "<p class='stats'><b>$command</b> (exit code $exit_value):<br />".implode('<br />', array_map('htmlentities', $output)).'</p>';
+	$content .= "<p><b>".html::specialchars($command)."</b> (exit code $exit_value):<br /><code class='block'>".implode('<br />', array_map('htmlentities', $output)).'</code></p>';
 }
 foreach(Kohana::config('exception.extra_info') as $header => $info) {
-	$content .= "<p class='stats'>$header: $info</p>";
+	$content .= "<p><code class='block'>$header: $info</code></p>";
 }
 $content .= '</div>';
+$content .= '</body>';
+$content .= '</html>';
 
-$content .= '<style type="text/css">'.file_get_contents(Kohana::find_file('views', 'kohana_errors', FALSE, 'css')).'</style>';
 $js = array();
 $css = array();
 
 if (IN_PRODUCTION) {
-	$tmp_dir = Kohana::Config('exception.tmp_dir') ? Kohana::Config('exception.tmp_dir') : '/tmp/ninja-stacktraces';
+	$tmp_dir = Kohana::Config('exception.tmp_dir');
 	$tmp_dir = rtrim($tmp_dir, "/");
-	$tmp_dir_perm = Kohana::Config('exception.tmp_dir_perm') ? Kohana::Config('exception.tmp_dir_perm') : 0700;
+	$tmp_dir_perm = str_pad(Kohana::Config('exception.tmp_dir_perm'), 4, '0', STR_PAD_LEFT);
 	@mkdir($tmp_dir, $tmp_dir_perm, true);
-
-	$error_html = "<!doctype html><html><head><meta charset='UTF-8' /></head><body>$content</body></html>";
 
 	// we can't use tmpnam() because we need a suffix, and we don't have
 	// mkstemp() in php; but sha1 is certainly unique enough with a small
 	// enough output to fit nicely into a filename
-	$filename = $tmp_dir.'/'.date('Ymd-Hi').'-'.sha1($error_html).'.html';
-	$write_successful = file_put_contents($filename, $error_html);
+	$filename = $tmp_dir.'/'.date('Ymd-Hi').'-'.sha1($content).'.html';
+	$write_successful = file_put_contents($filename, $content);
 
 	// reset content to display less information, adhere to IN_PRODUCTION
 	$content = '<div><h3>There was an error rendering the page</h3>';
+
 	if($write_successful) {
 		$content .= '<p>Please contact your administrator.<br />The debug information in '.$filename.' will be essential to troubleshooting the problem, so please include it if you file a bug report or contact op5 Support.</p></div>';
 	} else {

@@ -32,17 +32,16 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			$op5_auth->force_user(new User_AlwaysAuth_Model());
 		}
 
-		$this->template->disable_refresh = true;
-
-		$this->template->js[] = 'application/media/js/lib.set.js';
-		$this->template->js[] = 'application/media/js/jquery.filterable.js';
 		$this->template->css[] = 'application/media/css/jquery.filterable.css';
+
 	}
 
 	/** Controller method that should render a form for creating a report */
 	abstract public function index($input = false);
 	/** Controller method that should render a report */
 	abstract public function generate($input = false);
+	/** Controller method that should render a form for editing a report in LightBox */
+	abstract public function edit_settings($input = false);
 
 	/**
 	 * Fill the toolbar with appropriate things for the current report
@@ -76,7 +75,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			$this->template->toolbar->button(_('View schedule'), array('href' => $lp->get_url('schedule', 'show'), 'id' => 'show_schedule'));
 		}
 
-		$this->template->toolbar->button(_('Edit settings'), array('href' => '#options', 'class' => 'fancybox'));
+		$this->template->toolbar->button(_('Edit settings'), array('href' => $lp->get_url($this->type, 'edit_settings', $this->options->as_keyval()), 'class' => 'edit_settings'));
 		$this->template->toolbar->button(_('Permalink'), array('href' => $lp->get_url($this->type, 'generate', $this->options->as_keyval())));
 	}
 
@@ -145,9 +144,9 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			fclose($pipes[2]);
 			$return_value = proc_close($process);
 			if ($return_value != 0) {
-				$this->log->log('error', "Pdf command " . $command . " returned $return_value:");
-				$this->log->log('error', "stderr: $err");
-				$this->log->log('error', "stdout: $out");
+				$this->log->log('debug', "Pdf command " . $command . " returned $return_value:");
+				$this->log->log('debug', "stderr: $err");
+				$this->log->log('debug', "stdout: $out");
 			}
 		} else {
 			$this->log->log('error', "Tried running the following command but was unsuccessful:");
@@ -245,6 +244,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			"include_long_output" => _("In views that displays individual alerts, include the full check output, instead of only the first line"),
 			'filter' => _("Free text search, matching the objects in the left list below"),
 			'saved_reports' => _("A list of all your saved reports. To load them, select the report you wish to generate and click select."),
+			'time_zone' => _("This lets you choose the timezone for generated report"),
 		);
 
 		if (array_key_exists($id, $helptexts)) {
@@ -259,29 +259,45 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 * helps them do so with some amount of consistency.
 	 *
 	 * @param $date_format string Format string for date(), probably date::date_format()
-	 * @returns string Formatted date for this report
+	 * @returns string HTML including a formatted date for this report
 	 */
 	protected function format_report_time($date_format)
 	{
 		if ($this->options['start_time'] == 0) {
 			$start_time = _('Dawn of Time');
+			$end_time = date($date_format, $this->options['end_time']);
 		} else {
 			$start_time = date($date_format, $this->options['start_time']);
+			$end_time = date($date_format, $this->options['end_time']);
+            if($this->options['report_timezone']){
+                $tz = new DateTimeZone($this->options['report_timezone']);
+                if(date('H:i', $this->options['start_time']) != '00:00'){
+                
+                    $start_time = new DateTime($start_time);
+                    $start_time->setTimezone($tz);
+                    $start_time = $start_time->format($date_format);
+				}
+				if(date('H:i', $this->options['end_time']) != '00:00') {
+                    $end_time = new DateTime($end_time);
+                    $end_time->setTimezone($tz);
+                    $end_time = $end_time->format($date_format);
+                }
+            }
 		}
 		if($this->options['report_period'] && $this->options['report_period'] != 'custom')
 			$report_time_formatted  = sprintf(
 				_('%s (%s to %s)'),
-				$this->options->get_value('report_period'),
-				"<strong>".$start_time."</strong>",
-				"<strong>".date($date_format, $this->options['end_time'])."</strong>"
+				html::specialchars($this->options->get_value('report_period')),
+				"<strong>".html::specialchars($start_time)."</strong>",
+				"<strong>".html::specialchars($end_time)."</strong>"
 			);
 		else {
 			$report_time_formatted  = sprintf(_("%s to %s"),
-				$start_time,
-				date($date_format, $this->options['end_time']));
+				html::specialchars($start_time),
+				html::specialchars($end_time));
 		}
 		if($this->options['rpttimeperiod'] != '')
-			$report_time_formatted .= " - {$this->options['rpttimeperiod']}";
+			$report_time_formatted .= " - ".html::specialchars($this->options['rpttimeperiod']);
 		return $report_time_formatted;
 	}
 }

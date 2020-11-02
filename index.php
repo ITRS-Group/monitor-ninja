@@ -51,7 +51,7 @@ $kohana_system = 'system';
  * Turning off display_errors will effectively disable Kohana error display
  * and logging. You can turn off Kohana errors in application/config/config.php
  */
-ini_set('display_errors', TRUE);
+ini_set('display_errors', FALSE);
 
 /**
  * If you rename all of your .php files to a different extension, set the new

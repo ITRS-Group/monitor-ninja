@@ -1,0 +1,1 @@
+ALTER TABLE dashboards ADD COLUMN read_perm TEXT NOT NULL;

@@ -162,10 +162,14 @@ class Scheduled_reports_Model extends Model
 	 * @param $description = ''
 	 * @param $local_persistent_filepath = ''
 	 * @param $attach_description = ''
+	 * @param $report_time = false
+	 * @param $report_on = false
+	 * @param $report_period = false
 	 * @return string|int either error string or the report's id
 	 */
-	static public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '', $attach_description = 0)
+	static public function edit_report($id=false, $rep_type=false, $saved_report_id=false, $period=false, $recipients=false, $filename='', $description='', $local_persistent_filepath = '', $attach_description = 0, $report_time=false, $report_on=false, $report_period=false)
 	{
+
 		$local_persistent_filepath = trim($local_persistent_filepath);
 		if($local_persistent_filepath && !is_writable(rtrim($local_persistent_filepath, '/').'/')) {
 			return _("File path '$local_persistent_filepath' is not writable");
@@ -175,6 +179,9 @@ class Scheduled_reports_Model extends Model
 		$rep_type = (int)$rep_type;
 		$saved_report_id = (int)$saved_report_id;
 		$period	= (int)$period;
+		$report_time = trim($report_time);
+		$report_on = trim($report_on);
+		$report_period = trim($report_period);
 		$recipients = trim($recipients);
 		$filename = trim($filename);
 		$description = trim($description);
@@ -200,8 +207,8 @@ class Scheduled_reports_Model extends Model
 			// UPDATE
 			$sql = "UPDATE scheduled_reports SET ".self::USERFIELD."=".$db->escape($user).", report_type_id=".$rep_type.", report_id=".$saved_report_id.", recipients=".$db->escape($recipients).", period_id=".$period.", filename=".$db->escape($filename).", description=".$db->escape($description).", local_persistent_filepath = ".$db->escape($local_persistent_filepath).", attach_description = ".$db->escape($attach_description)." WHERE id=".$id;
 		} else {
-			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath, attach_description)
-				VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).", ".$db->escape($attach_description).")";
+			$sql = "INSERT INTO scheduled_reports (".self::USERFIELD.", report_type_id, report_id, recipients, period_id, filename, description, local_persistent_filepath, attach_description, report_time, report_on, report_period)VALUES(".$db->escape($user).", ".$rep_type.", ".$saved_report_id.", ".$db->escape($recipients).", ".$period.", ".$db->escape($filename).", ".$db->escape($description).", ".$db->escape($local_persistent_filepath).", ".$db->escape($attach_description).", '".$report_time."', '".$report_on."', '".$report_period."' )";
+
 		}
 
 		try {
@@ -249,8 +256,7 @@ class Scheduled_reports_Model extends Model
 	 */
 	static function get_typeof_report($id=false)
 	{
-		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE ".
-			"sr.id=".(int)$id." AND t.id=sr.report_type_id";
+		$sql = "SELECT t.identifier FROM scheduled_reports sr, scheduled_report_types t WHERE "."sr.id=".(int)$id." AND t.id=sr.report_type_id";
 		$db = Database::instance();
 		try {
 			$res = $db->query($sql);
@@ -312,9 +318,7 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
-		$sql = "SELECT sr.recipients, sr.filename, sr.local_persistent_filepath, sr.report_id FROM ".
-			"scheduled_reports sr ".
-			"WHERE sr.id=".$schedule_id;
+		$sql = "SELECT sr.recipients, sr.filename, sr.local_persistent_filepath, sr.report_id FROM "."scheduled_reports sr "."WHERE sr.id=".$schedule_id;
 		$db = Database::instance();
 		$res = $db->query($sql)->result_array(false);
 		if (!$res)
@@ -326,19 +330,164 @@ class Scheduled_reports_Model extends Model
 	 * Fetch info on reports to be sent for specific
 	 * period (daily/weekly/monthly)
 	 *
-	 * @param $period_str string: { daily, weekly, monthly }
+	 * @param $period_str string: { schedule }
 	 * @return array
 	 */
 	static function get_period_schedules($period_str)
 	{
-		$period_str = trim(ucfirst($period_str));
+		$schedules = array();
+		$send_date = array();
+		$default_timezone = date_default_timezone_get();
+
 		$db = Database::instance();
 
-		$sql = "SELECT r.id FROM scheduled_report_types rt
-			INNER JOIN scheduled_reports r ON rt.id=r.report_type_id
-			INNER JOIN scheduled_report_periods p ON r.period_id=p.id
-			WHERE p.periodname=".$db->escape($period_str);
+		$sql = <<<'SQL'
+		SELECT sr.*, rp.periodname, opt.value AS timezone
+		FROM scheduled_reports sr
+		INNER JOIN scheduled_report_periods rp ON rp.id = sr.period_id
+		LEFT JOIN saved_reports_options opt ON opt.report_id = sr.report_id
+			AND opt.name = 'report_timezone'
+SQL;
 		$res = $db->query($sql);
-		return $res;
+
+		foreach($res as $row){
+			$report_period = json_decode($row->report_period);
+			$report_time = $row->report_time;
+			if($row->timezone){
+				// All times for this schedule use the timezone of the associated report.
+				date_default_timezone_set($row->timezone);
+			}
+
+			$repeat_no = $report_period->no;
+			$last_sent = $row->last_sent;
+			$now = new DateTime();
+
+			/* Avoid sending reports before report_time each day, even if they
+			 * are late for some reason. This means that a report that is due
+			 * to be sent at tuesday 08:00 but for some reason couldn't be sent
+			 * on tuesday, it will be sent the next day, but not before 08:00.
+			 */
+			$report_time_of_day = new DateTime($now->format('Y-m-d') . " $report_time");
+			if ($now < $report_time_of_day) {
+				continue;
+			}
+
+			if ($row->periodname == 'Daily') {
+				$last_sent_date = $last_sent ? $last_sent : "today - $repeat_no days";
+				$prev_period_start = new DateTime("$last_sent_date $report_time");
+
+				// Period where report should be generated next time.
+				$period_start = new DateTime(
+					$prev_period_start->format('c') . " + $repeat_no days");
+
+				if ($now >= $period_start) {
+					// We're beyond period_start, create the report.
+					$schedules[] = $row->id;
+					$send_date[] = $now->format('Y-m-d');
+				}
+			}
+			elseif ($row->periodname == 'Weekly') {
+				$last_sent_date = $last_sent ? $last_sent : "today - $repeat_no weeks";
+				$prev_period_start = new DateTime("$last_sent_date $report_time");
+
+				// Period where report should be generated next time.
+				$period_start = new DateTime(
+					$prev_period_start->format('c') . " + $repeat_no weeks");
+
+				$report_days = json_decode($row->report_on);
+
+				if ($now >= $period_start) {
+					// We're beyond period_start, in a new period, proceed with
+					// creating the report if correct day of week.
+					foreach ($report_days as $day) {
+						if ($day->day == $now->format('w')) {
+							$schedules[] = $row->id;
+							$send_date[] = $now->format('Y-m-d');
+						}
+					}
+				}
+				elseif ($now > $prev_period_start) {
+					// Skip if day of week is the same as that of last_sent.
+					if ($now->format('w') == $prev_period_start->format('w')) {
+						continue;
+					}
+					// Still in previous period, check if report should be
+					// created this weekday also.
+					foreach ($report_days as $day) {
+						if ($day->day == $now->format('w')) {
+							$schedules[] = $row->id;
+							$send_date[] = $now->format('Y-m-d');
+						}
+					}
+				}
+			}
+			elseif ($row->periodname == 'Monthly') {
+				$last_sent_month = new DateTime(
+					$last_sent ? $last_sent : "today - $repeat_no months");
+				// Reset to first day of month, since day of month is not relevant.
+				$last_sent_month->modify('first day of this month');
+
+				// Month in which report should be generated next time.
+				$next_send_month = new DateTime(
+					$last_sent_month->format('Y-m-d') . "+ $repeat_no months");
+
+				// Skip if we're not yet in next_send_month.
+				if ($now < $next_send_month) {
+					continue;
+				}
+
+				$report_on = json_decode($row->report_on);
+				$day_of_week = $report_on->day;  # 1-7, last, first
+
+				$is_report_day = false;
+				if ($day_of_week == 'last') {
+					// Send if this is the last day of the month.
+					$tomorrow = strtotime('+ 1 day', $now->getTimestamp());
+					if (date('n', $tomorrow) != $now->format('n')) {
+						$is_report_day = true;
+					}
+				}
+				elseif ($day_of_week == 'first') {
+					// Send if this is the first day of the month.
+					if ($now->format('j') == '1') {
+						$is_report_day = true;
+					}
+				}
+				elseif ($day_of_week == $now->format('w')) {
+					$day_ordinal = $report_on->day_no;  # 1-4, last
+					if ($day_ordinal == 'last') {
+						// Check if this is the last $day_of_week of the month
+						$next_week = strtotime('+ 1 week', $now->getTimestamp());
+						if (date('n', $next_week) != $now->format('n')) {
+							$is_report_day = true;
+						}
+					}
+					else {
+						// Check if today is $day_ordinal $day_of_week (e.g. 3rd Friday)
+						$check_weeks_before = $day_ordinal - 1;
+						$this_month = new DateTime("- $check_weeks_before week");
+						$prev_month = new DateTime("- $day_ordinal week");
+						if ($this_month->format('n') == $now->format('n')
+								&& $prev_month->format('n') != $now->format('n')) {
+							$is_report_day = true;
+						}
+					}
+				}
+
+				// Send report if today is the report day and if time of day
+				// has passed the scheduled report time.
+				if ($is_report_day) {
+					$schedules[] = $row->id;
+					$send_date[] = $now->format('Y-m-d');
+				}
+			}
+			date_default_timezone_set($default_timezone);
+		}
+
+		foreach($schedules as $i => $schedule_id ){
+			self::update_report_field($schedule_id, "last_sent", $send_date[$i]);
+		}
+
+		return $schedules;
 	}
 }

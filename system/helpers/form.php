@@ -110,7 +110,9 @@ class form {
 	 */
 	public static function legend($text = '', $data = NULL, $extra = '')
 	{
-		return '<legend'.form::attributes((array) $data).' '.$extra.'>'.$text.'</legend>'."\n";
+		return '<legend'.form::attributes((array) $data).' '.$extra.'>'
+			.html::specialchars($text)
+			.'</legend>'."\n";
 	}
 
 	/**
@@ -275,7 +277,7 @@ class form {
 		foreach ((array) $options as $key => $val)
 		{
 			// Key should always be a string
-			$key = (string) $key;
+			$key = html::specialchars((string) $key);
 
 			// Selected must always be a string
 			$selected = (string) $selected;
@@ -288,7 +290,7 @@ class form {
 					// Inner key should always be a string
 					$inner_key = (string) $inner_key;
 					$sel = ($selected === $inner_key) ? ' selected="selected"' : '';
-					$input .= '<option value="'.$inner_key.'"'.$sel.'>'.$inner_val.'</option>'."\n";
+					$input .= '<option value="'.html::specialchars($inner_key).'"'.$sel.'>'.html::specialchars($inner_val).'</option>'."\n";
 				}
 				$input .= '</optgroup>'."\n";
 			}

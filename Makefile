@@ -1,4 +1,3 @@
- GENERATE_PHP_MODS=
 OP5LIBCFG=test/configs/all-host_service-states/op5lib
 PHPDIR=/usr/local/share/php
 
@@ -6,28 +5,25 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-all: generate-php
+PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
 
-help:
-	@echo
-	@echo Available make targets:
-	@echo -----------------------
-	@$(MAKE) --print-data-base --question | sed -n -e '/^Makefile/d' -e 's/^\([A-Za-z0-9_-]*\):.*/\1/p'
-	@echo
+all: generate-php
 
 generate-php:
 	php build.php
 
-test: test-reports test-unittest
+# All php "unit" tests that affects/needs a currently installed monitor should
+# be tagged with @nonlocal, so that we can avoid them when running them
+# locally. This also marks them as "badly written" in the sense that they need
+# to be mocked out further. In the future, all unit tests should avoid
+# affecting the current environment and thus the group @nonlocal should not be
+# needed.
+test-local: generate-php
+	$(PHPUNIT) --exclude-group nonlocal test
 
-test-reports:
+test: generate-php
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; php index.php ninja_unit_test/reports test/unit_test/reports/*.tst.php; res=$$?; make test-ci-cleanup; exit $$res
-
-test-unittest: generate-php
-	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/unit_test/bootstrap.php test/unit_test/tests/; res=$$?; make test-ci-cleanup; exit $$res
-	export OP5LIBCFG="$(OP5LIBCFG)"; phpunit --bootstrap test/unit_test/bootstrap.php test/unit_test/lib/; res=$$?; make test-ci-cleanup; exit $$res
+	export OP5LIBCFG="$(OP5LIBCFG)"; $(PHPUNIT) test/; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:
 	rm -f application/config/custom/config.php
@@ -38,6 +34,7 @@ test-ci-cleanup:
 test-ci-prepare: test-ci-cleanup prepare-config
 	chmod -R 0777 /tmp/ninja-test/var
 	mkdir -m 0777 -p /tmp/ninja-test/var/spool/checkresults
+	chown -R monitor:apache /tmp/ninja-test/
 	source $$(rpm --eval %{_libdir})/merlin/install-merlin.sh; \
 	db_name=merlin_test; \
 	mysql -uroot -e "CREATE DATABASE IF NOT EXISTS $$db_name";\
@@ -45,7 +42,7 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	db_setup
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
-	/usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
+	/usr/bin/asmonitor /usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done
@@ -95,4 +92,4 @@ install-config:
 	cp -R etc/* $(SYSCONFDIR)/op5
 	chown -R $(ETC_USER):$(ETC_GROUP) $(SYSCONFDIR)/op5
 
-.PHONY: test help test-reports clean install install-lib install-config
+.PHONY: test clean install install-lib install-config

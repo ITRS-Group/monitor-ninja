@@ -26,28 +26,11 @@ abstract class Template_Controller extends Controller {
 	/**
 	 * Template loading and setup routine.
 	 */
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();
 
 		// Load the template
 		$this->template = new View($this->template);
-
-		// Render the template immediately after the controller method, if the event
-		// handler want to
-		Event::add('system.render', array($this, '_render'));
 	}
 
-	/**
-	 * Render the loaded template.
-	 */
-	public function _render()
-	{
-		if ($this->auto_render == TRUE)
-		{
-			// Render the template when the class is destroyed
-			$this->template->render(TRUE);
-		}
-	}
-
-} // End Template_Controller
+}

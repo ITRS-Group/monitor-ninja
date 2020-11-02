@@ -1,0 +1,12 @@
+dn: cn=Memberof Group User
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Memberof Group User
+sn: memberofGO
+userPassword: memberofgrouppassword
+mail: memberof@op5test.op5.com
+uid: memberof
+givenName: memberofName
+memberOf: cn=Depth 1 of 1

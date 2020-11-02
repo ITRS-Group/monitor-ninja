@@ -9,9 +9,7 @@ class Cmd_Controller extends Ninja_Controller {
 	 * Show a form for submitting a command on a single object
 	 */
 	public function index() {
-		// todo mayi
 		$this->template->content = $this->add_view('cmd/index');
-		$this->template->disable_refresh = true;
 		$this->template->content->error = false;
 
 		/* Accept both get and post, get has precedance */
@@ -39,6 +37,13 @@ class Cmd_Controller extends Ninja_Controller {
 			$set = $set->union($pool->set_by_key($key));
 		}
 
+		if (count($set) === 0) {
+			$this->template->content->error_level = 'info';
+			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . $command . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
+
+			return;
+		}
+
 		$this->template->content->set = $set;
 		$this->template->content->table = $table;
 		$this->template->content->command = $command;
@@ -51,7 +56,7 @@ class Cmd_Controller extends Ninja_Controller {
 			'friendly_name' => 'Objects',
 			'setting' => array(
 				'query'=>$set->get_query(),
-				'limit' => intval(config::get('pagination.default.items_per_page','*'))
+				'limit' => intval(config::get('pagination.default.items_per_page'))
 			)
 		)));
 		$widget->set_fixed(array(
@@ -73,9 +78,27 @@ class Cmd_Controller extends Ninja_Controller {
 		}
 		if(!array_key_exists($command, $commands)) {
 			request::send_header(400);
-			$error_message = "Tried to submit command '$command' on table '$table' but that command does not exist for that kind of objects. Aborting without any commands applied";
+
+			// Technically, the command might not exist, but the only way
+			// to reach this code is to
+			//  - submit a command by manually typing the address/
+			//    modifying the data from within a POST form
+			//  - we supply incorrect links in the GUI
+			//  - have too little command rights and click a link
+			//    which is not based on the currently logged in user's
+			//    authorization levels (e.g. through a link pasted
+			//    by a colleague, or whatever)
+			//
+			// We want to optimize for the path that is the most common
+			// and useful for users, which is the last one.
+			$error_message = "You have insufficient rights to ".
+				"submit the command '$command' on table ".
+				"'$table'. Please verify your user's rights ".
+				"for '$table' commands. Aborting without any ".
+				"commands applied.";
 			op5log::instance('ninja')->log('warning', $error_message);
-			$this->template->content->error = "Could not find object '$error_message'";
+			$this->template->content->error = $error_message;
+			$this->template->content->error_level = 'notice';
 			return;
 		}
 		if(isset($commands[$command]['redirect']) && $commands[$command]['redirect']) {
@@ -90,7 +113,7 @@ class Cmd_Controller extends Ninja_Controller {
 		$command_definition = $commands[$command];
 		if (isset($command_definition['params'])) {
 			foreach ($command_definition['params'] as $param => $data) {
-				$override = config::get('nagdefault.' . $param, null);
+				$override = config::get('nagdefault.' . $param);
 				if (!($override === null)) {
 					$command_definition['params'][$param]['default'] = $override;
 				}
@@ -102,13 +125,79 @@ class Cmd_Controller extends Ninja_Controller {
 	}
 
 	/**
+	 * Send a command for a specific object via AJAX
+	 */
+	public function ajax_command () {
+
+		$this->template = new View('json');
+		$this->template->success = false;
+		$this->template->value = array();
+
+		$command = $this->input->post('command', false);
+		$query = $this->input->post('query', false);
+
+		if ($command == false) {
+			$this->template->value['message'] = 'Missing command!';
+		} elseif ($query == false) {
+			$this->template->value['message'] = 'Missing query!';
+		}
+
+		try {
+
+			// validate table name
+			$set = ObjectPool_Model::get_by_query($query);
+			/* @var $set ObjectPool_Model */
+
+			// validate command
+			$obj_class = $set->class_obj();
+			$commands = $obj_class::list_commands_static(true);
+
+			if(!array_key_exists($command, $commands)) {
+				$this->template->value['message'] = "Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied";
+				return;
+			}
+
+			// Unpack params
+			$params = array();
+			foreach($commands[$command]['params'] as $pname => $pdef) {
+				$params[intval($pdef['id'])] = $this->input->post($pname, null);
+			}
+
+			// Depend on order of id instead of order of occurance
+			ksort($params);
+			$results = array();
+
+			foreach($set as $object) {
+				$result = call_user_func_array(array($object, $command), $params);
+				if(isset($result['status']) && !$result['status']) {
+					$output = "";
+					if(isset($result['output'])) {
+						$output = " Output: ".$result['output'];
+					}
+					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+				}
+
+				$results[] = array(
+					'object' => $object->get_key(),
+					'result' => $result
+				);
+			}
+
+			$this->template->value['results'] = $results;
+			$this->template->success = true;
+
+		} catch(ORMException $e) {
+			$this->template->value['message'] = 'Failed to submit command';
+		}
+	}
+
+	/**
 	 * Send a command for a specific object
 	 */
 	public function obj() {
 		// TODO Don't use ORMException in this code...
 
 		$template = $this->template->content = $this->add_view('cmd/exec');
-		$this->template->disable_refresh = true;
 
 		$command = $this->input->post('command', false);
 		$query = $this->input->post('query', false);
@@ -131,7 +220,7 @@ class Cmd_Controller extends Ninja_Controller {
 			$commands = $obj_class::list_commands_static(true);
 
 			if(!array_key_exists($command, $commands))
-				throw new ORMException("Tried to submit command '$command' but that command does not exist for that kind of objects. Aborting without any commands applied");
+				throw new ORMException("Tried to submit command '$command' but that command does not exist for '" . $set->get_table() . "'. Aborting without any commands applied");
 
 			// Unpack params
 			$params = array();
@@ -167,7 +256,10 @@ class Cmd_Controller extends Ninja_Controller {
 			$error_message = $e->getMessage();
 			op5log::instance('ninja')->log('warning', $error_message);
 			if(request::is_ajax()) {
-				return json::fail(array('error' => $error_message));
+				$this->template = new View('json');
+				$this->template->success = false;
+				$this->template->value = array('error' => $error_message);
+				return;
 			}
 			$template->result = false;
 			$template->error = $error_message;

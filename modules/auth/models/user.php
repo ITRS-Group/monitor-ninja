@@ -1,6 +1,5 @@
 <?php
 
-require_once( dirname(__FILE__).'/base/baseuser.php' );
 
 /**
  * User model
@@ -120,8 +119,12 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 
 		$email = $this->get_email();
 		if (!$email && class_exists('ContactPool_Model')) {
-			$contact = ContactPool_Model::all()->reduce_by('name', $this->get_username(), '=')->one();
-			if ($contact) $email = $contact->get_email();
+			try {
+				$contact = ContactPool_Model::all()->reduce_by('name', $this->get_username(), '=')->one();
+				if ($contact) $email = $contact->get_email();
+			} catch (Exception $e) {
+				/* noop */
+			}
 		}
 
 		$url = 'https://secure.gravatar.com/avatar/';
@@ -148,6 +151,49 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
 		/* TODO: Which hashing algorithm? crypt is the only simple one
 		 * available which has salt... */
 		parent::set_password_algo('crypt');
+	}
+
+	/**
+	 * Returns a boolean whether this user has logged in to the product
+	 * before
+	 *
+	 * @return bool
+	 */
+	public function has_logged_in () {
+		return ($this->get_last_login_time() !== null);
+	}
+
+	/**
+	 * Returns the timestamp of this users last login or null if no time was
+	 * found
+	 *
+	 * @return mixed
+	 */
+	public function get_last_login_time () {
+
+		$login_time = SettingPool_Model::all()
+			->reduce_by('username', $this->get_username(), '=')
+			->reduce_by('type', 'login_time', '=')
+			->one();
+
+		if ($login_time) {
+			return (int) $login_time->get_setting();
+		} else return null;
+
+	}
+
+	/**
+	 * Return a regexp for matching a quark string for the current users access
+	 *
+	 * @return string
+	 */
+	public function get_permission_regexp() {
+		$quarks = array();
+		$quarks[] = $this->get_permission_quark();
+		foreach($this->get_usergroups_set() as $group) {
+			$quarks[] = $group->get_permission_quark();
+		}
+		return ',(' . implode('|', $quarks) . '),';
 	}
 
 	protected function validate () {
@@ -251,6 +297,19 @@ class User_Model extends BaseUser_Model implements op5MayI_Actor {
                         $result[] = $row[0];
                 }
                 return $result;
+        }
+
+        /**
+         * Get a set of all user groups for this user
+         *
+         * @return UserGroupSet_Model
+         */
+        public function get_usergroups_set() {
+			$groups = UserGroupPool_Model::none();
+			foreach($this->get_groups() as $group) {
+				$groups = $groups->union(UserGroupPool_Model::set_by_key($group));
+			}
+			return $groups;
         }
 
 	/**

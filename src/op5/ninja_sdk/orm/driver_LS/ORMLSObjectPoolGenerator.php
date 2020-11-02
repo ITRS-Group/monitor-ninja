@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__."/../common/ORMObjectPoolGenerator.php");
+require_once(__DIR__."/../common/types/ORMType.php");
 
 class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 	public function generate_backend_specific_functions() {
@@ -18,11 +19,12 @@ class ORMLSObjectPoolGenerator extends ORMObjectPoolGenerator {
 		$this->write('$prefix = "";');
 		$this->write('}');
 		foreach($this->structure['structure'] as $field => $type ) {
+			$ormtype = ORMTypeFactory::factory($field, $type, $this->structure['structure']);
 			$backend_field = $field;
 			if(isset($this->structure['rename']) && isset($this->structure['rename'][$field])) {
 				$backend_field = $this->structure['rename'][$field];
 			}
-			if(is_array($type)) {
+			if(is_a($ormtype, "ORMTypeLSRelation")) {
 				$subobjpool_class = $type[0].'Pool'.self::$model_suffix;
 				$this->write('if(substr($name,0,%s) == %s) {', strlen($field)+1, $field.'.');
 				$this->write('return '.$subobjpool_class.'::map_name_to_backend(substr($name,%d),%s);', strlen($field)+1, $type[1]);

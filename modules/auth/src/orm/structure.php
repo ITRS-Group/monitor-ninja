@@ -68,4 +68,17 @@ $tables = array(
 			'properties' => 'dict'
 		)
 	),
+	'permission_quarks' => array(
+		'class' => 'PermissionQuark',
+		'source' => 'MySQL',
+		'table' => 'permission_quarks',
+		'writable' => true,
+		'key' => array('id'),
+		'default_sort' => array('foreign_table asc', 'foreign_key asc'),
+		'structure' => array(
+			'id' => 'int',
+			'foreign_table' => 'string',
+			'foreign_key' => 'string',
+		)
+	),
 );

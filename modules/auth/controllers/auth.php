@@ -19,7 +19,6 @@ class Auth_Controller extends Chromeless_Controller {
 	public function login () {
 
 		$auth = op5auth::instance();
-		$this->template->js = array();
 
 		$this->template->content = new View('login');
 
@@ -66,6 +65,21 @@ class Auth_Controller extends Chromeless_Controller {
 		}
 
 		Event::run('ninja.show_login', $this);
+	}
+
+	/**
+	 * No access method
+	 *
+	 * @param $messages array
+	 * @param $action string
+	 */
+	function _no_access ($messages, $action) {
+
+		$this->template->content = new View('401');
+
+		$this->template->content->messages = $messages;
+		$this->template->content->action = $action;
+
 	}
 
 	/**

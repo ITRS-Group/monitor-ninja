@@ -20,34 +20,38 @@ class Nagvis_Controller extends Ninja_Controller {
 	{
 		$this->_verify_access('ninja.nagvis:read');
 
-		$this->template->disable_refresh = true;
 		$this->template->title = _('Monitoring') . ' » NagVis';
 		$this->template->breadcrumb = _('Monitoring') . ' » '
 			. '<a href="' . Kohana::config('config.site_domain') .
 			'index.php/nagvis/index">NagVis</a> » ';
 		$this->template->content = $this->add_view('nagvis/index');
-		$this->template->js[] = 'application/views//js/iframe-adjust.js';
 
 		$queryparams = http_build_query($_GET, '', '&amp;');
 		switch($name) {
-		 case 'index':
-		 case 'configure':
+		case 'index':
+		case 'configure':
 			$this->template->content->params = $queryparams;
 			break;
-		 case 'view':
-		 case 'edit':
+		case 'view':
+		case 'edit':
+			if (count($args) === 0) {
+				Event::run("system.404");
+			}
 			$this->template->content->params = 'mod=Map&amp;act=view&amp;show='.$args[0].'&amp;'.$queryparams;
 			break;
-		 case 'automap':
+		case 'automap':
 			if (isset($args[1]))
 				$queryparams .= '&amp;root='.$args[1];
 			$this->template->content->params = 'mod=Map&amp;act=view&amp;show=automap&amp;'.$queryparams;
 			break;
-		 case 'rotate':
-			 $this->template->content->params = 'mod=Map&amp;act=view&amp;show='.$args[1].'&amp;rotation='.$args[0].'&amp;rotationStep=0&amp;'.$queryparams;
+		case 'rotate':
+			if (count($args) === 0) {
+				Event::run("system.404");
+			}
+			$this->template->content->params = 'mod=Map&amp;act=view&amp;show='.$args[1].'&amp;rotation='.$args[0].'&amp;rotationStep=0&amp;'.$queryparams;
 			break;
-		 default:
-			 return parent::__call($name, $args);
+		default:
+			return parent::__call($name, $args);
 		}
 	}
 }

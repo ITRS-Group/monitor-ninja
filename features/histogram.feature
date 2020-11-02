@@ -1,3 +1,4 @@
+@unreliable_el7
 Feature: Histogram reports
 	Background:
 		Given I have these hostgroups configured:
@@ -35,6 +36,8 @@ Feature: Histogram reports
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen |
 		And I have activated the configuration
 		And I am logged in as administrator
+		And I am on the main page
+		And I check for cookie bar
 
 	@configuration
 	Scenario: Generate empty report
@@ -83,8 +86,10 @@ Feature: Histogram reports
 		When I select "Hard states" from "State types"
 		And I select "Day of month" from "Statistics breakdown"
 		And I select "This year" from "Reporting period"
+		And I select "Europe/Stockholm" from "report_timezone"
 		And I click "Show report"
 		Then I should see "Alert histogram"
+		And I should see "Europe/Stockholm"
 		And I should see "Included hosts"
 		And I should see "linux-server1"
 		And I shouldn't see "win-server1"
@@ -299,11 +304,12 @@ Feature: Histogram reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: View saved report
 		Given I am on the Host details page
-		When I hover over the "Report" button
-		And I click "Histogram"
+		When I hover over the "Report" menu
+		And I hover over the "Histogram" menu
+		When I click "Create Histogram Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report" from "Saved reports"

@@ -1,18 +1,41 @@
+Given /^I create a new dashboard with name "([^"]+)"$/ do |name|
+  steps %Q{
+    When I am on address "/index.php/tac/new_dashboard"
+    Given I enter "#{name}" into "name"
+    And I click "Save"
+  }
+end
+
 # KISS, expand with settings-structure if needed
 When /^I expose the widget "([^"]+)"$/ do |widget|
-  @widget = Op5Cucumber::Widget::ExternalWidget.new(widget)
+  @widget = Widget::ExternalWidget.new(widget)
 end
 
 When /^I expose the widget "([^"]+)" with settings/ do |widget, settings|
-  @widget = Op5Cucumber::Widget::ExternalWidget.new(widget, settings.hashes[0])
+  @widget = Widget::ExternalWidget.new(widget, settings.hashes[0])
 end
 
 When /^I have a broken widget with error message "([^"]+)"$/ do |msg|
-  @widget = Op5Cucumber::Widget::BrokenWidget.new(msg)
+  @widget = Widget::BrokenWidget.new(msg)
 end
 
 When /^I have a widget that fails to render with error message "([^"]+)"$/ do |msg|
-  @widget = Op5Cucumber::Widget::UnrenderableWidget.new(msg)
+  @widget = Widget::UnrenderableWidget.new(msg)
+end
+
+When /^I delete all dashboards$/ do
+  steps %Q{
+    When I am on the main page
+  }
+
+  for i in 1..50 do
+    steps %Q{
+      And I hover over the "Dashboard options" menu
+      And I click "Delete this dashboard"
+      And I click "Yes"
+    }
+    break if not page.all("h1", :text => "No dashboard").empty?
+  end
 end
 
 After do

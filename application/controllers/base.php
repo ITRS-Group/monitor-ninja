@@ -92,11 +92,10 @@ class Base_Controller extends Template_Controller {
 				'uri' => Router::$complete_uri
 			));
 		} else {
-			$this->template->content = new View('auth/no_access');
-			$this->template->content->messages = $messages;
-			$this->template->content->action = $action;
-			throw new Kohana_User_Exception('No access',
-				'Access denied for action ' . $action, $this->template);
+			throw new Kohana_Reroute_Exception('Auth', '_no_access', array(
+				$messages,
+				$action
+			));
 		}
 	}
 }

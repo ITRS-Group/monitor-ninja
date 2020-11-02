@@ -10,9 +10,8 @@
 	} else {
 		echo form::input(array('name' => 'query', 'placeholder' => 'Find...'));
 	}
-?>
-	<span class="finder-help" data-popover="help:search.search_help">?</span>
-<?php
+
+	echo help::render('search_help', 'search');
 	echo form::close();
 ?>
 </div>

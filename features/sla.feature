@@ -1,4 +1,4 @@
-@sla
+@sla @unreliable_el7
 Feature: SLA reports
 	Warning: Assumes the time format is ISO-8601 (the default)
 
@@ -36,6 +36,8 @@ Feature: SLA reports
 
 		And I have activated the configuration
 		And I am logged in as administrator
+		And I am on the main page
+		And I check for cookie bar
 
 	@configuration @reports
 	Scenario: Generate report without objects
@@ -101,9 +103,11 @@ Feature: SLA reports
 		And I select "linux-server1" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1"
 		When I enter "9" into "Jan"
+		And I select "Europe/Stockholm" from "report_timezone"
 		And I click "Click to propagate this value to all months"
 		And I click "Show report"
 		Then I should see "SLA breakdown for: linux-server1"
+		And I should see "Europe/Stockholm"
 		And I shouldn't see "linux-server2"
 		And I shouldn't see "win-server1"
 		When I click "Show availability breakdown"
@@ -345,7 +349,7 @@ Feature: SLA reports
 		And I should see "PING"
 
 	@configuration @reports
-	Scenario: Generate report on custom report date
+	Scenario: Generate report from custom report date
 		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "SLA" menu
@@ -357,10 +361,6 @@ Feature: SLA reports
 		And I select "Jan" from "Start month"
 		And I select "2013" from "End year"
 		And I select "Mar" from "End month"
-		Then "Jan" should be enabled
-		And "Mar" should be enabled
-		And "May" should be disabled
-		And "Dec" should be disabled
 		And I enter "9" into "Jan"
 		And I click "Click to propagate this value to all months"
 		Then "Jan" should contain "9"
@@ -434,7 +434,7 @@ Feature: SLA reports
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: View saved report
 		Given I am on the Host details page
 		When I hover over the "Report" menu
@@ -446,11 +446,10 @@ Feature: SLA reports
 		Then "objects" should have option "LinuxServers"
 		And "Last year" should be selected from "Reporting period"
 		And "workhours" should be selected from "Report time period"
-		And "Down" should be checked
+		And "Down" should be unchecked
 		And "Average" should be selected from "SLA calculation method"
 		And "Uptime, with difference" should be selected from "Count scheduled downtime as"
 		And "Undetermined" should be selected from "Count program downtime as"
-		And "Include soft states" should be checked
 		And "Use alias" should be checked
 		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"
@@ -463,14 +462,13 @@ Feature: SLA reports
 		And I should see "Average"
 		And I should see "Uptime, with difference"
 		And I shouldn't see "Counting program downtime"
-		And I should see "Including soft states"
 		And I should see "HALIAS-ls1"
 		And I should see "HALIAS-ls2"
 		And I should see "HGALIAS-ls"
 		And I should see "This is a saved test report"
 		And I should see "9.000 %"
 
-	@configuration @reports @bug-7646 @unreliable
+	@configuration @reports @bug-7646
 	Scenario: Uncheck saved checkbox
 		Given I am on the Host details page
 		When I hover over the "Report" menu
@@ -481,34 +479,46 @@ Feature: SLA reports
 		When I select "saved test report" from "Saved reports"
 		Then "objects" should have option "LinuxServers"
 		And "objects_tmp" should have option "WindowsServers"
-		And "Include soft states" should be checked
 		And "Use alias" should be checked
 		When I deselect "LinuxServers" from the multiselect "objects"
 		And I select "WindowsServers" from the multiselect "objects_tmp"
-		When I uncheck "Include soft states"
 		And I click "Show report"
-		And I click "Edit settings"
-		Then "Include soft states" should be unchecked
+		Then I should see "SLA breakdown"
+		And I click "Save report"
+		And I click "Save report" inside "#save_report_form"
+		Then I should see "Report was successfully saved"
+
+	@configuration @reports
+	Scenario: See that uncheck saved checkbox edit settings form content rendered correct
+		When I view a "sla" report with these settings:
+		| report_type    | objects              | use_alias | months  |
+		| hostgroups     | WindowsServers       | 1         | 100     |
 		And "Use alias" should be checked
 		When I uncheck "Use alias"
 		And I click "Show report"
-		And I click "Edit settings"
-		Then "Include soft states" should be unchecked
+		Then I should see "SLA breakdown"
+
+	@configuration @reports
+	Scenario: See that uncheck saved checkbox edit settings form content rendered correct
+		When I view a "sla" report with these settings:
+		| report_type    | objects              | use_alias | months  |
+		| hostgroups     | WindowsServers       | 0         | 100     |
 		And "Use alias" should be unchecked
 		When I click "Show report"
+		Then I should see "SLA breakdown"
 		And I click "Save report"
+		And I enter "test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
 		And I click "Create SLA Report"
 		Then I should see "Saved reports"
-		And "Saved reports" should have option "saved test report"
-		When I select "saved test report" from "Saved reports"
-		And "Include soft states" should be unchecked
+		And "Saved reports" should have option "test report"
+		When I select "test report" from "Saved reports"
 		And "Use alias" should be unchecked
 
-	@configuration @reports @unreliable
+	@configuration @reports
 	Scenario: Delete previously created report
 		Given I am on the Host details page
 		And I hover over the "Report" menu

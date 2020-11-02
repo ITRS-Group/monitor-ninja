@@ -6,8 +6,9 @@
  *
  * Useful not to depend on a writable log dir and log configuration
  */
-class MockLog {
+class MockLog extends op5log {
 	private $print = false;
+	private $messages = array();
 
 	/**
 	 * Initialize the MockLog interface
@@ -26,9 +27,20 @@ class MockLog {
 	 * @param $message Message
 	 */
 	public function log($namespace, $level, $message) {
-		/* TODO: Do something about this stuff, so we can verify it */
+		$this->messages[] = array(
+			'namespace' => $namespace,
+			'level' => $level,
+			'message' => $message,
+		);
 		if($this->print) {
 			printf("Log: %s %s %s\n", $namespace, $level, $message);
 		}
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function dequeue_message() {
+		return array_shift($this->messages);
 	}
 }

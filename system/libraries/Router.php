@@ -158,16 +158,6 @@ class Router {
 		// Last chance to set routing before a 404 is triggered
 		Event::run('system.post_routing');
 
-		if (self::$controller === NULL)
-		{
-			op5log::instance('ninja')->log('debug',
-				sprintf(
-					"Triggering 404 from '%s' because no controller was found, so no page can be rendered",
-					__METHOD__
-				)
-			);
-			Event::run('system.404');
-		}
 	}
 
 	/**

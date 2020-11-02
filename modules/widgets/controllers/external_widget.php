@@ -12,12 +12,19 @@ class External_widget_Controller extends Ninja_Controller {
 	}
 	/**
 	 * Show page with single widget
-	 * @param $name str widget name to show, defaults to netw_health
-	 * @param $instance_id
+	 * @param $name 		string 	Widget name
+	 * @param $parameters	array	Parameters
 	 */
-	public function __call($name = null, $instance_id = 1)
+	public function __call($name = null, $parameters = array())
 	{
+
 		$this->_verify_access('ninja.external_widget:read');
+
+		if (isset($parameters[0])) {
+			$instance_id = $parameters[0];
+		} else {
+			$instance_id = 1;
+		}
 
 		$conf = Kohana::config('external_widget');
 
@@ -32,6 +39,8 @@ class External_widget_Controller extends Ninja_Controller {
 
 		$this->template->title = _('External widget');
 		$this->template->widget = false;
+		$this->template->css[] = 'modules/lsfilter/widgets/bignumber/style.css';
+		$this->template->css[] = 'modules/monitoring/widgets/state_summary/state_summary.css';
 
 		$model = new Ninja_Widget_Model();
 		$model->set_username(op5auth::instance()->get_user()->get_username());

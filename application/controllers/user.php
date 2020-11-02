@@ -21,11 +21,9 @@ class User_Controller extends Authenticated_Controller {
 		'keycommands.pause' => 'string',
 		'keycommands.forward' => 'string',
 		'keycommands.back' => 'string',
-		'checks.show_passive_as_active' => 'bool',
 		'config.current_skin' => 'select',
 		'config.use_popups' => 'bool',
 		'config.popup_delay' => 'int',
-		'config.page_refresh_rate' => 'int',
 		'config.listview_refresh_rate' => 'int',
 		'nagdefault.sticky' => 'bool',
 		'nagdefault.persistent' => 'bool',
@@ -61,16 +59,14 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Default method
-	*	Enable user to edit some GUI settings
-	*/
+	 * Enable user to edit some GUI settings
+	 */
 	public function index()
 	{
 		$updated = $this->input->get('updated', false);
 		$title = _('User Settings');
 		$this->template->title = $title;
 
-		$this->template->disable_refresh = true;
 		$this->template->content = $this->add_view('user/settings');
 
 		$template = $this->template->content;
@@ -83,7 +79,6 @@ class User_Controller extends Authenticated_Controller {
 
 		$available_setting_sections = array(
 			_('Pagination') => 'pagination',
-			_('Checks') => 'checks',
 			_('Config') => 'config',
 			_('Columns in list view') => 'listview',
 			_('Keyboard Commands') => 'keycommands',
@@ -92,7 +87,7 @@ class User_Controller extends Authenticated_Controller {
 		);
 
 		$sub_headings = array(
-			'listview' => array("https://kb.op5.com/x/AwE6", _('Read specification online'))
+			'listview' => array("https://docs.itrsgroup.com/docs/op5-monitor/current/topics/other-documents/gui-ninja/customizing-listview-columns.html", _('Read specification online'))
 		);
 
 		$settings['pagination'] = array(
@@ -106,9 +101,6 @@ class User_Controller extends Authenticated_Controller {
 			_('Pause') => array('keycommands.pause', self::$var_types['keycommands.pause']),
 			_('Paging Forward') => array('keycommands.forward', self::$var_types['keycommands.forward']),
 			_('Paging Back') => array('keycommands.back', self::$var_types['keycommands.back'])
-		);
-		$settings['checks'] = array(
-			_('Show Passive as Active') => array('checks.show_passive_as_active', self::$var_types['checks.show_passive_as_active'])
 		);
 
 		$settings['url_target'] = array(
@@ -135,7 +127,6 @@ class User_Controller extends Authenticated_Controller {
 		$settings['config'] = false;
 		$available_skins = ninja::get_skins();
 		$settings['config'] = array(
-			_('Global page refresh rate') => array('config.page_refresh_rate', self::$var_types['config.page_refresh_rate']),
 			_('List view refresh rate') => array('config.listview_refresh_rate', self::$var_types['config.listview_refresh_rate']),
 			_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
 		);
@@ -191,8 +182,8 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Save data from form after some validation
-	*/
+	 * Save data from form after some validation
+	 */
 	public function save()
 	{
 		unset($_POST['save_config']);
@@ -266,7 +257,6 @@ class User_Controller extends Authenticated_Controller {
 			$title = _('User Settings');
 			$this->template->title = $title;
 
-			$this->template->disable_refresh = true;
 			$this->template->content = $this->add_view('user/error');
 
 			$template = $this->template->content;
@@ -280,9 +270,9 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Save a config key => value pair to db
-	*	and session for current user.
-	*/
+	 * Save a config key => value pair to db
+	 * and session for current user.
+	 */
 	public function _save_value($key=false, $val=false, $page='*')
 	{
 		# save to db
@@ -298,8 +288,8 @@ class User_Controller extends Authenticated_Controller {
 
 
 	/**
-	* Translated helptexts for this controller
-	*/
+	 * Translated helptexts for this controller
+	 */
 	public static function _helptexts($id)
 	{
 		$keyboard_help = '<br />'._("Possible Modifier keys are Alt, Shift, Ctrl + any key.
@@ -315,8 +305,6 @@ class User_Controller extends Authenticated_Controller {
 		$helptexts = array(
 			'pagination.default.items_per_page' => _('Set number of items shown on each page. Defaults to 100.'),
 			'pagination.paging_step' => _('This value is used to generate drop-down for nr of items per page to show. Defaults to 100.'),
-			'checks.show_passive_as_active' => _('This setting affects if to show passive checks as active in the GUI'),
-			'config.page_refresh_rate' => _('Seconds between each automatic page reload (0 disables)'),
 			'config.listview_refresh_rate' => _("Tables including status data ('list views') automatically updates their content. This value indicates seconds between each list view reload (0 disables)"),
 			'config.current_skin' => _('Select the skin to use in the GUI. Affects colors and images.'),
 			'keycommands.activated' => _('Switch keyboard commands ON or OFF. Default is OFF'),
@@ -343,9 +331,8 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Edit menu items
-	* 	Show form for editing menu items
-	*/
+	 * Show form for editing menu items
+	 */
 	public function menu_edit()
 	{
 
@@ -362,10 +349,7 @@ class User_Controller extends Authenticated_Controller {
 			return url::redirect(Router::$controller.'/menu_edit');
 		}
 
-		$this->template->disable_refresh = true;
-
 		$this->template->content = $this->add_view('user/edit_menu');
-		$this->template->js[] = 'application/views/user/js/user.js';
 
 		$content = $this->template->content;
 
@@ -433,9 +417,9 @@ class User_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	*	Update menu - save removed items to db
-	* 	and redirect to menu setup
-	*/
+	 * Update menu - save removed items to db
+	 * and redirect to menu setup
+	 */
 	public function menu_update()
 	{
 		if(!Auth::instance()->authorized_for('access_rights')) {
@@ -456,7 +440,7 @@ class User_Controller extends Authenticated_Controller {
 		$menu_config = array();
 		$menu_config[$group]['hidden'] = $removed;
 
-		Op5Config::instance()->setConfig('ninja_menu', $menu_config);
+		Op5Config::instance()->menuUpdate('ninja_menu', $menu_config);
 		return url::redirect(Router::$controller."/menu_edit?usergroup=$group");
 
 	}

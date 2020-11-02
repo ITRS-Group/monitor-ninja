@@ -7,13 +7,46 @@ form.renderable {
 
 .center form.renderable {
 	width: 100%;
+
 }
+
+form.renderable-login {
+	font-size: 10pt;
+	width: 320px;
+	background-color: white;
+	margin: 0 auto;
+	padding-top: 35px;
+	margin-top: 80px;
+}
+
+p.error {
+	width: 294px;
+	margin: 0 auto;
+	padding-left: 0px;
+	padding-right: 0px;
+	margin-top: 20px;
+}
+
+p.error span.license {
+	padding: 10px;
+	width: 290px;
+	margin: 0 auto;
+	font-size: 11pt;
+	color: #0F0F0F;
+	margin-top: 20px;
+}
+
 
 .center form.renderable fieldset {
 	text-align: center;
+	
 }
 
 .center form.renderable fieldset label {
+	text-align: left;
+}
+
+.center form.renderable-login fieldset label {
 	text-align: left;
 }
 
@@ -21,6 +54,43 @@ form.renderable {
 form.renderable label {
 	min-width: 128px;
 	padding: 4px 8px;
+}
+
+.renderable-login {
+	height: auto;
+}
+
+form.renderable-login .rights {
+	padding-bottom: 10px;
+	margin-top: 20px;
+}
+
+form.renderable-login p {
+	font-size: 8pt;
+	color: silver;
+}
+
+form.renderable-login h1 {
+	font-size: 1.5em;
+	margin-bottom: 20px;
+	margin-top: 25px;
+}
+
+
+
+form.renderable legend {
+	display: inline-block;
+	font-weight: bold;
+}
+
+form.renderable-login input[type=submit]{
+	margin-top: 10px;
+	width: 83px;
+	height: 30px;
+}
+
+.create-acc {
+	width: 135px !important;
 }
 
 form.renderable input[type=submit],
@@ -48,10 +118,64 @@ form.renderable fieldset {
 	margin: 4px 0;
 }
 
+form.renderable fieldset.disabled label,
+form.renderable fieldset.disabled select,
+form.renderable fieldset.disabled input {
+	color: #cccccc;
+}
+
+form.renderable fieldset.disabled h2 label {
+	color: inherit;
+}
+
 form.renderable input[type="text"],
 form.renderable input[type="number"],
 form.renderable input[type="password"] {
 	padding: 6px 4px;
+}
+
+form.renderable-login input[type="text"],
+form.renderable-login input[type="number"],
+form.renderable-login input[type="password"],
+form.renderable-login fieldset label[for="password-repeat"] {
+	height: 13px;
+	width: 235px;
+	padding: 6px 4px;
+}
+
+form.renderable-login fieldset label[for="username"],
+form.renderable-login fieldset label[for="password"],
+form.renderable-login fieldset label[for="auth_method"],
+form.renderable-login fieldset label[for="password-repeat"]{
+	display: inherit;
+	margin-left: 35px;
+}
+
+form.renderable-login .password-helper {
+	background-color: rgb(254, 244, 229);
+	width: 275px;
+	border-bottom: 2px solid orange;
+	margin: 0 auto;
+	margin-bottom: 20px;
+}
+
+form.renderable-login .password-helper p {
+	color: black;
+	padding-top: 6px;
+	padding-left: 3px;
+	padding-right: 3px;
+	text-align: left;
+
+}
+
+
+form.renderable-login fieldset label {
+	margin-left: -185px;
+}
+
+form.renderable-login fieldset {
+	text-align: center;
+	margin-bottom: 30px;
 }
 
 form.renderable fieldset[type=text],
@@ -70,6 +194,11 @@ form.renderable fieldset[type$="-repeat"] {
 
 form.renderable fieldset[type$="-repeat"] label {
 	padding-left: 12px;
+}
+
+form.renderable-login select {
+	width: 245px;
+	padding: 0;
 }
 
 form.renderable select {

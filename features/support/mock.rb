@@ -1,7 +1,7 @@
 require 'json'
 require 'cucumber'
 require 'tempfile'
-module Op5Cucumber::Mock
+module Mock
 
   class Mock
     attr_reader :file
@@ -38,12 +38,20 @@ module Op5Cucumber::Mock
         'ORMDriverMySQL default'
       when /^dashboards$/
         'ORMDriverMySQL default'
+      when /^notification.*s$/
+        'ORMDriverMySQL default'
       when /^users$/
         'ORMDriverYAML default'
       when /^authmodules$/
         'ORMDriverYAML default'
       when /^usergroups$/
         'ORMDriverYAML default'
+      when /^settings$/
+        'ORMDriverMySQL default'
+      when /^contact.*s$/
+        'ORMDriverLS default'
+      when /^permission_quark.*s$/
+        'ORMDriverMySQL default'
       else
         raise "Unknown type #{type}"
       end
@@ -51,7 +59,9 @@ module Op5Cucumber::Mock
 
     def save()
       if not active?
-        @file = Dir::Tmpname.make_tmpname('/tmp/mock', nil)
+        tmpname = Dir::Tmpname.make_tmpname("", nil)
+        @file = File.join(Dir.pwd, "ci_tmp_mock" + tmpname)
+        FileUtils::mkdir_p File.dirname(@file)
       end
       @mocked_classes.each {|real_class, blk|
         @data["MockedClasses"] << {"real_class" => real_class}.merge(blk)
@@ -75,8 +85,36 @@ module Op5Cucumber::Mock
       end
       hashes.each {|hash|
         hash.map {|field, value|
-          if field.end_with? 's' and value.is_a? String
-            hash[field] = value.split ','
+          # Let's split all properties, guessed based on that the field end
+          # with a "s". This is really silly assumption, so we need to
+          # (at least) filter out the "alias" column. Otherwise, if we try to
+          # mock the alias column in a cucumber step, we get an array as a
+          # value, with a single string as a member.
+
+          if not [
+            'alias',
+            'notes',
+            'obsess',
+            'accept_passive_checks',
+            'enable_notifications',
+            'enable_event_handlers',
+            'execute_service_checks',
+            'execute_host_checks',
+            'accept_passive_service_checks',
+            'accept_passive_host_checks',
+            'obsess_over_hosts',
+            'obsess_over_services'
+          ].include? field and field.end_with? 's' and value.is_a? String
+            values = value.split ','
+            if values[0].is_a? String and values[0].include? "="
+              hash[field] = {}
+              values.each {|v|
+                key, value = v.split '='
+                hash[field][key] = value
+              }
+            else
+              hash[field] = values
+            end
           end
         }
         # Due to native driver intersects these fields are required

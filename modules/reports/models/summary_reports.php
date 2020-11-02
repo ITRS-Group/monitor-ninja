@@ -114,7 +114,7 @@ class Summary_Reports_Model extends Reports_Model
 			$pstate[$name] = $state;
 
 			# if we're not interested in this state, just move along
-			if (in_array($row['state'], $uninteresting_states) && $uninteresting_states[$row['state']] == Reports_Model::HOST_EXCLUDED) {
+			if (array_key_exists($row['state'], $uninteresting_states) && $uninteresting_states[$row['state']] == Reports_Model::HOST_EXCLUDED) {
 				continue;
 			}
 
@@ -403,11 +403,13 @@ class Summary_Reports_Model extends Reports_Model
 		$db->query('INSERT INTO ninja_report_comments(timestamp, event_type, host_name, service_description, comment_timestamp, username, user_comment) VALUES ('.$db->escape($timestamp).', '.$db->escape($event_type).', '.$db->escape($host_name).', '.$db->escape($service).', UNIX_TIMESTAMP(), '.$db->escape($username).', '.$db->escape($comment).')');
 		return true;
 	}
+
 	/**
-	*	Fetch alert history for histogram report
-	* 	@param $slots array with slots to fill with data
-	* 	@return array with keys: min, max, avg, data
-	*/
+	 * Fetch alert history for histogram report
+	 *
+	 * @param $slots array with slots to fill with data
+	 * @return array with keys: min, max, avg, data
+	 */
 	public function histogram($slots=false)
 	{
 		if (empty($slots) || !is_array($slots))
@@ -422,16 +424,16 @@ class Summary_Reports_Model extends Reports_Model
 		switch ($report_type) {
 			case 'hosts': case 'hostgroups':
 				$events = array(0 => 0, 1 => 0, 2 => 0);
-				$events = array_diff_key($events, array_keys($this->options['host_filter_status']));
+				$events = array_diff_key($events, $this->options['host_filter_status']);
 				break;
 			case 'services': case 'servicegroups':
 				$events = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-				$events = array_diff_key($events, array_keys($this->options['service_filter_status']));
+				$events = array_diff_key($events, $this->options['service_filter_status']);
 				break;
 		}
 
 		# add event (state) counters to slots
-		$data = false;
+		$data = array();
 		foreach ($slots as $s => $l) {
 			$data[$l] = $events;
 		}

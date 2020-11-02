@@ -1,5 +1,4 @@
 <?php
-require_once (dirname( __FILE__ ) . '/base/baseobject.php');
 
 /**
  * Describes a single object from livestatus
@@ -152,5 +151,14 @@ abstract class Object_Model extends BaseObject_Model {
 	 */
 	public function get_current_user() {
 		return Auth::instance()->get_user()->get_username();
+	}
+
+	/**
+	 * Get a quark for the current object
+	 *
+	 * @return integer
+	 */
+	public function get_permission_quark() {
+		return PermissionQuarkPool_Model::build($this->get_table(), $this->get_key());
 	}
 }

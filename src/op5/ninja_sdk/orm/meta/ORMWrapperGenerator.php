@@ -20,9 +20,6 @@ class ORMWrapperGenerator extends class_generator {
 	public function generate($skip_generated_note = true) {
 		parent::generate($skip_generated_note);
 		$baseclassname = 'Base'.$this->classname;
-		if( $this->baseclasspath ) {
-			$this->classfile($this->baseclasspath,true);
-		}
 		$this->init_class( $baseclassname, $this->modifiers );
 		$this->finish_class();
 	}

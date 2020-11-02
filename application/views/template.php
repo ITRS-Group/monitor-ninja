@@ -9,7 +9,7 @@
 	}
 
 	if (!isset($keycommands_disabled) || $keycommands_disabled !== true) {
-		$keycommands_active = (int)(bool)config::get('keycommands.activated', '*');
+		$keycommands_active = (int)(bool)config::get('keycommands.activated');
 	} else {
 		$keycommands_active = 0;
 	}
@@ -45,17 +45,26 @@
 								echo $content;
 							}
 						} else {
-							echo 'Page does not have any content';
+							$services_down = 'services LMD and Naemon are not running';
+
+							// Check LMD.
+							exec('service lmd status', $output, $return_var_lmd);
+							// Check Livestatus.
+							exec('service naemon status', $output, $return_var_le);
+
+							if($return_var_lmd !== 0 && $return_var_le === 0){
+								$services_down = 'service LMD is not running';
+							}
+							echo '<div class=" info-notice info-notice-error info-notice-service-error">';
+								echo 'The OP5 Monitor '.$services_down.', please contact your administrator.';
+							echo '</div>';
 						}
-
-						require __DIR__ . '/template_notifications.php';
-
 					?>
-
-			</div>
+				</div>
 
 			<?php
 
+				require __DIR__ . '/template_notifications.php';
 				if (isset($saved_searches) && !empty($saved_searches)) {
 					echo $saved_searches;
 				}
@@ -64,10 +73,6 @@
 
 		</div>
 		<?php
-
-			if(!isset($no_dojo)) {
-				echo html::script('application/media/js/dojo.js');
-			}
 
 			if (isset($context_menu)) {
 				if($context_menu instanceof View) {

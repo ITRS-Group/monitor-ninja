@@ -1,6 +1,7 @@
 <?php
 require_once (__DIR__ . '/config.php');
 require_once (__DIR__ . '/objstore.php');
+require_once (__DIR__ . '/log.php');
 
 /**
  * Model for defining a metric used by MayI
@@ -63,8 +64,8 @@ interface op5MayI_Actor {
 	/**
 	 * Get information from the actor, as an array.
 	 *
-	 * The informaiton will be available to the contstaints, as a key in the
-	 * envioronment array passed to the run method.
+	 * The information will be available to the constraints, as a key in the
+	 * environment array passed to the run method.
 	 */
 	public function getActorInfo();
 }
@@ -270,7 +271,7 @@ class op5MayI {
 				}
 				$envref =& $envref[$part];
 			}
-			$envref = $actor->getActorInfo();
+			$envref = array_merge_recursive($envref, $actor->getActorInfo());
 			unset($envref);
 		}
 		$environment = array_replace_recursive($environment, $override);
@@ -297,7 +298,6 @@ class op5MayI {
 	 */
 	public function run($action, array $override = array(), &$messages = false, &$metrics = false) {
 		$environment = $this->get_environment($override);
-
 		$constr_res = array();
 		$allow = true;
 

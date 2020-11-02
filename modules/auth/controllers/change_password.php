@@ -21,7 +21,6 @@ class Change_Password_Controller extends Ninja_Controller {
 		$this->template->content = new View('change_password');
 		$this->template->title = _('Configuration » Change password');
 
-		$this->template->disable_refresh = true;
 		$this->template->toolbar = new Toolbar_Controller( _("My Account"), _("Change Password") );
 
 		$this->template->toolbar->info(

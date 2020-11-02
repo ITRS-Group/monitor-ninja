@@ -17,17 +17,16 @@ final class Kohana {
 	// The singleton instance of the controller
 	public static $instance;
 
-	// Will be set to TRUE when an exception is caught
-	public static $has_error = FALSE;
-
 	// The final output that will displayed by Kohana
 	public static $output = '';
 
-	// The current user agent
-	public static $user_agent;
-
 	// The current locale
 	public static $locale;
+
+	// The path relative to DOCROOT to the current module with leading /
+	// Used only during "require", for now, only hooks)
+	// For example: "/modules/something"
+	public static $module_path;
 
 	// Configuration
 	private static $configuration;
@@ -40,6 +39,12 @@ final class Kohana {
 
 	// Internal caches and write status
 	private static $internal_cache = array();
+
+	// Internal cache of all classpaths in the system
+	private static $class_paths = array();
+
+	// Internal cache of all view paths in the system
+	private static $view_paths = array();
 
 	/**
 	 * Sets up the PHP environment. Adds error/exception handling, output
@@ -86,11 +91,11 @@ final class Kohana {
 		// Add SYSPATH as the last path
 		self::$include_paths[] = SYSPATH;
 
+		// Load all paths
+		self::load_paths();
+
 		// Disable notices and "strict" errors
 		$ER = error_reporting(~E_NOTICE & ~E_STRICT);
-
-		// Set the user agent
-		self::$user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : "Unknown";
 
 		if (function_exists('date_default_timezone_set'))
 		{
@@ -137,7 +142,14 @@ final class Kohana {
 		// Find all the hook files and load them
 		$hooks = self::list_files('hooks', TRUE);
 		foreach ($hooks as $file) {
-			include $file;
+			if(pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+				/* If module within docroot, set module_path to relative path */
+				Kohana::$module_path = null;
+				$moduledir = dirname(dirname($file));
+				if(substr($moduledir, 0, strlen(DOCROOT)) == DOCROOT)
+					Kohana::$module_path = substr($moduledir, strlen(DOCROOT));
+				include $file;
+			}
 		}
 
 		// Setup is complete, prevent it from being run again
@@ -147,26 +159,21 @@ final class Kohana {
 		Benchmark::stop(SYSTEM_BENCHMARK.'_environment_setup');
 	}
 
-	private static function & service_unavailable ($exception) {
-
-		self::$instance->template->content = new View('503');
-		self::$instance->template->content->exception = $exception;
-		self::$instance->template->disable_refresh = true;
-
-		try {
-			Event::run('system.render');
-		} catch (Exception $e) {
-			self::exception_handler($e);
+	private static function valid_route () {
+		if (Router::$method[0] === '_') {
+			op5log::instance('ninja')->log('debug', 'Triggering 404 for disallowed hidden method '.Router::$complete_uri);
+			return false;
+		} elseif (!Router::$controller) {
+			op5log::instance('ninja')->log('debug', 'Triggering 404 for no controller '.Router::$complete_uri);
+			return false;
 		}
-
-		return self::$instance;
-
+		return true;
 	}
 
 	/**
 	 * Loads the controller and initializes it. Runs the pre_controller,
-	 * post_controller_constructor, and post_controller events. Triggers
-	 * a system.404 event when the route cannot be mapped to a controller.
+	 * post_controller_constructor, and post_controller events. Triggers a
+	 * system.404 event when the route cannot be mapped to a controller.
 	 *
 	 * This method is benchmarked as controller_setup and controller_execution.
 	 *
@@ -174,82 +181,115 @@ final class Kohana {
 	 */
 	public static function & instance()
 	{
-		if (self::$instance === NULL)
-		{
+
+		if (self::$instance === NULL) {
+
 			Benchmark::start(SYSTEM_BENCHMARK.'_controller_setup');
 
-			if (Router::$method[0] === '_')
-			{
-				op5log::instance('ninja')->log('debug', 'Triggering 404 for disallowed hidden method '.Router::$complete_uri);
-				Event::run('system.404');
-			}
-
-			// Include the Controller file
-			require Router::$controller_path;
-
-			$classname = ucfirst(Router::$controller).'_Controller';
-
-			if (!class_exists($classname)) {
-				op5log::instance('ninja')->log('debug', 'Triggering 404 for missing class '.Router::$complete_uri);
-				Event::run('system.404');
-			}
-
 			try {
-				// Run system.pre_controller
+
 				Event::run('system.pre_controller');
+				if (!Kohana::valid_route())
+					Event::run('system.404');
+
+			} catch (Kohana_Reroute_Exception $e) {
+
+				Router::$controller = $e->get_controller();
+				Router::$method = $e->get_method();
+				Router::$arguments = $e->get_arguments();
+
 			} catch (ORMDriverException $e) {
-				new Ninja_Controller();
-				return Kohana::service_unavailable($e);
+
+				Router::$controller = "error";
+				Router::$method = "show_503";
+				Router::$arguments = array($e);
+
 			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
 
+
+			/*
+			 * The pre_controller is allowed to change controller, but only to
+			 * an existing one
+			 */
+			do {
+
+				$next_route = false;
+				$classname = ucfirst(Router::$controller).'_Controller';
+
+				try {
+
+					/**
+					 * This also has the effect of setting the
+					 * Kohana::$instance variable to the instanced controller
+					 * BUT only if that is the first controller instanced for
+					 * this request
+					 */
+					$controller = new $classname();
+					$method = Router::$method;
+
+					// Stop the controller setup benchmark
+					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
+
+					// Start the controller execution benchmark
+					Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
+
+					// Execute the controller method
+					// $method does always exist in a controller, since Controller
+					// implements the function __call()
+					// Controller constructor has been executed
+					Event::run('system.post_controller_constructor', $controller);
+					$execution_exception = null;
+					try {
+						call_user_func_array(
+							array($controller, $method),
+							Router::$arguments
+						);
+					} catch (Exception $e) {
+						$execution_exception = $e;
+					}
+
+					// Controller method has been executed
+					Event::run('system.post_controller', $controller);
+					if ($execution_exception) {
+						throw $execution_exception;
+					}
+
+					// Stop the controller execution benchmark
+					Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
+				} catch (Kohana_Reroute_Exception $e) {
+
+					if (Router::$controller != 'error') {
+						$next_route = true;
+					}
+
+					Router::$controller = $e->get_controller();
+					Router::$arguments = $e->get_arguments();
+					Router::$method = $e->get_method();
+
+				} catch (ORMDriverException $e) {
+
+					if (Router::$controller != 'error') {
+						$next_route = true;
+					}
+
+					Router::$controller = 'error';
+					Router::$arguments = array($e);
+					Router::$method = 'show_503';
+
+				} catch (Exception $e) {
+					self::exception_handler($e);
+				}
+			} while ($next_route !== false);
+
 			try {
-
-				/** Create a new controller instance
-				 * This also has the effect of setting the
-				 * Kohana::$instance variable to the instanced controller
-				 * BUT only if that is the first controller instanced for
-				 * this request */
-				$controller = new $classname();
-				$method = Router::$method;
-
-				// Stop the controller setup benchmark
-				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_setup');
-
-				// Start the controller execution benchmark
-				Benchmark::start(SYSTEM_BENCHMARK.'_controller_execution');
-
-				// Execute the controller method
-				// $method does always exist in a controller, since Controller
-				// implements the function __call()
-				// Controller constructor has been executed
-				Event::run('system.post_controller_constructor', $controller);
-				call_user_func_array(
-					array($controller, $method),
-					Router::$arguments
-				);
-
-				// Controller method has been executed
-				Event::run('system.post_controller', $controller);
-
-				// Stop the controller execution benchmark
-				Benchmark::stop(SYSTEM_BENCHMARK.'_controller_execution');
-
-				// Start the rendering benchmark
-				Benchmark::start(SYSTEM_BENCHMARK.'_render');
-
-				// Stop the rendering benchmark
-				Benchmark::stop(SYSTEM_BENCHMARK.'_render');
-
-			} catch (ORMDriverException $e) {
-				return Kohana::service_unavailable($e);
-			} catch (Exception $e) {
-				self::exception_handler($e);
-			}
-
-			try {
-				Event::run('system.render');
+				if (
+					is_a($controller, 'Template_Controller') &&
+					$controller->auto_render
+				) {
+					$controller->template->render(TRUE);
+				}
 			} catch (Exception $e) {
 				self::exception_handler($e);
 			}
@@ -283,6 +323,7 @@ final class Kohana {
 			function ($path) use($pattern) {
 				return !preg_match($pattern, $path);
 			});
+		self::load_paths();
 	}
 
 	/**
@@ -290,6 +331,7 @@ final class Kohana {
 	 */
 	public static function add_include_path($path) {
 		self::$include_paths[] = $path;
+		self::load_paths();
 	}
 
 	/**
@@ -559,9 +601,6 @@ final class Kohana {
 	public static function exception_handler($exception)
 	{
 		try {
-			// This is useful for hooks to determine if a page has an error
-			self::$has_error = TRUE;
-
 			$code     = $exception->getCode();
 			$type     = get_class($exception);
 			$message  = $exception->getMessage();
@@ -657,6 +696,32 @@ final class Kohana {
 	}
 
 	/**
+	 * Update the list of classpaths out of the classes.php files in each of
+	 * the include paths
+	 */
+	private static function load_paths() {
+		self::$class_paths = array();
+		self::$view_paths = array();
+		/* Order is important, "application" should overwrite "system" */
+		foreach(self::include_paths() as $path) {
+
+			if(is_readable($path.'/classes.php')) {
+				$classes = require($path.'/classes.php');
+				self::$class_paths += array_map(function($file) use ($path) {
+					return $path . $file;
+				}, $classes);
+			}
+
+			if(is_readable($path.'/views.php')) {
+				$views = require($path.'/views.php');
+				self::$view_paths += array_map(function($file) use ($path) {
+					return $path . $file;
+				}, $views);
+			}
+		}
+	}
+
+	/**
 	 * Provides class auto-loading.
 	 *
 	 * @throws  Kohana_Exception
@@ -665,88 +730,26 @@ final class Kohana {
 	 */
 	public static function auto_load($class)
 	{
+		$class = strtolower($class);
 		if (class_exists($class, FALSE))
 			return TRUE;
 
-		if (($suffix = strrpos($class, '_')) > 0)
-		{
-			// Find the class suffix
-			$suffix = substr($class, $suffix + 1);
-		}
-		else
-		{
-			// No suffix
-			$suffix = FALSE;
-		}
-
-		if ($suffix === 'Core')
-		{
-			$type = 'libraries';
-			$file = substr($class, 0, -5);
-		}
-		elseif ($suffix === 'Controller')
-		{
-			$type = 'controllers';
-			// Lowercase filename
-			$file = strtolower(substr($class, 0, -11));
-		}
-		elseif ($suffix === 'Model')
-		{
-			$type = 'models';
-			// Lowercase filename
-			$file = strtolower(substr($class, 0, -6));
-		}
-		elseif ($suffix === 'Driver')
-		{
-			$type = 'libraries/drivers';
-			$file = str_replace('_', '/', substr($class, 0, -7));
-		}
-		elseif ($suffix === 'Widget')
-		{
-			$type = 'widgets';
-			$classname = substr($class, 0, -7);
-			$file = $classname . '/' . $classname;
-		}
-		else
-		{
-			// This could be either a library or a helper, but libraries must
-			// always be capitalized, so we check if the first character is
-			// uppercase. If it is, we are loading a library, not a helper.
-			$type = ($class[0] < 'a') ? 'libraries' : 'helpers';
-			$file = $class;
-		}
-
-		if ($filename = self::find_file($type, $file))
-		{
-			// Load the class
-			require $filename;
-		}
-		else
-		{
-			// The class could not be found
+		if (!isset(self::$class_paths[$class]))
 			return FALSE;
-		}
 
-		if ($suffix !== 'Core' AND class_exists($class.'_Core', FALSE))
-		{
-			// Class extension to be evaluated
-			$extension = 'class '.$class.' extends '.$class.'_Core { }';
-
-			// Start class analysis
-			$core = new ReflectionClass($class.'_Core');
-
-			if ($core->isAbstract())
-			{
-				// Make the extension abstract
-				$extension = 'abstract '.$extension;
-			}
-
-			// Transparent class extensions are handled using eval. This is
-			// a disgusting hack, but it gets the job done.
-			eval($extension);
-		}
-
+		require_once(self::$class_paths[$class]);
 		return TRUE;
+	}
+
+	/**
+	 * Get the path to a view file, given the view name
+	 *
+	 * This loads using the file cache array, which is generated on build and loaded once
+	 */
+	public static function get_view($viewname) {
+		if(!isset(self::$view_paths[$viewname]))
+			return null;
+		return self::$view_paths[$viewname];
 	}
 
 	/**
@@ -992,217 +995,6 @@ final class Kohana {
 		return NULL;
 	}
 
-	/**
-	 * Sets values in an array by using a 'dot-noted' string.
-	 *
-	 * @param   array   array to set keys in (reference)
-	 * @param   string  dot-noted string: foo.bar.baz
-	 * @return  mixed   fill value for the key
-	 * @return  void
-	 */
-	public static function key_string_set( & $array, $keys, $fill = NULL)
-	{
-		if (is_object($array) AND ($array instanceof ArrayObject))
-		{
-			// Copy the array
-			$array_copy = $array->getArrayCopy();
-
-			// Is an object
-			$array_object = TRUE;
-		}
-		else
-		{
-			if ( ! is_array($array))
-			{
-				// Must always be an array
-				$array = (array) $array;
-			}
-
-			// Copy is a reference to the array
-			$array_copy =& $array;
-		}
-
-		if (empty($keys))
-			return $array;
-
-		// Create keys
-		$keys = explode('.', $keys);
-
-		// Create reference to the array
-		$row =& $array_copy;
-
-		for ($i = 0, $end = count($keys) - 1; $i <= $end; $i++)
-		{
-			// Get the current key
-			$key = $keys[$i];
-
-			if ( ! isset($row[$key]))
-			{
-				if (isset($keys[$i + 1]))
-				{
-					// Make the value an array
-					$row[$key] = array();
-				}
-				else
-				{
-					// Add the fill key
-					$row[$key] = $fill;
-				}
-			}
-			elseif (isset($keys[$i + 1]))
-			{
-				// Make the value an array
-				$row[$key] = (array) $row[$key];
-			}
-
-			// Go down a level, creating a new row reference
-			$row =& $row[$key];
-		}
-
-		if (isset($array_object))
-		{
-			// Swap the array back in
-			$array->exchangeArray($array_copy);
-		}
-	}
-
-	/**
-	 * Retrieves current user agent information:
-	 * keys:  browser, version, platform, mobile, robot, referrer, languages, charsets
-	 * tests: is_browser, is_mobile, is_robot, accept_lang, accept_charset
-	 *
-	 * @param   string   key or test name
-	 * @param   string   used with "accept" tests: user_agent(accept_lang, en)
-	 * @return  array    languages and charsets
-	 * @return  string   all other keys
-	 * @return  boolean  all tests
-	 */
-	public static function user_agent($key = 'agent', $compare = NULL)
-	{
-		static $info;
-
-		// Return the raw string
-		if ($key === 'agent')
-			return self::$user_agent;
-
-		if ($info === NULL)
-		{
-			// Parse the user agent and extract basic information
-			$agents = self::config('user_agents');
-
-			foreach ($agents as $type => $data)
-			{
-				foreach ($data as $agent => $name)
-				{
-					if (stripos(self::$user_agent, $agent) !== FALSE)
-					{
-						if ($type === 'browser' AND preg_match('|'.preg_quote($agent).'[^0-9.]*+([0-9.][0-9.a-z]*)|i', self::$user_agent, $match))
-						{
-							// Set the browser version
-							$info['version'] = $match[1];
-						}
-
-						// Set the agent name
-						$info[$type] = $name;
-						break;
-					}
-				}
-			}
-		}
-
-		if (empty($info[$key]))
-		{
-			switch ($key)
-			{
-				case 'is_robot':
-				case 'is_browser':
-				case 'is_mobile':
-					// A boolean result
-					$return = ! empty($info[substr($key, 3)]);
-				break;
-				case 'languages':
-					$return = array();
-					if ( ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']))
-					{
-						if (preg_match_all('/[-a-z]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_LANGUAGE'])), $matches))
-						{
-							// Found a result
-							$return = $matches[0];
-						}
-					}
-				break;
-				case 'charsets':
-					$return = array();
-					if ( ! empty($_SERVER['HTTP_ACCEPT_CHARSET']))
-					{
-						if (preg_match_all('/[-a-z0-9]{2,}/', strtolower(trim($_SERVER['HTTP_ACCEPT_CHARSET'])), $matches))
-						{
-							// Found a result
-							$return = $matches[0];
-						}
-					}
-				break;
-				case 'referrer':
-					if ( ! empty($_SERVER['HTTP_REFERER']))
-					{
-						// Found a result
-						$return = trim($_SERVER['HTTP_REFERER']);
-					}
-				break;
-			}
-
-			// Cache the return value
-			isset($return) and $info[$key] = $return;
-		}
-
-		if ( ! empty($compare))
-		{
-			// The comparison must always be lowercase
-			$compare = strtolower($compare);
-
-			switch ($key)
-			{
-				case 'accept_lang':
-					// Check if the lange is accepted
-					return in_array($compare, self::user_agent('languages'));
-				break;
-				case 'accept_charset':
-					// Check if the charset is accepted
-					return in_array($compare, self::user_agent('charsets'));
-				break;
-				default:
-					// Invalid comparison
-					return FALSE;
-				break;
-			}
-		}
-
-		// Return the key, if set
-		return isset($info[$key]) ? $info[$key] : NULL;
-	}
-
-	/**
-	 * Quick debugging of any variable. Any number of parameters can be set.
-	 *
-	 * @return  string
-	 */
-	public static function debug()
-	{
-		if (func_num_args() === 0)
-			return;
-
-		// Get params
-		$params = func_get_args();
-		$output = array();
-
-		foreach ($params as $var)
-		{
-			$output[] = '<pre>('.gettype($var).') '.html::specialchars(print_r($var, TRUE)).'</pre>';
-		}
-
-		return implode("\n", $output);
-	}
-
 } // End Kohana
 
 /**
@@ -1297,6 +1089,45 @@ class Kohana_User_Exception extends Kohana_Exception {
 		{
 			$this->template = $template;
 		}
+	}
+
+} // End Kohana PHP Exception
+
+/**
+ * Creates a custom exception.
+ */
+class Kohana_Reroute_Exception extends Exception {
+
+	private $controller;
+	private $method;
+	private $arguments = array();
+
+	/**
+	 * Used by the Kohana routing to continously reroute as long as this
+	 * exception occurs
+	 *
+	 * @param   string  controller to reroute to
+	 * @param   string  method to reroute to, default: index
+	 * @param   array   arguments to pass, default: array()
+	 */
+	public function __construct($controller, $method = 'index', array $arguments = array())
+	{
+		parent::__construct("Reroute to $controller/$method");
+		$this->controller = $controller;
+		$this->method = $method;
+		$this->arguments = $arguments;
+	}
+
+	public function get_controller () {
+		return $this->controller;
+	}
+
+	public function get_method () {
+		return $this->method;
+	}
+
+	public function get_arguments () {
+		return $this->arguments;
 	}
 
 } // End Kohana PHP Exception

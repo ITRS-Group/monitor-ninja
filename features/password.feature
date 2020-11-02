@@ -16,7 +16,7 @@ Feature: Change password
 		Then I should see "Username"
 		When I enter "administrator" into "username"
 		And I enter "billabong" into "password"
-		And I click "Login"
+		And I click "Log in"
 		And I hover the profile
 		And I click "My Account"
 		And I click "Change Password"

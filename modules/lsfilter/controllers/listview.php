@@ -17,26 +17,26 @@ class ListView_Controller extends Ninja_Controller {
 		$query = $this->input->get('q', $q);
 		$query_order = $this->input->get('s', '');
 
-
-		$basepath = 'modules/lsfilter/';
-
-		$this->template->js[] = $basepath.'media/js/LSFilterMain.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterHistory.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterTextarea.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterVisual.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterMultiselect.js';
-		$this->template->js[] = $basepath.'media/js/LSFilterInputWindow.js';
-
 		$this->template->title = _('List view');
 		$this->template->toolbar = new Toolbar_Controller( $this->template->title );
 		$this->template->content = $lview = $this->add_view('listview/listview');
-		$this->template->disable_refresh = true;
 
 		$this->template->toolbar->should_render_buttons(true);
 		$this->template->toolbar->info('<div id="filter_result_totals"></div>');
-		$this->template->js_strings .= "var lsfilter_query = ".json_encode($query).";\n";
-		$this->template->js_strings .= "var lsfilter_query_order = ".json_encode($query_order).";\n";
-		$this->template->js_strings .= "var lsfilter_per_page = ".intval(config::get('pagination.default.items_per_page','*')).";\n";
+
+		$json_query = json_encode($query);
+		$json_query_order = json_encode($query_order);
+		$per_page = intval(config::get('pagination.default.items_per_page'));
+
+		$this->template->js_strings .= <<<EOF
+var lsfilter_query = $json_query;
+var lsfilter_query_order = $json_query_order;
+var lsfilter_per_page = $per_page;
+$().ready(function() {
+	lsfilter_main.init();
+	lsfilter_main.update(lsfilter_query, false, lsfilter_query_order);
+});
+EOF;
 	}
 
 	/**
@@ -53,9 +53,9 @@ class ListView_Controller extends Ninja_Controller {
 			 * The result of the previous line will be handled as the "default" keyword in the next one
 			 */
 			$columns[$table] = array(
-					$default,
-					config::get('listview.columns.'.$table, '*')
-					);
+				$default,
+				config::get('listview.columns.'.$table)
+			);
 		}
 
 		/* This shouldn't have a standard template */
@@ -117,6 +117,16 @@ class ListView_Controller extends Ninja_Controller {
 					$obj['_table'] = $elem->get_table();
 					$data[] = $obj;
 				}
+
+				//fix utf-8 output from notifications
+				if ( isset($data) && is_array($data) && !empty($data)
+					&& array_key_exists('_table', $data[0]) && $data[0]['_table'] == 'notifications' ) {
+						array_walk_recursive($data, function(&$item, $key) {
+							if ($key == 'output') {
+								$item = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+							}
+						});
+				};
 
 				return json::ok( array(
 					'totals' => $result_set->get_totals(),
@@ -199,43 +209,6 @@ class ListView_Controller extends Ninja_Controller {
 			return json::ok( array( 'status' => 'error', 'data' => $e->getMessage() ) );
 		}
 	}
-
-
-	/**
-	 * Return a manifest variable as a javascript file, for loading through a script tag
-	 */
-	public function renderer( $name = false ) {
-		$this->_verify_access('ninja.listview:read');
-
-		if( substr( $name, -3 ) == '.js' ) {
-			$name = substr( $name, 0, -3 );
-		}
-
-		$this->auto_render = false;
-		$renderers_files = Module_Manifest_Model::get( 'lsfilter_renderers' );
-
-		header('Content-Type: text/javascript');
-
-		print "var listview_renderer_".$name." = {};\n\n";
-
-		$files = array();
-		if( isset( $renderers_files[$name] ) ) {
-			$files = $renderers_files[$name];
-		}
-		sort($files);
-
-		foreach( $files as $renderer ) {
-			print "\n/".str_repeat('*',79)."\n";
-			print " * Output file: ".$renderer."\n";
-			print " ".str_repeat('*',78)."/\n";
-			if( is_readable(DOCROOT.$renderer) ) {
-				readfile(DOCROOT.$renderer);
-			} else {
-				print "// ERROR: Can't open file...\n\n";
-			}
-		}
-	}
-
 
 	/**
 	 * Return a manifest variable as a javascript file, for loading through a script tag

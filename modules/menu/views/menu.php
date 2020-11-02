@@ -5,7 +5,6 @@
 
 	/* Use settings */
 	$orientation = (isset($orientation)) ? $orientation : 'left';
-	$class = (isset($class)) ? "menu " . $class : "menu";
 
 	if (!$store_cfg)
 		$store_cfg = array();
@@ -19,34 +18,44 @@
 		}
 	}
 
-	$render_menu = function ($menu, $is_root = false) use (&$config, &$render_menu) {
+	$render_menu = function ($menu, $parent_style = 'normal', $is_root = false) use (&$config, &$render_menu) {
 
 		$branch = $menu->get_branch();
-		$attr = $menu->get_attributes();
-
+		$attr   = $menu->get_attributes();
+		$icon   = $menu->get_icon();
+		$style  = $menu->get_style();
+		if($style === null)
+			$style = $parent_style;
 		$render = "";
 		$format = "";
-		$icon = "";
 
-		$icon = $menu->get_icon();
+		if ($menu->is_separator()) {
+			$render .= '<li class="menu-separator">' . $menu->get_label_as_html() . '</li>';
+			return $render;
+		}
+
 		if (substr($icon, -4) == '.png')
 			$icon = sprintf('<img src="%s">', htmlentities($icon));
-		else if ($icon != '')
-			$icon = sprintf('<span class="%s"></span>', htmlentities($menu->get_icon()));
+		else if ($icon != '') {
+                        $icon_class = htmlentities($menu->get_icon());
+                        $span_class_type = substr($icon_class, strpos($icon_class, " x16-") + 5);
+                        if($span_class_type == 'op5' || $span_class_type == 'manual' || $span_class_type == 'support') {
+                            $icon = '';
+                        } else {
+                            $icon = sprintf('<span class="%s"></span>', $icon_class);
+                        }
+                }
 
 		if (is_null($menu->get_href())) {
 			$format = '<a%s>%s<span>%s</span></a>';
 		} else {
-
 			$format = '<a%s>%s<span>%s</span></a>';
 			$href = $menu->get_href();
 
-			if (!preg_match('/^http/', $href) && !preg_match('/^\//', $href)) {
+			if (!preg_match('/^http/', $href) && !preg_match('/^\//', $href) && !preg_match('/^#/', $href)) {
 				$href = url::base(true) . $href;
 			}
-
 			$attr['href'] = $href;
-
 		}
 
 		$attributes = "";
@@ -54,25 +63,52 @@
 			$attributes .= sprintf(" %s=\"%s\"", htmlentities($name), htmlentities($value));
 		}
 
-		$render .= sprintf($format, $attributes, $icon, $menu->get_label_as_html());
+		switch($style) {
+			case 'image':
+				/* Render an image menu */
+				if (!is_null($menu->get_href())) {
+					$render = sprintf('<a%s>%s</a>', $attributes, $icon);
+				} else {
+					$render = sprintf(
+						'<a%s>%s<span>%s</span></a>',
+						$attributes,
+						$icon,
+						$menu->get_label_as_html()
+					);
+				}
+				break;
+			default:
+				$render .= sprintf($format, $attributes, $icon, $menu->get_label_as_html());
+		}
 
 		if ($menu->has_children()) {
-			$render .= '<ul>';
+			$filterHeaderArray = array("all_hosts", "all_services", "all_hostgroups", "all_servicegroups");
+			$class = $style . '-menu';
+			$render .= "<ul class=\"$class\">";
 			foreach ($branch as $child) {
+				if(in_array($child->get_id(), $filterHeaderArray)) {
+					$render .= '<li tabindex="1" class="menu-separator">Filters</li>';
+				}
 
 				if (in_array($child->get_id(), $config)) { continue; }
-
 				$cAttributes = $child->get_attributes();
-				$render .= '<li tabindex="1">' . $render_menu($child, false) . '</li>';
-
+				// delete_downtime_by_hostname is for API only
+				if ($cAttributes["data-menu-id"] !== "delete_downtime_by_hostname") {
+					$render .= '<li tabindex="1">' . $render_menu($child, $style, false) . '</li>';
+				}
 			}
 			$render .= '</ul>';
 		}
-
 		return $render;
-
 	};
 
-	echo "<div class=\"$class menu-$orientation\">";
-	echo $render_menu($menu);
+	if(!isset($class))
+		$class = "";
+
+	$style = $menu->get_style();
+	if($style === null)
+		$style = 'normal';
+
+	echo "<div class=\"$class menu menu-$orientation\">";
+	echo $render_menu($menu, $style);
 	echo "</div>";

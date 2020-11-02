@@ -65,7 +65,7 @@ Feature: Filters & list views
 		And I should see "Zuzela Adkins"
 		But I shouldn't see "Zuzela Griffin"
 
-	@configuration
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by description.
@@ -88,7 +88,7 @@ Feature: Filters & list views
 		Then The first row of the filter result table should contain "D-service"
 		And The last row of the filter result table should contain "A-service"
 
-	@configuration
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by last checked.
@@ -110,7 +110,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "last_check"
 		Then The first row of the filter result table should contain "C-service"
 
-	@configuration
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by duration.
@@ -132,7 +132,7 @@ Feature: Filters & list views
 		When I sort the filter result table by "duration"
 		Then The last row of the filter result table should contain "B-service"
 
-	@configuration
+	@configuration @unreliable @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by status information.
@@ -159,7 +159,7 @@ Feature: Filters & list views
 		Then The last row of the filter result table should contain "B-service"
 		And The first row of the filter result table should contain "C-service"
 
-	@configuration
+	@configuration @unreliable_el7
 	Scenario: Service detail listing column sorting
 		Ensure that it is possible to sort by the columns in the listing.
 		Sort by state.
@@ -186,7 +186,7 @@ Feature: Filters & list views
 
 	@configuration @unreliable @integration
 	Scenario: Save filter
-		Given I am logged in as administratior
+		Given I am logged in as administrator
 		And I am on the Host details page
 		And I click "Show/Edit Text Filter"
 		And I enter "Ernie" into "lsfilter_save_filter_name"
@@ -199,3 +199,34 @@ Feature: Filters & list views
 		And I hover over the "Hosts" menu
 		Then I should see these menu items:
 			| Ernie |
+
+	Scenario: List view case-insensitive check
+		Given I have these mocked notifications
+			| host_name | contact_name | command_name | output              |
+			| google    | test user    | host-notify  | OK - www.google.com |
+			| google    | TEST USER    | host-notify  | OK - www.google.com |
+			| google    | new user1    | host-notify  | OK - www.google.com |
+			| google    | TeSt UsEr    | host-notify  | OK - www.google.com |
+			| google    | NEW USER2    | host-notify  | OK - www.google.com |
+		And I am logged in
+		When I am on address "/index.php/listview/?q=%5Bnotifications%5D%20(contact_name%20~~%20%22test%22%20)"
+		Then I should see "test user"
+		And I should see "TEST USER"
+		And I should see "TeSt UsEr"
+
+	Scenario: List view filter is processed for custom variables empty list
+		Given I am logged in
+		When I go to the listview for [hosts] custom_variables ~~ "asdf ."
+		Then I should see "No entries found using filter"
+
+	@configuration
+	Scenario: List view filter is processed for custom variables
+		Given I have these hosts:
+			| host_name |
+			| linux-server1 |
+		And I have activated the configuration
+		Given I am logged in as administrator
+		When I go to the listview for [hosts] all
+		Then I should see "linux-server1"
+		When I go to the listview for [hosts] custom_variables ~~ "NOMONITORING"
+		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"

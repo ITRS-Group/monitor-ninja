@@ -32,6 +32,21 @@ class json
 	}
 
 	/**
+	 * Contrary to json::fail(), this method will not exit() but rather
+	 * return a prepared special View for you. This makes testing the
+	 * result of a controller's method possible.
+	 *
+	 * @param $reason mixed
+	 * @return View
+	 */
+	public static function fail_view($reason) {
+		$view = new View('json');
+		$view->success = false;
+		$view->value = array('result' => $reason);
+		return $view;
+	}
+
+	/**
 	 * Give it anything, it will turn it into JSON
 	 *
 	 * @param $result string
@@ -39,6 +54,21 @@ class json
 	 */
 	public static function ok($result = null, $http_status_code = 200) {
 		return self::_send_response($result, $http_status_code);
+	}
+
+	/**
+	 * Contrary to json::ok(), this method will not exit() but rather
+	 * return a prepared special View for you. This makes testing the
+	 * result of a controller's method possible.
+	 *
+	 * @param $result mixed
+	 * @return View
+	 */
+	public static function ok_view($result) {
+		$view = new View('json');
+		$view->success = true;
+		$view->value = array('result' => $result);
+		return $view;
 	}
 
 	/**

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct access allowed.');
+<?php
 /**
  * HTML helper class.
  *
@@ -476,6 +476,46 @@ class html {
 		}
 
 		return $compiled;
+	}
+
+    /**
+	 * Takes an array of strings and returns a neat human-readable
+	 * comma-separated (with last item "and-ed") html escaped and quoted
+	 * string.
+	 * 	e.g.
+	 * 	  array('foo','bar','kek','lol')
+	 * 	  -> 'foo', 'bar', 'kek' and 'lol'
+     *
+     * @param $array Array of strings
+     * @return string
+     */
+    public static function get_delimited_string ($array, $quoted = true, $delimiter = ',', $conjunction = 'and') {
+
+		$count = count($array);
+		$quote = $quoted ? "'" : "";
+
+        if ($count === 0) return '';
+        elseif ($count === 1) return html::specialchars($quote . $array[0] . $quote);
+
+        $last = array_pop($array);
+        return array_reduce($array, function ($result, $value) use ($quote, $delimiter) {
+            if ($result === "") return html::specialchars($quote . $value . $quote);
+            return $result . html::specialchars("$delimiter $quote" . $value . $quote);
+        }, "") . html::specialchars(" $conjunction $quote" . $last . $quote);
+
+	}
+
+	public static function get_definition_list ($data) {
+		$html = "<dl>";
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				$html .= "<dt>$key</dt>";
+				$html .= "<dd>" . self::get_definition_list($value) . "</dd>";
+			} else {
+				$html .= "<dt>$key</dt><dd>$value</dd>";
+			}
+		}
+		return $html . "</dl>";
 	}
 
 } // End html

@@ -3,7 +3,6 @@ require_once (__DIR__ . '/../config.php');
 require_once (__DIR__ . '/../mayi.php');
 require_once (__DIR__ . '/Authorization.php');
 require_once (__DIR__ . '/../log.php');
-require_once (__DIR__ . '/../livestatus.php');
 require_once (__DIR__ . '/../objstore.php');
 
 /**
@@ -273,7 +272,8 @@ class op5auth implements op5MayI_Actor {
 		try {
 			$user = $driver->login($username, $password);
 		} catch (op5AuthException $e) {
-			$this->log->log('warning', $e);
+			$this->log->log('error', $e->getMessage());
+			$this->log->log('debug', $e);
 			$user = null;
 		}
 
@@ -642,6 +642,7 @@ class op5auth implements op5MayI_Actor {
 		$cfg = op5Config::instance();
 		$cfg->cascadeEditConfig('auth_groups.*', 'key', $old, $new);
 		$cfg->cascadeEditConfig('auth_users.*.groups.*', 'value', $old, $new);
+		$cfg->cascadeEditConfig('ninja_menu.*', 'key', $old, $new);
 	}
 
 	/**

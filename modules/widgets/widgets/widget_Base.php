@@ -99,7 +99,6 @@ class widget_Base {
 	 * @param $model Ninja_Widget_Model ORM Model for a ninja widget
 	 */
 	public function __construct(Widget_Model $model) {
-
 		try {
 			$this->widget_full_path = $model->widget_path();
 		} catch (Exception $e) {
@@ -107,31 +106,19 @@ class widget_Base {
 		}
 
 		$this->model = $model;
-		$option_manifest_path = $this->widget_full_path . '/options.php';
-		if (file_exists($option_manifest_path)) {
-			$this->options_definition = include(
-				$option_manifest_path
-			);
-		}
-
 	}
 
 	/**
 	 * Retrieves this widgets setting value for $key, if not yet configured it
 	 * will fetch the default from the widgets option definition
 	 *
-	 * NOTE: cannot be used if the widget does not yet use an options.php
-	 * definition file.
-	 *
 	 * @param $key string
 	 * @return mixed
 	 */
 	protected function get_setting ($key) {
-
-		if (isset($this->model->setting[$key])) {
-			return $this->model->setting[$key];
-		} elseif (isset($this->options_definition[$key], $this->options_definition[$key]['default'])) {
-			return $this->options_definition[$key]["default"];
+		$setting = $this->model->get_setting();
+		if (isset($setting[$key])) {
+			return $setting[$key];
 		}
 
 		op5log::instance('ninja')->log(
@@ -142,7 +129,6 @@ class widget_Base {
 		throw new WidgetSettingException(
 			"Invalid setting $key for widget '" . $this->model->get_name() . "'"
 		);
-
 	}
 
 	/**
@@ -188,8 +174,13 @@ class widget_Base {
 	public function get_arguments() {
 		$arguments = array();
 		foreach ($this->options() as $option) {
-			if (!is_string($option))
+			if ($option instanceof option) {
 				$arguments[$option->name] = $option->value($this->model->get_setting());
+			} elseif($option instanceof Form_Model) {
+				foreach($option->get_fields() as $field) {
+					$arguments[$field] = $option->get_value($field);
+				}
+			}
 		}
 		if (is_array($this->model->get_setting())) {
 			foreach ($this->model->get_setting() as $opt => $val) {
@@ -231,7 +222,7 @@ class widget_Base {
 	 *
 	 * Actual widgets typically want to extend this method.
 	 *
-	 * @return array
+	 * @return array of option
 	 */
 	public function options () {
 
@@ -260,38 +251,7 @@ class widget_Base {
 		$refresh->should_render_js(false);
 		$options['refresh'] = $refresh;
 
-		if (!isset($this->options_definition))
-			return $options;
-
-		foreach ($this->options_definition as $key => $def) {
-
-			$attr = array();
-			$label = $key;
-			$default = '';
-
-			if (is_string($def)) $type = $def;
-			elseif (is_array($def)) {
-
-
-				$type = $def['type'];
-				$label = isset($def['label']) ? $def['label'] : $key;
-				$default = isset($def['default']) ? $def['default'] : '';
-
-				if ($type === 'dropdown') {
-					$attr['options'] = isset($def['options']) ? $def['options'] : array();
-				}
-			}
-
-			$options[] = new option(
-				$this->model->get_name(),
-				$key, $label, $type, $attr, $default
-			);
-
-		}
-
 		return $options;
-
-
 	}
 
 	/**
@@ -314,6 +274,7 @@ class widget_Base {
 	public function render($method = 'index', $with_chrome = true) {
 
 		$title = $this->model->get_friendly_name();
+		$options = array();
 		ob_start();
 
 		/* Invoke "error-prone" methods first,
@@ -368,17 +329,28 @@ class widget_Base {
 		$editable = $this->editable;
 		$setting = $this->model->get_setting();
 
+		$has_refresh = false;
+		if (is_array($options) && isset($options['refresh'])) {
+			$has_refresh = true;
+		} elseif ($options instanceof Form_Model && !is_null($options->get_value('refresh_interval'))) {
+			$has_refresh = true;
+		}
+
 		$loaded = isset(self::$loaded_widgets[$this->model->get_name()]);
-		$template = new View('widget', array(
+		$props = array(
 				'classes' => $classes,
 				'key' => $this->model->get_key(),
+				'has_refresh' => $has_refresh,
 				'data_attributes' => $data_attributes,
 				'title' => $title,
-				'options' => $options,
 				'editable' => $editable,
 				'content' => $content,
 				'setting' => $setting
-		));
+			);
+		if(isset($options)) {
+			$props['options'] = $options;
+		}
+		$template = new View('widget', $props);
 
 		self::$loaded_widgets[$this->model->get_name()] = 1;
 
@@ -413,10 +385,9 @@ class widget_Base {
 		switch ($type) {
 		 case 'css':
 			return $files;
-			break;
-		 case 'js': default:
+		 case 'js':
+		 default:
 			return $files;
-			break;
 		}
 	}
 

@@ -1,5 +1,5 @@
 require 'fileutils'
-module Op5Cucumber::Widget
+module Widget
   class Widget
   end
 

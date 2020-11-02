@@ -27,11 +27,11 @@ $label_next = '<span class="icon-16 x16-arrow-right" title="'._('Next').'"></spa
 
 <div class="pagination_container">
 <?php
-	$paging_step = config::get('pagination.paging_step', '*'); # step used below to print nr of items per page
-	$max_items_per_page = config::get('pagination.max_items_per_page', '*'); # maximum items per page to show
+	$paging_step = config::get('pagination.paging_step'); # step used below to print nr of items per page
+	$max_items_per_page = config::get('pagination.max_items_per_page'); # maximum items per page to show
 	$entries = _('entries');
 	if (!isset($items_per_page)) {
-		$items_per_page = config::get('pagination.items_per_page', '*');
+		$items_per_page = config::get('pagination.items_per_page');
 	}
 	
 	$other_get_params = $_GET;

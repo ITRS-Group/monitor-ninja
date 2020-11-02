@@ -82,7 +82,7 @@ class Toolbar_Controller extends Ninja_Controller {
 			"orientation" => "right"
 		), $settings));
 
-		$this->menus[] = $view->render();
+		$this->menus[] = $view;
 
 	}
 
@@ -93,7 +93,7 @@ class Toolbar_Controller extends Ninja_Controller {
 			"orientation" => "right"
 		), $settings));
 
-		$this->menus[] = $view->render();
+		$this->menus[] = $view;
 	}
 
 	private function get_button_html () {
@@ -104,36 +104,61 @@ class Toolbar_Controller extends Ninja_Controller {
 			$a = array();
 			foreach ( $b[ "attr" ] as $k => $v )
 				$a[] = "$k=\"$v\"";
-			$h .= "<a " . implode( " ", $a ) . ">" . $b[ "name" ] . "</a>";
+			$h .= "<a " . implode( " ", $a ) . ">" . $b["name"] . "</a>";
 		}
-		$h .= implode("", $this->html_button_blobs);
 
-		return $h;
+		return $h . implode("", $this->html_button_blobs);
 
+	}
+
+	/**
+	 * @return array of Menu_Model
+	 */
+	public function get_menu() {
+		return $this->menus;
+	}
+
+	/**
+	 * Returns the title html render
+	 *
+	 * @return HTML String
+	 */
+	public function get_title_html () {
+		if (gettype( $this->title ) == "string") {
+			return '<div class="main-toolbar-title">' . html::specialchars($this->title) . '</div>';
+		}
+	}
+
+	/**
+	 * Returns the subtitle html render
+	 *
+	 * @return HTML String
+	 */
+	public function get_subtitle_html () {
+		if (gettype($this->subtitle) == "string") {
+			return '<div class="main-toolbar-subtitle">' . html::specialchars($this->subtitle) . '</div>';
+		} else {
+			return '<div class="main-toolbar-subtitle"></div>';
+		}
 	}
 
 	public function render () {
 
 		print '<div class="main-toolbar">';
 
-		if ( gettype( $this->title ) == "string" ) {
-			print '<div class="main-toolbar-title">' . $this->title . '</div>';
-		}
-
-		if ( gettype( $this->subtitle ) == "string" ) {
-			print '<div class="main-toolbar-subtitle">' . $this->subtitle . '</div>';
-		} else {
-			print '<div class="main-toolbar-subtitle"></div>';
-		}
+		print $this->get_title_html();
+		print $this->get_subtitle_html();		
 
 		if ( count( $this->info ) > 0 ) {
 			print '<div class="main-toolbar-info">';
-			foreach ( $this->info as $html ) print $html;
+			foreach ($this->info as $html)
+				print $html;
 			print '</div>';
 		}
 
 		if (count($this->menus) > 0) {
-			foreach ($this->menus as $html) print $html;
+			foreach ($this->menus as $html)
+				print $html;
 		}
 
 		if ($this->should_render_buttons) {
