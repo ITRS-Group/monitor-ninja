@@ -548,12 +548,14 @@ class op5auth implements op5MayI_Actor {
 		if(PHP_SAPI == 'cli') return;
 		if (session_id() !== '') {
 			$name = session_name();
-			@session_destroy();
 
 			$_SESSION = array();
 			unset($_COOKIE[$name]);
 			if(!headers_sent()) {
-				setcookie($name, '', -86400, null, null, false, false);
+				$params = session_get_cookie_params();
+				if (!setcookie($name, '', 0, $params['path'], $params['domain'], $params['secure'], $params['httponly'])) {
+					$this->log->log('warning', "Failed to delete cookie '$name'");
+				}
 			}
 		}
 	}
