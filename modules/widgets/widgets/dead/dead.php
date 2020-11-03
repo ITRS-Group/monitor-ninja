@@ -29,7 +29,7 @@ class Dead_Widget extends widget_Base {
 		echo '<div class="alert error"><h3>This widget failed to load</h3>';
 		echo '<p>This may be a temporary problem. If the problem persists, please contact your administrator.</p>';
 		if($this->exc !== null && $this->exc->getMessage()) {
-			echo '<p>Additional troubleshooting information: <strong>' . get_class($this->exc) . '</strong><em>(' . $this->exc->getMessage() . ')</em></p>';
+			echo '<p>Additional troubleshooting information: <strong>' . get_class($this->exc) . '</strong><em>(' . htmlspecialchars( $this->exc->getMessage(), ENT_NOQUOTES ) . ')</em></p>';
 			if(!IN_PRODUCTION) {
 				echo "<p>Also displaying full stack trace because <strong>IN_PRODUCTION</strong> is off:</p>";
 				echo "<pre>";
