@@ -476,7 +476,7 @@ class Tac_Controller extends Ninja_Controller {
 		if($_POST) {
 			$dashboard = $this->_current_dashboard();
 			if ($dashboard->get_can_write()) {
-				$dashboard->set_name( $this->input->post( 'name' ) );
+				$dashboard->set_name( html::specialchars($this->input->post( 'name' ) ));
 				$dashboard->save();
 			}
 			$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
