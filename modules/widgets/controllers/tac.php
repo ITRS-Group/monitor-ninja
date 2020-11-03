@@ -764,7 +764,7 @@ class Tac_Controller extends Ninja_Controller {
 		// Create new widget at position 0.
 		$widget_model = new Dashboard_Widget_Model();
 		$widget_model->set_dashboard_id($dashboard->get_id());
-		$widget_model->set_name($widget_name);
+		$widget_model->set_name(htmlspecialchars($widget_name, ENT_NOQUOTES));
 		$widget_model->set_position(array(
 			'c' => $cell_num,
 			'p' => 0
