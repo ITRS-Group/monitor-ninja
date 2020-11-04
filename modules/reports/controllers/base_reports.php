@@ -110,6 +110,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		if (is_resource($process)) {
 			// Render and store output
 			$content = $this->template->render();
+			$this->log->log('debug', "HTML: $content");
 			$this->auto_render = false;
 
 			$filename = $this->type;
@@ -146,7 +147,6 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			if ($return_value != 0) {
 				$this->log->log('debug', "Pdf command " . $command . " returned $return_value:");
 				$this->log->log('debug', "stderr: $err");
-				$this->log->log('debug', "stdout: $out");
 			}
 		} else {
 			$this->log->log('error', "Tried running the following command but was unsuccessful:");
