@@ -270,7 +270,7 @@ class Tac_Controller extends Ninja_Controller {
 			/* @var $user User_Model */
 			$dashboard = new Dashboard_Model();
 			$dashboard->set_username( $user->get_username() );
-			$dashboard->set_name( $this->input->post( 'name' ) );
+			$dashboard->set_name( html::specialchars($this->input->post( 'name' ) ));
 			$dashboard->set_layout( $this->input->post( 'layout', '3,2,1' ) );
 			$dashboard->save();
 			$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
@@ -476,7 +476,7 @@ class Tac_Controller extends Ninja_Controller {
 		if($_POST) {
 			$dashboard = $this->_current_dashboard();
 			if ($dashboard->get_can_write()) {
-				$dashboard->set_name( $this->input->post( 'name' ) );
+				$dashboard->set_name( html::specialchars($this->input->post( 'name' ) ));
 				$dashboard->save();
 			}
 			$this->template = new View( 'simple/redirect', array( 'target' => 'controller',
@@ -548,7 +548,7 @@ class Tac_Controller extends Ninja_Controller {
 			'POST',
 			array(
 				new Form_Field_Hidden_Model('dashboard_id'),
-				new Form_Field_HtmlDecorator_Model('Set dashboard "' . $dashboard->get_name() .  '" as login dashboard?')
+				new Form_Field_HtmlDecorator_Model('Set dashboard "' . html::specialchars($dashboard->get_name()) .  '" as login dashboard?')
 			)
 		);
 
