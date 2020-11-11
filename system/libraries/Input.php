@@ -45,13 +45,6 @@ class Input {
 
 		if (self::$instance === NULL)
 		{
-			// magic_quotes_runtime is enabled
-			if (get_magic_quotes_runtime())
-			{
-				echo ('Disable magic_quotes_runtime! It is evil and deprecated: http://php.net/magic_quotes');
-				exit(1);
-			}
-
 			// magic_quotes_gpc is enabled
 			if (get_magic_quotes_gpc())
 			{
