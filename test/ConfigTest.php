@@ -90,7 +90,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
         $configPermissionPairs = array(
             array(
                 'filename' => APPPATH . '/config/database.php',
-                'expectedPermission' => 640,
+                'expectedPermission' => 440,
                 'expectedOwner' => 'monitor',
                 'expectedGroup' => 'apache'
             )

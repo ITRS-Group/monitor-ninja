@@ -122,7 +122,7 @@ rm -rf %buildroot
 mkdir -p -m 755 %buildroot%prefix
 mkdir -p -m 775 %buildroot%prefix/upload
 mkdir -p -m 775 %buildroot%prefix/application/logs
-mkdir --parents --mode 775 %buildroot/var/log/op5/ninja
+mkdir -p -m 775 %buildroot/var/log/op5/ninja
 
 make install SYSCONFDIR=%buildroot%_sysconfdir PREFIX=%buildroot%prefix PHPDIR=%buildroot%phpdir ETC_USER=$(id -un) ETC_GROUP=$(id -gn) BINDIR=%buildroot/usr/bin
 
@@ -168,9 +168,9 @@ install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma
 
 mkdir -p %buildroot%_sysconfdir/%{httpconfdir}
 %if 0%{?rhel} >= 7
-install -m 640 op5build/ninja.httpd-conf.el7 %buildroot/etc/%{httpconfdir}/monitor-ninja.conf
+install -m 640 op5build/ninja.httpd-conf.el7 %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 %else
-install -m 640 op5build/ninja.httpd-conf %buildroot/etc/%{httpconfdir}/monitor-ninja.conf
+install -m 640 op5build/ninja.httpd-conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 %endif
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
@@ -221,23 +221,24 @@ fi
 sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 
 %files
-%defattr(-,%daemon_user,%daemon_group)
 %prefix
 %attr(644,root,root) /etc/cron.d/*
 %attr(755,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyc
 %attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyo
-%attr(-,root,%daemon_group) /etc/%{httpconfdir}/monitor-ninja.conf
+%attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 %attr(755,root,root) /usr/bin/op5-manage-users
 
 %dir %attr(775,%daemon_user,%daemon_group) %_sysconfdir/op5
 %config(noreplace) %attr(660,%daemon_user,%daemon_group) %_sysconfdir/op5/*.yml
 
 %dir %attr(775,%daemon_user,%daemon_group) /var/log/op5
-%dir /var/log/op5/ninja
+%dir %attr(775,%daemon_user,%daemon_group) /var/log/op5/ninja
+%dir %attr(-,-,%daemon_group) %prefix/upload
+%dir %attr(-,-,%daemon_group) %prefix/application/logs
 
-%attr(640,%daemon_user,%daemon_group) %prefix/application/config/database.php
-%config %attr(644,root, root) %_sysconfdir/logrotate.d/monitor-ninja
+%attr(440,%daemon_user,%daemon_group) %prefix/application/config/database.php
+%config %_sysconfdir/logrotate.d/monitor-ninja
 
 %phpdir/op5
 %exclude %phpdir/op5/ninja_sdk
@@ -262,11 +263,10 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %endif
 
 %files monitoring
-%defattr(-,monitor,%daemon_group)
 %prefix/modules/monitoring
 
 %files test
-%defattr(-,monitor,%daemon_group)
+%defattr(-,%daemon_user,%daemon_group)
 %prefix/src
 %prefix/features
 %prefix/test
