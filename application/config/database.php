@@ -29,7 +29,7 @@ $config['default'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'mysql',
+		'type'     => 'mysqli',
 		'user'     => 'merlin',
 		'pass'     => 'merlin',
 		'host'     => 'localhost',
@@ -53,7 +53,7 @@ $config['nacoma'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'mysql',
+		'type'     => 'mysqli',
 		'user'     => 'nacoma',
 		'pass'     => 'nacoma',
 		'host'     => 'localhost',
