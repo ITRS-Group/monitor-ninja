@@ -150,6 +150,7 @@ class op5Authorization {
 				'management_pack_view_all' => '',
 				'management_pack_edit_all' => ''),
 			'configuration' => array ('export' => '','configuration_all' => ''),
+			'dokuwiki' => array ('wiki' => '','wiki_admin' => ''),
 			'nagvis' => array ('nagvis_add_delete' => '','nagvis_view' => '',
 				'nagvis_edit' => '','nagvis_admin' => ''),
 			'logger' => array('logger_access' => '', 'logger_configuration' => '', 'logger_schedule_archive_search' => ''),
@@ -172,6 +173,7 @@ class op5Authorization {
 	public static function nagios_rights_to_op5auth($access_rights) {
 		$translated_access_levels = array ();
 
+		$translated_access_levels['wiki'] = true;
 		$translated_access_levels['api_status'] = true;
 		$translated_access_levels['api_report'] = true;
 		if (array_search('authorized_for_system_commands', $access_rights) !==
