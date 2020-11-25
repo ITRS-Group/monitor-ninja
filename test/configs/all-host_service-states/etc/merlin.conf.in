@@ -51,7 +51,7 @@ daemon {
 		user = merlin;
 		pass = merlin;
 		host = localhost;
-		type = mysqli;
+		type = mysql;
 	}
 
 	# this section describes how we handle config synchronization
