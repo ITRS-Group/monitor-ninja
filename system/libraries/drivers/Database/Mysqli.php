@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Database_Mysqli_Driver extends Database_Mysql_Driver {
+class Database_Mysqli_Driver extends Database_Driver {
 
 	// Database connection link
 	protected $link;
@@ -91,6 +91,69 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 			throw new Kohana_Database_Exception('database.error', $this->show_error());
 	}
 
+	public function escape_table($table)
+	{
+		if (!$this->db_config['escape'])
+			return $table;
+
+		if (stripos($table, ' AS ') !== FALSE)
+		{
+			// Force 'AS' to uppercase
+			$table = str_ireplace(' AS ', ' AS ', $table);
+
+			// Runs escape_table on both sides of an AS statement
+			$table = array_map(array($this, __FUNCTION__), explode(' AS ', $table));
+
+			// Re-create the AS statement
+			return implode(' AS ', $table);
+		}
+		return '`'.str_replace('.', '`.`', $table).'`';
+	}
+
+	public function escape_column($column)
+	{
+		if (!$this->db_config['escape'])
+			return $column;
+
+		if (strtolower($column) == 'count(*)' OR $column == '*')
+			return $column;
+
+		// This matches any modifiers we support to SELECT.
+		if ( ! preg_match('/\b(?:rand|all|distinct(?:row)?|high_priority|sql_(?:small_result|b(?:ig_result|uffer_result)|no_cache|ca(?:che|lc_found_rows)))\s/i', $column))
+		{
+			if (stripos($column, ' AS ') !== FALSE)
+			{
+				// Force 'AS' to uppercase
+				$column = str_ireplace(' AS ', ' AS ', $column);
+
+				// Runs escape_column on both sides of an AS statement
+				$column = array_map(array($this, __FUNCTION__), explode(' AS ', $column));
+
+				// Re-create the AS statement
+				return implode(' AS ', $column);
+			}
+
+			return preg_replace('/[^.*]+/', '`$0`', $column);
+		}
+
+		$parts = explode(' ', $column);
+		$column = '';
+
+		for ($i = 0, $c = count($parts); $i < $c; $i++)
+		{
+			// The column is always last
+			if ($i == ($c - 1))
+			{
+				$column .= preg_replace('/[^.*]+/', '`$0`', $parts[$i]);
+			}
+			else // otherwise, it's a modifier
+			{
+				$column .= $parts[$i].' ';
+			}
+		}
+		return $column;
+	}	
+
 	public function stmt_prepare($sql = '')
 	{
 		is_object($this->link) or $this->connect();
@@ -105,6 +168,86 @@ class Database_Mysqli_Driver extends Database_Mysql_Driver {
 		is_object($this->link) or $this->connect();
 
 		return $this->link->real_escape_string($str);
+	}
+
+
+	public function limit($limit, $offset = 0)
+	{
+		return 'LIMIT '.$offset.', '.$limit;
+	}
+
+	public function compile_select($database)
+	{
+		$sql = ($database['distinct'] == TRUE) ? 'SELECT DISTINCT ' : 'SELECT ';
+		$sql .= (count($database['select']) > 0) ? implode(', ', $database['select']) : '*';
+
+		if (count($database['from']) > 0)
+		{
+			// Escape the tables
+			$froms = array();
+			foreach ($database['from'] as $from)
+			{
+				$froms[] = $this->escape_column($from);
+			}
+			$sql .= "\nFROM ";
+			$sql .= implode(', ', $froms);
+		}
+
+		if (count($database['join']) > 0)
+		{
+			foreach($database['join'] AS $join)
+			{
+				$sql .= "\n".$join['type'].'JOIN '.implode(', ', $join['tables']).' ON '.$join['conditions'];
+			}
+		}
+
+		if (count($database['where']) > 0)
+		{
+			$sql .= "\nWHERE ";
+		}
+
+		$sql .= implode("\n", $database['where']);
+
+		if (count($database['groupby']) > 0)
+		{
+			$sql .= "\nGROUP BY ";
+			$sql .= implode(', ', $database['groupby']);
+		}
+
+		if (count($database['having']) > 0)
+		{
+			$sql .= "\nHAVING ";
+			$sql .= implode("\n", $database['having']);
+		}
+
+		if (count($database['orderby']) > 0)
+		{
+			$sql .= "\nORDER BY ";
+			$sql .= implode(', ', $database['orderby']);
+		}
+
+		if (is_numeric($database['limit']))
+		{
+			$sql .= "\n";
+			$sql .= $this->limit($database['limit'], $database['offset']);
+		}
+
+		return $sql;
+	}
+
+	public function list_tables(Database $db)
+	{
+		static $tables;
+
+		if (empty($tables) AND $query = $db->query('SHOW TABLES FROM '.$this->escape_table($this->db_config['connection']['database'])))
+		{
+			foreach ($query->result(FALSE) as $row)
+			{
+				$tables[] = current($row);
+			}
+		}
+
+		return $tables;
 	}
 
 	public function show_error()
