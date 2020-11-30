@@ -32,7 +32,7 @@ class Report_Engine_Test extends PHPUnit_Framework_TestCase {
 				$db_host = $connection['host'];
 			if (isset($connection['type']) && $connection['type']) {
 				$db_type = $connection['type'];
-                // merlin import doesn't understand mysqli
+				// merlin import doesn't understand mysqli
                 if ($db_type === "mysqli") {
                     $db_type = "mysql";
                 }
