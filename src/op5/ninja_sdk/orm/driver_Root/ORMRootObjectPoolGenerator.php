@@ -32,7 +32,7 @@ class ORMRootObjectPoolGenerator extends ORMRootGenerator {
 		$this->write( '}' );
 
 		$this->write( 'if( isset(self::$table_classes[$name]) ) {' );
-        $this->write(     'return new self::$table_classes[$name]["pool"]();' );
+		$this->write(     'return new self::$table_classes[$name]["pool"]();' );
 		$this->write( '}' );
 
 		$this->write( 'throw new ORMException("Unknown table ".$name);' );

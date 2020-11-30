@@ -53,7 +53,7 @@ $config['nacoma'] = array
 	'persistent'    => FALSE,
 	'connection'    => array
 	(
-		'type'     => 'mysqli',
+		'type'     => 'mysql',
 		'user'     => 'nacoma',
 		'pass'     => 'nacoma',
 		'host'     => 'localhost',
