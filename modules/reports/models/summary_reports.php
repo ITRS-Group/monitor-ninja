@@ -360,13 +360,6 @@ class Summary_Reports_Model extends Reports_Model
 		$querym = new Report_query_builder_Model($this->db_table, $this->options);
 		$query = $querym->build_alert_summary_query('*');
 
-		$query .= ' ORDER BY timestamp '.(isset($this->options['oldest_first']) && $this->options['oldest_first']?'ASC':'DESC');
-		if ($this->options['summary_items'] > 0) {
-			$query .= " LIMIT " . $this->options['summary_items'];
-			if (isset($this->options['page']) && $this->options['page'])
-				$query .= ' OFFSET ' . ($this->options['summary_items'] * ($this->options['page'] - 1));
-		}
-
 		$query = '
 			SELECT
 				data.*,
@@ -379,6 +372,14 @@ class Summary_Reports_Model extends Reports_Model
 				AND data.host_name = comments.host_name
 				AND data.service_description = comments.service_description
 				AND data.event_type = comments.event_type';
+
+		$query .= ' ORDER BY data.timestamp '.(isset($this->options['oldest_first']) && $this->options['oldest_first']?'ASC':'DESC');
+
+		if ($this->options['summary_items'] > 0) {
+			$query .= " LIMIT " . $this->options['summary_items'];
+			if (isset($this->options['page']) && $this->options['page'])
+				$query .= ' OFFSET ' . ($this->options['summary_items'] * ($this->options['page'] - 1));
+		}
 
 		$dbr = $this->db->query($query)->result(false);
 		if (!is_object($dbr)) {
