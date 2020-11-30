@@ -172,7 +172,7 @@ class op5Log {
 		$reference = '';
 		if(isset($config['reference']) && $config['reference']) {
 			$stack = debug_backtrace();
-			@$reference = ' ' . $stack[1]['class'] . ' @' . $stack[1]['line'];
+			@$reference = ' ' . $stack[2]['class'] . ' @' . $stack[1]['line'];
 		}
 
 		/*
