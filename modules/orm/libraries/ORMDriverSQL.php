@@ -140,7 +140,7 @@ class ORMDriverSQL implements ORMDriverInterface {
 		}
 
 		$q = $db->query($sql);
-		$q->result(false, MYSQL_NUM);
+		$q->result(false, MYSQLI_NUM);
 
 		$fetched_columns_raw = $q->list_fields(true);
 

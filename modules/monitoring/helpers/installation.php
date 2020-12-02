@@ -15,7 +15,7 @@ class installation
 		}
 		$db = Database::instance();
 		try {
-			$timerow = $db->query('SELECT MIN(timestamp) FROM report_data')->result_array(false, MYSQL_NUM);
+			$timerow = $db->query('SELECT MIN(timestamp) FROM report_data')->result_array(false, MYSQLI_NUM);
 		} catch (Kohana_Database_Exception $e) {
 			return 0;
 		}
