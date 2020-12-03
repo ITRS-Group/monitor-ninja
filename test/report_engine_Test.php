@@ -30,9 +30,15 @@ class Report_Engine_Test extends PHPUnit_Framework_TestCase {
 				$db_pass = $connection['pass'];
 			if (isset($connection['host']) && $connection['host'])
 				$db_host = $connection['host'];
-			if (isset($connection['type']) && $connection['type'])
+			if (isset($connection['type']) && $connection['type']) {
 				$db_type = $connection['type'];
+				// merlin import doesn't understand mysqli
+				if ($db_type === "mysqli") {
+					$db_type = "mysql";
+				}
+			}
 		}
+
 		$importer = '$(rpm --eval %{_libdir})/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg';
 
 		$glob_path = __DIR__.'/reports/*.tst.php';
