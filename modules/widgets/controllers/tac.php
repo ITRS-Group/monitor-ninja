@@ -814,7 +814,7 @@ class Tac_Controller extends Ninja_Controller {
 
 		$dashboard_set = $this->_current_dashboard()->get_dashboard_widgets_set();
 		$widget_model = $dashboard_set->intersect(
-			Dashboard_WidgetPool_Model::set_by_key($this->input->post('key'))
+			Dashboard_WidgetPool_Model::set_by_key($widget_key)
 		)->one();
 
 		$this->template = new View('json');
