@@ -359,7 +359,7 @@ function widget(key) {
 widget.prototype.save_settings_delayed = function() {
 	var self = this;
 	// Reset hover title
-	$(this["header"]).find(".widget-editlink").attr("title", $.fn.EasyWidgets.defaults.i18n.editTitle );
+	$(this['header']).find('.widget-editlink').attr('title', $.fn.EasyWidgets.defaults.i18n.editTitle );
 
 	if (this.save_settings_timer)
 		clearTimeout(this.save_settings_timer);
