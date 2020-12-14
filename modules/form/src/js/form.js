@@ -29,6 +29,8 @@ var FormModule = (function () {
 		var editbox = form.closest('.widget-editbox');
 		setTimeout(function() {
 			form.find('.nj-form-option').trigger('change');
+			// Reset hover title on cog wheel icon (edit widget)
+			$( editbox ).prev().prev().find(".widget-editlink").attr("title", $.fn.EasyWidgets.defaults.i18n.editTitle);
 			//cancel button click event to show widget content
 			editbox.hide();
 			editbox.next('.widget-content').show();

@@ -259,6 +259,19 @@ class bignumber_Widget extends widget_Base {
 				unset($settings['service']);
 			}
 		}
+		// defining an array for the columns in bignumber widget storing integers
+		// to be able to cast the values which are always string since the data
+		// comes from a JSON object
+		$widget_integer_columns = array(
+			'main_filter_id' => 'integer',
+			'selection_filter_id' => 'integer',
+			'selection_filter_id' => 'integer',
+			'refresh_interval' => 'integer'
+		);
+
+		foreach($widget_integer_columns as $key => $variable_type) {
+			settype($settings[$key], $variable_type);
+		}
 
 		$form_model->set_values($settings);
 		$form_model->set_optional(array('title', 'refresh_interval'));

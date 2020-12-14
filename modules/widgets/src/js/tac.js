@@ -358,6 +358,9 @@ function widget(key) {
 	 */
 widget.prototype.save_settings_delayed = function() {
 	var self = this;
+	// Reset hover title
+	$(this["header"]).find(".widget-editlink").attr("title", $.fn.EasyWidgets.defaults.i18n.editTitle );
+
 	if (this.save_settings_timer)
 		clearTimeout(this.save_settings_timer);
 	this.set_loading(true);
@@ -495,7 +498,10 @@ widget.prototype.update_widget = function() {
 				var title = self.title_element;
 				if (data.custom_title) {
 					title.text(data.custom_title);
-					self.form.find('*[name="title"]').val(data.custom_title);
+					// only update widget title when the title field doesn´t have focus
+					if(document.activeElement.id != self.form.find('*[name="title"]').attr("id") ) {
+						self.form.find('*[name="title"]').val(data.custom_title);
+					}
 				} else {
 					title.text(data.title);
 				}

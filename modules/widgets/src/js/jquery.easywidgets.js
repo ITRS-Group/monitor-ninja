@@ -624,7 +624,7 @@
             confirmMsg: 'Remove this widget?',
 
             // Widget cancel edit link title
-            cancelEditTitle: 'Cancel edition',
+            cancelEditTitle: 'Cancel editing',
 
             // Widget extend link title
             extendTitle: 'Extend this widget',
