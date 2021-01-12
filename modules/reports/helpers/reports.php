@@ -279,7 +279,7 @@ class reports
 	*Return the timezone list for report
 	*
 	*/
-	public function timezone_list(){
+	public static function timezone_list(){
 		if (!apc_exists('timezone_list')){
 			ini_set('memory_limit', '256M');
 			$zones_array = array();
