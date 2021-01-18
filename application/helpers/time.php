@@ -106,8 +106,8 @@ class time
 			       $time_end = $now;
 			       break;
 			case 'lastweek':
-			       $time_start = strtotime('monday last week', strtotime('midnight -1 sec', $now));
-			       $time_end = strtotime('monday', strtotime('midnight -1 sec', $now));
+			       $time_start = strtotime('monday last week 00:00:00');
+			       $time_end = strtotime('sunday last week 23:59:59');
 			       break;
 			case 'thismonth':
 			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
