@@ -106,9 +106,16 @@ class time
 			       $time_end = $now;
 			       break;
 			case 'lastweek':
-			       $time_start = strtotime('monday last week 00:00:00', $now);
-			       $time_end = strtotime('sunday last week 23:59:59', $now);
-			       break;
+				/* A bug in PHP 5.4 causes relative terms like "last week" to not function
+				on Sundays. We have confirmed this works as expected in PHP 5.6.29. This
+				workaround rewinds the given timestamp by one day only in the case of
+				sundays to work around this issue. MON-12548 */
+				if(gmdate("l",$now) === "Sunday" && version_compare(phpversion(), '5.6.29', '<')){
+					$now = $now-86400;
+				}
+				$time_start = strtotime('monday last week 00:00:00', $now);
+				$time_end = strtotime('sunday last week 23:59:59', $now);
+				break;
 			case 'thismonth':
 			       $time_start = strtotime('midnight '.$year_now.'-'.$month_now.'-01');
 			       $time_end = $now;
