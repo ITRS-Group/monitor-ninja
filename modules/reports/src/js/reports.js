@@ -1,13 +1,13 @@
 $(document).ready(function() {
 	// reset options and reload page
-	$('#new_report').click(function() {
+	$('#new_report').on('click', function() {
 		var current_report = $('input[name=type]').val();
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
 		var uri_xtra = current_report == 'avail' ? '' : '?type=sla';
 		self.location.href = base_uri + uri_xtra;
 	});
 
-	$('#include_trends').click(function() {
+	$('#include_trends').on('click', function() {
 		if (this.checked) {
 			$('#include_trends_scaling').attr('disabled', false);
 		} else {
@@ -16,12 +16,12 @@ $(document).ready(function() {
 		}
 	});
 
-	$("#report_period").bind('change', function() {
+	$("#report_period").on('change', function() {
 		show_calendar($(this).attr('value'));
 	});
 	show_calendar($("#report_period").attr('value'));
 
-	$('.autofill').click(function() {
+	$('.autofill').on('click', function() {
 		var the_val = $(this).siblings('input').val();
 		if (the_val!='') {
 			if (!confirm(_reports_propagate.replace('this value', the_val+'%'))) {
@@ -36,9 +36,9 @@ $(document).ready(function() {
 		}
 	});
 
-	$("#new_schedule_btn").click(function() {$('.schedule_error').hide();})
+	$("#new_schedule_btn").on('click', function() {$('.schedule_error').hide();})
 
-	$('#filename').blur(function() {
+	$('#filename').on('blur', function() {
 		// Make sure the filename is explicit by adding it when focus leaves input
 		var input = $(this);
 		var filename = input.val();
@@ -51,7 +51,7 @@ $(document).ready(function() {
 		input.val(filename);
 	});
 
-	$('#include_trends').live('click', function(ev) {
+  $(document).on('click', '#include_trends', function(ev) {
 		if (ev.target.checked)
 			$('.trend_options').show();
 		else

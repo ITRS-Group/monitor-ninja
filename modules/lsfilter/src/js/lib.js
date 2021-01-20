@@ -58,7 +58,7 @@ function link(rel_url, args)
 }
 function link_fnc(fnc)
 {
-	return $('<a />').click(fnc);
+	return $('<a />').on('click', fnc);
 }
 function link_query(query)
 {

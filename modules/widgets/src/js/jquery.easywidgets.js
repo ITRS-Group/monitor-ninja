@@ -944,14 +944,14 @@
         var s = settings;
         sortableItems.find(s.selectors.header).css({
             cursor: 'move'
-        }).mousedown(function(e) {
+        }).on('mousedown', function(e) {
             var header = $(this);
             var widget = header.parent();
             sortableItems.css({ width: '' });
             widget.css({
                 width: widget.width() + 'px'
             });
-        }).mouseup(function() {
+        }).on('mouseup', function() {
             var header = $(this);
             var widget = header.parent();
             if (!widget.hasClass('dragging')) {
@@ -1133,9 +1133,9 @@
 						content.hide();
 					}
 					}
-					$(link).mousedown(function(e) {
+					$(link).on('mousedown',function(e) {
 						e.stopPropagation();
-					}).click(function() {
+					}).on('click', function() {
 						var canExtend = true;
 						var canCollapse = true;
 						var link = $(this);
@@ -1214,7 +1214,7 @@
 					s.i18n.editTitle,
 					s.selectors.editLink
 				);
-				widget.find(s.selectors.closeEdit).click(function(e) {
+				widget.find(s.selectors.closeEdit).on('click', function(e) {
 					var link = $(this);
 					var widget = link.parents(s.selectors.widget);
 					var editbox = widget.find(s.selectors.editbox);
@@ -1230,9 +1230,9 @@
 					editLink.attr('title', s.i18n.editTitle);
 					return false;
 				});
-				$(link).mousedown(function(e) {
+				$(link).on('mousedown, function(e) {
 					e.stopPropagation();
-				}).click(function() {
+				}).on('click', function() {
 					var link = $(this);
 					var canShow = canHide = true;
 					var widget = link.parents(s.selectors.widget);
@@ -1302,9 +1302,9 @@
         s.i18n.closeTitle,
         s.selectors.closeLink
       );
-            $(link).mousedown(function(e) {
+            $(link).on('mousedown', function(e) {
                 e.stopPropagation();
-            }).click(function() {
+            }).on('click', function() {
                 var link = $(this);
                 var canRemove = true;
                 var widget = link.parents(s.selectors.widget);

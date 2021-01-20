@@ -196,7 +196,7 @@ $(function() {
 						{type: 'hidden', name: 'dashboard_id', value: _dashboard_id}
 					))
 				.appendTo('body')
-				.submit();
+				.trigger('submit');
 		}
 	);
 

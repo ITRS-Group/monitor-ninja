@@ -225,7 +225,7 @@ var lsfilter_main = {
 	update_page_links : function() {
 		var self = this; // To be able to access it from within handlers
 		$(
-				'a[href^="' + _site_domain + _index_page + '/' + _controller_name + '"]').click(function(evt) {
+				'a[href^="' + _site_domain + _index_page + '/' + _controller_name + '"]').on('click', function(evt) {
 			var href = $(this).attr('href');
 			var args = self.parseParams(href);
 			if (args.q) {
@@ -233,8 +233,8 @@ var lsfilter_main = {
 				lsfilter_main.update(args.q, 'external_link', '');
 
 				var content_div = $( "body > .container > #content" )
-				content_div.click();
-				content_div.focus();
+				content_div.on('click');
+				content_div.trigger('focus');
 
 				return false;
 

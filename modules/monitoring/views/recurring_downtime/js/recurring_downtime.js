@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $("#setup_form").bind('submit', function() {
+  $("#setup_form").on('submit', function() {
     return check_setup();
   });
 
@@ -94,7 +94,7 @@ $(document).ready(function() {
             window.setTimeout(function() {
               lsfilter_main.refresh();
             }, 1500);
-          } 
+          }
           else {
             $.notify('An unexpected error occured', {'sticky':true});
           }
@@ -107,7 +107,7 @@ $(document).ready(function() {
        return false;
   });
 
-  $('#fixed').bind('change', function() {
+  $('#fixed').on('change', function() {
     if ($(this).is(':checked')){
       $('#rec-flexible-part').show();
       $('#rec-fixed-part .label').html("Start between");
@@ -128,7 +128,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#recurrence').bind('change', function() {
+  $('#recurrence').on('change', function() {
     if($(this).val() == 'custom'){
       $('.recurrence').show();
       if($('.repeat-text').val() == "week"){
@@ -136,7 +136,7 @@ $(document).ready(function() {
         $('#recurrence-on-week').show();
       }
       if($('.repeat-text').val() == "month"){
-        $('.recurrence-on').show(); 
+        $('.recurrence-on').show();
         $('#recurrence-on-month').show();
       }
       if($('.repeat-text').val() == "year"){
@@ -180,7 +180,7 @@ $(document).ready(function() {
     }
   });
 
-  $('.recurrence .repeat-text').bind('change', function() {
+  $('.recurrence .repeat-text').on('change', function() {
     if($(this).val() == "week"){
       $('.recurrence-on').show();
       $('#recurrence-on-week').show();
@@ -200,16 +200,16 @@ $(document).ready(function() {
       $('#recurrence-on-year').hide();
     }
     if($(this).val() == "day"){
-      $('.recurrence-on').hide(); 
+      $('.recurrence-on').hide();
     }
   });
 
   $(document).on('change', 'input[name="recurrence_no"]', function() {
     $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
-  });  
+  });
   $(document).on('change', 'select[name="recurrence_text"]', function() {
     $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
-  });  
+  });
   $(document).on('click', '#rec-on-week-days span', function() {
     $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
   });
@@ -227,35 +227,36 @@ $(document).ready(function() {
   });
 
   $('#progress').css('position', 'absolute').css('top', '90px').css('left', '470px');
-  
+
   $('#select-all-days').on('click', function() {
     $('.recurring_day').prop('checked', true);
   });
-  
+
   $('#deselect-all-days').on('click', function() {
     $('.recurring_day').prop('checked', false);
   });
-  
+
   $('#select-all-months').on('click', function() {
     $('.recurring_month').prop('checked', true);
   });
-  
+
   $('#deselect-all-months').on('click', function() {
     $('.recurring_month').prop('checked', false);
   });
-  
+
   $('input.date-picker').datepicker({
+    firstDay: 1,
     dateFormat: "yy-mm-dd",
     minDate: 0
   });
-  
-  $('#fixed-duration-start-time').click(function(e){
+
+  $('#fixed-duration-start-time').on('click', function(e){
     $('.starttime-quickselect').html(quickselect_data($(this).val(),"s"));
     $('.starttime-quickselect').show();
     document.getElementById('starttime-options').scrollTop = document.getElementById('s'+$(this).val()).offsetTop;
     e.stopPropagation();
   });
-  
+
   $('.starttime-quickselect').on('click', 'div.time', function() {
     var selected_time = $(this).html();
     $('#fixed-duration-start-time').val(selected_time);
@@ -263,7 +264,7 @@ $(document).ready(function() {
     $( ".fixed-duration-part" ).trigger( "change" );
   });
 
-  $('#fixed-duration-end-time').click(function(e){
+  $('#fixed-duration-end-time').on('click', function(e){
     $('.endtime-quickselect').html(quickselect_data($(this).val(),"e"));
     $('.endtime-quickselect').show();
     document.getElementById('endtime-options').scrollTop = document.getElementById('e'+$(this).val()).offsetTop;
@@ -277,7 +278,7 @@ $(document).ready(function() {
     $( ".fixed-duration-part" ).trigger( "change" );
   });
 
-  $(document).click(function(){
+  $(document).on('click', function(){
     $('.quickselect').hide();
   });
 
@@ -308,11 +309,11 @@ $(document).ready(function() {
                         var edit_day_box = localStorage.getItem('edit_day_box');
                         if(edit_day_box != 1){
                                 set_startdate(selected_day, selected_day_no, 0);
-                        }      
+                        }
                         localStorage.setItem('edit_day_box', 0);
-                }else{ 
+                }else{
                         set_startdate(selected_day, selected_day_no, 0);
-                }   
+                }
       }
     }
   });
@@ -324,7 +325,7 @@ $(document).ready(function() {
       if($('.repeat-text').val() == "month"){
         set_startdate(selected_day, selected_day_no, 0);
       }
-    } 
+    }
   });
 
   $('body').on('change', '#rec-on-last-day-month', function(){
@@ -476,7 +477,7 @@ $(document).ready(function() {
     }
   };
 
-  $('.fixed-duration-part').bind('change', function() {
+  $('.fixed-duration-part').on('change', function() {
     set_endTime();
     var start_time = $('#fixed-duration-start-time').val();
     var start_date = $('#fixed-duration-start-date').val();
@@ -490,7 +491,7 @@ $(document).ready(function() {
     if(end_time == ''){
       pre_end_time = JSON.parse(localStorage.getItem('end_time'));
       $('#fixed-duration-end-time').val(pre_end_time);
-    }  
+    }
 
     if(start_date == ''){
       pre_start_date = JSON.parse(localStorage.getItem('start_date'));
@@ -622,11 +623,11 @@ $(document).ready(function() {
     }
   });
 
-  $('.recurring-downtime-form input').bind('change', function() {
+  $('.recurring-downtime-form input').on('change', function() {
     summary_show();
   });
 
-  $('.recurring-downtime-form select').bind('change', function() {
+  $('.recurring-downtime-form select').on('change', function() {
     summary_show();
   });
 
@@ -674,13 +675,13 @@ $(document).ready(function() {
 
     $('input[name="recurrence_no"]').val(get_recurrence.no);
     if(get_recurrence.text == 'day'){
-      $('select[name="recurrence_text"]').find('option:contains("Day")').attr("selected",true); 
+      $('select[name="recurrence_text"]').find('option:contains("Day")').attr("selected",true);
     }
 
     if(get_recurrence.text == 'week'){
       $('select[name="recurrence_text"]').find('option:contains("Week")').attr("selected",true);
       $.each(get_recurrence_on, function (key, value) {
-        $('#rec-on-week-days span[wno='+value.day+']').trigger("click");
+        $('#rec-on-week-days span[wno='+value.day+']').on("click");
       })
     }
 
@@ -704,7 +705,7 @@ $(document).ready(function() {
         $('input[name="year_on"][editattr="lastmonthday"]').prop("checked",true);
       }else{
         $('input[name="year_on"][editattr="dayweekday"]').prop("checked",true);
-      }   
+      }
     }
 
     if(_recurrence_ends == 0){
@@ -716,7 +717,7 @@ $(document).ready(function() {
       $('input[name="ends"][value="finite_ends"]').prop("checked",true);
       $('input[name="finite_ends_value"]').val(_recurrence_ends);
     }
-    
+
     $('#exclude_days_all').val(get_exclude_days);
     var arr_exclude_days = get_exclude_days.split(',');
     var i = 0;
@@ -824,7 +825,7 @@ function summary_show(){
             var next_i = i+1;
             if($('input[name="week_on_day[]"]:checked')[next_i]){
               all_selected_day += ', ';
-              all_selected_day += day; 
+              all_selected_day += day;
             }else{
               all_selected_day += ' and ';
               all_selected_day += day;
@@ -992,7 +993,7 @@ function summary_show(){
         var repeat_every_no = 1;
         if(repeat_every_no == 1){
           var repeat_every_str = "daily";
-        }else{  
+        }else{
           var repeat_every_str = "every " + repeat_every_no + " days";
         }
         var next_start_time = start_time;
@@ -1125,7 +1126,7 @@ function summary_show(){
          if($('input[excludeId="exclude-date-end-'+arr[3]+'"]').val() != '' ){
           dates += ' to ';
           dates += $('input[excludeId="exclude-date-end-'+arr[3]+'"]').val();
-          
+
         }
         dates_all = dates+',';
         var next_j = j+1;
@@ -1153,12 +1154,12 @@ function quickselect_data(time,pre){
   var data = '';
   var hour = parseInt(time[0]);
   var min = (parseInt(time[1])<30)? 00 : 30;
-  var start = hour+1; 
+  var start = hour+1;
   var start_i = false;
   for(i = start; i<24; i++){
     if(!min && !start_i){
       data += '<div id="'+pre+''+format_hour(hour)+':30" class="time">'+format_hour(hour)+':30</div>';
-      start_i = true; 
+      start_i = true;
     }
     data += '<div id="'+pre+''+format_hour(i)+':00" class="time">'+format_hour(i)+':00</div>';
     data += '<div id="'+pre+''+format_hour(i)+':30" class="time">'+format_hour(i)+':30</div>';
@@ -1195,7 +1196,7 @@ function endtime_quickselect_data(time){
 
 function format_time(time) {
   if(time < 10){
-    return '0'+time; 
+    return '0'+time;
   }else{
     return time;
   }
@@ -1240,15 +1241,15 @@ return true;
 
 
 function check_timestring_duration(timestring) {
-     // We have 00d 00h 00m 00s 
+     // We have 00d 00h 00m 00s
      var timeparts = timestring.split(' ');
-     if (timeparts.length !== 4 
-      || timeparts[0].substr(timeparts[0].length - 1) !== 'd' 
+     if (timeparts.length !== 4
+      || timeparts[0].substr(timeparts[0].length - 1) !== 'd'
       || timeparts[1].substr(timeparts[1].length - 1) !== 'h'
-      || timeparts[2].substr(timeparts[2].length - 1) !== 'm' 
-      || timeparts[1].slice(0, -1) > 23 
+      || timeparts[2].substr(timeparts[2].length - 1) !== 'm'
+      || timeparts[1].slice(0, -1) > 23
       || timeparts[2].slice(0, -1) > 59
-      || timeparts[3].slice(0, -1) > 59       
+      || timeparts[3].slice(0, -1) > 59
       ) {
        return false;
    }
@@ -1309,7 +1310,7 @@ function check_setup() {
     fixed = 1;
   }
   var d = new Date();
-  var startDate = new Date(start_date+"T"+start_time); 
+  var startDate = new Date(start_date+"T"+start_time);
   if (startDate.getYear() == d.getYear() && startDate.getMonth() == d.getMonth() && startDate.getDate() == d.getDate()) {
     if (confirm("The schedule you are creating matches today, would you like to schedule a downtime for today?\nClick 'Cancel' to save your recurring schedule without scheduling a downtime for today or 'Ok' to save recurring schedule and schedule downtimes today.")) {
       // Downtime type string

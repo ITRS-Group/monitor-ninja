@@ -59,7 +59,7 @@ $(document).ready(function() {
 		// the "Shedule report" page, which is why this check exists.
 		return;
 	}
-	$("#saved_report_id, #period").change(create_filename);
+	$("#saved_report_id, #period").on('change', create_filename);
 	fill_scheduled();
 	setup_editable();
 
@@ -67,9 +67,9 @@ $(document).ready(function() {
 	$('body').on('click', '.delete_schedule', schedule_delete);
 	$('body').on('click', '.send_report_now', send_report_now);
 
-	$("#type").change(fill_saved_reports).each(fill_saved_reports);
+	$("#type").on('change', fill_saved_reports).each(fill_saved_reports);
 
-	$('#new_schedule_report_form').submit(function(ev) {
+	$('#new_schedule_report_form').on('submit', function(ev) {
     	ev.preventDefault();
         var repeat_time = $('#schedule-report-sendtime').val();
 		var repeat_every_no = $('#sch-repeat-no-box').val();
@@ -431,7 +431,7 @@ function validate_form(formData, jqForm, options) {
     return true;
 }
 $(document).ready(function() {
-	$('#schedule-report-sendtime').click(function(e){
+	$('#schedule-report-sendtime').on('click', function(e){
    	$('.sendtime-quickselect').html(sch_report_quickselect_data($(this).val(),"s"));
    	$('.sendtime-quickselect').show();
     	e.stopPropagation();
@@ -443,7 +443,7 @@ $(document).ready(function() {
     	$('.sendtime-quickselect').hide();
   	});
 
-  	$(document).click(function(){
+  	$(document).on('click', function(){
     	$('.quickselect').hide();
   	});
 

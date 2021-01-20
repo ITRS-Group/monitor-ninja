@@ -206,8 +206,8 @@
 					this.populate(data);
 					this.items.show();
 
-				}.bind(this));
-			}.bind(this), 150);
+				}.on(this));
+			}.on(this), 150);
 
 		},
 

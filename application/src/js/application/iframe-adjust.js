@@ -59,6 +59,6 @@ $(document).ready(function() {
 
 	}
 
-	$(window).bind("resize", adjust_height);
+	$(window).on("resize", adjust_height);
 
 });

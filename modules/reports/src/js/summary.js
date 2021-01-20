@@ -25,13 +25,13 @@ $(document).ready(function() {
 	});
 	set_report_mode($('#report_mode_form input:checked').val());
 
-	$("#report_period").bind('change', function() {
+	$("#report_period").on('change', function() {
 		show_calendar($(this).val());
 	});
 	show_calendar($('#report_period').val());
 
 	// reset options and reload page
-	$('#new_report').click(function() {
+	$('#new_report').on('click', function() {
 		var base_uri = _site_domain + _index_page + '/' + _current_uri;
 		self.location.href = base_uri;
 	});

@@ -14,7 +14,7 @@ $(document).ready(function() {
 	$('.filter-status').on('change', filter_mapping_mapping).each(filter_mapping_mapping);
 
 	var direct_link_visible = false;
-	$('#current_report_params').click(function() {
+	$('#current_report_params').on('click', function() {
 		// make sure we always empty the field
 		$('#link_container').html('');
 		if (!direct_link_visible) {
@@ -36,7 +36,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('#save_report').click(function() {
+	$('#save_report').on('click', function() {
 		if (!direct_link_visible) {
 			$('#save_report_form')
 				.css('position', 'absolute')
@@ -47,7 +47,7 @@ $(document).ready(function() {
 					.map(function() {
 						var input = this;
 						if(input.value == "") {
-							input.focus();
+							input.trigger('focus');
 						}
 					});
 				direct_link_visible = true;
@@ -58,11 +58,11 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$("#report_id").bind('change', function() {
+	$("#report_id").on('change', function() {
 		$("#saved_report_form").trigger('submit');
 	});
 
-	$('.save_report_btn').parents('form').submit(function(ev) {
+	$('.save_report_btn').parents('form').on('submit', function(ev) {
 		ev.preventDefault();
 		var form = $(this);
 		var btn = form.find('.save_report_btn');
@@ -154,7 +154,7 @@ $(document).ready(function() {
 	});
 
 	$('#start_year, #end_year, #start_month, #end_month').on('change', check_custom_months);
-	$("#delete_report").click(confirm_delete_report);
+	$("#delete_report").on('click', confirm_delete_report);
 
 	$(document).on('submit', '.report_form', function() {
 		$('.filter-status:visible:checked', this).each(function() {
@@ -171,31 +171,31 @@ $(document).ready(function() {
 
 function init_datepicker()
 {
-	// datePicker Jquery plugin
-	var datepicker_enddate = (new Date()).asString();
-	$('.date-pick').datePicker({clickInput:true, startDate:_start_date, endDate:datepicker_enddate});
-	$('#cal_start').on(
-		'dpClosed',
-		function(e, selectedDates)
-		{
-			var d = selectedDates[0];
-			if (d) {
-				d = new Date(d);
-				$('#cal_end').dpSetStartDate(d.asString());
-			}
-		}
-	);
-	$('#cal_end').on(
-		'dpClosed',
-		function(e, selectedDates)
-		{
-			var d = selectedDates[0];
-			if (d) {
-				d = new Date(d);
-				$('#cal_start').dpSetEndDate(d.asString());
-			}
-		}
-	);
+
+  $('#cal_start').datepicker({
+    firstDay: 1, 
+    dateFormat: 'yy-mm-dd', 
+    startDate: _start_date, 
+    maxDate: new Date(),
+    onClose: function () {
+      if($(this).val()  !== "") {
+        $('#cal_end').datepicker( "option", "minDate", $(this).val() );
+      }
+     }
+   });
+  $('#cal_end').datepicker({
+     firstDay: 1, 
+     dateFormat: 'yy-mm-dd', 
+     startDate: _start_date, 
+     maxDate: new Date(),
+     onClose: function () {
+      if($(this).val()  !== "") {
+        $('#cal_start').datepicker( "option", "maxDate", $(this).val() );
+      }
+    }
+    });
+  
+
 }
 
 function show_calendar(val, update) {
@@ -364,7 +364,7 @@ function check_form_values(form)
 // init timepicker once it it is shown
 function init_timepicker()
 {
-	$("#time_start, #time_end").timePicker();
+	$("#time_start, #time_end").timePicker({ 'scrollDefault': 'now' });
 }
 
 function check_custom_months()

@@ -138,7 +138,7 @@ listview_renderer_table.saved_filters = {
 				var del_elem = $('<a />')
 						.attr('href', del_link)
 						.addClass('link_ajax_refresh')
-						.click(
+						.on('click', 
 								function(ev) {
 									if (!confirm(_("Are you sure you want to delete the filter '")
 											+ args.obj.filter_name + "' ?")) {

@@ -8,7 +8,7 @@ var lsfilter_textarea = {
 
 		this.element = element;
 		this.orderelement = orderelement;
-		this.element.bind('keyup paste cut', function(evt)
+		this.element.on('keyup paste cut', function(evt)
 		{
 			var query = $.trim((self.element.val()).toString());
 			lsfilter_main.update_delayed(query, 'textarea');

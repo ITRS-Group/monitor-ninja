@@ -298,7 +298,7 @@
     });
 
     CodeMirror.on(hints, "mousedown", function() {
-      setTimeout(function(){cm.focus();}, 20);
+      setTimeout(function(){cm.trigger('focus');}, 20);
     });
 
     CodeMirror.signal(data, "select", completions[0], hints.firstChild);

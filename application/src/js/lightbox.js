@@ -402,18 +402,18 @@ var LightboxManager = (function() {
 					button_to_focus = options.focus;
 				}
 
-				// in order to .focus() below, we need to have
+				// in order to .trigger('focus') below, we need to have
 				// the lb visible. this should be ok, since
 				// lb.button() is really cheap.
 				lb.show();
 
 				if(button_to_focus === "no") {
-					lb.button(no_text, no_cb).focus();
+					lb.button(no_text, no_cb).trigger('focus');
 				} else {
 					lb.button(no_text, no_cb);
 				}
 				if(button_to_focus === "yes") {
-					lb.button(yes_text, yes_cb).focus();
+					lb.button(yes_text, yes_cb).trigger('focus');
 				} else {
 					lb.button(yes_text, yes_cb);
 				}

@@ -100,7 +100,7 @@ var lsfilter_multiselect = {
 			Notify.message('No action selected');
 		} else {
 			$('#listview_multi_action_obj_action').attr('value', action);
-			$('#listview_multi_action_form').submit();
+			$('#listview_multi_action_form').trigger('submit');
 		}
 	},
 	box_register : function(key, value) {

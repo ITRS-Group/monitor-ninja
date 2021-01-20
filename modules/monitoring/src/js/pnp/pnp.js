@@ -1,9 +1,9 @@
 $(document).ready(function () {
-	$('#iframe').load(function() {
-		$(this).focus();
+  $('#iframe').on( 'load', function() {
+    $(this).trigger('focus');
 		$(this.contentDocument).find('.ui-widget-header tr').each(function () {
 			$(this).append('<td align="right"><a href="#" class="default" title="Make default graph" alt="Make default graph"><img src="' + _site_domain + '/application/views/icons/x16/shield-ok.png"/></a></td>');
-			$(this).find('.default').click(function() {
+			$(this).find('.default').on('click', function() {
 				var src = $(this).closest('div').next('div').find('img').attr('src');
 				var match = src.match(/\?(.*)&view=(\d)&source=(\d)/);
 				$.ajax(

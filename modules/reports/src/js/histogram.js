@@ -1,9 +1,10 @@
-$(document).ready(function() {
+$(function() {
 	// since we bundle our javascript to be included in all pages, we need
 	// to safeguard against this piece of code being called globally
 	if($("#histogram_graph").length === 0) {
 		return;
-	}
+  }
+  
 
 	var get_label = function(x) {
 		return graph_xlables[x];
@@ -21,7 +22,7 @@ $(document).ready(function() {
 		}).appendTo("body").fadeIn(200);
 	};
 	var previousPoint = null;
-	$("#histogram_graph").bind("plothover", function (event, pos, item) {
+	$("#histogram_graph").on("plothover", function (event, pos, item) {
 		$("#x").text(pos.x.toFixed(2));
 		$("#y").text(pos.y.toFixed(2));
 
@@ -42,7 +43,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#show_all_objects').click(function() {
+	$('#show_all_objects').on('click', function() {
 		$('#all_objects').toggle('slow');
 	});
 
@@ -52,8 +53,8 @@ $(document).ready(function() {
 		'" checked="checked" id="id' + key + '">' +
 		'<label for="id' + key + '">'
 		+ val.label + '</label>');
-	});
-	choiceContainer.find("input").click(plotAccordingToChoices);
+    });
+    $('#choices input[type="checkbox"]').on('click', plotAccordingToChoices);  
 
 	function plotAccordingToChoices() {
 		var data = [];

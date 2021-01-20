@@ -5936,7 +5936,7 @@
           var wrappedSubmit = form.submit = function() {
             save();
             form.submit = realSubmit;
-            form.submit();
+            form.trigger('submit');
             form.submit = wrappedSubmit;
           };
         } catch(e) {}

@@ -59,7 +59,7 @@ $(document).ready(function() {
 		content_div.css( "height", height + "px" );
 	}
 
-	$(window).bind( "resize", fit_content );
+	$(window).on( "resize", fit_content );
 	fit_content();
 
 	// make scroll memory cookie to be reset
@@ -69,9 +69,10 @@ $(document).ready(function() {
 	});
 
 	if ( content_div ) {
-		content_div.click();
-		content_div.focus();
+    content_div.on('click');
+		content_div.trigger('focus');
 	}
+
 
 	var object_action = function(cmd, table, obj) {
 		var en = encodeURIComponent;
@@ -93,7 +94,7 @@ $(document).ready(function() {
 	}
 
 	// listview refresh helper code
-	$("#listview_refresh_control").bind('change', function() {
+	$("#listview_refresh_control").on('change', function() {
 		if ($("#listview_refresh_control").attr('checked')) {
 			// save previous refresh rate
 			// to be able to restore it later
@@ -107,7 +108,7 @@ $(document).ready(function() {
 			Notify.message(_listview_refresh_unpaused_msg, {type: "success"});
 		}
 	});
-	$("#listview_refresh_value").bind('change', function() {
+	$("#listview_refresh_value").on('change', function() {
 		$("#listview_refresh_slider").slider("value", this.value);
 	});
 	if ($('#listview_refresh_edit').text()!=='') {
@@ -127,7 +128,7 @@ $(document).ready(function() {
 	}
 	// -- end listview refresh helper code
 
-	$('.select_all_items_service').live('click', function() {
+  $(document).on('click', '.select_all_items_service', function() {
 		if ($(this).attr('checked')) {
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
 				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
@@ -144,7 +145,7 @@ $(document).ready(function() {
 		}
 	});
 	// Toggle visibility for quick menu items
-	$("#page_settings_icon, #global_notifications_icon").click(function() {
+	$("#page_settings_icon, #global_notifications_icon").on('click', function() {
 		var menu_item = $(this);
 		var li = menu_item.parents('li');
 		var submenu = $('#'+menu_item[0].id.replace(/_icon$/, ''));
@@ -165,7 +166,7 @@ $(document).ready(function() {
 	// are we using keyboard commands or not
 	if (_keycommands_active) {
 		if (typeof _keycommand_forward !== 'undefined' && _keycommand_forward !== '') {
-			jQuery(document).bind('keydown', _keycommand_forward, function (evt){
+			jQuery(document).on('keydown', _keycommand_forward, function (evt){
 				if (typeof $('.nextpage').attr('href') != 'undefined') {
 					// reset scroll memory to start at top for next page
 					_save_scroll = false;
@@ -176,7 +177,7 @@ $(document).ready(function() {
 		}
 
 		if (typeof _keycommand_back !== 'undefined' && _keycommand_back !== '') {
-			jQuery(document).bind('keydown', _keycommand_back, function (evt){
+			jQuery(document).on('keydown', _keycommand_back, function (evt){
 				if (typeof $('.prevpage').attr('href') != 'undefined') {
 					// reset scroll memory to start at top for previous page
 					_save_scroll = false;
@@ -187,7 +188,7 @@ $(document).ready(function() {
 		}
 
 		if (typeof _keycommand_search !== 'undefined' && _keycommand_search !== '') {
-			jQuery(document).bind('keydown', _keycommand_search, function (evt){$('#query').focus(); return false; });
+			jQuery(document).on('keydown', _keycommand_search, function (evt){$('#query').trigger('focus'); return false; });
 		}
 
 	}
@@ -308,7 +309,7 @@ $(document).ready(function() {
 			}
 		});
 
-		$('#dojo-add-quicklink-menu form').submit(function (ev) {
+		$('#dojo-add-quicklink-menu form').on('submit', function (ev) {
 			ev.preventDefault();
 			var href = $('#dojo-add-quicklink-href').attr('value'),
 				title = $('#dojo-add-quicklink-title').attr('value'),

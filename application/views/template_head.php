@@ -162,6 +162,13 @@ if (!empty($base_href)) {
 				'auth_data' => $auth_user->get_auth_data())); ?>
 		//-->
 	</script>
+
+  <!-- Adding development script for jQuery migration -->
+  <script type="text/javascript" src="/monitor/application/src/js/dev/jquery-3.0.0.js"></script>
+	<script type="text/javascript" src="/monitor/application/src/js/dev/jquery-migrate-3.3.2.js"></script>
+	<script type="text/javascript" src="/monitor/application/src/js/dev/browser.js"></script>
+  <!-- Finish migration script -->
+
 	<?php
 		$v = new View('js_header', array('js' => isset($js)?$js:array()));
 		$v->render(true);
