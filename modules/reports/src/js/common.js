@@ -322,7 +322,7 @@ function check_form_values(form)
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
 			var input = $('input[id="' + field_name + '"]', form);
-			var value = input.attr('value');
+			var value = input.prop('value');
 			value = value.replace(',', '.');
 			if (value > max_val || isNaN(value)) {
 				input.css('background', sla_month_error_color);
@@ -400,11 +400,11 @@ function check_custom_months()
 
 function confirm_delete_report()
 {
-	var id = $("#report_id").attr('value')
+	var id = $("#report_id").prop('value')
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
 	var msg = _reports_confirm_delete + "\n";
-	var type = $('input[name=type]').attr('value');
+	var type = $('input[name=type]').prop('value');
 	if (!id)
 		return;
 	if (is_scheduled) {

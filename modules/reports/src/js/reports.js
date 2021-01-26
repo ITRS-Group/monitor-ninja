@@ -17,9 +17,9 @@ $(document).ready(function() {
 	});
 
 	$("#report_period").on('change', function() {
-		show_calendar($(this).attr('value'));
+		show_calendar($(this).prop('value'));
 	});
-	show_calendar($("#report_period").attr('value'));
+	show_calendar($("#report_period").prop('value'));
 
 	$('.autofill').on('click', function() {
 		var the_val = $(this).siblings('input').val();
@@ -59,7 +59,7 @@ $(document).ready(function() {
 	});
 
 	$('#sla_report_id').on('change', function(ev) {
-		var sla_id = $(this).attr('value');
+		var sla_id = $(this).prop('value');
 		if (!sla_id) {
 			// don't try to fetch sla values when we have no id
 			return;

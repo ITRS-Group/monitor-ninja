@@ -73,12 +73,12 @@
         var canAdd = true;
         var widget = $(html);
         var s = $.extend(true, $.fn.EasyWidgets.defaults, settings);
-        if ($.isFunction(s.callbacks.onAddQuery)) {
+        if (typeof s.callbacks.onAddQuery === "function") {
             canAdd = s.callbacks.onAddQuery(widget, placeId);
         }
         if (canAdd) {
             $('#' + placeId).append(html);
-            if ($.isFunction(s.callbacks.onAdd)) {
+            if (typeof s.callbacks.onAdd === "function") {
                 s.callbacks.onAdd(widget, placeId);
             }
             InitializeWidgets(s, true);
@@ -104,7 +104,7 @@
     $.fn.DisableEasyWidgets = function(settings) {
         var canDisable = true;
         var s = $.extend(true, $.fn.EasyWidgets.defaults, settings);
-        if ($.isFunction(s.callbacks.onDisableQuery)) {
+        if (typeof s.callbacks.onDisableQuery === "function") {
             canDisable = s.callbacks.onDisableQuery();
         }
         if (canDisable) {
@@ -116,7 +116,7 @@
                     widget.find(s.selectors.widgetMenu).css('display', 'none');
                 }
             });
-            if ($.isFunction(s.callbacks.onDisable)) {
+            if (typeof s.callbacks.onDisable === "function") {
                 s.callbacks.onDisable();
             }
             SetCookie(s.cookies.disableName, 1, s);
@@ -145,7 +145,7 @@
     $.fn.EnableEasyWidgets = function(settings) {
         var canEnable = true;
         var s = $.extend(true, $.fn.EasyWidgets.defaults, settings);
-        if ($.isFunction(s.callbacks.onEnableQuery)) {
+        if (typeof s.callbacks.onEnableQuery === "function") {
             canEnable = s.callbacks.onEnableQuery();
         }
         if (canEnable) {
@@ -156,7 +156,7 @@
                     widget.find(s.selectors.header).css('cursor', 'move');
                 }
             });
-            if ($.isFunction(s.callbacks.onEnable)) {
+            if (typeof s.callbacks.onEnable === "function") {
                 s.callbacks.onEnable();
             }
             if (s.behaviour.useCookies) {
@@ -196,7 +196,7 @@
             var canHide = true;
             var thisWidget = $(this);
             var thisWidgetId = thisWidget.attr('id');
-            if ($.isFunction(s.callbacks.onHideQuery)) {
+            if (typeof s.callbacks.onHideQuery === "function") {
                 canHide = s.callbacks.onHideQuery(thisWidget);
             }
             if (canHide) {
@@ -209,7 +209,7 @@
                 if (s.behaviour.useCookies && thisWidgetId) {
                     UpdateCookie(thisWidgetId, s.cookies.closeName, s);
                 }
-                if ($.isFunction(s.callbacks.onHide)) {
+                if (typeof s.callbacks.onHide === "function") {
                     s.callbacks.onHide(thisWidget);
                 }
             }
@@ -246,7 +246,7 @@
             var widget = $(this);
             var widgetId = widget.attr('id');
             var haveId = ($.trim(widgetId) != '');
-            if ($.isFunction(s.callbacks.onShowQuery)) {
+            if (typeof s.callbacks.onShowQuery === "function") {
                 canShow = s.callbacks.onShowQuery(widget);
             }
             if (canShow) {
@@ -259,7 +259,7 @@
                 if (haveId && s.behaviour.useCookies) {
                     CleanCookie(widgetId, s.cookies.closeName, s);
                 }
-                if ($.isFunction(s.callbacks.onShow)) {
+                if (typeof s.callbacks.onShow === "function") {
                     s.callbacks.onShow(widget);
                 }
             }
@@ -295,7 +295,7 @@
         var widget = $('#' + widgetId);
         if (widget.css('display') == 'none') {
             var s = $.extend(true, $.fn.EasyWidgets.defaults, settings);
-            if ($.isFunction(s.callbacks.onShowQuery)) {
+            if (typeof s.callbacks.onShowQuery === "function") {
                 canShow = s.callbacks.onShowQuery(widget);
             }
             if (canShow) {
@@ -308,7 +308,7 @@
                 if (s.behaviour.useCookies) {
                     CleanCookie(widgetId, s.cookies.closeName, s);
                 }
-                if ($.isFunction(s.callbacks.onShow)) {
+                if (typeof s.callbacks.onShow === "function") {
                     s.callbacks.onShow(widget);
                 }
                 return true;
@@ -348,7 +348,7 @@
         var widget = $('#' + widgetId);
         if (widget.css('display') != 'none') {
             var s = $.extend(true, $.fn.EasyWidgets.defaults, settings);
-            if ($.isFunction(s.callbacks.onHideQuery)) {
+            if (typeof s.callbacks.onHideQuery === "function") {
                 canHide = s.callbacks.onHideQuery(widget);
             }
             if (canHide) {
@@ -361,7 +361,7 @@
                 if (s.behaviour.useCookies) {
                     UpdateCookie(widgetId, s.cookies.closeName, s);
                 }
-                if ($.isFunction(s.callbacks.onHide)) {
+                if (typeof s.callbacks.onHide === "function") {
                     s.callbacks.onHide(widget);
                 }
                 return true;
@@ -802,7 +802,7 @@
     function RepositionedWidgets(settings) {
         var s = settings;
         var positions = '';
-        if ($.isFunction(s.callbacks.onRefreshPositions)) {
+        if (typeof s.callbacks.onRefreshPositions === "function") {
             positions = s.callbacks.onRefreshPositions();
         }
         // Only if not provide a string widget positions,
@@ -1004,7 +1004,7 @@
                 $(ui.item).css({ width: '' });
                 $(ui.item).removeClass('dragging');
                 $(s.selectors.places).sortable('enable');
-                if ($.isFunction(s.callbacks.onDragStop)) {
+                if (typeof s.callbacks.onDragStop === "function") {
                     s.callbacks.onDragStop(e, ui);
                 }
                 return true;
@@ -1071,7 +1071,7 @@
         // "onRefreshPositions()" callback is executed, you can retrieve
         // the string and returnt it: so the plugin use this string to
         // repositioned the widgets.
-        if ($.isFunction(s.callbacks.onChangePositions)) {
+        if (typeof s.callbacks.onChangePositions === "function") {
             s.callbacks.onChangePositions(positions);
         }
         // @todo Maybe we only put the positions on the cookie
@@ -1147,7 +1147,7 @@
 						var contentVisible = (content.css('display') != 'none') || (editbox.css('display') != 'none');
 						link.blur();
 						if (contentVisible) {
-							if ($.isFunction(s.callbacks.onCollapseQuery)) {
+							if (typeof s.callbacks.onCollapseQuery === "function") {
 								canCollapse = s.callbacks.onCollapseQuery(link, widget);
 							}
 							if (canCollapse) {
@@ -1163,12 +1163,12 @@
 								if (s.behaviour.useCookies && widgetId) {
 									UpdateCookie(widgetId, s.cookies.collapseName, s);
 								}
-								if ($.isFunction(s.callbacks.onCollapse)) {
+								if (typeof s.callbacks.onCollapse === "function") {
 									s.callbacks.onCollapse(link, widget);
 								}
 							}
 						} else {
-							if ($.isFunction(s.callbacks.onExtendQuery)) {
+							if (typeof s.callbacks.onExtendQuery === "function") {
 								canExtend = s.callbacks.onExtendQuery(link, widget);
 							}
 							if (canExtend) {
@@ -1183,7 +1183,7 @@
 								if (haveId && s.behaviour.useCookies) {
 									CleanCookie(widgetId, s.cookies.collapseName, s);
 								}
-								if ($.isFunction(s.callbacks.onExtend)) {
+								if (typeof s.callbacks.onExtend === "function") {
 									s.callbacks.onExtend(link, widget);
 								}
 							}
@@ -1240,7 +1240,7 @@
 					var editboxVisible = editbox.css('display') != 'none';
 					link.blur();
 					if (editboxVisible) {
-						if ($.isFunction(s.callbacks.onCancelEditQuery)) {
+						if (typeof s.callbacks.onCancelEditQuery === "function") {
 							canHide = s.callbacks.onCancelEditQuery(link, widget);
 						}
 						if (canHide) {
@@ -1252,13 +1252,13 @@
 							);
 							link.html(s.i18n.editText);
 							link.attr('title', s.i18n.editTitle);
-							if ($.isFunction(s.callbacks.onCancelEdit)) {
+							if (typeof s.callbacks.onCancelEdit === "function") {
 								s.callbacks.onCancelEdit(link, widget);
 							}
 						}
 						widget.find(s.selectors.content).show();
 					} else {
-						if ($.isFunction(s.callbacks.onEditQuery)) {
+						if (typeof s.callbacks.onEditQuery === "function") {
 							canShow = s.callbacks.onEditQuery(link, widget);
 						}
 						if (canShow) {
@@ -1270,7 +1270,7 @@
 								s.effects.effectDuration,
 								true
 							);
-							if ($.isFunction(s.callbacks.onEdit)) {
+							if (typeof s.callbacks.onEdit === "function") {
 								s.callbacks.onEdit(link, widget);
 							}
 						}
@@ -1311,7 +1311,7 @@
                 var widgetId = widget.attr('id');
                 var haveId = ($.trim(widgetId) != '');
                 link.blur();
-                if ($.isFunction(s.callbacks.onCloseQuery)) {
+                if (typeof s.callbacks.onCloseQuery === "function") {
                     canRemove = s.callbacks.onCloseQuery(link, widget);
                 }
                 if (canRemove) {
@@ -1326,7 +1326,7 @@
                 s.effects.effectDuration,
                 false
               );
-                        if ($.isFunction(s.callbacks.onClose)) {
+                        if (typeof s.callbacks.onClose === "function") {
                             s.callbacks.onClose(link, widget);
                         }
                     }

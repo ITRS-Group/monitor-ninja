@@ -476,7 +476,7 @@
     var rez = $.extend(true, {}, opts1, opts2);
 
     $.each(opts2, function (key, value) {
-      if ($.isArray(value)) {
+      if (Array.isArray(value)) {
         rez[key] = value;
       }
     });
@@ -701,7 +701,7 @@
         obj.opts = $.extend(true, {}, self.opts, opts);
 
         // Do not merge buttons array
-        if ($.isArray(opts.buttons)) {
+        if (Array.isArray(opts.buttons)) {
           obj.opts.buttons = opts.buttons;
         }
 
@@ -1590,7 +1590,7 @@
         $container.addClass("fancybox-can-pan");
       } else if (
         isZoomable &&
-        (current.opts.clickContent === "zoom" || ($.isFunction(current.opts.clickContent) && current.opts.clickContent(current) == "zoom"))
+        (current.opts.clickContent === "zoom" || (typeof current.opts.clickContent === "function" && current.opts.clickContent(current) == "zoom"))
       ) {
         $container.addClass("fancybox-can-zoomIn");
       } else if (current.opts.touch && (current.opts.touch.vertical || self.group.length > 1) && current.contentType !== "video") {
@@ -2932,7 +2932,7 @@
 
       args.unshift(self);
 
-      if ($.isFunction(obj.opts[name])) {
+      if (typeof obj.opts[name] === "function") {
         rez = obj.opts[name].apply(obj, args);
       }
 
@@ -3217,7 +3217,7 @@
       var self = this,
         from;
 
-      if ($.isFunction(duration)) {
+      if (typeof duration === "function") {
         callback = duration;
         duration = null;
       }
@@ -3253,7 +3253,7 @@
           $el.removeClass(to);
         }
 
-        if ($.isFunction(callback)) {
+        if (typeof callback === "function") {
           callback(e);
         }
       });
@@ -3718,7 +3718,7 @@
   $(document).on({
     "afterShow.fb": function (e, instance, current) {
       if (instance.group.length > 1 && (current.contentSource === "youtube" || current.contentSource === "vimeo")) {
-        VideoAPILoader.load(current.contentSource);
+        VideoAPILoader.on('load', current.contentSource);
       }
     }
   });
@@ -3797,7 +3797,7 @@
   var isClickable = function ($el) {
     if (
       $el.is('a,area,button,[role="button"],input,label,select,summary,textarea,video,audio,iframe') ||
-      $.isFunction($el.get(0).onclick) ||
+      typeof $el.get(0).onclick === "function" ||
       $el.data("selectable")
     ) {
       return true;
@@ -4524,7 +4524,7 @@
     var process = function (prefix) {
       var action = current.opts[prefix];
 
-      if ($.isFunction(action)) {
+      if (typeof action === "function") {
         action = action.apply(instance, [current, e]);
       }
 

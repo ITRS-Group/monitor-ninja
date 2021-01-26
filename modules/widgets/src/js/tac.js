@@ -21,7 +21,7 @@ var tac_send_request = function (method, data, callbacks) {
 		},
 		success : function(data) {
 			if (callbacks.success) {
-				callbacks.success(data);
+				callbacks.done(data);
 			}
 		},
 		error : function(data) {

@@ -311,10 +311,10 @@ $(document).ready(function() {
 
 		$('#dojo-add-quicklink-menu form').on('submit', function (ev) {
 			ev.preventDefault();
-			var href = $('#dojo-add-quicklink-href').attr('value'),
-				title = $('#dojo-add-quicklink-title').attr('value'),
-				icon = $('#dojo-add-quicklink-icon').attr('value'),
-				target = $('#dojo-add-quicklink-target').attr('value'),
+			var href = $('#dojo-add-quicklink-href').prop('value'),
+				title = $('#dojo-add-quicklink-title').prop('value'),
+				icon = $('#dojo-add-quicklink-icon').prop('value'),
+				target = $('#dojo-add-quicklink-target').prop('value'),
 				changed = false;
 			var error = '';
 			if (href && title && icon) {

@@ -475,7 +475,7 @@ var lsfilter_dom_to_query = {
 		var field = field_el.val();
 
 		var opt = field_el.children().filter(function(i) {
-			return $(this).attr('value') == field;
+			return $(this).prop('value') == field;
 		}).last();
 		var type = opt.attr('data-type').split(';');
 
@@ -588,7 +588,7 @@ var lsfilter_visual = {
 
 		.on('change', '.lsfilter_visual_field_select', onnode(function(n, el) {
 			var opt = el.children().filter(function(i) {
-				return $(this).attr('value') == el.val();
+				return $(this).prop('value') == el.val();
 			}).last();
 			var type = opt.attr('data-type').split(';');
 			var opselect = n.find('.lsfilter_visual_operator_select');

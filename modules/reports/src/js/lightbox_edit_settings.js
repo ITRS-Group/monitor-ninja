@@ -51,7 +51,7 @@ $(document).ready(function() {
 				$('.lightbox-content').find('.filter-status').each(lightbox_filter_mapping_mapping);
 				$('#report_type').trigger('change');
 				$('#report_period').trigger('change');
-				$('#show_all').removeAttr('checked').trigger('change');
+				$('#show_all').prop( "checked", false ).trigger('change');
 				lightbox_set_report_mode($('#report_mode_form input:checked').val());
 			}, 0);
 		}

@@ -42,7 +42,7 @@ function lsfilter_list_attach_events( listview, base_element ) {
 	.on('change', '.listview_multiselect_checkbox', function(e) {
 		var tgt = $(this);
 		if( lsfilter_multiselect ) {
-			lsfilter_multiselect.box_register(tgt.attr('value'), tgt.prop('checked'));
+			lsfilter_multiselect.box_register(tgt.prop('value'), tgt.prop('checked'));
 		}
 		var tr = tgt.closest('tr');
 		var classname = "";

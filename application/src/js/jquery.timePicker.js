@@ -1136,7 +1136,7 @@
           settings.noneOption = settings.useSelect ? "Time..." : "None";
         }
 
-        if ($.isArray(settings.noneOption)) {
+        if (Array.isArray(settings.noneOption)) {
           for (var i in settings.noneOption) {
             if (parseInt(i, 10) == i) {
               var noneElement = tp._generateNoneElement(settings.noneOption[i], settings.useSelect);

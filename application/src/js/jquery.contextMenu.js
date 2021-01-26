@@ -22,7 +22,7 @@ if(jQuery)( function() {
 		evt.stopPropagation();
 		el.mouseup( function(e) {
 			e.stopPropagation();
-			el.unbind('mouseup');
+			el.off('mouseup');
 			if( evt.button == 2 ) {
 				// Hide context menus that may be showing
 				$(".contextMenu").hide();
@@ -117,7 +117,7 @@ if(jQuery)( function() {
 				y = e.clientY;
 
 				// Show the menu
-				$(document).unbind('click');
+				$(document).off('click');
 				// Make sure menu doesn't extend outside viewport
 				if (y + $(menu).height() >= $(window).height()) {
 					y = y - $(menu).height();
@@ -160,9 +160,9 @@ if(jQuery)( function() {
 				});
 
 				// When items are selected
-				$('#' + o.menu).find('A').unbind('click');
+				$('#' + o.menu).find('A').off('click');
 				$('#' + o.menu).find('LI:not(.disabled) A').click( function() {
-					$(document).unbind('click').unbind('keypress');
+					$(document).off('click').off('keypress');
 					$(".contextMenu").hide();
 					// Callback
 					if(typeof callback === "function") {
@@ -176,7 +176,7 @@ if(jQuery)( function() {
 				// Hide bindings
 				setTimeout( function() { // Delay for Mozilla
 					$(document).click( function() {
-						$(document).unbind('click').unbind('keypress');
+						$(document).off('click').off('keypress');
 						$(menu).fadeOut(o.outSpeed);
 						return false;
 					});
@@ -188,12 +188,12 @@ if(jQuery)( function() {
 		if( $.browser.mozilla ) {
 			$('#' + o.menu).each( function() { $(this).css({ 'MozUserSelect' : 'none' }); });
 		} else if( $.browser.msie ) {
-			$('#' + o.menu).each( function() { $(this).bind('selectstart.disableTextSelect', function() { return false; }); });
+			$('#' + o.menu).each( function() { $(this).on('selectstart.disableTextSelect', function() { return false; }); });
 		} else {
-			$('#' + o.menu).each(function() { $(this).bind('mousedown.disableTextSelect', function() { return false; }); });
+			$('#' + o.menu).each(function() { $(this).on('mousedown.disableTextSelect', function() { return false; }); });
 		}
 		// Disable browser context menu (requires both selectors to work in IE/Safari + FF/Chrome)
-		el.add($('UL.contextMenu')).bind('contextmenu', function() { return false; });
+		el.add($('UL.contextMenu')).on('contextmenu', function() { return false; });
 	};
 	$.extend($.fn, {
 		contextMenu: function(o, callback, sel) {
@@ -274,7 +274,7 @@ if(jQuery)( function() {
 			// Destroy specified context menus
 			$(this).each( function() {
 				// Disable action
-				$(this).unbind('mousedown').unbind('mouseup');
+				$(this).off('mousedown').off('mouseup');
 			});
 			return( $(this) );
 		}

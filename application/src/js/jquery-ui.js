@@ -17391,7 +17391,7 @@ $.widget( "ui.tabs", {
 		this._refresh();
 
 		if ( this.active.length ) {
-			this.load( options.active );
+			this.on('load', options.active );
 		}
 	},
 
@@ -17912,7 +17912,7 @@ $.widget( "ui.tabs", {
 		}
 
 		if ( toShow.length ) {
-			this.load( this.tabs.index( tab ), event );
+			this.on('load', this.tabs.index( tab ), event );
 		}
 		this._toggle( event, eventData );
 	},

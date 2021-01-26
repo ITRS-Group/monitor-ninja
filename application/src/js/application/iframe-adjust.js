@@ -39,7 +39,7 @@ $(document).ready(function() {
 
 			var agent = (ua.indexOf('ipad') != -1) ? 'iPad' : 'Android';
 
-			elements.load(function () {
+			elements.on('load', function () {
 
 				var note = $('<div style="position: relative; border: 1px solid #eebb55; padding: 8px; background: #fea; font-size: 9pt;"></div>');
 

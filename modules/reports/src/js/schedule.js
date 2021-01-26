@@ -128,15 +128,15 @@ $(document).ready(function() {
 				Notify.message(data.responseText, {type: "error"});
 			},
 			success: function(data) {
-				var rep_type = $('#type').attr('value');
-				var saved_report_id = $('#saved_report_id').attr('value');
+				var rep_type = $('#type').prop('value');
+				var saved_report_id = $('#saved_report_id').prop('value');
 				var report_name = $('#saved_report_id option:selected').text();
 				var period_str = $('#period option:selected').text();
-				var recipients = ($('#recipients').attr('value')).replace(/,/g, ', ');
-				var filename = $('#filename').attr('value');
-				var local_persistent_filepath = $('#local_persistent_filepath').attr('value');
-				var description = $('#description').attr('value');
-				var attach_description = $('#attach_description').attr('value');
+				var recipients = ($('#recipients').prop('value')).replace(/,/g, ', ');
+				var filename = $('#filename').prop('value');
+				var local_persistent_filepath = $('#local_persistent_filepath').prop('value');
+				var description = $('#description').prop('value');
+				var attach_description = $('#attach_description').prop('value');
 				create_new_schedule_rows(data.id, rep_type, report_name, saved_report_id, period_str, recipients, filename, local_persistent_filepath, description, attach_description, repeat_time, repeat_on, repeat_period)
                 setup_editable();
                 $('#new_schedule_report_form').get(0).reset();
@@ -389,14 +389,14 @@ function fill_scheduled() {
  * Make sure all values are properly entered
  */
 function validate_form(formData, jqForm, options) {
-	var recipients = $('input[name=recipients]').attr('value');
-	var filename = $('input[name=filename]').attr('value');
-	var description = $('input[name=description]').attr('value');
-	var saved_report_id = $('input[name=saved_report_id]').attr('value');
+	var recipients = $('input[name=recipients]').prop('value');
+	var filename = $('input[name=filename]').prop('value');
+	var description = $('input[name=description]').prop('value');
+	var saved_report_id = $('input[name=saved_report_id]').prop('value');
 	if (!saved_report_id) {
-		saved_report_id = $('#saved_report_id').attr('value');
+		saved_report_id = $('#saved_report_id').prop('value');
 	}
-	var report_id = $('input[name=report_id]').attr('value');
+	var report_id = $('input[name=report_id]').prop('value');
 	if (report_id == '' || report_id == undefined) {
 		report_id = $('#report_id').val();
 	}

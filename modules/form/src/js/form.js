@@ -18,7 +18,7 @@ var FormModule = (function () {
 		}).text($(this).find('input').val());
 	});
 
-	doc.find('input[type="range"]').hover(function () {
+	doc.find('input[type="range"]').on("mouseenter", function () {
 		$(this).siblings('.nj-form-field-range-hover').show();
 	}, function () {
 		$(this).siblings('.nj-form-field-range-hover').hide();

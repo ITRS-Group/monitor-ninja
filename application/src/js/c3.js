@@ -36,7 +36,7 @@
       this.internal.afterInit(config);
       (function bindThis(fn, target, argThis) {
           Object.keys(fn).forEach(function (key) {
-              target[key] = fn[key].bind(argThis);
+              target[key] = fn[key].on(argThis);
               if (Object.keys(fn[key]).length > 0) {
                   bindThis(fn[key], target[key], argThis);
               }
@@ -746,7 +746,7 @@
           .append('text')
           .attr('class', CLASS.axisXLabel)
           .attr('transform', config.axis_rotated ? 'rotate(-90)' : '')
-          .style('text-anchor', this.textAnchorForXAxisLabel.bind(this));
+          .style('text-anchor', this.textAnchorForXAxisLabel.on(this));
       $$.axes.y = main
           .append('g')
           .attr('class', CLASS.axis + ' ' + CLASS.axisY)
@@ -757,7 +757,7 @@
           .append('text')
           .attr('class', CLASS.axisYLabel)
           .attr('transform', config.axis_rotated ? '' : 'rotate(-90)')
-          .style('text-anchor', this.textAnchorForYAxisLabel.bind(this));
+          .style('text-anchor', this.textAnchorForYAxisLabel.on(this));
       $$.axes.y2 = main
           .append('g')
           .attr('class', CLASS.axis + ' ' + CLASS.axisY2)
@@ -768,7 +768,7 @@
           .append('text')
           .attr('class', CLASS.axisY2Label)
           .attr('transform', config.axis_rotated ? '' : 'rotate(-90)')
-          .style('text-anchor', this.textAnchorForY2AxisLabel.bind(this));
+          .style('text-anchor', this.textAnchorForY2AxisLabel.on(this));
   };
   Axis.prototype.getXAxis = function getXAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
       var $$ = this.owner, config = $$.config, axisParams = {
@@ -1099,20 +1099,20 @@
       var $$ = this.owner;
       var axisXLabel = $$.main.select('.' + CLASS.axisX + ' .' + CLASS.axisXLabel), axisYLabel = $$.main.select('.' + CLASS.axisY + ' .' + CLASS.axisYLabel), axisY2Label = $$.main.select('.' + CLASS.axisY2 + ' .' + CLASS.axisY2Label);
       (withTransition ? axisXLabel.transition() : axisXLabel)
-          .attr('x', this.xForXAxisLabel.bind(this))
-          .attr('dx', this.dxForXAxisLabel.bind(this))
-          .attr('dy', this.dyForXAxisLabel.bind(this))
-          .text(this.textForXAxisLabel.bind(this));
+          .attr('x', this.xForXAxisLabel.on(this))
+          .attr('dx', this.dxForXAxisLabel.on(this))
+          .attr('dy', this.dyForXAxisLabel.on(this))
+          .text(this.textForXAxisLabel.on(this));
       (withTransition ? axisYLabel.transition() : axisYLabel)
-          .attr('x', this.xForYAxisLabel.bind(this))
-          .attr('dx', this.dxForYAxisLabel.bind(this))
-          .attr('dy', this.dyForYAxisLabel.bind(this))
-          .text(this.textForYAxisLabel.bind(this));
+          .attr('x', this.xForYAxisLabel.on(this))
+          .attr('dx', this.dxForYAxisLabel.on(this))
+          .attr('dy', this.dyForYAxisLabel.on(this))
+          .text(this.textForYAxisLabel.on(this));
       (withTransition ? axisY2Label.transition() : axisY2Label)
-          .attr('x', this.xForY2AxisLabel.bind(this))
-          .attr('dx', this.dxForY2AxisLabel.bind(this))
-          .attr('dy', this.dyForY2AxisLabel.bind(this))
-          .text(this.textForY2AxisLabel.bind(this));
+          .attr('x', this.xForY2AxisLabel.on(this))
+          .attr('dx', this.dxForY2AxisLabel.on(this))
+          .attr('dy', this.dyForY2AxisLabel.on(this))
+          .text(this.textForY2AxisLabel.on(this));
   };
   Axis.prototype.getPadding = function getPadding(padding, key, defaultValue, domainLength) {
       var p = typeof padding === 'number' ? padding : padding[key];
@@ -1629,7 +1629,7 @@
       var duration, durationForExit, durationForAxis;
       var transitionsToWait, waitForDraw, flow, transition;
       var targetsToShow = $$.filterTargetsToShow($$.data.targets), tickValues, i, intervalForCulling, xDomainForZoom;
-      var xv = $$.xv.bind($$), cx, cy;
+      var xv = $$.xv.on($$), cx, cy;
       options = options || {};
       withY = getOption(options, 'withY', true);
       withSubchart = getOption(options, 'withSubchart', true);
@@ -1721,8 +1721,8 @@
       // update circleY based on updated parameters
       $$.updateCircleY();
       // generate circle x/y functions depending on updated params
-      cx = ($$.config.axis_rotated ? $$.circleY : $$.circleX).bind($$);
-      cy = ($$.config.axis_rotated ? $$.circleX : $$.circleY).bind($$);
+      cx = ($$.config.axis_rotated ? $$.circleY : $$.circleX).on($$);
+      cy = ($$.config.axis_rotated ? $$.circleX : $$.circleY).on($$);
       // Update sub domain
       if (withY) {
           $$.subY.domain($$.getYDomain(targetsToShow, 'y'));
@@ -1775,7 +1775,7 @@
       // circles for select
       main
           .selectAll('.' + CLASS.selectedCircles)
-          .filter($$.isBarType.bind($$))
+          .filter($$.isBarType.on($$))
           .selectAll('circle')
           .remove();
       if (options.flow) {
@@ -2038,17 +2038,17 @@
       $$.svg
           .select('#' + $$.clipIdForXAxis)
           .select('rect')
-          .attr('x', $$.getXAxisClipX.bind($$))
-          .attr('y', $$.getXAxisClipY.bind($$))
-          .attr('width', $$.getXAxisClipWidth.bind($$))
-          .attr('height', $$.getXAxisClipHeight.bind($$));
+          .attr('x', $$.getXAxisClipX.on($$))
+          .attr('y', $$.getXAxisClipY.on($$))
+          .attr('width', $$.getXAxisClipWidth.on($$))
+          .attr('height', $$.getXAxisClipHeight.on($$));
       $$.svg
           .select('#' + $$.clipIdForYAxis)
           .select('rect')
-          .attr('x', $$.getYAxisClipX.bind($$))
-          .attr('y', $$.getYAxisClipY.bind($$))
-          .attr('width', $$.getYAxisClipWidth.bind($$))
-          .attr('height', $$.getYAxisClipHeight.bind($$));
+          .attr('x', $$.getYAxisClipX.on($$))
+          .attr('y', $$.getYAxisClipY.on($$))
+          .attr('width', $$.getYAxisClipWidth.on($$))
+          .attr('height', $$.getYAxisClipHeight.on($$));
       $$.svg
           .select('#' + $$.clipIdForSubchart)
           .select('rect')
@@ -3362,7 +3362,7 @@
                   attributes: true,
                   attributeFilter: ['d']
               };
-              this._pathElementMutationObserver = new MutationObserver(this._updateListFromPathMutations.bind(this));
+              this._pathElementMutationObserver = new MutationObserver(this._updateListFromPathMutations.on(this));
               this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
           };
           window.SVGPathSegList.prototype.classname = 'SVGPathSegList';
@@ -4407,12 +4407,12 @@
                   .attr('transform', null)
                   .attr('x', xForText)
                   .attr('y', yForText)
-                  .style('fill-opacity', $$.opacityForText.bind($$));
+                  .style('fill-opacity', $$.opacityForText.on($$));
               mainRegion.attr('transform', null);
               mainRegion
                   .filter($$.isRegionOnX)
-                  .attr('x', $$.regionX.bind($$))
-                  .attr('width', $$.regionWidth.bind($$));
+                  .attr('x', $$.regionX.on($$))
+                  .attr('width', $$.regionWidth.on($$));
               // callback for end of flow
               done();
               $$.flowing = false;
@@ -4459,7 +4459,7 @@
           $$.unexpandArc(targetIds);
       }
       if ($$.config.legend_show) {
-          $$.showLegend(targetIds.filter($$.isLegendToShow.bind($$)));
+          $$.showLegend(targetIds.filter($$.isLegendToShow.on($$)));
           $$.legend
               .selectAll($$.selectorLegends(targetIds))
               .filter(function () {
@@ -4538,7 +4538,7 @@
       }
       // update names if exists
       if ('names' in args) {
-          Chart.prototype.data.names.bind(this)(args.names);
+          Chart.prototype.data.names.on(this)(args.names);
       }
       // update classes if exists
       if ('classes' in args) {
@@ -4675,7 +4675,7 @@
           .selectAll('.' + CLASS.shapes)
           .selectAll('.' + CLASS.shape)
           .each(function (d, i) {
-          var shape = d3.select(this), id = d.data ? d.data.id : d.id, toggle = $$.getToggle(this, d).bind($$), isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0, isTargetIndex = !indices || indices.indexOf(i) >= 0, isSelected = shape.classed(CLASS.SELECTED);
+          var shape = d3.select(this), id = d.data ? d.data.id : d.id, toggle = $$.getToggle(this, d).on($$), isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0, isTargetIndex = !indices || indices.indexOf(i) >= 0, isSelected = shape.classed(CLASS.SELECTED);
           // line/area selection not supported yet
           if (shape.classed(CLASS.line) || shape.classed(CLASS.area)) {
               return;
@@ -4701,7 +4701,7 @@
           .selectAll('.' + CLASS.shapes)
           .selectAll('.' + CLASS.shape)
           .each(function (d, i) {
-          var shape = d3.select(this), id = d.data ? d.data.id : d.id, toggle = $$.getToggle(this, d).bind($$), isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0, isTargetIndex = !indices || indices.indexOf(i) >= 0, isSelected = shape.classed(CLASS.SELECTED);
+          var shape = d3.select(this), id = d.data ? d.data.id : d.id, toggle = $$.getToggle(this, d).on($$), isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0, isTargetIndex = !indices || indices.indexOf(i) >= 0, isSelected = shape.classed(CLASS.SELECTED);
           // line/area selection not supported yet
           if (shape.classed(CLASS.line) || shape.classed(CLASS.area)) {
               return;
@@ -4952,7 +4952,7 @@
       var $$ = this, d3 = $$.d3;
       $$.pie = d3
           .pie()
-          .padAngle(this.getPadAngle.bind(this))
+          .padAngle(this.getPadAngle.on(this))
           .value(function (d) {
           return d.values.reduce(function (a, b) {
               return a + b.value;
@@ -5256,7 +5256,7 @@
       return $$.hasType('donut') ? $$.config.donut_title : '';
   };
   ChartInternal.prototype.updateTargetsForArc = function (targets) {
-      var $$ = this, main = $$.main, mainPies, mainPieEnter, classChartArc = $$.classChartArc.bind($$), classArcs = $$.classArcs.bind($$), classFocus = $$.classFocus.bind($$);
+      var $$ = this, main = $$.main, mainPies, mainPieEnter, classChartArc = $$.classChartArc.on($$), classArcs = $$.classArcs.on($$), classFocus = $$.classFocus.on($$);
       mainPies = main
           .select('.' + CLASS.chartArcs)
           .selectAll('.' + CLASS.chartArc)
@@ -5296,11 +5296,11 @@
       arcs = main
           .selectAll('.' + CLASS.arcs)
           .selectAll('.' + CLASS.arc)
-          .data($$.arcData.bind($$));
+          .data($$.arcData.on($$));
       mainArc = arcs
           .enter()
           .append('path')
-          .attr('class', $$.classArc.bind($$))
+          .attr('class', $$.classArc.on($$))
           .style('fill', function (d) {
           return $$.color(d.data);
       })
@@ -5320,7 +5320,7 @@
           arcLabelLines = main
               .selectAll('.' + CLASS.arcs)
               .selectAll('.' + CLASS.arcLabelLine)
-              .data($$.arcData.bind($$));
+              .data($$.arcData.on($$));
           mainArcLabelLine = arcLabelLines
               .enter()
               .append('rect')
@@ -5498,8 +5498,8 @@
           .attr('class', function (d) {
           return $$.isGaugeType(d.data) ? CLASS.gaugeValue : '';
       })
-          .text($$.textForArcLabel.bind($$))
-          .attr('transform', $$.transformForArcLabel.bind($$))
+          .text($$.textForArcLabel.on($$))
+          .attr('transform', $$.transformForArcLabel.on($$))
           .style('font-size', function (d) {
           return $$.isGaugeType(d.data) &&
               $$.filterTargetsToShow($$.data.targets).length === 1
@@ -6925,8 +6925,8 @@
       var candidates = targets
           .map(function (t) {
           return $$.findClosest(t.values, pos, $$.config.tooltip_horizontal
-              ? $$.horizontalDistance.bind($$)
-              : $$.dist.bind($$), $$.config.point_sensitivity);
+              ? $$.horizontalDistance.on($$)
+              : $$.dist.on($$), $$.config.point_sensitivity);
       })
           .filter(function (v) { return v; });
       // returns the closest of candidates
@@ -6937,7 +6937,7 @@
           return candidates[0];
       }
       else {
-          return $$.findClosest(candidates, pos, $$.dist.bind($$));
+          return $$.findClosest(candidates, pos, $$.dist.on($$));
       }
   };
   /**
@@ -7760,7 +7760,7 @@
               : this.width;
   };
   ChartInternal.prototype.updateGrid = function (duration) {
-      var $$ = this, main = $$.main, config = $$.config, xgridLine, xgridLineEnter, ygridLine, ygridLineEnter, xv = $$.xv.bind($$), yv = $$.yv.bind($$), xGridTextX = $$.xGridTextX.bind($$), yGridTextX = $$.yGridTextX.bind($$);
+      var $$ = this, main = $$.main, config = $$.config, xgridLine, xgridLineEnter, ygridLine, ygridLineEnter, xv = $$.xv.on($$), yv = $$.yv.on($$), xGridTextX = $$.xGridTextX.on($$), yGridTextX = $$.yGridTextX.on($$);
       // hide if arc type
       $$.grid.style('visibility', $$.hasArcType() ? 'hidden' : 'visible');
       main.select('line.' + CLASS.xgridFocus).style('visibility', 'hidden');
@@ -7850,7 +7850,7 @@
           .select('text')
           .transition()
           .duration(duration)
-          .attr('x', config.axis_rotated ? $$.xGridTextX.bind($$) : $$.yGridTextX.bind($$))
+          .attr('x', config.axis_rotated ? $$.xGridTextX.on($$) : $$.yGridTextX.on($$))
           .attr('y', yv)
           .text(function (d) {
           return d.text;
@@ -7865,7 +7865,7 @@
           .remove();
   };
   ChartInternal.prototype.redrawGrid = function (withTransition, transition) {
-      var $$ = this, config = $$.config, xv = $$.xv.bind($$), lines = $$.xgridLines.select('line'), texts = $$.xgridLines.select('text');
+      var $$ = this, config = $$.config, xv = $$.xv.on($$), lines = $$.xgridLines.select('line'), texts = $$.xgridLines.select('text');
       return [
           (withTransition ? lines.transition(transition) : lines)
               .attr('x1', config.axis_rotated ? 0 : xv)
@@ -7874,7 +7874,7 @@
               .attr('y2', config.axis_rotated ? xv : $$.height)
               .style('opacity', 1),
           (withTransition ? texts.transition(transition) : texts)
-              .attr('x', config.axis_rotated ? $$.yGridTextX.bind($$) : $$.xGridTextX.bind($$))
+              .attr('x', config.axis_rotated ? $$.yGridTextX.on($$) : $$.xGridTextX.on($$))
               .attr('y', xv)
               .text(function (d) {
               return d.text;
@@ -7885,7 +7885,7 @@
   ChartInternal.prototype.showXGridFocus = function (selectedData) {
       var $$ = this, config = $$.config, dataToShow = selectedData.filter(function (d) {
           return d && isValue(d.value);
-      }), focusEl = $$.main.selectAll('line.' + CLASS.xgridFocus), xx = $$.xx.bind($$);
+      }), focusEl = $$.main.selectAll('line.' + CLASS.xgridFocus), xx = $$.xx.on($$);
       if (!config.tooltip_show) {
           return;
       }
@@ -8632,15 +8632,15 @@
           .data(config.regions);
       var g = mainRegion.enter().append('g');
       g.append('rect')
-          .attr('x', $$.regionX.bind($$))
-          .attr('y', $$.regionY.bind($$))
-          .attr('width', $$.regionWidth.bind($$))
-          .attr('height', $$.regionHeight.bind($$))
+          .attr('x', $$.regionX.on($$))
+          .attr('y', $$.regionY.on($$))
+          .attr('width', $$.regionWidth.on($$))
+          .attr('height', $$.regionHeight.on($$))
           .style('fill-opacity', function (d) {
           return isValue(d.opacity) ? d.opacity : 0.1;
       });
-      g.append('text').text($$.labelRegion.bind($$));
-      $$.mainRegion = g.merge(mainRegion).attr('class', $$.classRegion.bind($$));
+      g.append('text').text($$.labelRegion.on($$));
+      $$.mainRegion = g.merge(mainRegion).attr('class', $$.classRegion.on($$));
       mainRegion
           .exit()
           .transition()
@@ -8652,17 +8652,17 @@
       var $$ = this, regions = $$.mainRegion, regionLabels = $$.mainRegion.selectAll('text');
       return [
           (withTransition ? regions.transition(transition) : regions)
-              .attr('x', $$.regionX.bind($$))
-              .attr('y', $$.regionY.bind($$))
-              .attr('width', $$.regionWidth.bind($$))
-              .attr('height', $$.regionHeight.bind($$))
+              .attr('x', $$.regionX.on($$))
+              .attr('y', $$.regionY.on($$))
+              .attr('width', $$.regionWidth.on($$))
+              .attr('height', $$.regionHeight.on($$))
               .style('fill-opacity', function (d) {
               return isValue(d.opacity) ? d.opacity : 0.1;
           }),
           (withTransition ? regionLabels.transition(transition) : regionLabels)
-              .attr('x', $$.labelOffsetX.bind($$))
-              .attr('y', $$.labelOffsetY.bind($$))
-              .attr('transform', $$.labelTransform.bind($$))
+              .attr('x', $$.labelOffsetX.on($$))
+              .attr('y', $$.labelOffsetY.on($$))
+              .attr('transform', $$.labelTransform.on($$))
               .attr('style', 'text-anchor: left;')
       ];
   };
@@ -8946,7 +8946,7 @@
   };
 
   ChartInternal.prototype.selectPoint = function (target, d, i) {
-      var $$ = this, config = $$.config, cx = (config.axis_rotated ? $$.circleY : $$.circleX).bind($$), cy = (config.axis_rotated ? $$.circleX : $$.circleY).bind($$), r = $$.pointSelectR.bind($$);
+      var $$ = this, config = $$.config, cx = (config.axis_rotated ? $$.circleY : $$.circleX).on($$), cy = (config.axis_rotated ? $$.circleX : $$.circleY).on($$), r = $$.pointSelectR.on($$);
       config.data_onselected.call($$.api, d, target.node());
       // add selected-circle on low layer g
       $$.main
@@ -9029,7 +9029,7 @@
       return toggle;
   };
   ChartInternal.prototype.toggleShape = function (that, d, i) {
-      var $$ = this, d3 = $$.d3, config = $$.config, shape = d3.select(that), isSelected = shape.classed(CLASS.SELECTED), toggle = $$.getToggle(that, d).bind($$);
+      var $$ = this, d3 = $$.d3, config = $$.config, shape = d3.select(that), isSelected = shape.classed(CLASS.SELECTED), toggle = $$.getToggle(that, d).on($$);
       if (config.data_selection_enabled && config.data_selection_isselectable(d)) {
           if (!config.data_selection_multiple) {
               $$.main
@@ -9059,7 +9059,7 @@
           .attr('class', CLASS.chartBars);
   };
   ChartInternal.prototype.updateTargetsForBar = function (targets) {
-      var $$ = this, config = $$.config, mainBars, mainBarEnter, classChartBar = $$.classChartBar.bind($$), classBars = $$.classBars.bind($$), classFocus = $$.classFocus.bind($$);
+      var $$ = this, config = $$.config, mainBars, mainBarEnter, classChartBar = $$.classChartBar.on($$), classBars = $$.classBars.on($$), classFocus = $$.classFocus.on($$);
       mainBars = $$.main
           .select('.' + CLASS.chartBars)
           .selectAll('.' + CLASS.chartBar)
@@ -9081,7 +9081,7 @@
       });
   };
   ChartInternal.prototype.updateBar = function (durationForExit) {
-      var $$ = this, barData = $$.barData.bind($$), classBar = $$.classBar.bind($$), initialOpacity = $$.initialOpacity.bind($$), color = function (d) {
+      var $$ = this, barData = $$.barData.on($$), classBar = $$.classBar.on($$), initialOpacity = $$.initialOpacity.on($$), color = function (d) {
           return $$.color(d.id);
       };
       var mainBar = $$.main
@@ -9329,7 +9329,7 @@
           .attr('class', CLASS.chartLines);
   };
   ChartInternal.prototype.updateTargetsForLine = function (targets) {
-      var $$ = this, config = $$.config, mainLines, mainLineEnter, classChartLine = $$.classChartLine.bind($$), classLines = $$.classLines.bind($$), classAreas = $$.classAreas.bind($$), classCircles = $$.classCircles.bind($$), classFocus = $$.classFocus.bind($$);
+      var $$ = this, config = $$.config, mainLines, mainLineEnter, classChartLine = $$.classChartLine.on($$), classLines = $$.classLines.on($$), classAreas = $$.classAreas.on($$), classCircles = $$.classCircles.on($$), classFocus = $$.classFocus.on($$);
       mainLines = $$.main
           .select('.' + CLASS.chartLines)
           .selectAll('.' + CLASS.chartLine)
@@ -9374,15 +9374,15 @@
       var mainLine = $$.main
           .selectAll('.' + CLASS.lines)
           .selectAll('.' + CLASS.line)
-          .data($$.lineData.bind($$));
+          .data($$.lineData.on($$));
       var mainLineEnter = mainLine
           .enter()
           .append('path')
-          .attr('class', $$.classLine.bind($$))
+          .attr('class', $$.classLine.on($$))
           .style('stroke', $$.color);
       $$.mainLine = mainLineEnter
           .merge(mainLine)
-          .style('opacity', $$.initialOpacity.bind($$))
+          .style('opacity', $$.initialOpacity.on($$))
           .style('shape-rendering', function (d) {
           return $$.isStepType(d) ? 'crispEdges' : '';
       })
@@ -9586,11 +9586,11 @@
       var mainArea = $$.main
           .selectAll('.' + CLASS.areas)
           .selectAll('.' + CLASS.area)
-          .data($$.lineData.bind($$));
+          .data($$.lineData.on($$));
       var mainAreaEnter = mainArea
           .enter()
           .append('path')
-          .attr('class', $$.classArea.bind($$))
+          .attr('class', $$.classArea.on($$))
           .style('fill', $$.color)
           .style('opacity', function () {
           $$.orgAreaOpacity = +d3.select(this).style('opacity');
@@ -9688,27 +9688,27 @@
       var mainCircle = $$.main
           .selectAll('.' + CLASS.circles)
           .selectAll('.' + CLASS.circle)
-          .data($$.lineOrScatterOrStanfordData.bind($$));
+          .data($$.lineOrScatterOrStanfordData.on($$));
       var mainCircleEnter = mainCircle
           .enter()
           .append('circle')
           .attr('shape-rendering', $$.isStanfordGraphType() ? 'crispEdges' : '')
-          .attr('class', $$.classCircle.bind($$))
+          .attr('class', $$.classCircle.on($$))
           .attr('cx', cx)
           .attr('cy', cy)
-          .attr('r', $$.pointR.bind($$))
-          .style('color', $$.isStanfordGraphType() ? $$.getStanfordPointColor.bind($$) : $$.color);
+          .attr('r', $$.pointR.on($$))
+          .style('color', $$.isStanfordGraphType() ? $$.getStanfordPointColor.on($$) : $$.color);
       $$.mainCircle = mainCircleEnter
           .merge(mainCircle)
-          .style('opacity', $$.isStanfordGraphType() ? 1 : $$.initialOpacityForCircle.bind($$));
+          .style('opacity', $$.isStanfordGraphType() ? 1 : $$.initialOpacityForCircle.on($$));
       mainCircle.exit().style('opacity', 0);
   };
   ChartInternal.prototype.redrawCircle = function (cx, cy, withTransition, transition) {
       var $$ = this, selectedCircles = $$.main.selectAll('.' + CLASS.selectedCircle);
       return [
           (withTransition ? $$.mainCircle.transition(transition) : $$.mainCircle)
-              .style('opacity', this.opacityForCircle.bind($$))
-              .style('color', $$.isStanfordGraphType() ? $$.getStanfordPointColor.bind($$) : $$.color)
+              .style('opacity', this.opacityForCircle.on($$))
+              .style('color', $$.isStanfordGraphType() ? $$.getStanfordPointColor.on($$) : $$.color)
               .attr('cx', cx)
               .attr('cy', cy),
           (withTransition ? selectedCircles.transition(transition) : selectedCircles)
@@ -9741,7 +9741,7 @@
           : $$.main).selectAll('.' + CLASS.circle + (isValue(i) ? '-' + i : ''));
   };
   ChartInternal.prototype.expandCircles = function (i, id, reset) {
-      var $$ = this, r = $$.pointExpandedR.bind($$);
+      var $$ = this, r = $$.pointExpandedR.on($$);
       if (reset) {
           $$.unexpandCircles();
       }
@@ -9750,7 +9750,7 @@
           .attr('r', r);
   };
   ChartInternal.prototype.unexpandCircles = function (i) {
-      var $$ = this, r = $$.pointR.bind($$);
+      var $$ = this, r = $$.pointR.on($$);
       $$.getCircles(i)
           .filter(function () {
           return $$.d3.select(this).classed(CLASS.EXPANDED);
@@ -10047,7 +10047,7 @@
       $$.context.select('.' + CLASS.brush).call($$.brush);
   };
   ChartInternal.prototype.updateTargetsForSubchart = function (targets) {
-      var $$ = this, context = $$.context, config = $$.config, contextLineEnter, contextLine, contextBarEnter, contextBar, classChartBar = $$.classChartBar.bind($$), classBars = $$.classBars.bind($$), classChartLine = $$.classChartLine.bind($$), classLines = $$.classLines.bind($$), classAreas = $$.classAreas.bind($$);
+      var $$ = this, context = $$.context, config = $$.config, contextLineEnter, contextLine, contextBarEnter, contextBar, classChartBar = $$.classChartBar.on($$), classBars = $$.classBars.on($$), classChartLine = $$.classChartLine.on($$), classLines = $$.classLines.on($$), classAreas = $$.classAreas.on($$);
       //-- Bar --//
       contextBar = context
           .select('.' + CLASS.chartBars)
@@ -10084,11 +10084,11 @@
       var contextBar = $$.context
           .selectAll('.' + CLASS.bars)
           .selectAll('.' + CLASS.bar)
-          .data($$.barData.bind($$));
+          .data($$.barData.on($$));
       var contextBarEnter = contextBar
           .enter()
           .append('path')
-          .attr('class', $$.classBar.bind($$))
+          .attr('class', $$.classBar.on($$))
           .style('stroke', 'none')
           .style('fill', $$.color);
       contextBar
@@ -10099,7 +10099,7 @@
           .remove();
       $$.contextBar = contextBarEnter
           .merge(contextBar)
-          .style('opacity', $$.initialOpacity.bind($$));
+          .style('opacity', $$.initialOpacity.on($$));
   };
   ChartInternal.prototype.redrawBarForSubchart = function (drawBarOnSub, withTransition, duration) {
       (withTransition
@@ -10113,11 +10113,11 @@
       var contextLine = $$.context
           .selectAll('.' + CLASS.lines)
           .selectAll('.' + CLASS.line)
-          .data($$.lineData.bind($$));
+          .data($$.lineData.on($$));
       var contextLineEnter = contextLine
           .enter()
           .append('path')
-          .attr('class', $$.classLine.bind($$))
+          .attr('class', $$.classLine.on($$))
           .style('stroke', $$.color);
       contextLine
           .exit()
@@ -10127,7 +10127,7 @@
           .remove();
       $$.contextLine = contextLineEnter
           .merge(contextLine)
-          .style('opacity', $$.initialOpacity.bind($$));
+          .style('opacity', $$.initialOpacity.on($$));
   };
   ChartInternal.prototype.redrawLineForSubchart = function (drawLineOnSub, withTransition, duration) {
       (withTransition
@@ -10141,11 +10141,11 @@
       var contextArea = $$.context
           .selectAll('.' + CLASS.areas)
           .selectAll('.' + CLASS.area)
-          .data($$.lineData.bind($$));
+          .data($$.lineData.on($$));
       var contextAreaEnter = contextArea
           .enter()
           .append('path')
-          .attr('class', $$.classArea.bind($$))
+          .attr('class', $$.classArea.on($$))
           .style('fill', $$.color)
           .style('opacity', function () {
           $$.orgAreaOpacity = +d3.select(this).style('opacity');
@@ -10247,7 +10247,7 @@
       $$.mainText = $$.d3.selectAll([]);
   };
   ChartInternal.prototype.updateTargetsForText = function (targets) {
-      var $$ = this, classChartText = $$.classChartText.bind($$), classTexts = $$.classTexts.bind($$), classFocus = $$.classFocus.bind($$);
+      var $$ = this, classChartText = $$.classChartText.on($$), classTexts = $$.classTexts.on($$), classFocus = $$.classFocus.on($$);
       var mainText = $$.main
           .select('.' + CLASS.chartTexts)
           .selectAll('.' + CLASS.chartText)
@@ -10264,7 +10264,7 @@
       });
   };
   ChartInternal.prototype.updateText = function (xForText, yForText, durationForExit) {
-      var $$ = this, config = $$.config, barOrLineData = $$.barOrLineData.bind($$), classText = $$.classText.bind($$);
+      var $$ = this, config = $$.config, barOrLineData = $$.barOrLineData.on($$), classText = $$.classText.on($$);
       var mainText = $$.main
           .selectAll('.' + CLASS.texts)
           .selectAll('.' + CLASS.text)
@@ -10299,7 +10299,7 @@
               .attr('x', xForText)
               .attr('y', yForText)
               .style('fill', this.color)
-              .style('fill-opacity', forFlow ? 0 : this.opacityForText.bind(this))
+              .style('fill-opacity', forFlow ? 0 : this.opacityForText.on(this))
       ];
   };
   ChartInternal.prototype.getTextRect = function (text, cls, element) {
@@ -10398,7 +10398,7 @@
   };
   ChartInternal.prototype.redrawTitle = function () {
       var $$ = this;
-      $$.title.attr('x', $$.xForTitle.bind($$)).attr('y', $$.yForTitle.bind($$));
+      $$.title.attr('x', $$.xForTitle.on($$)).attr('y', $$.yForTitle.on($$));
   };
   ChartInternal.prototype.xForTitle = function () {
       var $$ = this, config = $$.config, position = config.title_position || 'left', x;
@@ -10642,7 +10642,7 @@
       $$.stanfordElements.append('g').attr('class', CLASS.stanfordRegions);
   };
   ChartInternal.prototype.updateStanfordElements = function (duration) {
-      var $$ = this, main = $$.main, config = $$.config, stanfordLine, stanfordLineEnter, stanfordRegion, stanfordRegionEnter, stanfordText, stanfordTextEnter, xvCustom = $$.xvCustom.bind($$), yvCustom = $$.yvCustom.bind($$), countPointsInRegion = $$.countEpochsInRegion.bind($$);
+      var $$ = this, main = $$.main, config = $$.config, stanfordLine, stanfordLineEnter, stanfordRegion, stanfordRegionEnter, stanfordText, stanfordTextEnter, xvCustom = $$.xvCustom.on($$), yvCustom = $$.yvCustom.on($$), countPointsInRegion = $$.countEpochsInRegion.on($$);
       // Stanford-Lines
       stanfordLine = main
           .select('.' + CLASS.stanfordLines)
