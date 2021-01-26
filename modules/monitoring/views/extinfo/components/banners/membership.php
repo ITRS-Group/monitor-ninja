@@ -2,7 +2,7 @@
 
 $groups = $object->get_groups();
 $group_table = ($object->get_table() === 'services') ? 'servicegroups' : 'hostgroups';
-$name = $object->get_name();
+$name = ($object->get_table() === 'services' ? $object->get_description() : $object->get_name());
 $group_count = count($groups);
 
 if ($group_count) {
