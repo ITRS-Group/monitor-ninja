@@ -216,7 +216,7 @@ Feature: Monitoring Host
 			| P4host     |                             |
 
 		And I visit the object details page for host "Babaruajan"
-		Then I should not see "P1host"
+		Then I should see "4 parents"
 
 	@MON-9844
 	Scenario: Host object shows group
