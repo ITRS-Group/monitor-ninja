@@ -163,12 +163,6 @@ if (!empty($base_href)) {
 		//-->
 	</script>
 
-  <!-- Adding development script for jQuery migration -->
-  <script type="text/javascript" src="/monitor/application/src/js/dev/jquery-3.5.1.js"></script>
-	<script type="text/javascript" src="/monitor/application/src/js/dev/jquery-migrate-3.3.2.js"></script>
-	<script type="text/javascript" src="/monitor/application/src/js/dev/browser.js"></script>
-  <!-- Finish migration script -->
-
 	<?php
 		$v = new View('js_header', array('js' => isset($js)?$js:array()));
 		$v->render(true);

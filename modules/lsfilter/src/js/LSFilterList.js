@@ -27,8 +27,8 @@ function lsfilter_list(config)
 		this.config.autorefresh_enabled = false;
 	}
 
-	if(browser.msie) {
-		var parts = browser.version.split('.');
+	if(platform.msie) {
+		var parts = platform.version.split('.');
 		if( parseInt(parts[0], 10) < 8 ) {
 			this.config.attach_head = false; /* Don't support attached head in ie7 */
 		}

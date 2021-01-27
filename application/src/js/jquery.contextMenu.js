@@ -185,9 +185,9 @@ if(jQuery)( function() {
 		});
 
 		// Disable text selection
-		if( $.browser.mozilla ) {
+		if( platform.mozilla ) {
 			$('#' + o.menu).each( function() { $(this).css({ 'MozUserSelect' : 'none' }); });
-		} else if( $.browser.msie ) {
+		} else if( platform.msie ) {
 			$('#' + o.menu).each( function() { $(this).on('selectstart.disableTextSelect', function() { return false; }); });
 		} else {
 			$('#' + o.menu).each(function() { $(this).on('mousedown.disableTextSelect', function() { return false; }); });
