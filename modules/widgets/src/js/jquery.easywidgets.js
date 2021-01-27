@@ -245,7 +245,7 @@
             var canShow = true;
             var widget = $(this);
             var widgetId = widget.attr('id');
-            var haveId = ($.trim(widgetId) != '');
+            var haveId = (widgetId.trim() != '');
             if (typeof s.callbacks.onShowQuery === "function") {
                 canShow = s.callbacks.onShowQuery(widget);
             }
@@ -711,7 +711,7 @@
         var widgetMenu = widget.find(s.selectors.widgetMenu);
         if (widgetMenu.html() == null) {
             var widgetId = widget.attr('id');
-            var haveId = ($.trim(widgetId) != '');
+            var haveId = (widgetId.trim() != '');
             widget.find(s.selectors.editbox).hide();
             if (widgetOnDemand && haveId && s.behaviour.useCookies) {
                 // Force this widget out of closed widgets cookie
@@ -807,12 +807,12 @@
         }
         // Only if not provide a string widget positions,
         // use cookies and the appropiate cookie is not empty
-        if (($.trim(positions) == '') && s.behaviour.useCookies
+        if ((positions.trim() == '') && s.behaviour.useCookies
      && GetCookie(s.cookies.positionName) != null) {
             // We get the widgets positions from the cookie
             positions = GetCookie(s.cookies.positionName)
         }
-        if ($.trim(positions) != '') {
+        if (positions.trim() != '') {
             // Get the widgets places IDs and widgets IDs
             var places = positions.split('|');
             var totalPlaces = places.length;
@@ -829,7 +829,7 @@
                     var totalWidgets = widgets.length;
                     // Here we have a place and one or more widgets IDs
                     for (var j = 0; j < totalWidgets; j++) {
-                        if ($.trim(widgets[j]) != '') {
+                        if (widgets[j].trim() != '') {
                             // So, append every widget in the appropiate place
                             var widgetSel = '#' + widgets[j];
                             $(widgetSel).appendTo(placeSel);
@@ -907,7 +907,7 @@
         // :not(), that is, a emtpy "not selector", and this cause
         // problems with jQuery version 1.3
         var notFixes = '';
-        if ($.trim(fixesSel) == '') {
+        if (fixesSel.trim() == '') {
             // So, if no fixed widgets are found, dont use the not selector
             notFixes = '> ' + s.selectors.container;
         } else {
@@ -1050,7 +1050,7 @@
             place.children(s.selectors.widget).each(function() {
                 var widget = this;
                 var widgetId = widget.id;
-                var haveId = ($.trim(widgetId) != '');
+                var haveId = (widgetId.trim() != '');
                 if (haveId) {
                     if (widgets == '') {
                         widgets += widgetId;
@@ -1104,7 +1104,7 @@
         var s = settings;
         var link = '';
         var widgetId = widget.attr('id');
-        var haveId = $.trim(widgetId) != '';
+        var haveId = widgetId.trim() != '';
         var content = widget.find(s.selectors.content);
 				if (widget.hasClass(s.options.collapsable)) {
 					if (widget.hasClass(s.options.collapse)) {
@@ -1141,7 +1141,7 @@
 						var link = $(this);
 						var widget = link.parents(s.selectors.widget);
 						var widgetId = widget.attr('id');
-						var haveId = $.trim(widgetId) != '';
+						var haveId = widgetId.trim() != '';
 						var content = widget.find(s.selectors.content);
 						var editbox = widget.find(s.selectors.editbox);
 						var contentVisible = (content.css('display') != 'none') || (editbox.css('display') != 'none');
@@ -1309,7 +1309,7 @@
                 var canRemove = true;
                 var widget = link.parents(s.selectors.widget);
                 var widgetId = widget.attr('id');
-                var haveId = ($.trim(widgetId) != '');
+                var haveId = (widgetId.trim() != '');
                 link.blur();
                 if (typeof s.callbacks.onCloseQuery === "function") {
                     canRemove = s.callbacks.onCloseQuery(link, widget);
@@ -1381,7 +1381,7 @@
             var widgetsIds = new Array();
             $(s.selectors.widget).each(function(count) {
                 var widgetId = $(this).attr('id');
-                if ($.trim(widgetId) != '') {
+                if (widgetId.trim() != '') {
                     widgetsIds[count] = widgetId;
                 }
             });
@@ -1392,9 +1392,9 @@
                     var storedValue = GetCookie(cookies[i]).split(',');
                     var storedWidgets = storedValue.length;
                     for (j = 0; j < storedWidgets; j++) {
-                        widgetId = $.trim(storedValue[j]);
+                        widgetId = storedValue[j].trim();
                         if ($.inArray(widgetId, widgetsIds) != -1) {
-                            if ($.trim(cleanValue) == '') {
+                            if (cleanValue.trim() == '') {
                                 cleanValue += widgetId;
                             } else {
                                 cleanValue += ',' + widgetId;
@@ -1420,12 +1420,12 @@
     */
     function GetCookie(name) {
         var result = null;
-        if (document.cookie && $.trim(document.cookie) != '') {
+        if (document.cookie && document.cookie.trim() != '') {
             var cookies = document.cookie.split(';');
             var cookiesLen = cookies.length;
             if (cookiesLen > 0) {
                 for (var i = 0; i < cookiesLen; i++) {
-                    var cookie = $.trim(cookies[i]);
+                    var cookie = cookies[i].trim();
                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
                         result = decodeURIComponent(cookie.substring(name.length + 1));
                         break;

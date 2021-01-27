@@ -2119,7 +2119,7 @@
         // If content is just a plain text, try to convert it to html
         if ($.type(content) === "string") {
           content = $("<div>")
-            .append($.trim(content))
+            .append(content.trim())
             .contents();
         }
 

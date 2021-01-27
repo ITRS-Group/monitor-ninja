@@ -10,7 +10,7 @@ var lsfilter_textarea = {
 		this.orderelement = orderelement;
 		this.element.on('keyup paste cut', function(evt)
 		{
-			var query = $.trim((self.element.val()).toString());
+			var query = (self.element.val()).toString().trim();
 			lsfilter_main.update_delayed(query, 'textarea');
 		});
 	},
