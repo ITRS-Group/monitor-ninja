@@ -182,6 +182,16 @@ Feature: Monitoring Host
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "IN SCHEDULED DOWNTIME"
 
+	Scenario: Host object shows parent
+
+		Given I have these mocked hosts
+			| name       | parents                  |
+			| Babaruajan | Parentbaba               |
+			| Parentbaba |                          |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "Parentbaba"
+
 	Scenario: Host object details displays flapping banner
 
 		Given I have these mocked hosts
