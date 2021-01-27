@@ -28,4 +28,4 @@ post:
     mkdir -p /mnt/logs
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
-    cucumber -t ~@skip -t ~@unreliable -t @MON-9844 --strict --format html --out /mnt/logs/cucumber.html --format pretty
+    cucumber -t ~@skip -t ~@unreliable --strict --format html --out /mnt/logs/cucumber.html --format pretty
