@@ -182,12 +182,24 @@ Feature: Monitoring Host
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "IN SCHEDULED DOWNTIME"
 
+	@MON-9844
 	Scenario: Host object shows parent
 
 		Given I have these mocked hosts
 			| name       | parents                  |
 			| Babaruajan | Parentbaba               |
 			| Parentbaba |                          |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "Parentbaba"
+
+	@MON-9844
+	Scenario: Host object shows child
+
+		Given I have these mocked hosts
+			| name       | childs                   |
+			| Babaruajan | Childbaba               |
+			| Childbaba |                          |
 
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "Parentbaba"
