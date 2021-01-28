@@ -182,6 +182,53 @@ Feature: Monitoring Host
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "IN SCHEDULED DOWNTIME"
 
+	@MON-9844
+	Scenario: Host object shows parent
+
+		Given I have these mocked hosts
+			| name       | parents                  |
+			| Babaruajan | Parentbaba               |
+			| Parentbaba |                          |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "Parentbaba"
+
+	@MON-9844
+	Scenario: Host object shows child
+
+		Given I have these mocked hosts
+			| name       | childs                   |
+			| Babaruajan | Childbaba                |
+			| Childbaba  |                          |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "Childbaba"
+
+	@MON-9844
+	Scenario: Host object collapses >3 parents
+
+		Given I have these mocked hosts
+			| name       | parents                     |
+			| Babaruajan | P1host,P2host,P3host,P4host |
+			| P1host     |                             |
+			| P2host     |                             |
+			| P3host     |                             |
+			| P4host     |                             |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "4 parents"
+		And I shouldn't see "P1host"
+
+	@MON-9844
+	Scenario: Host object shows group
+
+		Given I have these mocked hosts
+			| name       | groups                   |
+			| Babaruajan | Babagroup                |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "Babagroup"
+
 	Scenario: Host object details displays flapping banner
 
 		Given I have these mocked hosts

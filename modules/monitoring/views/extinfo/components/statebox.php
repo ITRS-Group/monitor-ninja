@@ -77,7 +77,17 @@
 		'object' => $object,
 		'linkprovider' => $linkprovider
 	))->render(true);
+if ($object->get_table() === 'hosts'){
+	View::factory('extinfo/components/banners/parents', array(
+		'object' => $object,
+		'linkprovider' => $linkprovider
+	))->render(true);
 
+	View::factory('extinfo/components/banners/children', array(
+		'object' => $object,
+		'linkprovider' => $linkprovider
+	))->render(true);
+}
 ?>
 	</ul>
   </div>
