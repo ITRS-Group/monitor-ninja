@@ -364,7 +364,7 @@ function check_form_values(form)
 // init timepicker once it it is shown
 function init_timepicker()
 {
-	$("#time_start, #time_end").timePicker({ 'scrollDefault': 'now' });
+	$("#time_start, #time_end").timepicker({ 'scrollDefault': 'now' });
 }
 
 function check_custom_months()
