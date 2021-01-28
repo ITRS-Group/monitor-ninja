@@ -1,5 +1,5 @@
 <script>
-$(document).ready(function(){
+$(function(){
 	var counter = 0; // Declare counter. This variable count the total number of alerts.
   	$(".alert").each(function(){
 		counter++;

@@ -1,7 +1,7 @@
 var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
-$(document).ready(function() {
+$(function() {
 	$(".fancybox").fancybox({
 		'overlayOpacity'        :       0.7,
 		'overlayColor'          :       '#ffffff',

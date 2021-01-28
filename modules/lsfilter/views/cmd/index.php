@@ -20,7 +20,7 @@ if (!empty( $error )) {
 if($command_info['name'] == 'Check now'){
 	?>
 	<script>
-		$(document).ready(function(){
+		$(function(){
 			$("#command_form").trigger('submit');
 		});
 	</script>

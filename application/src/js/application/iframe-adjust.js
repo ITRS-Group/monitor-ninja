@@ -1,6 +1,6 @@
 
 
-$(document).ready(function() {
+$(function() {
 
 	function adjust_height_frame( selector ) {
 

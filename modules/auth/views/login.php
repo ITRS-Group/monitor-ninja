@@ -56,7 +56,7 @@
 	?>
 
 	<script>
-		$(document).ready(function(){
+		$(function(){
 			// Resize the ITRS OP5 Monitor logo just for this page.
 			$(".brand-icon").css({
 				"height": "99px",

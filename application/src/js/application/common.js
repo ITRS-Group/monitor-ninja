@@ -42,7 +42,7 @@ function switch_image(html_id, src)
 	$('#' + html_id).attr('src', src);
 }
 
-$(document).ready(function() {
+$(function() {
 
 	"use strict";
 	var _save_page_interval = 0;

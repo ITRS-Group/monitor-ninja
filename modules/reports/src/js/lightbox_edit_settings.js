@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 	var edit_settings_url = $('.edit_settings').attr('href');
 
 	var settings = {

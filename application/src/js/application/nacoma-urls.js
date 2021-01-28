@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
 	var nacoma_base = '/' + $.map([_site_domain, _index_page, _current_uri], function(p) {
 		return p.replace(/^\/|\/$/g, '');
 	}).join('/');

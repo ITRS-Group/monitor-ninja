@@ -110,6 +110,6 @@ var lsfilter_saved = {
 	}
 };
 
-$(document).ready(function() {
+$(function() {
 	lsfilter_saved.refresh_filter_list();
 });

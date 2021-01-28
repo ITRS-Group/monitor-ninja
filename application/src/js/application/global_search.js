@@ -3,7 +3,7 @@
  *
  * The request is handled by the controller "search" and method "ajax_auto_complete"
  */
-$(document).ready(function() {
+$(function() {
 
 	var query = $('#query');
 	if(query.length) {

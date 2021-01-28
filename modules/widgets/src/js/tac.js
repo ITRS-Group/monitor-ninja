@@ -220,7 +220,7 @@ $(document).on("submit", ".nj-form[action$='/tac/share_dashboard']", function(ev
 	var form = $(this);
 	var share_button = form.find("input#share");
 	share_button
-		.attr("disabled", "disabled")
+		.prop("disabled", true)
 		.data("oldValue", share_button.val())
 		.val("Processing ...");
 	$.post(form.attr("action"), form.serialize())

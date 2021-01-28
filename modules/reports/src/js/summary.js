@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 	var set_report_mode = function(type) {
 		var summary_report_type;
 		if (type) {

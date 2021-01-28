@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 	var show_all = $('#show_all');
 	if(show_all.length === 0) {
 		return;

@@ -52,7 +52,7 @@ function fill_saved_reports() {
 	);
 }
 
-$(document).ready(function() {
+$(function() {
 	if($('#scheduled_avail_reports').length === 0) {
 		// This javascript is included in all pages as part of a
 		// bundle. We must however only execute the following code on
@@ -430,7 +430,7 @@ function validate_form(formData, jqForm, options) {
 	$('.schedule_err_display').remove();
     return true;
 }
-$(document).ready(function() {
+$(function() {
 	$('#schedule-report-sendtime').on('click', function(e){
    	$('.sendtime-quickselect').html(sch_report_quickselect_data($(this).val(),"s"));
    	$('.sendtime-quickselect').show();

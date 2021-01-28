@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
   $("#setup_form").on('submit', function() {
     return check_setup();
   });
@@ -646,7 +646,7 @@ $(document).ready(function() {
   $( ".fixed-duration-part" ).trigger( "change" );
 });
 
-$(document).ready(function() {
+$(function() {
   var pathArray = window.location.pathname.split( '/' );
   if(pathArray[3] == "recurring_downtime" && pathArray[4] == "index"){
     var get_recurrence = JSON.parse(_recurrence);

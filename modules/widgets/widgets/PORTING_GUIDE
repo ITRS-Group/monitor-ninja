@@ -7,7 +7,7 @@ system used afterwards. This document will explain how to port your widgets.
 In old-style widgets, you usually needed to create a javascript file with the
 following content:
 
-$(document).ready(function() {
+$(function() {
 	var my_widget = new widget('my_widget', 'widget-content');
 });
 
@@ -237,7 +237,7 @@ Then, in your javascript, you must take care to use a combined selector to
 retrieve the HTML node you want to for the correct widget instance. In the past,
 a common pattern in javascript files was the following:
 
-$(document).ready(function() {
+$(function() {
 	var my_widget = new widget('my_widget', 'widget-content');
 	$('#my_widget_setting').change(function() {
 		my_widget.save_custom_val($(this).val(), 'my_widget_setting');

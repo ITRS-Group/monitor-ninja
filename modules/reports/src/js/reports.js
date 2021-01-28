@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
 	// reset options and reload page
 	$('#new_report').on('click', function() {
 		var current_report = $('input[name=type]').val();

@@ -1,6 +1,6 @@
 (function () {
 	"use strict";
-	$(document).ready(function () {
+	$(function () {
 		$('.nj-form-field-listview-query').each(function () {
 
 			var field = $(this);

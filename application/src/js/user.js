@@ -1,5 +1,5 @@
 
-$(document).ready(function() {
+$(function() {
 
 	$('#usergroup').on('change', function() {
 		if ($(this).val() == '') return;

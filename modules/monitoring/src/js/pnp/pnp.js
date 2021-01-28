@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
   $('#iframe').on( 'load', function() {
     $(this).trigger('focus');
 		$(this.contentDocument).find('.ui-widget-header tr').each(function () {
