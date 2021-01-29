@@ -2119,7 +2119,7 @@
         // If content is just a plain text, try to convert it to html
         if ($.type(content) === "string") {
           content = $("<div>")
-            .append(content.trim())
+            .append(op5trim(content))
             .contents();
         }
 
@@ -5367,7 +5367,7 @@
           });
 
           // Opening links in a popup window
-          shareCurrent.$content.find(".fancybox-share__button").click(function () {
+          shareCurrent.$content.find(".fancybox-share__button").on("click", function () {
             window.open(this.href, "Share", "width=550, height=450");
             return false;
           });

@@ -161,7 +161,7 @@ if(jQuery)( function() {
 
 				// When items are selected
 				$('#' + o.menu).find('A').off('click');
-				$('#' + o.menu).find('LI:not(.disabled) A').click( function() {
+				$('#' + o.menu).find('LI:not(.disabled) A').on("click",  function() {
 					$(document).off('click').off('keypress');
 					$(".contextMenu").hide();
 					// Callback
@@ -175,7 +175,7 @@ if(jQuery)( function() {
 
 				// Hide bindings
 				setTimeout( function() { // Delay for Mozilla
-					$(document).click( function() {
+					$(document).on("click",  function() {
 						$(document).off('click').off('keypress');
 						$(menu).fadeOut(o.outSpeed);
 						return false;

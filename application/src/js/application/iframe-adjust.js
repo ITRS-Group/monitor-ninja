@@ -48,7 +48,7 @@ $(function() {
 				}
 
 				note.append('<span>Known issues on ' + agent + ' with iframes </span>');
-				note.append($('<a href="#"></a>').html('Open in a new window').click(function () {
+				note.append($('<a href="#"></a>').html('Open in a new window').on("click", function () {
 					window.open('https://' + window.location.hostname + elements.attr('src'), '_blank');
 				}));
 

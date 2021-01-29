@@ -6888,7 +6888,7 @@ $.widget( "ui.button", {
 						// If a native click is available use it so we actually cause navigation
 						// otherwise just trigger a click event
 						if ( this.element[ 0 ].click ) {
-							this.element[ 0 ].click();
+							this.element[ 0 ].trigger("click");
 						} else {
 							this.element.trigger( "click" );
 						}

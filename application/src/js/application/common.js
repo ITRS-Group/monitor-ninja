@@ -1,4 +1,19 @@
-
+function op5trim(arg) {
+  switch (typeof arg) {
+		case 'string':
+			return op5trim(arg);
+		case 'number':
+			return Number(arg.toString().trim());
+		case 'boolean':
+			return arg;
+		case 'object':
+		case null:
+			return "";
+		default:
+			break;
+	}
+}
+    
 var loadimg_sml = new Image(16, 16);
 loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';
 
