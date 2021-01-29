@@ -1843,7 +1843,7 @@
         temp = srcset.split(",").map(function (el) {
           var ret = {};
 
-          el.trim()
+          op5trim(el)
             .split(/\s+/)
             .forEach(function (el, i) {
               var value = parseInt(el.substring(0, el.length - 1), 10);

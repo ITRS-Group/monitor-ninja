@@ -90,7 +90,7 @@ $(function() {
 		}
 		var rep_type_str = $('#type option:selected').val();
 
-        var recipients = $('#recipients').val().trim();
+        var recipients = op5trim($('#recipients').val());
         if (recipients.indexOf('@') === -1) {
                 $.notify(_reports_invalid_email, {'sticky': true, type: 'error'});
                 return false;
@@ -112,7 +112,7 @@ $(function() {
                 filename: $('#filename').val(),
                 description: $('#description').val(),
                 attach_description: $('#attach_description').val(),
-                local_persistent_filepath: $('#local_persistent_filepath').val().trim(),
+                local_persistent_filepath: op5trim($('#local_persistent_filepath').val()),
                 report_time: repeat_time,
                 report_on: repeat_on,
                 report_period: repeat_period,
@@ -408,7 +408,7 @@ function validate_form(formData, jqForm, options) {
 
 	recipients = recipients.replace(/;/g, ',');
 	// @@@FIXME: split multiple addresses on ',' and check each one using regexp
-	if (recipients.trim() == '') {
+	if (op5trim(recipients) == '') {
 		err_str += _reports_schedule_recipient_error + "<br />";
 		errors++;
 	}

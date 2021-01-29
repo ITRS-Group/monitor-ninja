@@ -416,7 +416,7 @@
         }
 
         if (hour <= 12 && ampm) {
-          ampm = ampm.trim();
+          ampm = op5trim(ampm);
           var isPm = ampm == this.settings.lang.pm || ampm == this.settings.lang.PM;
 
           if (hour == 12) {

@@ -1263,13 +1263,13 @@ function check_timestring_duration(timestring) {
 
 function check_setup() {
   var errors = [];
-  var comment = $('textarea[name=comment]').val().trim();
+  var comment = op5trim($('textarea[name=comment]').val());
   var obj_count=$('#objects option').length;
-  var start_time = $('input[name=start_time]').val().trim();
-  var end_time = $('input[name=end_time]').val().trim();
+  var start_time = op5trim($('input[name=start_time]').val());
+  var end_time = op5trim($('input[name=end_time]').val());
   var fixed = $('#fixed').attr('checked');
-  var start_date = $('#fixed-duration-start-date').val().trim();
-  var end_date = $('#fixed-duration-end-date').val().trim();
+  var start_date = op5trim($('#fixed-duration-start-date').val());
+  var end_date = op5trim($('#fixed-duration-end-date').val());
   var exclude_days = $('#exclude_days_all').val();
   var duration_days = $('#duration-days').val();
   var duration_hours = $('#duration-hours').val();

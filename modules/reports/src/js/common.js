@@ -87,7 +87,7 @@ $(function() {
 			error: function(data) {
 				var resp;
 				try {
-					resp = $.parseJSON(data.responseText).error;
+					resp = JSON.parse(data.responseText).error;
 				} catch (ex) {
 					resp = "Unknown error";
 				}
@@ -430,7 +430,7 @@ function confirm_delete_report()
 			error: function(data) {
 				var msg;
 				try {
-					msg = $.parseJSON(data.responseText).error;
+					msg = JSON.parse(data.responseText).error;
 				} catch (ex) {
 					msg = "Unknown error";
 				}

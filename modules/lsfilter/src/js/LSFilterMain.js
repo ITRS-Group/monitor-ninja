@@ -28,8 +28,8 @@ var lsfilter_main = {
 
 	update : function(query, source, order) {
 		if(this.update_query &&
-			query.trim() === this.update_query.trim() &&
-			order.trim() === this.update_order.trim()
+			op5trim(query) === op5trim(this.update_query) &&
+			op5trim(order) === op5trim(this.update_order)
 			) {
 			// don't issue multiple requests for the same query,
 			// use refresh() if you want a brand new result set
