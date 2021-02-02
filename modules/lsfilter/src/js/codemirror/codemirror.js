@@ -78,7 +78,7 @@
     themeChanged(this);
     if (options.lineWrapping)
       this.display.wrapper.className += " CodeMirror-wrap";
-    if (options.autofocus && !mobile) display.input.focus();
+    if (options.autofocus && !mobile) display.input.trigger("focus");
     initScrollbars(this);
 
     this.state = {
@@ -513,7 +513,7 @@
       cm.display.wrapper.insertBefore(node, cm.display.scrollbarFiller);
       // Prevent clicks in the scrollbars from killing focus
       on(node, "mousedown", function() {
-        if (cm.state.focused) setTimeout(function() { cm.display.input.focus(); }, 0);
+        if (cm.state.focused) setTimeout(function() { cm.display.input.trigger("focus"); }, 0);
       });
       node.setAttribute("cm-not-content", "true");
     }, function(pos, axis) {
@@ -727,7 +727,7 @@
     display.renderedView = display.view;
     // There might have been a widget with a focused element that got
     // hidden or updated, if so re-focus it.
-    if (focused && activeElt() != focused && focused.offsetHeight) focused.focus();
+    if (focused && activeElt() != focused && focused.offsetHeight) focused.trigger("focus");
 
     // Prevent selection and cursors from interfering with the scroll
     // width and height.
@@ -1093,7 +1093,7 @@
   // INPUT HANDLING
 
   function ensureFocus(cm) {
-    if (!cm.state.focused) { cm.display.input.focus(); onFocus(cm); }
+    if (!cm.state.focused) { cm.display.input.trigger("focus"); onFocus(cm); }
   }
 
   // This will be set to a {lineWise: bool, text: [string]} object, so
@@ -1292,7 +1292,7 @@
       on(display.scroller, "paste", function(e) {
         if (eventInWidget(display, e) || signalDOMEvent(cm, e)) return;
         cm.state.pasteIncoming = true;
-        input.focus();
+        input.trigger("focus");
       });
 
       // Prevent normal selection in the editor (we handle our own)
@@ -1372,12 +1372,12 @@
 
     focus: function() {
       if (this.cm.options.readOnly != "nocursor" && (!mobile || activeElt() != this.textarea)) {
-        try { this.textarea.focus(); }
+        try { this.textarea.trigger("focus"); }
         catch (e) {} // IE8 will throw if the textarea is display: none or not in DOM
       }
     },
 
-    blur: function() { this.textarea.blur(); },
+    blur: function() { this.textarea.trigger("mouseout"); },
 
     resetPosition: function() {
       this.wrapper.style.top = this.wrapper.style.left = 0;
@@ -1494,7 +1494,7 @@
         (ie ? "rgba(255, 255, 255, .05)" : "transparent") +
         "; outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
       if (webkit) var oldScrollY = window.scrollY; // Work around Chrome issue (#2712)
-      display.input.focus();
+      display.input.trigger("focus");
       if (webkit) window.scrollTo(null, oldScrollY);
       display.input.reset();
       // Adds "Select all" to context menu in FF
@@ -1651,7 +1651,7 @@
           selectInput(te);
           setTimeout(function() {
             cm.display.lineSpace.removeChild(kludge);
-            hadFocus.focus();
+            hadFocus.trigger("focus");
           }, 50);
         }
       }
@@ -1739,9 +1739,9 @@
     },
 
     focus: function() {
-      if (this.cm.options.readOnly != "nocursor") this.div.focus();
+      if (this.cm.options.readOnly != "nocursor") this.div.trigger("focus");
     },
-    blur: function() { this.div.blur(); },
+    blur: function() { this.div.trigger("mouseout"); },
     getField: function() { return this.div; },
 
     supportsTouch: function() { return true; },
@@ -1843,8 +1843,8 @@
       if (!this.composing || this.composing.handled) return;
       this.applyComposition(this.composing);
       this.composing.handled = true;
-      this.div.blur();
-      this.div.focus();
+      this.div.trigger("mouseout");
+      this.div.trigger("focus");
     },
     applyComposition: function(composing) {
       if (this.cm.isReadOnly())
@@ -3469,7 +3469,7 @@
         else // Triple tap
           range = new Range(Pos(pos.line, 0), clipPos(cm.doc, Pos(pos.line + 1, 0)));
         cm.setSelection(range.anchor, range.head);
-        cm.focus();
+        cm.trigger("focus");
         e_preventDefault(e);
       }
       finishTouch();
@@ -3586,7 +3586,7 @@
     }
     if (clickInGutter(cm, e)) return;
     var start = posFromMouse(cm, e);
-    window.focus();
+    window.trigger("focus");
 
     switch (e_button(e)) {
     case 1:
@@ -3601,7 +3601,7 @@
     case 2:
       if (webkit) cm.state.lastMiddleDown = +new Date;
       if (start) extendSelection(cm.doc, start);
-      setTimeout(function() {display.input.focus();}, 20);
+      setTimeout(function() {display.input.trigger("focus");}, 20);
       e_preventDefault(e);
       break;
     case 3:
@@ -3652,9 +3652,9 @@
           extendSelection(cm.doc, start);
         // Work around unexplainable focus problem in IE9 (#2127) and Chrome (#3081)
         if (webkit || ie && ie_version == 9)
-          setTimeout(function() {document.body.focus(); display.input.focus();}, 20);
+          setTimeout(function() {document.body.trigger("focus"); display.input.trigger("focus");}, 20);
         else
-          display.input.focus();
+          display.input.trigger("focus");
       }
     });
     // Let the drag handler handle this.
@@ -3796,7 +3796,7 @@
       cm.state.selectingText = false;
       counter = Infinity;
       e_preventDefault(e);
-      display.input.focus();
+      display.input.trigger("focus");
       off(document, "mousemove", move);
       off(document, "mouseup", up);
       doc.history.lastSelOrigin = null;
@@ -3885,7 +3885,7 @@
       if (cm.state.draggingText && cm.doc.sel.contains(pos) > -1) {
         cm.state.draggingText(e);
         // Ensure the editor is re-focused
-        setTimeout(function() {cm.display.input.focus();}, 20);
+        setTimeout(function() {cm.display.input.trigger("focus");}, 20);
         return;
       }
       try {
@@ -3897,7 +3897,7 @@
           if (selected) for (var i = 0; i < selected.length; ++i)
             replaceRange(cm.doc, "", selected[i].anchor, selected[i].head, "drag");
           cm.replaceSelection(text, "around", "paste");
-          cm.display.input.focus();
+          cm.display.input.trigger("focus");
         }
       }
       catch(e){}
@@ -4904,7 +4904,7 @@
 
   CodeMirror.prototype = {
     constructor: CodeMirror,
-    focus: function(){window.focus(); this.display.input.focus();},
+    focus: function(){window.trigger("focus"); this.display.input.trigger("focus");},
 
     setOption: function(option, value) {
       var options = this.options, old = options[option];
@@ -5449,7 +5449,7 @@
   option("readOnly", false, function(cm, val) {
     if (val == "nocursor") {
       onBlur(cm);
-      cm.display.input.blur();
+      cm.display.input.trigger("mouseout");
       cm.display.disabled = true;
     } else {
       cm.display.disabled = false;

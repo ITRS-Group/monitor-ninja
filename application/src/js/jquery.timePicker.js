@@ -1177,7 +1177,7 @@
         end += ONE_DAY;
       }
 
-      if (end === ONE_DAY - 1 && $.type(settings.timeFormat) === "string" && settings.show2400) {
+      if (end === ONE_DAY - 1 && (typeof settings.timeFormat === 'string' || settings.timeFormat instanceof String) && settings.show2400) {
         // show a 24:00 option when using military time
         end = ONE_DAY;
       }
@@ -1286,7 +1286,7 @@
           });
 
           if (!tp._hideKeyboard()) {
-            self[0].focus();
+            self[0].trigger("focus");
           } // make sure only the clicked row is selected
 
 

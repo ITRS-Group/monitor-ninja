@@ -236,7 +236,7 @@ $.widget( "ui.autocomplete", {
 				if ( this.isNewMenu ) {
 					this.isNewMenu = false;
 					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
-						this.menu.blur();
+						this.menu.trigger("mouseout");
 
 						this.document.one( "mousemove", function() {
 							$( event.target ).trigger( event.originalEvent );
@@ -480,7 +480,7 @@ $.widget( "ui.autocomplete", {
 
 		if ( this.menu.element.is( ":visible" ) ) {
 			this.menu.element.hide();
-			this.menu.blur();
+			this.menu.trigger("mouseout");
 			this.isNewMenu = true;
 			this._trigger( "close", event );
 		}
@@ -575,7 +575,7 @@ $.widget( "ui.autocomplete", {
 				this._value( this.term );
 			}
 
-			this.menu.blur();
+			this.menu.trigger("mouseout");
 			return;
 		}
 		this.menu[ direction ]( event );

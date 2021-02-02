@@ -1145,7 +1145,7 @@
 						var content = widget.find(s.selectors.content);
 						var editbox = widget.find(s.selectors.editbox);
 						var contentVisible = (content.css('display') != 'none') || (editbox.css('display') != 'none');
-						link.blur();
+						link.trigger("mouseout");
 						if (contentVisible) {
 							if (typeof s.callbacks.onCollapseQuery === "function") {
 								canCollapse = s.callbacks.onCollapseQuery(link, widget);
@@ -1219,7 +1219,7 @@
 					var widget = link.parents(s.selectors.widget);
 					var editbox = widget.find(s.selectors.editbox);
 					var editLink = widget.find(s.selectors.editLink);
-					link.blur();
+					link.trigger("mouseout");
 					ApplyEffect(
 						editbox,
 						s.effects.widgetCloseEdit,
@@ -1230,7 +1230,7 @@
 					editLink.attr('title', s.i18n.editTitle);
 					return false;
 				});
-				$(link).on('mousedown, function(e) {
+				$(link).on('mousedown', function(e) {
 					e.stopPropagation();
 				}).on('click', function() {
 					var link = $(this);
@@ -1238,7 +1238,7 @@
 					var widget = link.parents(s.selectors.widget);
 					var editbox = widget.find(s.selectors.editbox);
 					var editboxVisible = editbox.css('display') != 'none';
-					link.blur();
+					link.trigger("mouseout");
 					if (editboxVisible) {
 						if (typeof s.callbacks.onCancelEditQuery === "function") {
 							canHide = s.callbacks.onCancelEditQuery(link, widget);
@@ -1310,7 +1310,7 @@
                 var widget = link.parents(s.selectors.widget);
                 var widgetId = widget.attr('id');
                 var haveId = (op5trim(widgetId) != '');
-                link.blur();
+                link.trigger("mouseout");
                 if (typeof s.callbacks.onCloseQuery === "function") {
                     canRemove = s.callbacks.onCloseQuery(link, widget);
                 }

@@ -204,7 +204,7 @@ $(function() {
 
 $(document).on('click', '.menuitem_dashboard_option', function (e) {
 
-	var href = $(this).attr('href');
+	var href = $(this).prop('href');
 	var lightbox = LightboxManager.ajax_form_from_href($(this).text(), href);
 
 	$(lightbox.node).one('click', 'input[type="reset"]', function () {
@@ -265,7 +265,7 @@ $(document).on("submit", ".nj-form[action$='/tac/share_dashboard']", function(ev
 				.removeData("oldValue")
 				.removeAttr("disabled");
 			// calling blur() will reset the placeholder
-			form.find("input[name$='[value]']").val("").blur();
+			form.find("input[name$='[value]']").val("").trigger("mouseout");
 		});
 	ev.preventDefault();
 	return false;

@@ -5252,7 +5252,7 @@ var widgetsMenu = $.widget( "ui.menu", {
 
 		// If the active item has been removed, blur the menu
 		if ( this.active && !$.contains( this.element[ 0 ], this.active[ 0 ] ) ) {
-			this.blur();
+			this.trigger("mouseout");
 		}
 	},
 
@@ -5815,7 +5815,7 @@ $.widget( "ui.autocomplete", {
 				if ( this.isNewMenu ) {
 					this.isNewMenu = false;
 					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
-						this.menu.blur();
+						this.menu.trigger("mouseout");
 
 						this.document.one( "mousemove", function() {
 							$( event.target ).trigger( event.originalEvent );
@@ -6059,7 +6059,7 @@ $.widget( "ui.autocomplete", {
 
 		if ( this.menu.element.is( ":visible" ) ) {
 			this.menu.element.hide();
-			this.menu.blur();
+			this.menu.trigger("mouseout");
 			this.isNewMenu = true;
 			this._trigger( "close", event );
 		}
@@ -6154,7 +6154,7 @@ $.widget( "ui.autocomplete", {
 				this._value( this.term );
 			}
 
-			this.menu.blur();
+			this.menu.trigger("mouseout");
 			return;
 		}
 		this.menu[ direction ]( event );
@@ -7041,7 +7041,7 @@ $.widget( "ui.button", {
 			this._toggleClass( null, "ui-state-disabled", value );
 			this.element[ 0 ].disabled = value;
 			if ( value ) {
-				this.element.blur();
+				this.element.trigger("mouseout");
 			}
 		}
 	},
@@ -13876,7 +13876,7 @@ var widgetsSelectmenu = $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		this.labels = this.element.labels().attr( "for", this.ids.button );
 		this._on( this.labels, {
 			click: function( event ) {
-				this.button.focus();
+				this.button.trigger("focus");
 				event.preventDefault();
 			}
 		} );
@@ -14194,7 +14194,7 @@ var widgetsSelectmenu = $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		// Support: IE
 		// Setting the text selection kills the button focus in IE, but
 		// restoring the focus doesn't kill the selection.
-		this.button.focus();
+		this.button.trigger("focus");
 	},
 
 	_documentClick: {
@@ -17694,7 +17694,7 @@ $.widget( "ui.tabs", {
 			// the body anyway.
 			.on( "focus" + this.eventNamespace, ".ui-tabs-anchor", function() {
 				if ( $( this ).closest( "li" ).is( ".ui-state-disabled" ) ) {
-					this.blur();
+					this.trigger("mouseout");
 				}
 			} );
 

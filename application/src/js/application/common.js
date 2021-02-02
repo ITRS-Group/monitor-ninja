@@ -1,7 +1,7 @@
 function op5trim(arg) {
   switch (typeof arg) {
 		case 'string':
-			return op5trim(arg);
+			return arg.trim();
 		case 'number':
 			return Number(arg.toString().trim());
 		case 'boolean':
@@ -13,6 +13,10 @@ function op5trim(arg) {
 			break;
 	}
 }
+
+function isNumeric(obj) {
+  return !Array.isArray(obj) && (obj - parseFloat(obj) + 1) >= 0;    
+  }
     
 var loadimg_sml = new Image(16, 16);
 loadimg_sml.src = _site_domain + 'application/media/images/loading_small.gif';

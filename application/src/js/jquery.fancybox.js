@@ -669,7 +669,7 @@
 
           obj = item;
           opts = item.opts || item;
-        } else if ($.type(item) === "object" && $(item).length) {
+        } else if ((item && typeof item === 'object' && item.constructor === Object) && $(item).length) {
           // Here we probably have jQuery collection returned by some selector
           $item = $(item);
 
@@ -784,11 +784,11 @@
         obj.thumb = obj.opts.thumb || (obj.$thumb ? obj.$thumb[0].src : null);
 
         // "caption" is a "special" option, it can be used to customize caption per gallery item
-        if ($.type(obj.opts.caption) === "function") {
+        if (typeof obj.opts.caption === "function") {
           obj.opts.caption = obj.opts.caption.apply(item, [self, obj]);
         }
 
-        if ($.type(self.opts.caption) === "function") {
+        if (typeof self.opts.caption === "function") {
           obj.opts.caption = self.opts.caption.apply(item, [self, obj]);
         }
 
@@ -854,7 +854,7 @@
         if (thumbs && thumbs.isActive) {
           thumbs.create();
 
-          thumbs.focus();
+          thumbs.trigger("focus");
         }
       }
     },
@@ -1102,7 +1102,7 @@
       // Validate duration length
       current.forcedDuration = undefined;
 
-      if ($.isNumeric(duration)) {
+      if (isNumeric(duration)) {
         current.forcedDuration = duration;
       } else {
         duration = current.opts[firstRun ? "animationDuration" : "transitionDuration"];
@@ -2117,7 +2117,7 @@
         content.css("display", "inline-block");
       } else if (!slide.hasError) {
         // If content is just a plain text, try to convert it to html
-        if ($.type(content) === "string") {
+        if (typeof content === "string" || content instanceof String) {
           content = $("<div>")
             .append(op5trim(content))
             .contents();
@@ -2775,7 +2775,7 @@
 
       $content = current.$content;
       effect = current.opts.animationEffect;
-      duration = $.isNumeric(d) ? d : effect ? current.opts.animationDuration : 0;
+      duration = isNumeric(d) ? d : effect ? current.opts.animationDuration : 0;
 
       current.$slide.removeClass("fancybox-slide--complete fancybox-slide--next fancybox-slide--previous fancybox-animated");
 
@@ -3074,9 +3074,9 @@
         args = Array.prototype.slice.call(arguments, 1);
 
       if (instance instanceof FancyBox) {
-        if ($.type(command) === "string") {
+        if (typeof command === "string" || command instanceof String) {
           instance[command].apply(instance, args);
-        } else if ($.type(command) === "function") {
+        } else if (typeof command === "function") {
           command.apply(instance, args);
         }
 
@@ -3234,7 +3234,7 @@
 
         self.stop($el);
 
-        if ($.isNumeric(duration)) {
+        if (isNumeric(duration)) {
           $el.css("transition-duration", "");
         }
 
@@ -3258,7 +3258,7 @@
         }
       });
 
-      if ($.isNumeric(duration)) {
+      if (isNumeric(duration)) {
         $el.css("transition-duration", duration + "ms");
       }
 
@@ -3523,8 +3523,8 @@
     }
 
     params = params || "";
-
-    if ($.type(params) === "object") {
+    
+    if (params && typeof params === 'object' && params.constructor === Object) {
       params = $.param(params, true);
     }
 
@@ -3585,10 +3585,10 @@
       params = $.extend(true, {}, providerOpts.params, item.opts[providerName], paramObj);
 
       url =
-        $.type(providerOpts.url) === "function" ? providerOpts.url.call(this, rez, params, item) : format(providerOpts.url, rez, params);
+        typeof providerOpts.url === "function" ? providerOpts.url.call(this, rez, params, item) : format(providerOpts.url, rez, params);
 
       thumb =
-        $.type(providerOpts.thumb) === "function" ? providerOpts.thumb.call(this, rez, params, item) : format(providerOpts.thumb, rez);
+        typeof providerOpts.thumb === "function" ? providerOpts.thumb.call(this, rez, params, item) : format(providerOpts.thumb, rez);
 
       if (providerName === "youtube") {
         url = url.replace(/&t=((\d+)m)?(\d+)s/, function (match, p1, m, s) {
@@ -5344,7 +5344,7 @@
       return;
     }
 
-    if ($.type(current.opts.share.url) === "function") {
+    if (typeof current.opts.share.url === "function") {
       url = current.opts.share.url.apply(current, [instance, current]);
     }
 
@@ -5433,7 +5433,7 @@
       // then triggering click event should start fancyBox
       $("[data-fancybox='" + $.escapeSelector(url.gallery) + "']")
         .eq(url.index - 1)
-        .focus()
+        .trigger("focus")
         .trigger("click.fb-start");
     }
   }
