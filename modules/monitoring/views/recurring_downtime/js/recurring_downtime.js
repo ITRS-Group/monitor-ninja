@@ -681,7 +681,7 @@ $(function() {
     if(get_recurrence.text == 'week'){
       $('select[name="recurrence_text"]').find('option:contains("Week")').attr("selected",true);
       $.each(get_recurrence_on, function (key, value) {
-        $('#rec-on-week-days span[wno='+value.day+']').on("click");
+        $('#rec-on-week-days span[wno='+value.day+']').trigger("click");
       })
     }
 

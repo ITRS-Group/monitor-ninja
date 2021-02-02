@@ -233,7 +233,7 @@ var lsfilter_main = {
 				lsfilter_main.update(args.q, 'external_link', '');
 
 				var content_div = $( "body > .container > #content" )
-				content_div.on('click');
+				content_div.trigger('click');
 				content_div.trigger('focus');
 
 				return false;
