@@ -91,7 +91,7 @@ var LightboxManager = (function() {
 			/**
 			 * Make query selection of Lightbox content available
 			 */
-			box.querySelector = content.querySelector.on(node);
+			box.querySelector = content.querySelector.bind(node);
 			box.node = node;
 
 			/**

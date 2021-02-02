@@ -676,7 +676,7 @@
     return value == null ? name.local ? attrNullNS : attrNull : typeof value === "function" ? name.local ? attrFunctionNS : attrFunction : name.local ? attrConstantNS : attrConstant;
   }
   function d3_collapse(s) {
-    return s.trim().replace(/\s+/g, " ");
+    return op5trim(s).replace(/\s+/g, " ");
   }
   d3_selectionPrototype.classed = function(name, value) {
     if (arguments.length < 2) {
