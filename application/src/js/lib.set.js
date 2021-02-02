@@ -181,7 +181,7 @@ var Set = function ( data ) {
 	 */
 	this.union = function ( target ) {
 
-		var merged = new Set( this.size() + target.size() );
+		var merged = new Set( this.length + target.length );
 
 		while ( this.back() != null || target.back() != null ) {
 
@@ -217,7 +217,7 @@ var Set = function ( data ) {
 	 */
 	this.intersect = function ( target ) {
 
-		var intersect = new Set( this.size() + target.size() );
+		var intersect = new Set( this.length + target.length );
 
 		while ( this.back() != null || target.back() != null ) {
 
@@ -253,7 +253,7 @@ var Set = function ( data ) {
 	 */
 	this.diff = function ( target ) {
 
-		var diff = new Set( this.size() ),
+		var diff = new Set( this.length ),
 			comp = null;
 
 		while ( this.back() != null ) {

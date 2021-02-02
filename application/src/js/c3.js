@@ -602,7 +602,7 @@
                       .node()
                       .getTotalLength() -
                       internal.outerTickSize * 2;
-              interval = length / axis.g.selectAll('line').size();
+              interval = length / axis.g.selectAll('line').length;
           }
           return interval === Infinity ? 0 : interval;
       };
@@ -1659,7 +1659,7 @@
       }
       // MEMO: needed for grids calculation
       if ($$.isCategorized() && targetsToShow.length === 0) {
-          $$.x.domain([0, $$.axes.x.selectAll('.tick').size()]);
+          $$.x.domain([0, $$.axes.x.selectAll('.tick').length]);
       }
       if (targetsToShow.length) {
           $$.updateXDomain(targetsToShow, withUpdateXDomain, withUpdateOrgXDomain, withTrimXDomain);
@@ -2053,7 +2053,7 @@
           .select('#' + $$.clipIdForSubchart)
           .select('rect')
           .attr('width', $$.width)
-          .attr('height', (brush.size() && brush.attr('height')) || 0);
+          .attr('height', (brush.length && brush.attr('height')) || 0);
       // MEMO: parent div's height will be bigger than svg when <!DOCTYPE html>
       $$.selectChart.style('max-height', $$.currentHeight + 'px');
   };
@@ -5155,7 +5155,7 @@
           interval = window.setInterval(function () {
               if (!$$.transiting) {
                   window.clearInterval(interval);
-                  if ($$.legend.selectAll('.c3-legend-item-focused').size() > 0) {
+                  if ($$.legend.selectAll('.c3-legend-item-focused').length > 0) {
                       $$.expandArc(targetIds);
                   }
               }
@@ -7916,7 +7916,7 @@
       var $$ = this, gridData = [], xDomain, firstYear, lastYear, i, tickNum = $$.main
           .select('.' + CLASS.axisX)
           .selectAll('.tick')
-          .size();
+          .length;
       if (type === 'year') {
           xDomain = $$.getXDomain();
           firstYear = xDomain[0].getFullYear();
@@ -8550,7 +8550,7 @@
           .attr('stroke-width', config.legend_item_tile_height);
       // Set background for inset legend
       background = $$.legend.select('.' + CLASS.legendBackground + ' rect');
-      if ($$.isLegendInset && maxWidth > 0 && background.size() === 0) {
+      if ($$.isLegendInset && maxWidth > 0 && background.length === 0) {
           background = $$.legend
               .insert('g', '.' + CLASS.legendItem)
               .attr('class', CLASS.legendBackground)

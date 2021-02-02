@@ -320,7 +320,7 @@
 	Filterable.prototype.update_labels = function update_labels ( ) {
 
 		if ( this.matching >= settings.limit ) {
-			this.note( "Not all items shown; " + this.matching + "/" + this.data.size() );
+			this.note( "Not all items shown; " + this.matching + "/" + this.data.length );
 		} else {
 			this.note( this.matching + " Items" );
 		}
@@ -329,8 +329,8 @@
 		this.selected.css( 'width', '0px' );
 		this.selected.css( 'width', '' );
 
-		if( this.memory.size() > 0 ) {
-			this.resultstats.html( this.memory.size() + " items selected. <a href='#' class='deselect_all'>Deselect all</a>" );
+		if( this.memory.length > 0 ) {
+			this.resultstats.html( this.memory.length + " items selected. <a href='#' class='deselect_all'>Deselect all</a>" );
 		} else {
 			this.resultstats.text( "No items selected..." );
 		}
@@ -370,7 +370,7 @@
 		this.results.reset();
 
 		this.results = this.results.diff( this.memory );
-		this.matching = this.results.size();
+		this.matching = this.results.length;
 
 		if ( respond ) {
 			this.results.reset();
