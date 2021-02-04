@@ -83,12 +83,12 @@ $(function() {
 
 	// make scroll memory cookie to be reset
 	// when actively clicking on a link.
-	$('body').on('click', 'a', function() {
+	$('body').on('click', null, 'a', function() {
 		_save_scroll = false;
 	});
 
 	if ( content_div ) {
-    content_div.on('click');
+    content_div.trigger('click');
 		content_div.trigger('focus');
 	}
 
@@ -185,7 +185,7 @@ $(function() {
 	// are we using keyboard commands or not
 	if (_keycommands_active) {
 		if (typeof _keycommand_forward !== 'undefined' && _keycommand_forward !== '') {
-			jQuery(document).on('keydown', _keycommand_forward, function (evt){
+			jQuery(document).on('keydown', null, _keycommand_forward, function (evt){
 				if (typeof $('.nextpage').attr('href') != 'undefined') {
 					// reset scroll memory to start at top for next page
 					_save_scroll = false;
@@ -196,7 +196,7 @@ $(function() {
 		}
 
 		if (typeof _keycommand_back !== 'undefined' && _keycommand_back !== '') {
-			jQuery(document).on('keydown', _keycommand_back, function (evt){
+			jQuery(document).on('keydown', null, _keycommand_back, function (evt){
 				if (typeof $('.prevpage').attr('href') != 'undefined') {
 					// reset scroll memory to start at top for previous page
 					_save_scroll = false;
@@ -207,7 +207,7 @@ $(function() {
 		}
 
 		if (typeof _keycommand_search !== 'undefined' && _keycommand_search !== '') {
-			jQuery(document).on('keydown', _keycommand_search, function (evt){$('#query').trigger('focus'); return false; });
+			jQuery(document).on('keydown', null, _keycommand_search, function (evt){$('#query').trigger('focus'); return false; });
 		}
 
 	}
@@ -285,7 +285,7 @@ $(function() {
 	}
 
 	$(window).on('load', function () {
-		$('#dojo-icon-container').on('click', 'span', function() {
+		$('#dojo-icon-container').on('click', null, 'span', function() {
 			var span = $(this);
 			$('#dojo-add-quicklink-icon').val(span.data('icon'));
 

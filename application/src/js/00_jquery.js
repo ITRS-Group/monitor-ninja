@@ -7625,7 +7625,7 @@ function Animation( elem, properties, options ) {
 		if ( result ) {
 			if ( isFunction( result.stop ) ) {
 				jQuery._queueHooks( animation.elem, animation.opts.queue ).stop =
-					result.stop.bind( result );
+					result.stop.on( result );
 			}
 			return result;
 		}
