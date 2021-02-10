@@ -302,10 +302,10 @@
 
   Popover.register(/^image\:/, function(data, target){
 
-    var img = $('<img>').one('load', function(e){
+    var img = $('<img>').on('load', function(e){
       Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
-    }).one('error', function(e){
+    }).on('error', function(e){
       Popover.display("Could not fetch image", target);
     }).attr(
       {src: data}
@@ -341,10 +341,10 @@
 
     if(ns[1]) service = encodeURIComponent(ns[1]);
 
-    var img = $('<img>').one('load', function(e){
+    var img = $('<img>').on('load', function(e){
       Popover.display(img.get(0), target);
       tooltip.css('width', 'auto');
-    }).one('error', function(e){
+    }).on('error', function(e){
       Popover.display("Could not fetch graph", target);
     }).attr({
       src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'

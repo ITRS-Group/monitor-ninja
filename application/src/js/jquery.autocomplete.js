@@ -238,7 +238,7 @@ $.widget( "ui.autocomplete", {
 					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
 						this.menu.trigger("mouseout");
 
-						this.document.one( "mousemove", function() {
+						this.document.on( "mousemove", function() {
 							$( event.target ).trigger( event.originalEvent );
 						} );
 

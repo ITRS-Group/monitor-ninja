@@ -1580,7 +1580,7 @@
         if (!signalDOMEvent(cm, e)) handlePaste(e, cm);
       })
 
-      on(div, "compositionstart", function(e) {
+      on(div, "compositionstart", null, function(e) {
         var data = e.data;
         input.composing = {sel: cm.doc.sel, data: data, startData: data};
         if (!data) return;

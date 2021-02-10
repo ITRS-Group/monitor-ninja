@@ -277,15 +277,15 @@ $(function() {
 			},
 			type: 'POST',
 			complete: function() {
-				$('#dojo-add-quicklink-href').attr('value','');
-				$('#dojo-add-quicklink-title').attr('value','');
-				$('#dojo-add-quicklink-icon').attr('value','');
+				$('#dojo-add-quicklink-href').prop('value','');
+				$('#dojo-add-quicklink-title').prop('value','');
+				$('#dojo-add-quicklink-icon').prop('value','');
 			}
 		});
 	}
 
 	$(window).on('load', function () {
-		$('#dojo-icon-container').on('click', null, 'span', function() {
+		$('#dojo-icon-container').on('click', 'span', null, function() {
 			var span = $(this);
 			$('#dojo-add-quicklink-icon').val(span.data('icon'));
 
@@ -322,9 +322,9 @@ $(function() {
 				}
 			},
 			onClose: function() {
-				$('#dojo-add-quicklink-href').attr('value','');
-				$('#dojo-add-quicklink-title').attr('value','');
-				$('#dojo-add-quicklink-icon').attr('value','');
+				$('#dojo-add-quicklink-href').prop('value','');
+				$('#dojo-add-quicklink-title').prop('value','');
+				$('#dojo-add-quicklink-icon').prop('value','');
 			}
 		});
 

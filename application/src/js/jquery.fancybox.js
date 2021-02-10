@@ -1757,7 +1757,7 @@
             })
           );
 
-          $slide.one("onReset", function () {
+          $slide.on("onReset", function () {
             ajaxLoad.abort();
           });
 
@@ -1904,10 +1904,10 @@
         $img = $(img);
 
       slide.$image = $img
-        .one("error", function () {
+        .on("error", function () {
           self.setError(slide);
         })
-        .one("load", function () {
+        .on("load", function () {
           var sizes;
 
           if (!slide.$ghost) {
@@ -2063,7 +2063,7 @@
       $iframe.attr("src", slide.src);
 
       // Remove iframe if closing or changing gallery item
-      $slide.one("onReset", function () {
+      $slide.on("onReset", function () {
         // This helps IE not to throw errors when closing
         try {
           $(this)
@@ -2131,7 +2131,7 @@
         }
       }
 
-      slide.$slide.one("onReset", function () {
+      slide.$slide.on("onReset", function () {
         // Pause all html5 video/audio
         $(this)
           .find("video,audio")
@@ -2584,7 +2584,7 @@
           .find("video,audio")
           .filter(":visible:first")
           .trigger("play")
-          .one("ended", function () {
+          .on("ended", function () {
             if (Document.exitFullscreen) {
               Document.exitFullscreen();
             } else if (this.webkitExitFullscreen) {
@@ -5362,7 +5362,7 @@
         animationEffect: false,
         afterLoad: function (shareInstance, shareCurrent) {
           // Close self if parent instance is closing
-          instance.$refs.container.one("beforeClose.fb", function () {
+          instance.$refs.container.on("beforeClose.fb", function () {
             shareInstance.close(null, 0);
           });
 

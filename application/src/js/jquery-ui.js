@@ -5817,7 +5817,7 @@ $.widget( "ui.autocomplete", {
 					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
 						this.menu.trigger("mouseout");
 
-						this.document.one( "mousemove", function() {
+						this.document.on( "mousemove", function() {
 							$( event.target ).trigger( event.originalEvent );
 						} );
 
@@ -13910,7 +13910,7 @@ var widgetsSelectmenu = $.widget( "ui.selectmenu", [ $.ui.formResetMixin, {
 		}
 
 		this._on( this.button, this._buttonEvents );
-		this.button.one( "focusin", function() {
+		this.button.on( "focusin", function() {
 
 			// Delay rendering the menu items until the button receives focus.
 			// The menu may have already been rendered via a programmatic open.

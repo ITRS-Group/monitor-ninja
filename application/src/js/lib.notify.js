@@ -91,7 +91,7 @@ var Notify = (function () {
 
       notification.buttonwrap.append(
         $('<button>').html(label)
-          .one('click', function () {
+          .on('click', function () {
             callback.call(null, notification);
           })
       );
