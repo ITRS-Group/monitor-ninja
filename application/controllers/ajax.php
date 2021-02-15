@@ -35,8 +35,20 @@ class Ajax_Controller extends Authenticated_Controller {
 		$setting_info = json_decode($setting, true);
 		$setting_href = array();
 		foreach ($setting_info as $setting_data) {
-			$href = htmlspecialchars($setting_data['href'], ENT_QUOTES, 'UTF-8');
-			$setting_href[] = array('href' => $href);
+			if (array_key_exists('href', $setting_data)) {
+				$href = $setting_data['href'];
+				if (preg_match('/^javascript:/i', $href)) {
+					// This is something we just don't allow.
+					$href = '/';
+				} else {
+					// URL encode certain risky characters.
+					$href = str_replace('"', '%22', $href);
+					$href = str_replace("'", '%27', $href);
+					$href = str_replace('<', '%3C', $href);
+					$href = str_replace('>', '%3E', $href);
+				}
+				$setting_href[] = array('href' => $href);
+			}
 		}
 		$setting = array_replace_recursive($setting_info, $setting_href);
 		return json_encode($setting);
