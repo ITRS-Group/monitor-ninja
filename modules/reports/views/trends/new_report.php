@@ -73,7 +73,7 @@
 			}
 		}
 
-		$(window).load(function () {
+		$(window).on('load', function () {
 			new TGraph(
 				data, 'timeline',
 				labels,

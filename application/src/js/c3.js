@@ -4564,13 +4564,13 @@
       }
       // use cache if exists
       if ('cacheIds' in args && $$.hasCaches(args.cacheIds)) {
-          $$.load($$.getCaches(args.cacheIds), args.done);
+          $$.on('load', $$.getCaches(args.cacheIds), args.done);
           return;
       }
       // unload if needed
       if (args.unload) {
           // TODO: do not unload if target will load (included in url/rows/columns)
-          $$.unload($$.mapToTargetIds(args.unload === true ? null : args.unload), function () {
+          $$.on('unload', $$.mapToTargetIds(args.unload === true ? null : args.unload), function () {
               $$.loadFromArgs(args);
           });
       }
@@ -4587,7 +4587,7 @@
       else if (typeof args === 'string') {
           args = { ids: [args] };
       }
-      $$.unload($$.mapToTargetIds(args.ids), function () {
+      $$.on('unload', $$.mapToTargetIds(args.ids), function () {
           $$.redraw({
               withUpdateOrgXDomain: true,
               withUpdateXDomain: true,
@@ -7130,24 +7130,24 @@
       var $$ = this;
       $$.resetCache();
       if (args.data) {
-          $$.load($$.convertDataToTargets(args.data), args);
+          $$.on('load', $$.convertDataToTargets(args.data), args);
       }
       else if (args.url) {
           $$.convertUrlToData(args.url, args.mimeType, args.headers, args.keys, function (data) {
-              $$.load($$.convertDataToTargets(data), args);
+              $$.on('load', $$.convertDataToTargets(data), args);
           });
       }
       else if (args.json) {
-          $$.load($$.convertDataToTargets($$.convertJsonToData(args.json, args.keys)), args);
+          $$.on('load', $$.convertDataToTargets($$.convertJsonToData(args.json, args.keys)), args);
       }
       else if (args.rows) {
-          $$.load($$.convertDataToTargets($$.convertRowsToData(args.rows)), args);
+          $$.on('load', $$.convertDataToTargets($$.convertRowsToData(args.rows)), args);
       }
       else if (args.columns) {
-          $$.load($$.convertDataToTargets($$.convertColumnsToData(args.columns)), args);
+          $$.on('load', $$.convertDataToTargets($$.convertColumnsToData(args.columns)), args);
       }
       else {
-          $$.load(null, args);
+          $$.on('load', null, args);
       }
   };
   ChartInternal.prototype.unload = function (targetIds, done) {
