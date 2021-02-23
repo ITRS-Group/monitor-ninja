@@ -7,10 +7,14 @@ ETC_GROUP := apache
 
 PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
 
-all: generate-php
+all: generate-php compile-python2
 
 generate-php:
 	php build.php
+
+compile-python%: install_scripts/nacoma_hooks.py
+	python$* -m compileall $<
+	python$* -O -m compileall $<
 
 # All php "unit" tests that affects/needs a currently installed monitor should
 # be tagged with @nonlocal, so that we can avoid them when running them
