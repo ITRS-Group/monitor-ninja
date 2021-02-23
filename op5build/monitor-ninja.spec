@@ -3,6 +3,7 @@
 %define httpconfdir httpd/conf.d
 %define phpdir /usr/share/php
 %define daemon_group apache
+%define nacoma_hooks_path /opt/monitor/op5/nacoma/hooks/save
 
 Name: monitor-ninja
 Version: %{op5version}
@@ -31,13 +32,16 @@ Requires: op5-bootstrap
 # Merlin creates our database
 Requires: merlin
 Requires: monitor-ninja-monitoring
-BuildRequires: python
+BuildRequires: python2
 BuildRequires: doxygen
 BuildRequires: graphviz
+Requires: python2
 Requires: php >= 5.3
+Requires: php-json
 Requires: php-ldap
 Requires: php-pecl-apcu
 BuildRequires: php >= 5.3
+BuildRequires: php-json
 BuildRequires: shadow-utils
 Requires: php-process
 Requires: php-mbstring
@@ -151,8 +155,9 @@ for f in cli-helpers/apr_md5_validate \
 	chmod 755 %buildroot%prefix/$f
 done
 
-mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
-install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
+install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
+install -D -m 644 install_scripts/nacoma_hooks.pyc %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyc
+install -D -m 644 install_scripts/nacoma_hooks.pyo %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyo
 
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 
@@ -206,9 +211,7 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %files
 %prefix
 %attr(644,root,root) /etc/cron.d/*
-%attr(755,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
-%attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyc
-%attr(644,root,root) /opt/monitor/op5/nacoma/hooks/save/ninja_hooks.pyo
+%{nacoma_hooks_path}/ninja_hooks.*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 %attr(755,root,root) /usr/bin/op5-manage-users
 
