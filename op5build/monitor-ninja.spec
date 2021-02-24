@@ -67,6 +67,7 @@ Requires: monitor-pnp
 
 Requires: gcc
 Requires: phantomjs
+Requires: python3
 Requires: ruby
 Requires: ruby-devel
 
