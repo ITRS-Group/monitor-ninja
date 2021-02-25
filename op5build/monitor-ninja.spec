@@ -159,7 +159,11 @@ install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_pat
 install -D -m 644 install_scripts/nacoma_hooks.pyc %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyc
 install -D -m 644 install_scripts/nacoma_hooks.pyo %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyo
 
+%if 0%{?rhel} >= 8
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
+%else
+install -D -m 640 op5build/ninja-httpd.conf.el7 %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
+%endif
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 

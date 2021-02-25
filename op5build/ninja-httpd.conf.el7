@@ -9,6 +9,14 @@ KeepAlive On
 	Options -Indexes
 	Require all granted
 	DirectoryIndex index.php
+
+	# Disable output buffering, so at least backup file download won't hang
+	php_flag output_buffering off
+
+	# Sessions was 24h, we should keep it like that. But we don't want kohana
+	# to control it. This place isn't perfect, but better than in kohana.
+	# We probably want a seperate file, like /etc/php.d/op5.ini
+	php_value session.gc_maxlifetime 86400
 </Location>
 <Location /monitor/images>
         Options -Indexes
@@ -19,6 +27,14 @@ KeepAlive On
 	Options -Indexes
 	Require all granted
 	DirectoryIndex index.php
+
+	# Disable output buffering, so at least backup file download won't hang
+	php_flag output_buffering off
+
+	# Sessions was 24h, we should keep it like that. But we don't want kohana
+	# to control it. This place isn't perfect, but better than in kohana.
+	# We probably want a seperate file, like /etc/php.d/op5.ini
+	php_value session.gc_maxlifetime 86400
 </Location>
 <Directory /opt/monitor/op5/nacoma>
     AllowOverride None
