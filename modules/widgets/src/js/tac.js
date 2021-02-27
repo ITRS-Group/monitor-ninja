@@ -207,7 +207,7 @@ $(document).on('click', '.menuitem_dashboard_option', function (e) {
 	var href = $(this).prop('href');
 	var lightbox = LightboxManager.ajax_form_from_href($(this).text(), href);
 
-	$(lightbox.node).on('click', 'input[type="reset"]', function () {
+	$(lightbox.node).one('click', 'input[type="reset"]', function () {
 		lightbox.remove();
 	});
 

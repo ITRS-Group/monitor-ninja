@@ -158,20 +158,20 @@ $(function() {
         }
         if(quick_option_no == 3){
           $('.recurrence').show();
-          $('select[name="recurrence_text"]').find('option:contains("Week")').attr("selected",true);
+          $('select[name="recurrence_text"]').find('option:contains("Week")').prop("selected", true);
           $('.recurrence-on').show();
           $('#recurrence-on-week').show();
         }
         if(quick_option_no == 4){
           $('.recurrence').show();
-          $('select[name="recurrence_text"]').find('option:contains("Month")').attr("selected",true);
+          $('select[name="recurrence_text"]').find('option:contains("Month")').prop("selected", true);
           $('#rec-on-any-day-month').prop("checked",true);
           $('.recurrence-on').show();
           $('#recurrence-on-month').show();
         }
         if(quick_option_no == 6){
           $('.recurrence').show();
-          $('select[name="recurrence_text"]').find('option:contains("Month")').attr("selected",true);
+          $('select[name="recurrence_text"]').find('option:contains("Month")').prop("selected", true);
           $('#rec-on-last-day-month').prop("checked",true);
           $('.recurrence-on').show();
           $('#recurrence-on-month').show();
@@ -205,25 +205,25 @@ $(function() {
   });
 
   $(document).on('change', 'input[name="recurrence_no"]', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
   $(document).on('change', 'select[name="recurrence_text"]', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
   $(document).on('click', '#rec-on-week-days span', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
   $(document).on('change', '#recurrence-on-month', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
   $(document).on('change', '#rec-on-last-day-month', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
   $(document).on('change', 'input[name="ends"]', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
   $(document).on('change', '#exclude_date_block input', function() {
-    $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+    $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
   });
 
   $('#progress').css('position', 'absolute').css('top', '90px').css('left', '470px');
@@ -402,7 +402,7 @@ $(function() {
       $('input[name="month_on"][no=3]').prop("checked",true);
     }else{
       if(selected_day_no == "last"){
-        $('select[name="rec-on-no-box"]').find('option:contains("last")').attr("selected",true);
+        $('select[name="rec-on-no-box"]').find('option:contains("last")').prop("selected", true);
       }
     }
     summary_show();
@@ -557,18 +557,18 @@ $(function() {
       ');
 
     if(quick_option_no == 2){
-      $('select[name="recurrence_select"]').find('option[no=2]').attr("selected",true);
+      $('select[name="recurrence_select"]').find('option[no=2]').prop("selected", true);
     }else if(quick_option_no == 3){
-      $('select[name="recurrence_select"]').find('option[no=3]').attr("selected",true);
+      $('select[name="recurrence_select"]').find('option[no=3]').prop("selected", true);
     }else if(quick_option_no == 4){
-      $('select[name="recurrence_select"]').find('option[no=4]').attr("selected",true);
+      $('select[name="recurrence_select"]').find('option[no=4]').prop("selected", true);
     }else if(quick_option_no == 5){
-      $('select[name="recurrence_select"]').find('option[no=5]').attr("selected",true);
+      $('select[name="recurrence_select"]').find('option[no=5]').prop("selected", true);
     }else if(quick_option_no == 6){
       if($('select[name="recurrence_select"]').find('option[no=6]').text() == ''){
-        $('select[name="recurrence_select"]').find('option[no=4]').attr("selected",true);
+        $('select[name="recurrence_select"]').find('option[no=4]').prop("selected", true);
       }else{
-        $('select[name="recurrence_select"]').find('option[no=6]').attr("selected",true);
+        $('select[name="recurrence_select"]').find('option[no=6]').prop("selected", true);
       }
     }
 
@@ -591,8 +591,8 @@ $(function() {
       <option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option>Sunday</option></select>' + last_day_option_custom + '\
       ');
 
-    $('select[name="rec-on-no-box"]').find('option:contains('+ format_num_word(day_no) +')').attr("selected",true);
-    $('select[name="rec-on-day-box"]').find('option:contains('+ day_name +')').attr("selected",true);
+    $('select[name="rec-on-no-box"]').find('option:contains('+ format_num_word(day_no) +')').prop("selected", true);
+    $('select[name="rec-on-day-box"]').find('option:contains('+ day_name +')').prop("selected", true);
 
     $('#recurrence-on-week').html('\
       <div id="rec-on-week-days"><input class="hide" checked="checked" type="radio" name="week_on" value=\'' + JSON.stringify({"day":day}) + ' \'> \
@@ -654,39 +654,39 @@ $(function() {
     var get_exclude_days = _exclude_days;
     if(get_recurrence.label == 'quick'){
       if(get_recurrence.text == 'day'){
-        $('select[name="recurrence_select"]').find('option:contains("Daily")').attr("selected",true);
+        $('select[name="recurrence_select"]').find('option:contains("Daily")').prop("selected", true);
       }
 
       if(get_recurrence.text == 'month'){
         if(get_recurrence_on.day_no == "last" && get_recurrence_on.day == "last"){
-          $('select[name="recurrence_select"]').find('option:contains("last")').attr("selected",true);
+          $('select[name="recurrence_select"]').find('option:contains("last")').prop("selected", true);
         }else{
-          $('select[name="recurrence_select"]').find('option:contains("Monthly")').attr("selected",true);
+          $('select[name="recurrence_select"]').find('option:contains("Monthly")').prop("selected", true);
         }
       }
 
       if(get_recurrence.text == 'week'){
-        $('select[name="recurrence_select"]').find('option:contains("Weekly")').attr("selected",true);
+        $('select[name="recurrence_select"]').find('option:contains("Weekly")').prop("selected", true);
       }
 
     }else if(get_recurrence.label == 'custom'){
-      $('select[name="recurrence_select"]').find('option:contains("Custom")').attr("selected",true);
+      $('select[name="recurrence_select"]').find('option:contains("Custom")').prop("selected", true);
     }
 
     $('input[name="recurrence_no"]').val(get_recurrence.no);
     if(get_recurrence.text == 'day'){
-      $('select[name="recurrence_text"]').find('option:contains("Day")').attr("selected",true);
+      $('select[name="recurrence_text"]').find('option:contains("Day")').prop("selected", true);
     }
 
     if(get_recurrence.text == 'week'){
-      $('select[name="recurrence_text"]').find('option:contains("Week")').attr("selected",true);
+      $('select[name="recurrence_text"]').find('option:contains("Week")').prop("selected", true);
       $.each(get_recurrence_on, function (key, value) {
         $('#rec-on-week-days span[wno='+value.day+']').trigger("click");
       })
     }
 
     if(get_recurrence.text == 'month'){
-      $('select[name="recurrence_text"]').find('option:contains("Month")').attr("selected",true);
+      $('select[name="recurrence_text"]').find('option:contains("Month")').prop("selected", true);
       if(get_recurrence_on.day_no == "last" && get_recurrence_on.day != "last"){
         $('input[name="month_on"][editattr="lastweekday"]').prop("checked",true);
       }else if(get_recurrence_on.day_no == "last" && get_recurrence_on.day == "last"){
@@ -698,7 +698,7 @@ $(function() {
     }
 
     if(get_recurrence.text == 'year'){
-      $('select[name="recurrence_text"]').find('option:contains("Year")').attr("selected",true);
+      $('select[name="recurrence_text"]').find('option:contains("Year")').prop("selected", true);
       if(get_recurrence_on.day_no == "last" && get_recurrence_on.day != "last"){
         $('input[name="year_on"][editattr="lastweekday"]').prop("checked",true);
       }else if(get_recurrence_on.day_no == "last" && get_recurrence_on.day == "last"){
