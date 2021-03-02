@@ -49,6 +49,19 @@
 		<input type="submit" value="Log in">
 	</fieldset>
 
+	<?php
+		// Add Keycloak link
+		$keycloak_modules = $auth->get_modules_by_driver('Keycloak');
+		if (!empty($keycloak_modules) && is_array($keycloak_modules) && count($keycloak_modules) == 1) {
+			echo '<fieldset>';
+			foreach ($keycloak_modules as $module) {
+				$module_name = $module->get_modulename();
+				echo "<a href='/monitor/index.php/keycloak'>Sign in with $module_name</a>\n";
+			}
+			echo '</fieldset>';
+		}
+	?>
+
 	<p class="rights">&#169;2019 ITRS GROUP LTD, ALL RIGHTS RESERVED</p>
 
 	<?php
