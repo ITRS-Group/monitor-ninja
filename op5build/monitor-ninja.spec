@@ -39,6 +39,9 @@ Requires: php-ldap
 Requires: php-pecl-apc
 BuildRequires: php >= 5.3
 BuildRequires: shadow-utils
+# Keycloak dependencies
+Requires: php-phpseclib
+Requires: php-paragonie-random-compat
 %if 0%{?rhel} >= 6 || 0%{?rhel_version} >=600 || 0%{?centos_version} >=600
 Requires: php-process
 Requires: php-mbstring
