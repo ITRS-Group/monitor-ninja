@@ -11,58 +11,54 @@ class Keycloak_Controller extends Chromeless_Controller {
 	 */
 	public function index () {
 
-		$oidc = new OpenIDConnectClient('http://10.0.0.72:8080/auth/realms/OP5/',
-										'ninja',
-										'61d45c59-cb55-4e39-a470-bf76189b2e58');
-		// $oidc->setCertPath('keycloak.cert');
-		$oidc->setCodeChallengeMethod('S256');
 		try {
-			$oidc->authenticate();
-		}
-		catch (Exception $e) {
-			echo("<p>Exception in authenticate:</p><pre>");
-			print_r($e);
-			echo("</pre>");
-		}
-		// $name = $oidc->requestUserInfo('given_name');
-		// $email = $oidc->requestUserInfo('email');
-		$username = $oidc->requestUserInfo('preferred_username');
 
-		// echo($name . "\n");
-		// echo($email . "\n");
-		// echo($all_attributes . "\n");
-		//echo("<pre>");
-		//print_r($all_attributes);
-		//echo("</pre>");
-		// echo("<pre>");
-		// var_dump($all_attributes);
-		// echo("</pre>");
-
-		$this->login($username);
-	}
-
-	public function login ($username) {
-
-		$auth = op5auth::instance();
-
-		try {
-			if(PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
+			if (PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
 				throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
 			}
 
 			$this->_verify_access('ninja.auth:login');
 
-			$password	= false;
-			$auth_method = 'Keycloak';
+			$auth = op5auth::instance();
+			$modules = $auth->get_modules_by_driver('Keycloak');
+
+			if (empty($modules) || !is_array($modules) || count($modules) == 0) {
+				throw new NinjaLogin_Exception(_('No Keycloak module configured.'));
+			}
+
+			if (count($modules) > 1) {
+				throw new NinjaLogin_Exception(_('Multiple Keycloak modules are not supported -- there can be only one.'));
+			}
+
+			$properties = $modules[0]->get_properties();
+
+			$oidc = new OpenIDConnectClient(
+				$properties['provider_url'],
+				$properties['client_id'],
+				$properties['client_secret']
+			);
+
+			// $oidc->setCertPath('keycloak.cert');
+			$oidc->setCodeChallengeMethod('S256');
+			$oidc->authenticate();
+
+			$username = $oidc->requestUserInfo('preferred_username');
+			$password= false;
+			$auth_method = $modules[0]->get_modulename();
 
 			$result = $auth->login($username, $password, $auth_method);
+
 			if (!$result) {
-				throw new NinjaLogin_Exception(_("Login failed - please try again"));
+				throw new NinjaLogin_Exception(_('Login failed - please try again'));
 			}
 
 			Event::run('ninja.logged_in');
-		} catch(NinjaLogin_Exception $e) {
-			$this->template->content->message = new ErrorNotice_Model($e->getMessage());
+		} catch(Exception $e) {
+			// TODO: Fix exception handling
+			echo('<p>Exception in keycloak authentication:</p><pre>');
+			print_r($e);
+			echo('</pre>');
+			return;
 		}
 
 		/*
