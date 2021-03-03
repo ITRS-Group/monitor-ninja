@@ -769,15 +769,15 @@ class OpenIDConnectClient
         # Consider Basic authentication if provider config is set this way
         if (in_array('client_secret_basic', $token_endpoint_auth_methods_supported, true)) {
             $headers = ['Authorization: Basic ' . base64_encode(urlencode($this->clientID) . ':' . urlencode($this->clientSecret))];
-            //unset($token_params['client_secret']);
-            //unset($token_params['client_id']);
+            unset($token_params['client_secret']);
+            unset($token_params['client_id']);
         }
 
         $codeChallengeMethod = $this->getCodeChallengeMethod();
         $codeVerifier = $this->getCodeVerifier();
         if (!empty($codeChallengeMethod) && !empty($codeVerifier)) {
             $headers = [];
-            //unset($token_params['client_secret']);
+            unset($token_params['client_secret']);
             $token_params = array_merge($token_params, array(
                 'client_id' => $this->clientID,
                 'code_verifier' => $codeVerifier
@@ -1735,8 +1735,10 @@ class OpenIDConnectClient
 
     protected function getSessionKey($key) {
         $this->startSession();
-
-        return $_SESSION[$key];
+        if (array_key_exists($key, $_SESSION)) {
+            return $_SESSION[$key];
+        }
+        return false;
     }
 
     protected function setSessionKey($key, $value) {

@@ -39,8 +39,13 @@ class Keycloak_Controller extends Chromeless_Controller {
 				$properties['client_secret']
 			);
 
-			// $oidc->setCertPath('keycloak.cert');
-			$oidc->setCodeChallengeMethod('S256');
+			// Keycloak broadcasts all its supported auth methods even if they are not
+			// enabled. So we excplicitly unset all methods so the openid library does
+			// not try to use basic auth.
+			$oidc->providerConfigParam([
+				'token_endpoint_auth_methods_supported' => []
+			]);
+
 			$oidc->authenticate();
 
 			$username = $oidc->requestUserInfo('preferred_username');
