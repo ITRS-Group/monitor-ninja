@@ -32,7 +32,7 @@
 
 
 	<?php
-		$auth = Auth::instance();
+        $auth = op5auth::instance();
 		$default_auth = $auth->get_default_auth();
 		if (!empty($auth_modules) && is_array($auth_modules) && count($auth_modules) > 1) {
 			echo '<fieldset>';
