@@ -26,6 +26,12 @@ class Auth_Controller extends Chromeless_Controller {
 		$this->template->content->login_page = url::current(true);
 		$this->template->content->auth_modules = $auth->get_metadata('login_screen_dropdown');
 		$this->template->content->message = null;
+
+		$error = $this->input->get('error', null);
+		if ($error) {
+			$this->template->content->message = new ErrorNotice_Model(htmlentities($error));
+		}
+
 		try {
 			if(PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
 				throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));

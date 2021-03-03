@@ -3,6 +3,7 @@ require '/usr/share/php/random_compat/autoload.php';
 require '/usr/share/php/phpseclib/autoload.php';
 require __DIR__ . './../libraries/OpenIDConnectClient.php';
 use Jumbojett\OpenIDConnectClient;
+use Jumbojett\OpenIDConnectClientException;
 
 class Keycloak_Controller extends Chromeless_Controller {
 
@@ -14,7 +15,7 @@ class Keycloak_Controller extends Chromeless_Controller {
 		try {
 
 			if (PHP_SAPI !== 'cli' && Kohana::config('cookie.secure') && (!isset($_SERVER['HTTPS']) || !$_SERVER['HTTPS'])) {
-				throw new NinjaLogin_Exception(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
+				throw new OpenIDConnectClientException(_('Ninja is configured to only allow logins through the HTTPS protocol. Try to login via HTTPS, or change the config option cookie.secure.'));
 			}
 
 			$this->_verify_access('ninja.auth:login');
@@ -23,11 +24,11 @@ class Keycloak_Controller extends Chromeless_Controller {
 			$modules = $auth->get_modules_by_driver('Keycloak');
 
 			if (empty($modules) || !is_array($modules) || count($modules) == 0) {
-				throw new NinjaLogin_Exception(_('No Keycloak module configured.'));
+				throw new OpenIDConnectClientException(_('No Keycloak module configured.'));
 			}
 
 			if (count($modules) > 1) {
-				throw new NinjaLogin_Exception(_('Multiple Keycloak modules are not supported -- there can be only one.'));
+				throw new OpenIDConnectClientException(_('Multiple Keycloak modules are not supported -- there can be only one.'));
 			}
 
 			$properties = $modules[0]->get_properties();
@@ -49,16 +50,12 @@ class Keycloak_Controller extends Chromeless_Controller {
 			$result = $auth->login($username, $password, $auth_method);
 
 			if (!$result) {
-				throw new NinjaLogin_Exception(_('Login failed - please try again'));
+				throw new OpenIDConnectClientException(_('Login failed - please try again'));
 			}
 
 			Event::run('ninja.logged_in');
-		} catch(Exception $e) {
-			// TODO: Fix exception handling
-			echo('<p>Exception in keycloak authentication:</p><pre>');
-			print_r($e);
-			echo('</pre>');
-			return;
+		} catch(OpenIDConnectClientException $e) {
+			return url::redirect(Kohana::config('routes.log_in_form') . '?error=' . urlencode($e->getMessage()));
 		}
 
 		/*
