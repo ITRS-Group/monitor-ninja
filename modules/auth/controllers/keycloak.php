@@ -39,6 +39,12 @@ class Keycloak_Controller extends Chromeless_Controller {
 				$properties['client_secret']
 			);
 
+			// If there exists a uri parameter we want to redirect back there
+			// after authenticating so we save it for use later.
+			if (array_key_exists('uri', $_GET)) {
+				$_SESSION['uri'] = $_GET['uri'];
+			}
+
 			// Keycloak broadcasts all its supported auth methods even if they are not
 			// enabled. So we excplicitly unset all methods so the openid library does
 			// not try to use basic auth.
@@ -69,7 +75,12 @@ class Keycloak_Controller extends Chromeless_Controller {
 		 * way, we shouldn't show a login page.
 		 */
 		if ($auth->logged_in()) {
-			$requested_uri = $this->input->get('uri', Kohana::config('routes.logged_in_default'));
+			$requested_uri = Kohana::config('routes.logged_in_default');
+
+			if (array_key_exists('uri', $_SESSION)) {
+				$requested_uri = $_SESSION['uri'];
+				unset($_SESSION['uri']);
+			}
 			return url::redirect($requested_uri);
 		}
 

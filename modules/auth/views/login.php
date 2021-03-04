@@ -53,10 +53,17 @@
 		// Add Keycloak link
 		$keycloak_modules = $auth->get_modules_by_driver('Keycloak');
 		if (!empty($keycloak_modules) && is_array($keycloak_modules) && count($keycloak_modules) == 1) {
+			$uri = '/monitor/index.php/keycloak';
+			// If the user tried to access the a uri without begin logged in we pass
+			// that uri along so we can redirect back to that page after authenticating.
+			// The uri is caught and handled in keycloak.php.
+			if (array_key_exists('uri', $_GET)) {
+				$uri = $uri . "?uri=" . $_GET['uri'];
+			}
 			echo '<fieldset>';
 			foreach ($keycloak_modules as $module) {
 				$module_name = $module->get_modulename();
-				echo "<a href='/monitor/index.php/keycloak'>Sign in with $module_name</a>\n";
+				echo "<a href='" . $uri . "'>Sign in with $module_name</a>\n";
 			}
 			echo '</fieldset>';
 		}
