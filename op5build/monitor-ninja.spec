@@ -65,7 +65,7 @@ Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: php-phpunit-PHPUnit
 
-Requires: openldap-servers
+#Requires: openldap-servers # TODO: can we run container with slapd instead?
 # For performance graph links on extinfo
 Requires: monitor-pnp
 
