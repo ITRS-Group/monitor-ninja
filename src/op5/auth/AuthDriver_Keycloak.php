@@ -1,5 +1,9 @@
 <?php
 require_once (__DIR__ . '/AuthDriver.php');
+require_once '/usr/share/php/random_compat/autoload.php';
+require_once '/usr/share/php/phpseclib/autoload.php';
+require_once '/opt/monitor/op5/ninja/modules/auth/libraries/OpenIDConnectClient.php';
+use Jumbojett\OpenIDConnectClient;
 
 /**
  * User authentication and authorization library.
@@ -24,6 +28,23 @@ class op5AuthDriver_Keycloak extends op5AuthDriver {
 	 * @return User_Model|null
 	 */
 	public function login($username, $password) {
+
+		$properties = $this->module->get_properties();
+
+		$oidc = new OpenIDConnectClient(
+			$properties['provider_url'],
+			$properties['client_id'],
+			$properties['client_secret']
+		);
+
+		$oidc->providerConfigParam([
+			'token_endpoint_auth_methods_supported' => []
+		]);
+
+		$oidc->authenticate();
+
+		$username = $oidc->requestUserInfo('preferred_username');
+
 		$this->fetch_users();
 		$user = $this->users->reduce_by('username', $username, '=')->one();
 		// TODO: Check that user has keycloak as auth module
@@ -33,56 +54,5 @@ class op5AuthDriver_Keycloak extends op5AuthDriver {
 	private function fetch_users() {
 		if ($this->users) return;
 		$this->users = UserPool_Model::all();
-	}
-
-	/**
-	 * Given a list of groups, return an associative array with groups as keys
-	 * and a boolean
-	 * if group is available in the backend.
-	 * If it is unknown if the user is available, the field
-	 * is unset.
-	 *
-	 * If driver supports multiple backends, the extra auth_method can be set to
-	 * the backend.
-	 * Otherwise, a superset is should given of all backends
-	 *
-	 * @param $grouplist List
-	 *        	of groups to check
-	 * @return Associative array of the groups in $grouplist as keys, boolean as
-	 *         values
-	 */
-	public function groups_available(array $grouplist) {
-		$this->fetch_users();
-
-		$groups = array();
-		foreach ($this->users as $user) {
-			foreach ($user->get_groups() as $group) {
-				$groups[$group] = $group;
-			}
-		}
-
-		$result = array();
-
-		foreach ($grouplist as $group) {
-			if (substr($group, 0, 5) == 'user_') {
-				/* Unknown if user exists */
-			} else {
-				$result[$group] = isset($groups[$group]);
-			}
-		}
-		return $result;
-	}
-
-
-	/**
-	 * Given a username, return a list of it's groups.
-	 * Useful when giving permissions to a user.
-	 *
-	 * @param $username string
-	 *        	User to search for
-	 * @return array A list of groups
-	 */
-	public function groups_for_user($username) {
-		return $this->resolve_groups_for_user($username);
 	}
 }

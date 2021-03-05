@@ -1,8 +1,4 @@
 <?php
-require '/usr/share/php/random_compat/autoload.php';
-require '/usr/share/php/phpseclib/autoload.php';
-require __DIR__ . './../libraries/OpenIDConnectClient.php';
-use Jumbojett\OpenIDConnectClient;
 use Jumbojett\OpenIDConnectClientException;
 
 class Keycloak_Controller extends Chromeless_Controller {
@@ -31,30 +27,13 @@ class Keycloak_Controller extends Chromeless_Controller {
 				throw new OpenIDConnectClientException(_('Multiple Keycloak modules are not supported -- there can be only one.'));
 			}
 
-			$properties = $modules[0]->get_properties();
-
-			$oidc = new OpenIDConnectClient(
-				$properties['provider_url'],
-				$properties['client_id'],
-				$properties['client_secret']
-			);
-
 			// If there exists a uri parameter we want to redirect back there
 			// after authenticating so we save it for use later.
 			if (array_key_exists('uri', $_GET)) {
 				$_SESSION['uri'] = $_GET['uri'];
 			}
 
-			// Keycloak broadcasts all its supported auth methods even if they are not
-			// enabled. So we excplicitly unset all methods so the openid library does
-			// not try to use basic auth.
-			$oidc->providerConfigParam([
-				'token_endpoint_auth_methods_supported' => []
-			]);
-
-			$oidc->authenticate();
-
-			$username = $oidc->requestUserInfo('preferred_username');
+			$username = false;
 			$password= false;
 			$auth_method = $modules[0]->get_modulename();
 
