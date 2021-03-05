@@ -47,7 +47,14 @@ class op5AuthDriver_Keycloak extends op5AuthDriver {
 
 		$this->fetch_users();
 		$user = $this->users->reduce_by('username', $username, '=')->one();
-		// TODO: Check that user has keycloak as auth module
+
+		// Check if user has module membership
+		if (!in_array($this->module->get_modulename(), $user->get_modules(), true)) {
+			throw new OpenIDConnectClientException(
+				_("User '$username' is not configured to login using the module: {$this->module->get_modulename()}")
+			);
+		}
+
 		return $user;
 	}
 
