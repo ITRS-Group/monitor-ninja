@@ -62,4 +62,22 @@ class op5AuthDriver_Keycloak extends op5AuthDriver {
 		if ($this->users) return;
 		$this->users = UserPool_Model::all();
 	}
+
+	/**
+	 * Log out a user, if
+	 *
+	 * @param $user User_Model
+	 *        	driver-specific logout-routine, if driver requires.
+	 */
+	public function logout($user) {
+		$properties = $this->module->get_properties();
+
+		$oidc = new OpenIDConnectClient(
+			$properties['provider_url'],
+			$properties['client_id'],
+			$properties['client_secret']
+		);
+		$redirect = "https://" . $_SERVER['HTTP_HOST'] . "/monitor/index.php/" . Kohana::config('routes.log_in_form');
+		$oidc->signOut(NULL, $redirect);
+	}
 }

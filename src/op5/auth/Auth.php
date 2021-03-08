@@ -315,16 +315,20 @@ class op5auth implements op5MayI_Actor {
 	 */
 	public function logout() {
 
-		if (($this->user instanceof User_Model)) {
-			$driver = $this->get_auth_driver($this->user->get_auth_method());
+		$user = $this->user;
+
+		$this->session_clear($this->config['session_key']);
+		$this->session_destroy();
+		$this->user = null;
+
+		if (($user instanceof User_Model)) {
+			$driver = $this->get_auth_driver($user->get_auth_method());
 			if ($driver) {
-				$driver->logout($this->user);
+				$driver->logout($user);
 			}
 		}
 
-		$this->user = null;
-		$this->session_clear($this->config['session_key']);
-		$this->session_destroy();
+
 
 		return true;
 
