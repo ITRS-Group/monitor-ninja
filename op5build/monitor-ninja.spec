@@ -63,6 +63,7 @@ Requires: monitor-livestatus
 Requires: op5-lmd
 Requires: monitor-nagvis
 Requires: monitor-nacoma
+Requires: op5-phpunit
 
 #Requires: openldap-servers # TODO: can we run container with slapd instead?
 # For performance graph links on extinfo
