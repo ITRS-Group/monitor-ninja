@@ -1,4 +1,5 @@
 #!/bin/sh
+cd "$(dirname "$0")"
 
 EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -11,7 +12,7 @@ then
     exit 1
 fi
 
-php composer-setup.php
+php composer-setup.php --install-dir=test/tools/
 RESULT=$?
 rm composer-setup.php
 exit $RESULT

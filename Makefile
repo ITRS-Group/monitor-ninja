@@ -5,12 +5,17 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
+PHPUNIT := test/tools/vendor/bin/phpunit --debug --bootstrap test/bootstrap.php
 
 all: generate-php compile-python2
 
 generate-php:
 	php build.php
+	make install-phpunit
+
+install-phpunit:
+	#test/tools/install_composer.sh
+	php test/tools/composer.phar install -d test/tools 
 
 compile-python%: install_scripts/nacoma_hooks.py
 	python$* -m compileall $<
@@ -27,8 +32,6 @@ test-local: generate-php
 
 test: generate-php
 	make test-ci-prepare
-	#sh install_composer.sh
-	#php composer.phar global require phpunit/phpunit:8.5.15
 	export OP5LIBCFG="$(OP5LIBCFG)"; $(PHPUNIT) test/; res=$$?; make test-ci-cleanup; exit $$res
 
 test-ci-cleanup:

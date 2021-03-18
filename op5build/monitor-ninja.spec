@@ -239,7 +239,6 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
-%exclude %prefix/install_composer.sh
 
 
 %files devel
@@ -257,7 +256,6 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %prefix/modules/test
 %prefix/Makefile
 %prefix/application/config/custom/exception.php
-%prefix/install_composer.sh
 
 %clean
 rm -rf %buildroot
