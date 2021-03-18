@@ -63,7 +63,6 @@ Requires: monitor-livestatus
 Requires: op5-lmd
 Requires: monitor-nagvis
 Requires: monitor-nacoma
-Requires: php-phpunit-PHPUnit
 
 #Requires: openldap-servers # TODO: can we run container with slapd instead?
 # For performance graph links on extinfo
@@ -169,6 +168,7 @@ sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.
 
 mkdir -p %buildroot%prefix/application/config/custom
 install -m 755 test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
+install -m 755 install_composer.sh %buildroot%prefix/install_composer.sh
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
 
 %pre
@@ -239,6 +239,8 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
+%exclude %prefix/install_composer.sh
+
 
 %files devel
 %defattr(-,root,root)
@@ -255,6 +257,7 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %prefix/modules/test
 %prefix/Makefile
 %prefix/application/config/custom/exception.php
+%prefix/install_composer.sh
 
 %clean
 rm -rf %buildroot
