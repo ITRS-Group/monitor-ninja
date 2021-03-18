@@ -11,11 +11,7 @@ all: generate-php compile-python2
 
 generate-php:
 	php build.php
-	make install-phpunit
 
-install-phpunit:
-	#test/tools/install_composer.sh
-	php test/tools/composer.phar install -d test/tools 
 
 compile-python%: install_scripts/nacoma_hooks.py
 	python$* -m compileall $<

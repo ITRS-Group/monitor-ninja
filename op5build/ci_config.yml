@@ -1,3 +1,8 @@
+pre:
+  steps: |
+    ../test/tools/install_composer.sh
+    php ../test/tools/composer.phar install -d test/tools 
+
 post:
   install:
      - libyaml
