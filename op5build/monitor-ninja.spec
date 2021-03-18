@@ -168,7 +168,6 @@ sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.
 
 mkdir -p %buildroot%prefix/application/config/custom
 install -m 755 test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
-install -m 755 install_composer.sh %buildroot%prefix/install_composer.sh
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
 
 %pre

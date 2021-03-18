@@ -5,13 +5,12 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-PHPUNIT := test/tools/vendor/bin/phpunit --debug --bootstrap test/bootstrap.php
+PHPUNIT := test/tools/phpunit --debug --bootstrap test/bootstrap.php
 
 all: generate-php compile-python2
 
 generate-php:
 	php build.php
-
 
 compile-python%: install_scripts/nacoma_hooks.py
 	python$* -m compileall $<
