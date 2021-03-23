@@ -42,19 +42,19 @@ class op5AuthDriver_Keycloak extends op5AuthDriver {
 		$oidc->authenticate();
 
 		$username = $oidc->requestUserInfo('preferred_username');
-		// TODO: Define the 'grp' key somewhere.
-		// Maybe make it part of the module properties?
-		$groups = $oidc->getVerifiedClaims('grp');
 
 		$this->fetch_users();
 		$user = $this->users->reduce_by('username', $username, '=')->one();
 
 		if (!$user) {
+			// TODO: Define the 'grp' key somewhere.
+			// Maybe make it part of the module properties?
+			$groups = $oidc->getVerifiedClaims('grp');
 			$user = new User_Model(
 				array(
 					'username' => $username,
-					'groups' => $groups,
-					'realname' => $realname ? $realname : $username,
+					'groups' => $groups ? $groups : array(),
+					'realname' => $username,
 					'modules' => array($this->module->get_modulename())
 				)
 			);
@@ -63,15 +63,6 @@ class op5AuthDriver_Keycloak extends op5AuthDriver {
 			throw new OpenIDConnectClientException(
 				_("User '$username' is not configured to login using the module: {$this->module->get_modulename()}")
 			);
-		} else if ($groups != $user->get_groups()) {
-			// This is awkward. The groups don't match between Keycloak and
-			// the local data. We choose Keycloak as our authoritative truth
-			// and reset the local data.
-			// TODO: We should probably not store Keycloak users locally. We
-			// then need to implement the other methods of this class via the
-			// Keycloak API instead.
-			$user->set_groups($groups);
-			$user->save();
 		}
 
 		return $user;
