@@ -14,7 +14,7 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 	 */
 	private function startUp($options) {
 		$socketPath = tempnam(__DIR__, "mock_socket_");
-		$command = sprintf("/usr/bin/python " . __DIR__ . "/socket_mock.py %s %s", $options, $socketPath);
+		$command = sprintf(__DIR__ . "/socket_mock.py %s %s", $options, $socketPath);
 
 		$descriptorSpec = array(
 			array('pipe', 'r'),

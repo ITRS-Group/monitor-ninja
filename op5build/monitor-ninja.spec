@@ -36,7 +36,7 @@ BuildRequires: doxygen
 BuildRequires: graphviz
 Requires: php >= 5.3
 Requires: php-ldap
-Requires: php-pecl-apc
+Requires: php-pecl-apcu
 BuildRequires: php >= 5.3
 BuildRequires: shadow-utils
 # Keycloak dependencies
@@ -46,12 +46,9 @@ Requires: php-paragonie-random-compat
 Requires: php-process
 Requires: php-mbstring
 BuildRequires: php-process
-%endif
-%if 0%{?rhel} >= 7
 # For stack trace info
 Requires: psmisc
 Requires: pciutils
-%endif
 
 Source: %name-%version.tar.gz
 %description
@@ -74,13 +71,9 @@ Requires: monitor-pnp
 
 Requires: gcc
 Requires: phantomjs
-%if 0%{?rhel} <= 6
-Requires: ruby20
-Requires: ruby20-devel
-%else
+Requires: python3
 Requires: ruby
 Requires: ruby-devel
-%endif
 
 %description test
 Additional test files for ninja
@@ -114,10 +107,6 @@ pushd cli-helpers
 make
 popd
 make
-%if 0%{?rhel} >= 7
-%else
-make docs
-%endif
 
 
 %install
@@ -169,12 +158,7 @@ done
 mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 
-mkdir -p %buildroot%_sysconfdir/%{httpconfdir}
-%if 0%{?rhel} >= 7
-install -m 640 op5build/ninja.httpd-conf.el7 %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
-%else
-install -m 640 op5build/ninja.httpd-conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
-%endif
+install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 
@@ -252,18 +236,10 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %exclude %prefix/Makefile
 %exclude %prefix/features
 %exclude %prefix/application/config/custom/exception.php
-%if 0%{?rhel} >= 7
-%else
-%exclude %prefix/Documentation
-%endif
 
 %files devel
 %defattr(-,root,root)
 %phpdir/op5/ninja_sdk
-%if 0%{?rhel} >= 7
-%else
-%prefix/Documentation
-%endif
 
 %files monitoring
 %prefix/modules/monitoring
