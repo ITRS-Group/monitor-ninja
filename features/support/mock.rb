@@ -59,7 +59,7 @@ module Mock
 
     def save()
       if not active?
-        tmpname = Dir::Tmpname.make_tmpname("", nil)
+        tmpname = Dir::Tmpname.create(['-', '.']) {}
         @file = File.join(Dir.pwd, "ci_tmp_mock" + tmpname)
         FileUtils::mkdir_p File.dirname(@file)
       end

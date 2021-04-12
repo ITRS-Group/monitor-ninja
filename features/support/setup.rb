@@ -1,8 +1,9 @@
 require 'rspec'
 require 'capybara'
 require 'capybara/rspec'
-require 'capybara/poltergeist'
 require 'capybara/cucumber'
+require 'selenium-webdriver'
+require 'webdrivers'
 require 'syslog'
 require 'fileutils'
 
@@ -15,58 +16,57 @@ if ENV['TEST_ENV_NUMBER']
   end
 end
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, :timeout => 120, :phantomjs_options => ['--ignore-ssl-errors=yes', '--ssl-protocol=any', '--load-images=no'])
-end
-Capybara.register_driver :poltergeist_debug do |app|
-  Capybara::Poltergeist::Driver.new(app, :timeout => 120, :phantomjs_options => ['--ignore-ssl-errors=yes', '--ssl-protocol=any', '--load-images=yes'], :debug => true, :inspector => true)
+
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new(
+    args: %w[
+      headless
+      no-sandbox
+      disable-gpu
+      --ignore-certificate-errors
+      --blink-settings=imagesEnabled=false
+      --window-size=1920,1080
+    ]
+  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-Capybara.default_driver = :poltergeist
-Capybara.javascript_driver = :poltergeist
+Capybara.default_driver = :selenium_chrome_headless
+Capybara.javascript_driver = :selenium_chrome_headless
+
 Capybara.run_server = false
-Capybara.default_wait_time = 6
+Capybara.default_max_wait_time = 30
 Capybara.match = :prefer_exact
 
 Syslog.open("cucumber", 0, Syslog::LOG_DAEMON)
 
-if ENV['DEBUG'] or ENV['VERBOSE']
-  Capybara.default_driver = :poltergeist_debug
-  Capybara.javascript_driver = :poltergeist_debug
-end
-
-def scenario_name(scenario)
-  case scenario
-  when Cucumber::Ast::Scenario
-    scenario.name
-  when Cucumber::Ast::OutlineTable::ExampleRow
-    scenario.scenario_outline.name
-  else
-    "missing scenario name for class #{scenario.class}"
-  end
-end
-
 # Screenshot any failed scenario
 After do |scenario|
   if scenario.failed?
-    if ENV['CUKE_SCREEN_DIR']
-      screen_dir = ENV['CUKE_SCREEN_DIR']
-    else
-      screen_dir = './screenshots'
-    end
-    Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
-    sname = scenario_name(scenario)
-    screenshot = File.join(screen_dir, "FAILED_#{sname.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
-    screenshot_embed_filename = "./screenshots/FAILED_#{sname.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
-    page.driver.render(screenshot, :full => true)
-    embed screenshot_embed_filename, 'image/png'
+	if ENV['CUKE_SCREEN_DIR']
+	  screen_dir = ENV['CUKE_SCREEN_DIR']
+	else
+	  screen_dir = './screenshots'
+	end
+	Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
+	screenshot = File.join(screen_dir, "FAILED_#{@scenario_name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
+	screenshot_embed_filename = "./screenshots/FAILED_#{@scenario_name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
+	page.save_screenshot(screenshot, full: true)
+	embed screenshot_embed_filename, 'image/png'
   end
   Capybara.reset_sessions!
 end
 
 Before do |scenario|
   @params = {}
-  Syslog.log(Syslog::LOG_INFO, "Running '#{scenario_name(scenario)}'")
+  case scenario.source.last
+  when Cucumber::Core::Ast::ScenarioOutline
+    @scenario_name = scenario.scenario_outline.name
+  when Cucumber::Core::Ast::Scenario
+    @scenario_name = scenario.name
+  else
+    raise('Unhandled scenario class')
+  end
 end
 
 Before ('@configuration') do

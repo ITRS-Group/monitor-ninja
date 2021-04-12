@@ -312,10 +312,10 @@ end
 
 After do |scenario|
   case scenario
-  when Cucumber::Ast::Scenario
-    name = scenario.name
-  when Cucumber::Ast::OutlineTable::ExampleRow
+  when Cucumber::Core::Ast::ScenarioOutline
     name = scenario.scenario_outline.name
+  when Cucumber::Core::Ast::Scenario
+    name = scenario.name
   end
 
   if @mock.active?

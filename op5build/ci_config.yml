@@ -15,17 +15,33 @@ post:
     echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
     TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
 
+    # Install RVM to allow newer ruby versions
+    sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
+    curl -sSL https://get.rvm.io | bash -s stable
+    source /usr/local/rvm/scripts/rvm
+    rvm install 2.5
+    rvm use 2.5
+
+    #Install chrome
+    curl -OL https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
+    yum install -y google-chrome-stable_current_x86_64.rpm
+
+
     # Install cucumber and run tests
-    if [ -f /usr/bin/systemctl ]; then
-      gem install cucumber:1.3.6 racc:1.4.15 websocket-driver:0.7.0 nokogiri:1.6.0 rack:1.6.5 rack-test:0.7.0 capybara:2.1.0 public_suffix:2.0.5 xpath:2.0 rspec:2.14.1 parallel:1.13.0 parallel_tests:2.23.0 syntax:1.0.0 cliver:0.3.2 --no-document
-      gem install poltergeist:1.11.0 -no-document --ignore-dependencies
-    else
-      gem2.0 install cucumber:1.3.6 websocket-driver:0.7.0 nokogiri:1.6.0 rack:1.6.5 rack-test:0.7.0 capybara:2.1.0 public_suffix:2.0.5 xpath:2.0 rspec:2.14.1 parallel:1.13.0 parallel_tests:2.23.0 syntax:1.0.0 cliver:0.3.2 --no-rdoc --no-ri
-      gem2.0 install poltergeist:1.11.0 --no-rdoc --no-ri --ignore-dependencies
-    fi
+    gem install cucumber:3.2.0
+    gem install capybara:3.18.0 --no-document
+    gem install rspec:3.10.0 --no-document
+    gem install parallel --no-document
+    gem install parallel_tests --no-document
+    gem install syntax:1.2.2 --no-document
+    gem install cliver --no-document
+    gem install webdrivers
+    gem install selenium-webdriver
+    gem install xpath
 
     ulimit -c unlimited
     mkdir -p /mnt/logs
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
-    cucumber -t ~@skip -t ~@unreliable --strict --format html --out /mnt/logs/cucumber.html --format pretty
+    cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty
+
