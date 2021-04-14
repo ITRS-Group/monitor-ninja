@@ -280,7 +280,7 @@ class reports
 	*
 	*/
 	public static function timezone_list(){
-		if (!apc_exists('timezone_list')){
+		if (!apcu_exists('timezone_list')){
 			ini_set('memory_limit', '256M');
 			$zones_array = array();
 			$sort_utc = array();
@@ -296,8 +296,8 @@ class reports
 			foreach($sort_utc as $key => $value) {
 			    $final[$key] = $zones_array[$key];
 			}
-			apc_store('timezone_list', $final);
+			apcu_store('timezone_list', $final);
 		}
-	    return apc_fetch('timezone_list');
+	    return apcu_fetch('timezone_list');
 	}
 }

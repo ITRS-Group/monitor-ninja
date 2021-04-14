@@ -14,7 +14,7 @@ class ConfigException extends Exception
 
 class op5config {
 	private $basepath     = '/etc/op5/';
-	private $apc_enabled = false; /* Sets to true if apc_fetch exists */
+	private $apc_enabled = false; /* Sets to true if apcu_fetch exists */
 	private $apc_ttl     = 10;
 	const RESERVED_PREFIX = '__'; // Prefix for reserved keys
 
@@ -157,7 +157,7 @@ class op5config {
 	protected function getConfigFile($path)
 	{
 		if ($this->apc_enabled) {
-			$array = apc_fetch($this->apc_tag_for_path($path), $success);
+			$array = apcu_fetch($this->apc_tag_for_path($path), $success);
 			if ($success) {
 				return $array;
 			}
@@ -169,7 +169,7 @@ class op5config {
 		}
 
 		if ($this->apc_enabled) {
-			apc_store($this->apc_tag_for_path($path), $array, (int) $this->apc_ttl);
+			apcu_store($this->apc_tag_for_path($path), $array, (int) $this->apc_ttl);
 		}
 		return $array;
 	}
@@ -186,7 +186,7 @@ class op5config {
 	{
 		if ($this->apc_enabled) {
 			/* TODO: Use store instead... but I want to verify that it's stored correctly */
-			apc_delete($this->apc_tag_for_path($path));
+			apcu_delete($this->apc_tag_for_path($path));
 		}
 
 		if (!$set_reserved) {

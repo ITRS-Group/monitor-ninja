@@ -235,10 +235,10 @@ class op5auth implements op5MayI_Actor {
 		 */
 		$apc_tag = false;
 
-		if ($this->config['apc_enabled'] && extension_loaded('apc')) {
+		if ($this->config['apc_enabled'] && extension_loaded('apcu')) {
 			/* Generate tag to store with hash */
-			$apc_tag = $this->apc_key($username, $auth_method, $password);
-			$userdata = apc_fetch($apc_tag, $success);
+			$apcu_tag = $this->apc_key($username, $auth_method, $password);
+			$userdata = apcu_fetch($apc_tag, $success);
 
 			/* Userdata can be false = no accesss, or false = not cached */
 			if ($success) {
@@ -291,7 +291,7 @@ class op5auth implements op5MayI_Actor {
 
 			if ($apc_tag !== false) {
 				$this->log->log('debug', 'Storing credentials to cache');
-				apc_store($apc_tag, $user->export(), (int) $this->config['apc_ttl']);
+				apcu_store($apc_tag, $user->export(), (int) $this->config['apc_ttl']);
 			}
 
 			return true;
@@ -303,7 +303,7 @@ class op5auth implements op5MayI_Actor {
 			$seconds = (int) $this->config['apc_ttl'];
 			$this->log->log('notice',
 				"User '$username' is not authenticated, storing in APC for $seconds seconds to avoid spamming login backend with bad auth");
-			apc_store($apc_tag, false, $seconds);
+			apcu_store($apc_tag, false, $seconds);
 		}
 		return false;
 	}
