@@ -62,6 +62,7 @@ Feature: Availability reports
 		And I should see "Report Settings"
 
 	@reports
+	@unreliable
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
