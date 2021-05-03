@@ -1,9 +1,9 @@
 <?php
 require_once('op5/objstore.php');
 
-class Orm_Command_Rights_Test extends PHPUnit_Framework_TestCase {
+class Orm_Command_Rights_Test extends \PHPUnit\Framework\TestCase {
 
-	protected function setup() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		$mayi_auth = new mayi_auth_hooks();
 		$this->user = new User_AlwaysAuth_Model();
@@ -27,7 +27,7 @@ class Orm_Command_Rights_Test extends PHPUnit_Framework_TestCase {
 		op5objstore::instance()->mock_add('op5MayI', $mayi);
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 

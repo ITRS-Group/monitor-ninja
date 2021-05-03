@@ -4,9 +4,9 @@
  *
  * This means adding, deleting and renaming dashboards, but not widget handling
  */
-class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
+class Dashboard_Manage_Test extends \PHPUnit\Framework\TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth' => array(
@@ -27,7 +27,7 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 		$_POST = array();
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		$_POST = array();
 	}
@@ -313,12 +313,12 @@ class Dashboard_Manage_Test extends PHPUnit_Framework_TestCase {
 
 		$tac = new Tac_Controller();
 		$tac->index(40);
-		$this->assertContains("My dashboard", $tac->template->title,
+		$this->assertStringContainsString("My dashboard", $tac->template->title,
 			"If the dashboard was located, the page's title ".
 			"should have been changed"
 		);
 		$tac->index(41);
-		$this->assertContains("Mommy's dashboard", $tac->template->title,
+		$this->assertStringContainsString("Mommy's dashboard", $tac->template->title,
 			"If the dashboard was located, the page's title ".
 			"should have been changed"
 		);

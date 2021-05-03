@@ -1,9 +1,9 @@
 <?php
 
-class Autocompleter_Test extends PHPUnit_Framework_TestCase {
+class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	private $mock_log;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth' => array(
 				'common' => array(
@@ -23,7 +23,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 
@@ -203,7 +203,7 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 		$ac = new Autocompleter($autocompleter_backend);
 
 		$calculated_result = $ac->query($search_term, $search_tables);
-		$this->assertInternalType('array', $calculated_result);
+		$this->assertIsArray($calculated_result);
 		$this->assertSame($expected_result, $calculated_result);
 	}
 
@@ -411,11 +411,11 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException AutocompleterException
-	 * @expectedExceptionMessage Wrong format of $table_information, each $table_spec must have a display_column
 	 * @group MON-9409
 	 */
 	public function test_throws_exception_if_table_spec_is_missing_display_column() {
+		$this->expectException('AutocompleterException');
+		$this->expectExceptionMessage('Wrong format of $table_information, each $table_spec must have a display_column');
 		$table_spec = array(
 			'hosts' => array(
 				array(
@@ -427,11 +427,11 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException AutocompleterException
-	 * @expectedExceptionMessage Wrong format of $table_information, each $table_spec must have a query
 	 * @group MON-9409
 	 */
 	public function test_throws_exception_if_table_spec_is_missing_query() {
+		$this->expectException('AutocompleterException');
+		$this->expectExceptionMessage('Wrong format of $table_information, each $table_spec must have a query');
 		$table_spec = array(
 			'hosts' => array(
 				array(
@@ -452,11 +452,11 @@ class Autocompleter_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @dataProvider data_with_wrong_string_placeholders
-	 * @expectedException AutocompleterException
-	 * @expectedExceptionMessage Wrong format of $table_information, each $table_spec must have a query with exactly one %s in it
 	 * @group MON-9409
 	 */
 	public function test_throws_exception_if_table_spec_query_has_wrong_amounts_of_string_placeholders($query) {
+		$this->expectException('AutocompleterException');
+		$this->expectExceptionMessage('Wrong format of $table_information, each $table_spec must have a query with exactly one %s in it');
 		$table_spec = array(
 			'hosts' => array(
 				array(

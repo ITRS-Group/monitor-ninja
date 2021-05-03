@@ -1,13 +1,13 @@
 <?php
 
-class User_Permission_Test extends PHPUnit_Framework_TestCase {
+class User_Permission_Test extends \PHPUnit\Framework\TestCase {
 	private function mock_data($tables) {
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add($driver, new ORMDriverNative($tables, null, $driver));
 		}
 	}
 
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -16,7 +16,7 @@ class User_Permission_Test extends PHPUnit_Framework_TestCase {
 		));
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 	public function test_permission_quarks() {

@@ -9,7 +9,7 @@ require_once("op5/auth/Auth.php");
 * It assumes that Authorization works too.
 */
 
-class AuthDriverDefaultTest extends PHPUnit_Framework_TestCase {
+class AuthDriverDefaultTest extends \PHPUnit\Framework\TestCase {
 
 	static private $config = array(
 			'auth' => array(
@@ -55,7 +55,7 @@ class AuthDriverDefaultTest extends PHPUnit_Framework_TestCase {
 
 	private $auth = false;
 
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_add( 'op5config',
 		new MockConfig(self::$config) );
 		op5objstore::instance()->mock_add( 'op5log', new MockLog() );
@@ -63,7 +63,7 @@ class AuthDriverDefaultTest extends PHPUnit_Framework_TestCase {
 		$this->auth = new op5Auth();
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		unset($this->auth);
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_clear();

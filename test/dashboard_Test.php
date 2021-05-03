@@ -6,11 +6,11 @@
  * @author  op5
  * @license GPL
  */
-class Dashboard_Test extends PHPUnit_Framework_TestCase {
+class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 
 	private $mock_data_path = false;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth' => array(
 				'common' => array(
@@ -24,7 +24,7 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 		)));
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		unlink($this->mock_data_path);
 		$this->mock_data_path = false;
@@ -339,7 +339,7 @@ class Dashboard_Test extends PHPUnit_Framework_TestCase {
 			"We could select the mocked widget");
 
 		$position = $our_widget->get_position();
-		$this->assertInternalType('array', $position,
+		$this->assertIsArray($position,
 			"A widget's position is always an array, ".
 			"even if we do not have any data for it");
 		$this->assertSame(array('c' => 0, 'p' => 0), $position,

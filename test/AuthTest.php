@@ -6,7 +6,7 @@ require_once ("op5/auth/Auth.php");
 /**
  * Verifies that auth driver handles sessions correctly
  */
-class AuthTest extends PHPUnit_Framework_TestCase {
+class AuthTest extends \PHPUnit\Framework\TestCase {
 	const DEPRECATION_ENV_VAR = 'OP5_NINJA_DEPRECATION_SHOULD_EXIT';
 
 	private static $config = array (
@@ -54,7 +54,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Make sure we don't have any lasting instances between tests
 	 */
-	public function setup() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_add('op5config', new MockConfig(self::$config));
@@ -64,7 +64,7 @@ class AuthTest extends PHPUnit_Framework_TestCase {
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
 	}
 
-	public function teardown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));

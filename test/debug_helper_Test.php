@@ -18,11 +18,11 @@ if (!class_exists('Kohana')) {
  * @author  op5
  * @license GPL
  */
-class Debug_Helper_Test extends PHPUnit_Framework_TestCase {
+class Debug_Helper_Test extends \PHPUnit\Framework\TestCase {
 
 	private $backtrace;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		$this->backtrace = array(
 			array(
 				'file'     => '/hej/hopp/vetej/kanske.php',

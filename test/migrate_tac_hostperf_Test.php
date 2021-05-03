@@ -8,9 +8,9 @@ require('install_scripts/migrate_tac_hostperf_to_listview.php');
  * @package    Unit_Test
  * @author     op5
  */
-class Migrate_Tac_Hostperf_Test extends PHPUnit_Framework_TestCase {
+class Migrate_Tac_Hostperf_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setUp () {
+	public function setUp () : void {
 
 		op5auth::instance()->force_user(new User_AlwaysAuth_Model());
 		$this->mock_data(array(

@@ -1,7 +1,7 @@
 <?php
-class Saved_reports_Test extends PHPUnit_Framework_TestCase
+class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 {
-	function setUp()
+	function setUp() : void
 	{
 		// sweep up leftover crap from other runs
 		$db = Database::instance();
@@ -43,7 +43,7 @@ class Saved_reports_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($valid_periods, $types, 'Expected all non-custom periods to be categorized in a type - did you add a new report period?');
 	}
 
-	function tearDown()
+	function tearDown() : void
 	{
 		// sweep up leftover crap from other runs
 		$db = Database::instance();
@@ -185,9 +185,9 @@ class Saved_reports_Test extends PHPUnit_Framework_TestCase
 		);
 		$opts = Report_options::setup_options_obj('avail', $the_opts);
 
-		$this->assertSame(true, $opts->save($msg), $msg);
+		$this->assertSame(true, $opts->save($msg));
 		unset($opts['report_id']);
-		$this->assertSame(false, $opts->save($msg), $msg);
+		$this->assertSame(false, $opts->save($msg));
 	}
 
 	/**

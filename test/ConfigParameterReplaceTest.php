@@ -9,7 +9,7 @@ require_once("op5/objstore.php");
  *
  * @group group
  */
-class ConfigParameterReplaceTest extends PHPUnit_Framework_TestCase
+class ConfigParameterReplaceTest extends \PHPUnit\Framework\TestCase
 {
 
 	private $config;
@@ -52,7 +52,7 @@ class ConfigParameterReplaceTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return void
 	 **/
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass() : void
 	{
 		// Create config files
 		exec("touch " . __DIR__ . "/fixtures/auth.yml");
@@ -65,7 +65,7 @@ class ConfigParameterReplaceTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return void
 	 **/
-	public static function tearDownAfterClass()
+	public static function tearDownAfterClass() : void
 	{
 		// Delete config files
 		exec('rm -f ' . __DIR__ . '/fixtures/auth.yml', $output);
@@ -78,7 +78,7 @@ class ConfigParameterReplaceTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return void
 	 **/
-	function setUp()
+	function setUp() : void
 	{
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_clear();
@@ -94,7 +94,7 @@ class ConfigParameterReplaceTest extends PHPUnit_Framework_TestCase
 	 *
 	 * @return void
 	 **/
-	function tearDown()
+	function tearDown() : void
 	{
 	}
 

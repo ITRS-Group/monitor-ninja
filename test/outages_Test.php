@@ -1,7 +1,7 @@
 <?php
 require_once ('op5/objstore.php');
 
-class outages_Test extends PHPUnit_Framework_TestCase {
+class outages_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The virtual environment this test is using
@@ -123,7 +123,7 @@ class outages_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Make sure the enviornment is clean, and livestatus is mocked
 	 */
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 		$this->ls = new MockLivestatus( $this->objects, array (
@@ -135,7 +135,7 @@ class outages_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Remove mock environment
 	 */
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 	}

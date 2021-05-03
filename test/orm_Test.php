@@ -1,7 +1,7 @@
 <?php
 require_once ('op5/objstore.php');
 
-class ORM_Test extends PHPUnit_Framework_TestCase {
+class ORM_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The virtual environment this test is using
@@ -196,7 +196,7 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Make sure the enviornment is clean, and livestatus is mocked
 	 */
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 		$this->ls = new MockLivestatus($this->objects);
@@ -205,7 +205,7 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Remove mock environment
 	 */
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 	}
@@ -326,10 +326,10 @@ class ORM_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException ORMException
-	 * @expectedExceptionMessage Table 'hosts' has no column 'kaka'
 	 */
 	public function test_sort_on_missing_column() {
+		$this->expectException('ORMException');
+		$this->expectExceptionMessage("Table 'hosts' has no column 'kaka'");
 		HostPool_Model::all()->it(false, array('kaka'));
 	}
 

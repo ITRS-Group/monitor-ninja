@@ -1,5 +1,5 @@
 <?php
-class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
+class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 {
 	public function createDowntime($data)
 	{
@@ -13,7 +13,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		$this->created[] = $id;
 	}
 
-	public function tearDown()
+	public function tearDown() : void
 	{
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 		$this->auth->set_authorized_for('host_view_all', true);
@@ -36,7 +36,7 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 		op5objstore::instance()->mock_clear();
 	}
 
-	public function setUp()
+	public function setUp() : void
 	{
 		op5objstore::instance()->mock_clear();
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
@@ -141,11 +141,11 @@ class Recurring_downtime_permission_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException Exception
-	 * @expectedExceptionMessageRegExp /Not authorized for editing (\bservicegroup\b)|(\bhost\b) objects/
 	 */
 	public function testReadOnlyEdit()
 	{
+		$this->expectException('Exception');
+		$this->expectExceptionMessageMatches('/Not authorized for editing (\\bservicegroup\\b)|(\\bhost\\b) objects/');
 		$this->auth->set_authorized_for('host_view_all', true);
 		$this->auth->set_authorized_for('service_view_all', true);
 		$this->auth->set_authorized_for('hostgroup_view_all', true);

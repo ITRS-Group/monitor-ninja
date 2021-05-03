@@ -9,9 +9,9 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class First_Login_Test extends PHPUnit_Framework_TestCase {
+class First_Login_Test extends \PHPUnit\Framework\TestCase {
 
-	protected function setUp () {
+	protected function setUp () : void {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
 				'dashboards' => array(),

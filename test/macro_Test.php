@@ -1,5 +1,5 @@
 <?php
-class macro_Test extends PHPUnit_Framework_TestCase {
+class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_preprocess_orm_object () {
 

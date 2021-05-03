@@ -6,7 +6,7 @@ require_once ('op5/objstore.php');
  * These tests exist to enforce the structure of ORM objects, to validate that
  * they are complete and behave in a consistent manner.
  */
-class ORM_Complete_Test extends PHPUnit_Framework_TestCase {
+class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 	public function object_manifest_provider () {
 
@@ -43,7 +43,7 @@ class ORM_Complete_Test extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_mayi_resource_available_for_all_sets ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::all();
-		$this->assertInternalType('string', $set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
+		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
 		return true;
 	}
 

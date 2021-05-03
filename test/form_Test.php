@@ -1,6 +1,6 @@
 <?php
 
-class Form_Test extends PHPUnit_Framework_TestCase {
+class Form_Test extends \PHPUnit\Framework\TestCase {
 	public function get_form_provider() {
 		// phpunit wants to be able to iterate through the dataset
 		return array(array(new Form_Model('my_action_url', 'POST', array(
@@ -32,19 +32,19 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 		$content = $view->render(false);
 
 		/* Verify that the Action URL appears */
-		$this->assertContains('action="my_action_url"', $content);
+		$this->assertStringContainsString('action="my_action_url"', $content);
 
 		/* Verify that the fields are available with correct names */
-		$this->assertContains('name="name"', $content);
-		$this->assertContains('name="trouble"', $content);
-		$this->assertContains('name="why"', $content);
+		$this->assertStringContainsString('name="name"', $content);
+		$this->assertStringContainsString('name="trouble"', $content);
+		$this->assertStringContainsString('name="why"', $content);
 
 		/* Verify that options exists */
-		$this->assertContains('value="headache"', $content);
-		$this->assertContains('value="foot_sweat"', $content);
+		$this->assertStringContainsString('value="headache"', $content);
+		$this->assertStringContainsString('value="foot_sweat"', $content);
 
 		/* Verify that the default value appears somewhere */
-		$this->assertContains('value="because"', $content);
+		$this->assertStringContainsString('value="because"', $content);
 	}
 
 	/**
@@ -77,10 +77,10 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * @group MON-9409
 	 * @dataProvider get_form_provider
-	 * @expectedException FormException
-	 * @expectedExceptionMessage trouble has not a valid option value
 	 */
 	public function test_process_fail($form) {
+		$this->expectException('FormException');
+		$this->expectExceptionMessage('trouble has not a valid option value');
 		$form->process_data(array(
 			'unknown_field' => 12,
 			'trouble' => 'boll',
@@ -91,10 +91,10 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9409
-	 * @expectedException MissingValueException
-	 * @expectedExceptionMessage Missing a value for the field 'title'
 	 */
 	public function test_missing_mandatory_field_throws_exception() {
+		$this->expectException('MissingValueException');
+		$this->expectExceptionMessage("Missing a value for the field 'title'");
 		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
 		$also_a_mandatory_field = new Form_Field_Number_Model('refresh_rate', 'Refresh rate');
 
@@ -107,10 +107,10 @@ class Form_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException MissingValueException
-	 * @expectedExceptionMessage Missing a value for the field 'title'
 	 */
 	public function test_field_required_if_not_set_to_optional () {
+		$this->expectException('MissingValueException');
+		$this->expectExceptionMessage("Missing a value for the field 'title'");
 
 		$mandatory_field = new Form_Field_Text_Model('title', 'Title');
 

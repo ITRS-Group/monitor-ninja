@@ -10,7 +10,7 @@ function get_day_mock($stepping) {
 }
 
 
-class Downtime_Day_Test extends PHPUnit_Framework_TestCase {
+class Downtime_Day_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_day_interval() should evaluate to true if the given date is scheduled
 	 * @group recurring_downtime

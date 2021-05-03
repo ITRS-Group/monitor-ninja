@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class User_Test extends PHPUnit_Framework_TestCase {
+class User_Test extends \PHPUnit\Framework\TestCase {
 	public function test_table_ninja_settings_exists()
 	{
 		$db = Database::instance();

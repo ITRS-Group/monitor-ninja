@@ -6,14 +6,14 @@ require_once('op5/objstore.php');
  * @author     op5
  * @license    GPL
  */
-class Ninja_widgets_Test extends PHPUnit_Framework_TestCase {
+class Ninja_widgets_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * a widget that should exist and be instanceable, used as test widget
 	 */
 	const DUMMY_WIDGET = 'netw_health';
 	const DUMMY_WIDGET_CLASS = 'Netw_health_Widget';
 
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 	}

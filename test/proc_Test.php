@@ -1,7 +1,7 @@
 <?php
-class proc_Test extends PHPUnit_Framework_TestCase {
+class proc_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setup() {
+	public function setUp() : void {
 		$this->executable = __DIR__.'/fixture_proc.php';
 	}
 

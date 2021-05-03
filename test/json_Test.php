@@ -1,5 +1,5 @@
 <?php
-class json_Test extends PHPUnit_Framework_TestCase {
+class json_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * @dataProvider data_structures
 	 */

@@ -1,6 +1,6 @@
 <?php
 
-class ORM_Type_List_Test extends PHPUnit_Framework_TestCase {
+class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 
 	public function valid_values_provider () {
 		return array(
@@ -84,7 +84,8 @@ class ORM_Type_List_Test extends PHPUnit_Framework_TestCase {
 	 * @group ORMType
 	 */
 	public function test_factory_from_array_invalid_values ($value, $expected) {
-		$this->setExpectedException('InvalidArgumentException', $expected);
+		$this->expectException('InvalidArgumentException');
+		$this->expectExceptionMessage($expected);
 		TestClassA_Model::factory_from_array(array("list" => $value), array());
 	}
 
@@ -93,7 +94,8 @@ class ORM_Type_List_Test extends PHPUnit_Framework_TestCase {
 	 * @group ORMType
 	 */
 	public function test_factory_from_setiterator_invalid_values ($value, $expected) {
-		$this->setExpectedException('InvalidArgumentException', $expected);
+		$this->expectException('InvalidArgumentException');
+		$this->expectExceptionMessage($expected);
 		TestClassA_Model::factory_from_setiterator(array("list" => $value), false, array());
 	}
 
@@ -102,7 +104,8 @@ class ORM_Type_List_Test extends PHPUnit_Framework_TestCase {
 	 * @group ORMType
 	 */
 	public function test_setter_invalid_values ($value, $expected) {
-		$this->setExpectedException('InvalidArgumentException', $expected);
+		$this->expectException('InvalidArgumentException');
+		$this->expectExceptionMessage($expected);
 		$from_array = TestClassA_Model::factory_from_array(array(), array());
 		$from_array->set_list($value);
 	}

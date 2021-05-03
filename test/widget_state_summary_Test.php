@@ -1,8 +1,8 @@
 <?php
 
-class Widget_State_Summary_Test extends PHPUnit_Framework_TestCase {
+class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 		$widget_model = new Ninja_Widget_Model();
 		$widget_model->set_name('state_summary');
 		$widget_model->set_friendly_name('State summary');
@@ -14,7 +14,7 @@ class Widget_State_Summary_Test extends PHPUnit_Framework_TestCase {
 		$this->widget = $widget;
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		// in this test case, all methods sets mock_data_path, or else...
 		$this->assertTrue(unlink($this->mock_data_path), $this->mock_data_path);

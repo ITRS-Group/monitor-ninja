@@ -1,6 +1,6 @@
 <?php
 
-class Queryhandler_Test extends PHPUnit_Framework_TestCase {
+class Queryhandler_Test extends \PHPUnit\Framework\TestCase {
 	public function test_kvvec2array_one() {
 		$this->assertSame(array('foo' => 'bar'),
 			op5queryhandler::kvvec2array('foo=bar;'));
@@ -27,16 +27,16 @@ class Queryhandler_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException op5queryhandler_Exception
 	 */
 	public function test_kvvec2array_key_syntax_error() {
+		$this->expectException('op5queryhandler_Exception');
 		op5queryhandler::kvvec2array('foo;');
 	}
 
 	/**
-	 * @expectedException op5queryhandler_Exception
 	 */
 	public function test_kvvec2array_value_syntax_error() {
+		$this->expectException('op5queryhandler_Exception');
 		op5queryhandler::kvvec2array('foo=bar=wot');
 	}
 

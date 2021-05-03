@@ -1,10 +1,10 @@
 <?php
 
-class Form_ORM_Test extends PHPUnit_Framework_TestCase {
+class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 
 	private $mock_data_path = false;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth' => array(
@@ -30,7 +30,7 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 		}
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		if($this->mock_data_path !== false) {
 			unlink($this->mock_data_path);
 			$this->mock_data_path = false;
@@ -49,10 +49,10 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 	 * Verify that incorrect object keys throws an exception
 	 *
 	 * @group MON-9409
-	 * @expectedException FormException
-	 * @expectedExceptionMessage da_contact does not point at a valid object
 	 */
 	public function test_process_fail() {
+		$this->expectException('FormException');
+		$this->expectExceptionMessage('da_contact does not point at a valid object');
 		$tables = array(
 			'ORMDriverLS default' => array(
 				'contacts' => array(
@@ -104,8 +104,8 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 
 		/* When rendering, only the selected host should be available */
 		$content = $form_with_defaults->get_view()->render(false);
-		$this->assertContains('value="Someone"', $content);
-		$this->assertNotContains('value="Tomtenisse"', $content);
+		$this->assertStringContainsString('value="Someone"', $content);
+		$this->assertStringNotContainsString('value="Tomtenisse"', $content);
 	}
 
 	/**
@@ -146,10 +146,10 @@ class Form_ORM_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9409
-	 * @expectedException FormException
-	 * @expectedExceptionMessage The performance data source 'Munny Saelee' is not found on the given object
 	 */
 	public function test_perfdata_option_failing_validation_depending_on_orm_object() {
+		$this->expectException('FormException');
+		$this->expectExceptionMessage("The performance data source 'Munny Saelee' is not found on the given object");
 		$tables = array(
 			'ORMDriverLS default' => array(
 				'hosts' => array(

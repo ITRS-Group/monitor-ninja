@@ -7,7 +7,7 @@
  * @author  op5
  * @license GPL
  */
-class Tac_Test extends PHPUnit_Framework_TestCase {
+class Tac_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 *
@@ -15,7 +15,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	 */
 	private $tac;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth' => array(
 				'common' => array(
@@ -50,7 +50,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$_POST = array();
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		$_POST = array();
 	}
@@ -521,7 +521,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		);
 		$this->tac->on_refresh();
 
-		$this->assertContains(
+		$this->assertStringContainsString(
 			"Widget type 'Cell0' does not seem to be installed",
 			$this->tac->template->value['widget']
 		);
@@ -536,7 +536,7 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		);
 		$this->tac->on_refresh();
 
-		$this->assertContains(
+		$this->assertStringContainsString(
 			'<table class="tablestat-widget"', $this->tac->template->value['widget']
 		);
 		$this->assertSame('Hosts', $this->tac->template->value['title']);
@@ -559,11 +559,11 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->tac->on_widget_add();
 		// 4 widgets in default data, thus new id=5
 
-		$this->assertContains(
+		$this->assertStringContainsString(
 			'<table class="tablestat-widget"',
 			$this->tac->template->value['widget']
 		);
-		$this->assertNotContains(
+		$this->assertStringNotContainsString(
 			'alert error', $this->tac->template->value['widget']
 		);
 		$this->assertTrue($this->tac->template->success);
@@ -590,11 +590,11 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 		$this->tac->on_widget_add();
 		// 4 widgets in default data, thus new id=5
 
-		$this->assertContains(
+		$this->assertStringContainsString(
 			'<table class="tablestat-widget"',
 			$this->tac->template->value['widget']
 		);
-		$this->assertNotContains(
+		$this->assertStringNotContainsString(
 			'alert error', $this->tac->template->value['widget']
 		);
 		$this->assertTrue($this->tac->template->success);
@@ -917,10 +917,10 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	 * that's our convention.
 	 *
 	 * @group MON-9539
-	 * @expectedException Kohana_Reroute_Exception
-	 * @expectedExceptionMessage Reroute to Auth/_no_access
 	 */
 	public function test_sharing_dashboard_can_be_denied_by_insufficient_mayi_rights() {
+		$this->expectException('Kohana_Reroute_Exception');
+		$this->expectExceptionMessage("Reroute to Auth/_no_access");
 		$interesting_mayi_action = "monitor.system.dashboards.shared:create";
 		$mayi_denied_fixture = array(
 			$interesting_mayi_action => array(
@@ -954,10 +954,10 @@ class Tac_Test extends PHPUnit_Framework_TestCase {
 	 * that's our convention.
 	 *
 	 * @group MON-9539
-	 * @expectedException Kohana_Reroute_Exception
-	 * @expectedExceptionMessage Reroute to Auth/_no_access
 	 */
 	public function test_can_share_dashboard_and_deny_unsharing_it_through_mayi() {
+		$this->expectException('Kohana_Reroute_Exception');
+		$this->expectExceptionMessage("Reroute to Auth/_no_access");
 		// setup orm
 		$this->mock_data(array(
 			"ORMDriverMySQL default" => array(

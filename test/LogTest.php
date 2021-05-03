@@ -3,7 +3,7 @@
 require_once("op5/objstore.php");
 require_once("op5/log.php");
 
-class LogTest extends PHPUnit_Framework_TestCase
+class LogTest extends \PHPUnit\Framework\TestCase
 {
 	static public $config = array(
 			'lvl_debug' => array(
@@ -35,7 +35,7 @@ class LogTest extends PHPUnit_Framework_TestCase
 
 
 	/* Set up logging enviornment to runt tests within */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass() : void {
 		op5objstore::instance()->mock_clear();
 		$filenames = array();
 		foreach( self::$config as $ns => &$cfg ) {
@@ -51,7 +51,7 @@ class LogTest extends PHPUnit_Framework_TestCase
 		new MockConfig(array('log' => self::$config)) );
 	}
 
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass() : void {
 		// Make sure everything is written, so we don't need to create files once they are removed
 		op5log::writeback();
 
@@ -101,7 +101,7 @@ class LogTest extends PHPUnit_Framework_TestCase
 	}
 
 
-	function setUp() {
+	function setUp() : void {
 		/* Make sure all log files are empty to ensure isolated tests */
 		op5log::writeback();
 		foreach( self::$config as $ns => $cfg ) {

@@ -3,15 +3,15 @@
 require_once "op5/auth/AuthDriver_Header.php";
 require_once "op5/objstore.php";
 
-class AuthDriverHeaderTest extends PHPUnit_Framework_TestCase
+class AuthDriverHeaderTest extends \PHPUnit\Framework\TestCase
 {
 	private $driver;
 
-	static function setUpBeforeClass() {
+	static function setUpBeforeClass() : void {
 		op5objstore::instance()->mock_add( 'op5log', new MockLog() );
 	}
 
-	static function tearDownAfterClass() {
+	static function tearDownAfterClass() : void {
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_clear();
 	}

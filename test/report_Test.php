@@ -3,12 +3,12 @@
 require_once('op5/auth/Auth.php');
 require_once('op5/objstore.php');
 
-class report_Test extends PHPUnit_Framework_TestCase {
+class report_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Make sure the enviornment is clean, and livestatus is mocked
 	 */
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 
@@ -19,7 +19,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Remove mock environment
 	 */
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 		Report_options::$now = null;
@@ -179,7 +179,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 					."))"
 				.")";
 
-		$this->assertContains($substr, $query, 'Could not find permission check substring in query', true);
+		$this->assertStringContainsString($substr, $query, 'Could not find permission check substring in query', true);
 
 		try {
 			$db = Database::instance();
@@ -236,7 +236,7 @@ class report_Test extends PHPUnit_Framework_TestCase {
 						$opts['alert_types'] = $alert_types;
 						$rpt = new Report_query_builder_Model('report_data', $opts);
 						$query = $rpt->build_alert_summary_query();
-						$this->assertInternalType('string', $query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
+						$this->assertIsString($query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
 						$this->assertObjectHasAttribute('select_type', $db->query("EXPLAIN " . $query)->current());
 					}
 				}
@@ -529,9 +529,8 @@ class report_Test extends PHPUnit_Framework_TestCase {
 		/* this message sucks, it should be invalid key.
 		 * however, that message is harder to generate.
 		 */
-		$this->setExpectedException(
-			'ReportValidationException',
-			"Invalid value for option 'report_name'");
+		$this->expectException('ReportValidationException');
+		$this->expectExceptionMessage("Invalid value for option 'report_name'");
 		$obj = Report_options::setup_options_obj(
 			'httpApiState',
 			array(
@@ -1245,11 +1244,11 @@ class report_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException InvalidTimePeriod_Exception
-	 * @expectedExceptionMessage 'non-existing' is not a valid value for $time_period
 	 * @group time::get_limits
 	 */
 	public function test_relative_timeperiod_throws_exception_on_invalid_report_type() {
+		$this->expectException('InvalidTimePeriod_Exception');
+		$this->expectExceptionMessage("'non-existing' is not a valid value for \$time_period");
 		time::get_limits('non-existing', time());
 	}
 }

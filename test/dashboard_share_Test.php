@@ -1,7 +1,7 @@
 <?php
-class Dashboard_Share_Test extends PHPUnit_Framework_TestCase {
+class Dashboard_Share_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_add(
 			"ORMDriverMySQL default",
 			new ORMDriverNative(
@@ -15,7 +15,7 @@ class Dashboard_Share_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 

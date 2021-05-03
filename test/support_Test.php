@@ -1,9 +1,9 @@
 <?php
 require_once ("op5/objstore.php");
 
-class support_Test extends PHPUnit_Framework_TestCase {
+class support_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setUp() {
+	public function setUp() : void {
 		Kohana::config_clear('exception');
 		Kohana::config_set('exception.shell_commands', array(
 			'echo test1',
@@ -11,7 +11,7 @@ class support_Test extends PHPUnit_Framework_TestCase {
 		));
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		Kohana::config_clear('exception');
 	}
 

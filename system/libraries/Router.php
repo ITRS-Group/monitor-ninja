@@ -33,7 +33,7 @@ class Router {
 	 *
 	 * @return  void
 	 */
-	public static function setup()
+	public static function setUp() : void
 	{
 		if ( ! empty($_SERVER['QUERY_STRING']))
 		{

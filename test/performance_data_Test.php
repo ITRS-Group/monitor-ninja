@@ -1,5 +1,5 @@
 <?php
-class performance_data_Test extends PHPUnit_Framework_TestCase {
+class performance_data_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Test performance data processing.
 	 *

@@ -34,7 +34,7 @@ class mock_queryhandler extends op5queryhandler {
 	}
 }
 
-class Orm_Command_Test extends PHPUnit_Framework_TestCase {
+class Orm_Command_Test extends \PHPUnit\Framework\TestCase {
 
 	protected $objects = array (
 		"hosts" => array(
@@ -69,7 +69,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 		)
 	);
 
-	function setup() {
+	function setUp() : void {
 		// capture all external commands
 		$this->m = new mock_queryhandler();
 		op5objstore::instance()->mock_add('op5queryhandler', $this->m);
@@ -86,7 +86,7 @@ class Orm_Command_Test extends PHPUnit_Framework_TestCase {
 			->force_user(new User_Model(array('username' => $this->author)), true);
 	}
 
-	function teardown() {
+	function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		op5auth::instance()->logout();
 	}

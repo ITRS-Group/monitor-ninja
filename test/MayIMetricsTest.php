@@ -48,7 +48,7 @@ class MayIMetricTest_MetricProviderConstraints implements op5MayI_Constraints {
 /**
  * Test that MayI metrics interface works as intended
  */
-class MayIMetricsTest extends PHPUnit_Framework_TestCase {
+class MayIMetricsTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * op5config mock environment
 	 */
@@ -65,7 +65,7 @@ class MayIMetricsTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Make sure we have a defined environment for testing
 	 */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass() : void {
 		/* Make sure we have control over all mockups */
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add( 'op5config', new MockConfig( array (
@@ -76,7 +76,7 @@ class MayIMetricsTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Make sure we don't leave any traces
 	 */
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass() : void {
 		/* Make sure we leave everything untouched */
 		op5objstore::instance()->mock_clear();
 	}
@@ -84,9 +84,9 @@ class MayIMetricsTest extends PHPUnit_Framework_TestCase {
 	/**
 	 * Clear transient singleton instances (non-PHPdoc)
 	 *
-	 * @see PHPUnit_Framework_TestCase::setUp()
+	 * @see \PHPUnit\Framework\TestCase::setUp()
 	 */
-	public function setUp() {
+	public function setUp() : void {
 		/* Make sure we start from scratch */
 		op5objstore::instance()->clear();
 		$this->mayi = op5MayI::instance();

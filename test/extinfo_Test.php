@@ -2,8 +2,8 @@
 /**
  * Tests the extinfo (the view of a single object).
  */
-class Extinfo_Test extends PHPUnit_Framework_TestCase {
-	protected function tearDown() {
+class Extinfo_Test extends \PHPUnit\Framework\TestCase {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 
@@ -42,7 +42,7 @@ class Extinfo_Test extends PHPUnit_Framework_TestCase {
 		$start_obsess_cmd = $menu_items->get("options.".
 			"host_operations.start_obsessing_over_hosts");
 		$this->assertInstanceOf('Menu_Model', $start_obsess_cmd);
-		$this->assertContains("/index.php/cmd?command=".
+		$this->assertStringContainsString("/index.php/cmd?command=".
 			"start_obsessing_over_hosts&table=status&object=0",
 			$start_obsess_cmd->get_href()
 		);

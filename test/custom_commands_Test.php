@@ -1,6 +1,6 @@
 <?php
 require_once ('op5/objstore.php');
-class custom_commands_Test extends PHPUnit_Framework_TestCase {
+class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The virtual environment this test is using
@@ -26,7 +26,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		)
 	);
 
-	public function setup() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 
 		$auth = op5auth::instance( array (
@@ -45,7 +45,7 @@ class custom_commands_Test extends PHPUnit_Framework_TestCase {
 		op5objstore::instance()->mock_add( 'op5Livestatus', $this->ls );
 	}
 
-	public function teardown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 

@@ -60,7 +60,7 @@ final class Kohana {
 	 *
 	 * @return  void
 	 */
-	public static function setup()
+	public static function setUp() : void
 	{
 		static $run;
 

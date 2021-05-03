@@ -3,7 +3,7 @@
 require_once "op5/auth/AuthDriver_LDAP.php";
 require_once "op5/objstore.php";
 
-class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
+class AuthDriverLDAPTest extends \PHPUnit\Framework\TestCase
 {
 	/**
 	 * @var op5AuthDriver
@@ -73,7 +73,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Setup mock LDAP enviornment
 	*/
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass() : void {
 		system( __DIR__. '/env/ldap/slapd_mock_start.sh', $exit_code);
 		assert($exit_code == 0);
 		op5objstore::instance()->mock_add( 'op5log', new MockLog() );
@@ -82,7 +82,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Shut down mock LDAP environment
 	 */
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass() : void {
 		system( __DIR__. '/env/ldap/slapd_mock_stop.sh', $exit_code);
 		assert($exit_code == 0);
 		op5objstore::instance()->clear();
@@ -92,7 +92,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Make sure we're disconnected from LDAP
 	 */
-	function setUp() {
+	function setUp() : void {
 		if( $this->drv !== false ) {
 			$this->drv->disconnect();
 		}
@@ -102,7 +102,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Make sure we're disconnected from LDAP
 	 */
-	function tearDown() {
+	function tearDown() : void {
 		if( $this->drv !== false ) {
 			$this->drv->disconnect();
 		}

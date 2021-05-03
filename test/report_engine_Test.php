@@ -4,7 +4,7 @@
  * expected calculated summaries after our report engine has transformed the
  * data.
  */
-class Report_Engine_Test extends PHPUnit_Framework_TestCase {
+class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * @group nonlocal

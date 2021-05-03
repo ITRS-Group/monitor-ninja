@@ -6,7 +6,7 @@
  * @author  op5
  * @license GPL
  */
-class Toolbar_Test extends PHPUnit_Framework_TestCase {
+class Toolbar_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_toolbar_title_escaping () {
 		$toolbar = new Toolbar_Controller("<script>alert(1)</script>");

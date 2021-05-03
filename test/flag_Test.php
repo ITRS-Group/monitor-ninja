@@ -16,16 +16,16 @@ class SouthWest_Hospital {
 /**
  * Test deprecation of methods
  */
-class Flag_Test extends PHPUnit_Framework_TestCase {
+class Flag_Test extends \PHPUnit\Framework\TestCase {
 
 	const DEPRECATION_ENV_VAR = 'OP5_NINJA_DEPRECATION_SHOULD_EXIT';
 
-	protected function setup() {
+	protected function setUp() : void {
 		$_SESSION = array();
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
 	}
 
-	protected function teardown() {
+	protected function tearDown() : void {
 		$_SESSION = array();
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
 		op5objstore::instance()->mock_clear();
@@ -40,10 +40,10 @@ class Flag_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9199
-	 * @expectedException DeprecationException
-	 * @expectedExceptionMessage DEPRECATION: 'SouthWest_Hospital::write_budget_for_1984' is deprecated and should not be executed: It is 1987 now, you are late
 	 */
 	public function test_default_env_enabled_should_throw_exception() {
+		$this->expectException('DeprecationException');
+		$this->expectExceptionMessage("DEPRECATION: 'SouthWest_Hospital::write_budget_for_1984' is deprecated and should not be executed: It is 1987 now, you are late");
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'=1'));
 		$this->assertSame(true, flag::deprecation_kills());
 		SouthWest_Hospital::write_budget_for_1984();
@@ -51,11 +51,11 @@ class Flag_Test extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @group MON-9199
-	 * @expectedException DeprecationException
-	 * @expectedExceptionMessage DEPRECATION: 'User_Model::__get' is deprecated and should not be executed: Backwards-compatibility after op5user => User_Model
 	 */
 	public function test_user_model_fails_if_deprecation_is_not_wanted() {
 		// now we just test that our dev environment actually has the
+		$this->expectException('DeprecationException');
+		$this->expectExceptionMessage("DEPRECATION: 'User_Model::__get' is deprecated and should not be executed: Backwards-compatibility after op5user => User_Model");
 		// possibility to die if we don't want to tolerate deprecations
 		// when working with Ninja
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'=1'));

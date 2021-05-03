@@ -4,7 +4,7 @@
  * @author     op5
  * @license    GPL
  */
-class ExpParser_SearchFilter_Test extends PHPUnit_Framework_TestCase {
+class ExpParser_SearchFilter_Test extends \PHPUnit\Framework\TestCase {
 	/* ******
 	 * Test correct simple queries for table access
 	 */

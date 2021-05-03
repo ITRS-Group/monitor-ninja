@@ -4,8 +4,8 @@
  * @author     op5
  * @license    GPL
  */
-class Livestatus_Test extends PHPUnit_Framework_TestCase {
-    public function setUp() {
+class Livestatus_Test extends \PHPUnit\Framework\TestCase {
+    public function setUp() : void {
 		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
         $this->ls = Livestatus::instance();
         $this->assertTrue(is_object($this->ls), 'created livestatus object');

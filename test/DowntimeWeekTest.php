@@ -8,7 +8,7 @@ function get_week_mock($stepping, $dow = array(MONDAY)) {
 	return $mock;
 }
 
-class Downtime_Week_Test extends PHPUnit_Framework_TestCase {
+class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_week_interval() should evaluate to true if scheduled
 	 * @group recurring_downtime

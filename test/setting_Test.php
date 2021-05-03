@@ -1,6 +1,6 @@
 <?php
 
-class Setting_Test extends PHPUnit_Framework_TestCase {
+class Setting_Test extends \PHPUnit\Framework\TestCase {
 
 	/* Typename of the setting used in tests */
 	private static $type = 'dora.the.explorer';
@@ -8,7 +8,7 @@ class Setting_Test extends PHPUnit_Framework_TestCase {
 	/* Typename of the default setting used in tests */
 	private static $default_type = 'this.is.ma.default';
 
-	public static function tearDownAfterClass () {
+	public static function tearDownAfterClass() : void {
 
 		$set = SettingPool_Model::all()
 			->reduce_by('type', self::$type, '=');
@@ -60,6 +60,7 @@ class Setting_Test extends PHPUnit_Framework_TestCase {
 		$setting->set_page($page);
 		$setting->set_type(self::$default_type);
 		$setting->save();
+		$this->assertEquals($setting->get_setting(), $value);
 
 	}
 

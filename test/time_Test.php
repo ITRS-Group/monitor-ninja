@@ -3,7 +3,7 @@
 /**
  * Test time helper
  */
-class Time_Test extends PHPUnit_Framework_TestCase {
+class Time_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_to_string_zero () {
 		$this->assertEquals('now', time::to_string(0));

@@ -1,7 +1,7 @@
 <?php
 require_once ("op5/mayi.php");
 
-class MayITest extends PHPUnit_Framework_TestCase {
+class MayITest extends \PHPUnit\Framework\TestCase {
 	public function test_is_subset_proper_subset() {
 		$this->assertTrue(op5MayI::is_subset("a.b:c.d", "a:c"));
 		$this->assertTrue(op5MayI::is_subset("abc:def", ":"), ' everything is a subset of (root)');

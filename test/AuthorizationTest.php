@@ -4,10 +4,10 @@ require_once "op5/objstore.php";
 require_once "op5/config.php";
 require_once "op5/auth/Authorization.php";
 
-class AuthorizationTest extends PHPUnit_Framework_TestCase {
+class AuthorizationTest extends \PHPUnit\Framework\TestCase {
 	private $az;
 
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth_groups' => array(
@@ -36,7 +36,7 @@ class AuthorizationTest extends PHPUnit_Framework_TestCase {
 		$this->az = op5Authorization::factory();
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 	}
 

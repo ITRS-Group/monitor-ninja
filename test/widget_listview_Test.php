@@ -1,8 +1,8 @@
 <?php
 
-class Widget_Listview_Test extends PHPUnit_Framework_TestCase {
+class Widget_Listview_Test extends \PHPUnit\Framework\TestCase {
 
-	protected function setUp() {
+	protected function setUp() : void {
 
 		$widget_model = new Ninja_Widget_Model();
 		$widget_model->set_name('listview');
@@ -19,7 +19,7 @@ class Widget_Listview_Test extends PHPUnit_Framework_TestCase {
 
 	public function test_options_is_array_of_option_instances () {
 		$options = $this->widget->options();
-		$this->assertInternalType('array', $options);
+		$this->assertIsArray($options);
 		$this->assertContainsOnlyInstancesOf('option', $options);
 	}
 

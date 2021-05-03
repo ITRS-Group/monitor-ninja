@@ -3,11 +3,11 @@
 require_once "op5/config.php";
 require_once "op5/objstore.php";
 
-class ConfigTest extends PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
 	const TEST_ENV_VAR = 'OP5_TURTLES_PURPLE_NAME';
 
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->config = new op5config(array(
 			"basepath" => __DIR__."/fixtures"
@@ -16,7 +16,7 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
 	}
 
-	protected function teardown()
+	protected function tearDown() : void
 	{
 		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
 	}

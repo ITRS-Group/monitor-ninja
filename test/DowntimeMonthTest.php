@@ -11,7 +11,7 @@ function get_month_mock($stepping, $occurrence = FIRST, $dow = MONDAY) {
 /**
  * Class Downtime_Month_Test
  */
-class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
+class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_month_interval() should evaluate to true if the given month is scheduled
 	 * @group recurring_downtime
@@ -145,7 +145,7 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 		$mock = get_month_mock(3, 'THIRST', FRIDAY);
 		$schedule = new RecurringDowntime($mock);
 
-		$this->setExpectedException('UnexpectedValueException');
+		$this->expectException('UnexpectedValueException');
 		$schedule->match_day_of_month($schedule->start);
 	}
 
@@ -157,7 +157,7 @@ class Downtime_Month_Test extends PHPUnit_Framework_TestCase {
 		$mock = get_month_mock(3, FIRST, 'SATURMON');
 		$schedule = new RecurringDowntime($mock);
 
-		$this->setExpectedException('UnexpectedValueException');
+		$this->expectException('UnexpectedValueException');
 		$schedule->match_day_of_month($schedule->start);
 	}
 }

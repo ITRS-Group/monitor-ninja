@@ -1,6 +1,6 @@
 <?php
 
-class TestSocketMock extends PHPUnit_Framework_TestCase {
+class TestSocketMock extends \PHPUnit\Framework\TestCase {
 
 	private $procH;
 	private $pipes;
@@ -71,7 +71,7 @@ class TestSocketMock extends PHPUnit_Framework_TestCase {
 		$this->assertSame("Banana", $response);
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		foreach($this->pipes as $pipe) {
 			fclose($pipe);
 		}

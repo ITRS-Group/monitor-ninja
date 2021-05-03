@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class Clipped_Number_Test extends PHPUnit_Framework_TestCase {
+class Clipped_Number_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_hundreds_no_prefixing () {
 		$string = text::clipped_number(500);
@@ -52,7 +52,7 @@ class Clipped_Number_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function test_invalid_divisor () {
-		$this->setExpectedException('InvalidArgumentException');
+		$this->expectException('InvalidArgumentException');
 		$string = text::clipped_number(PHP_INT_MAX, 3, 0);
 	}
 

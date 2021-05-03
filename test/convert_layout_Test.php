@@ -6,11 +6,11 @@
  * @author  op5
  * @license GPL
  */
-class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
+class Convert_Layout_Test extends \PHPUnit\Framework\TestCase {
 
 	private $mock_data_path = false;
 
-	protected function setUp() {
+	protected function setUp() : void {
 		op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 			'auth' => array(
 				'common' => array(
@@ -104,7 +104,7 @@ class Convert_Layout_Test extends PHPUnit_Framework_TestCase {
 		), __FUNCTION__);
 	}
 
-	protected function tearDown() {
+	protected function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		unlink($this->mock_data_path);
 		$this->mock_data_path = false;

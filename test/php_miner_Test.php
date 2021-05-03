@@ -1,6 +1,6 @@
 <?php
 require_once ('op5/ninja_sdk/php_miner.php');
-class php_miner_Test extends PHPUnit_Framework_TestCase {
+class php_miner_Test extends \PHPUnit\Framework\TestCase {
 	public function test_class_function() {
 		$content = <<<'EOF'
 <?php

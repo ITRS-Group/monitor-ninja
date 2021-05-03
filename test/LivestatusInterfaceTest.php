@@ -64,7 +64,7 @@ class mock_livestatus_connection extends op5livestatus_connection {
 	}
 }
 
-class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
+class LivestatusInterfaceTest extends \PHPUnit\Framework\TestCase
 {
 	public $ls;
 	public $lsconn;
@@ -72,14 +72,14 @@ class LivestatusInterfaceTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Setup mock LDAP enviornment
 	 */
-	public function setUp() {
+	public function setUp() : void {
 		$this->ls = new op5livestatus(new mock_livestatus_connection($this));
 	}
 
 	/**
 	 * Shut down mock LDAP environment
 	 */
-	public function tearDown() {
+	public function tearDown() : void {
 		unset($this->ls); /* Kill circular references */
 		unset($this->lsconn); /* Kill circular references */
 	}

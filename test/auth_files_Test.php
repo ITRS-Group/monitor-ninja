@@ -8,13 +8,13 @@ require_once "op5/auth/Authorization.php";
  * Ensures the validity of the etc/auth* files, and that they are up to date,
  * through cross referencing with the auth code in Ninja.
  */
-class AuthFilesTest extends PHPUnit_Framework_TestCase {
+class AuthFilesTest extends \PHPUnit\Framework\TestCase {
 	private $tmp_auth_groups_file;
 	private $tmp_auth_file;
 	private $preexisting_rights = array();
 	private $non_permissive_rights = array();
 
-	public function setUp() {
+	public function setUp() : void {
 		$this->tmp_auth_groups_file = __DIR__.'/auth_groups.yml';
 		$copy_result = copy(__DIR__.'/../etc/auth_groups.yml', $this->tmp_auth_groups_file);
 		assert($copy_result == true);
@@ -110,7 +110,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		$unlink_result = unlink($this->tmp_auth_groups_file);
 		assert($unlink_result == true);
@@ -336,9 +336,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	public function test_migrate_auth_script_has_no_internal_duplicates() {
 		// the migrate auth script will execute directly.. sigh :)
 		require __DIR__."/../install_scripts/migrate_auth.php";
-		$this->assertInternalType("array", $new_rights,
-			"Failed a safety check"
-		);
+		$this->assertIsArray($new_rights, "Failed a safety check");
 		$new_rights = $this->flatten_new_rights($new_rights);
 		$this->assertEquals(
 			array(),
@@ -354,9 +352,7 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	public function test_migrate_auth_script_does_not_forget_any_rights() {
 		// the migrate auth script will execute directly.. sigh :)
 		require __DIR__."/../install_scripts/migrate_auth.php";
-		$this->assertInternalType("array", $new_rights,
-			"Failed a safety check"
-		);
+		$this->assertIsArray($new_rights, "Failed a safety check");
 
 		$all_rights = array_merge($this->preexisting_rights, $this->flatten_new_rights($new_rights), $this->non_permissive_rights);
 

@@ -1,5 +1,5 @@
 <?php
-class Menu_Test extends PHPUnit_Framework_TestCase {
+class Menu_Test extends \PHPUnit\Framework\TestCase {
 
   /**
    * Test that the explicit order is enforced no matter insertion

@@ -34,11 +34,11 @@ class MayIActorTest_EnvDumpConstraints implements op5MayI_Constraints {
 		return $this->result;
 	}
 }
-class MayIActorTest extends PHPUnit_Framework_TestCase {
+class MayIActorTest extends \PHPUnit\Framework\TestCase {
 	public static $config = array ();
 
 	/* Set up may_i configuration enviornment to runt tests within */
-	public static function setUpBeforeClass() {
+	public static function setUpBeforeClass() : void {
 		/* Make sure we have control over all mockups */
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add('op5config',
@@ -46,12 +46,12 @@ class MayIActorTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/* Clean up */
-	public static function tearDownAfterClass() {
+	public static function tearDownAfterClass() : void {
 		/* Make sure we leave everything untouched */
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 	}
-	public function setUp() {
+	public function setUp() : void {
 		/* Make sure we start from scratch */
 		op5objstore::instance()->clear();
 	}

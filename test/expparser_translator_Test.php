@@ -4,10 +4,10 @@
  * @author     op5
  * @license    GPL
  */
-class ExpParser_Translator_Test extends PHPUnit_Framework_TestCase {
+class ExpParser_Translator_Test extends \PHPUnit\Framework\TestCase {
 	protected $controller = false; /* Controller to test */
 
-	public function setUp() {
+	public function setUp() : void {
 		global $_SESSION;
 		$_SESSION = array();
 

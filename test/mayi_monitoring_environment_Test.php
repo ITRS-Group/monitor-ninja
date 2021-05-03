@@ -11,7 +11,7 @@ class TestActor implements op5MayI_Actor {
 	}
 }
 
-class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
+class MayI_monitoring_environemnt_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The virtual user configuration
@@ -123,14 +123,14 @@ class MayI_monitoring_environemnt_Test extends PHPUnit_Framework_TestCase {
 	/**
 	 * Make sure the enviornment is clean, and livestatus is mocked
 	 */
-	public function setUp() {
+	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 	}
 	/**
 	 * Remove mock environment
 	 */
-	public function tearDown() {
+	public function tearDown() : void {
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->clear();
 	}

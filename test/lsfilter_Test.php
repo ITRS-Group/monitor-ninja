@@ -4,7 +4,7 @@
  * @author     op5
  * @license    GPL
 */
-class LSFilter_Test extends PHPUnit_Framework_TestCase {
+class LSFilter_Test extends \PHPUnit\Framework\TestCase {
 
 	/*
 	 * Test generation of queries...
@@ -169,16 +169,16 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	 * Test parse fail
 	 */
 	/**
-	 * @expectedException LSFilterException
 	 */
 	public function test_missing_end_parentisis() {
+		$this->expectException('LSFilterException');
 		ObjectPool_Model::get_by_query('[hosts] (all');
 	}
 
 	/**
-	 * @expectedException LSFilterException
 	 */
 	public function test_extra_end_parentisis() {
+		$this->expectException('LSFilterException');
 		$set = ObjectPool_Model::get_by_query('[hosts] (all))');
 	}
 
@@ -198,9 +198,9 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException ORMException
 	 */
 	public function test_nonexisting_tables() {
+		$this->expectException('ORMException');
 		ObjectPool_Model::get_by_query("[nonexisting] all");
 	}
 
@@ -582,9 +582,9 @@ class LSFilter_Test extends PHPUnit_Framework_TestCase {
 
 	// invalid/unparsable date texts should not be accepted (bug #9079)
 	/**
-	 * @expectedException ORMException
 	 */
 	public function test_ls_op_date_invalid_text() {
+		$this->expectException('ORMException');
 		$this->run_visitor(
 			"[hosts] last_check = date(\"four score and seven years ago\")",
 			new LivestatusFilterBuilderVisitor(function($column) {return $column;}),

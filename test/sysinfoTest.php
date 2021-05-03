@@ -1,7 +1,7 @@
 <?php
 require_once ("op5/objstore.php");
 
-class SysinfoTest extends PHPUnit_Framework_TestCase {
+class SysinfoTest extends \PHPUnit\Framework\TestCase {
 	private $si;
 	private $config = array (
 		'hosts' => array (array ('name' => 'hstA'),array ('name' => 'hstB'),
@@ -10,12 +10,12 @@ class SysinfoTest extends PHPUnit_Framework_TestCase {
 			array ('description' => 'svcB'),array ('description' => 'svcC'),
 			array ('description' => 'svcD'),array ('description' => 'svcE'),
 			array ('description' => 'svcF')));
-	public function setUp() {
+	public function setUp() : void {
 		$objstore = op5objstore::instance();
 		$objstore->mock_add('op5livestatus', new MockLivestatus($this->config));
 		$this->si = new op5sysinfo();
 	}
-	public function tearDown() {
+	public function tearDown() : void {
 		$objstore = op5objstore::instance();
 		$objstore->mock_clear();
 		$objstore->clear();

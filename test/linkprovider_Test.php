@@ -15,9 +15,9 @@ class LinkProviderTestClass_Controller {
 	private function priv () {}
 }
 
-class LinkProvider_Test extends PHPUnit_Framework_TestCase {
+class LinkProvider_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setup () {
+	public function setUp () : void {
 		$this->lp = new LinkProvider('https', '192.168.0.1', 'ninja/index.php');
 	}
 
@@ -58,42 +58,42 @@ class LinkProvider_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @expectedException LinkProviderException
-	 * @expectedExceptionMessage Cannot create URL to unknown controller 'flurpbar'
 	 */
 	public function test_nonexisting_class () {
+		$this->expectException('LinkProviderException');
+		$this->expectExceptionMessage("Cannot create URL to unknown controller 'flurpbar'");
 		$url = $this->lp->get_url("flurpbar");
 	}
 
 	/**
-	 * @expectedException LinkProviderException
-	 * @expectedExceptionMessage Cannot create URL to unknown controller 'LinkProvider'
 	 */
 	public function test_non_controller_class () {
+		$this->expectException('LinkProviderException');
+		$this->expectExceptionMessage("Cannot create URL to unknown controller 'LinkProvider'");
 		$url = $this->lp->get_url("LinkProvider", "get_url");
 	}
 
 	/**
-	 * @expectedException LinkProviderException
-	 * @expectedExceptionMessage Cannot create URL to restricted method 'priv' on class 'linkprovidertestclass_Controller'
 	 */
 	public function test_private_method () {
+		$this->expectException('LinkProviderException');
+		$this->expectExceptionMessage("Cannot create URL to restricted method 'priv' on class 'linkprovidertestclass_Controller'");
 		$url = $this->lp->get_url("linkprovidertestclass", "priv");
 	}
 
 	/**
-	 * @expectedException LinkProviderException
-	 * @expectedExceptionMessage Cannot create URL to restricted method '_hidden' on class 'linkprovidertestclass_Controller'
 	 */
 	public function test_kohana_convention_inaccessable_method () {
+		$this->expectException('LinkProviderException');
+		$this->expectExceptionMessage("Cannot create URL to restricted method '_hidden' on class 'linkprovidertestclass_Controller'");
 		$url = $this->lp->get_url("linkprovidertestclass", "_hidden");
 	}
 
 	/**
-	 * @expectedException LinkProviderException
-	 * @expectedExceptionMessage Cannot create URL to unknown method 'flurp' on class 'linkprovidertestclass_Controller'
 	 */
 	public function test_no_such_method () {
+		$this->expectException('LinkProviderException');
+		$this->expectExceptionMessage("Cannot create URL to unknown method 'flurp' on class 'linkprovidertestclass_Controller'");
 		$url = $this->lp->get_url("linkprovidertestclass", "flurp");
 	}
 

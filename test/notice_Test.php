@@ -3,23 +3,23 @@
 /**
  * Make sure NoticeManager interacts properly with the Notice models
  */
-class Notice_Test extends PHPUnit_Framework_TestCase {
+class Notice_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setUp() {
+	public function setUp() : void {
 		$this->nm = new NoticeManager_Model();
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		unset($this->nm);
 	}
 
 	public function test_manager_does_not_accept_string() {
-		$this->setExpectedException('NoticeManager_Exception');
+		$this->expectException('NoticeManager_Exception');
 		$this->nm[] = 'trigger error plz';
 	}
 
 	public function test_notice_is_a_string() {
-		$this->setExpectedException('NoticeException');
+		$this->expectException('NoticeException');
 		new InformationNotice_Model(3);
 	}
 

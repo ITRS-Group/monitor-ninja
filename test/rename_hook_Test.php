@@ -3,7 +3,7 @@
 /**
  * Ensure state before and after objects' name changes.
  */
-class Rename_hook_Test extends PHPUnit_Framework_TestCase {
+class Rename_hook_Test extends \PHPUnit\Framework\TestCase {
 
 	function test_rename_host_in_host_report() {
 		$report = Report_options::setup_options_obj('avail', array(

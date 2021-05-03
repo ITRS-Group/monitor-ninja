@@ -3,7 +3,7 @@
 require_once "op5/auth/AuthDriver_Apache.php";
 require_once "op5/objstore.php";
 
-class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
+class AuthDriverApacheTest extends \PHPUnit\Framework\TestCase
 {
 	/**
 	 * Device under test
@@ -100,7 +100,7 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 	/**
 	 * Make sure all tests are isolated
 	 */
-	function setUp() {
+	function setUp() : void {
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_clear();
 		op5objstore::instance()->mock_add('op5log', new MockLog(true));
@@ -108,7 +108,7 @@ class AuthDriverApacheTest extends PHPUnit_Framework_TestCase
 		$this->init_config('Apa');
 	}
 
-	public function tearDown() {
+	public function tearDown() : void {
 		unset($this->dut);
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_clear();
