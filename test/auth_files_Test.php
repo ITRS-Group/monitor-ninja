@@ -17,10 +17,10 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		$this->tmp_auth_groups_file = __DIR__.'/auth_groups.yml';
 		$copy_result = copy(__DIR__.'/../etc/auth_groups.yml', $this->tmp_auth_groups_file);
-		assert('$copy_result == true');
+		assert($copy_result == true);
 		$this->tmp_auth_file = __DIR__.'/auth.yml';
 		$copy_result = copy(__DIR__.'/../etc/auth.yml', $this->tmp_auth_file);
-		assert('$copy_result == true');
+		assert($copy_result == true);
 
 		// these are the rights that existed from before migrate_auth.php
 		// ever existed
@@ -113,9 +113,9 @@ class AuthFilesTest extends PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		op5objstore::instance()->mock_clear();
 		$unlink_result = unlink($this->tmp_auth_groups_file);
-		assert('$unlink_result == true');
+		assert($unlink_result == true);
 		$unlink_result = unlink($this->tmp_auth_file);
-		assert('$unlink_result == true');
+		assert($unlink_result == true);
 	}
 
 	/**

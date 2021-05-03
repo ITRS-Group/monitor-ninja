@@ -24,8 +24,10 @@ class mock_queryhandler_response extends op5queryhandler {
         // it makes the test more verbose and less focused on the real
 		// meaning of the test
 		$command = preg_replace("/^@command run /", null, $command);
-		$command_name = array_shift(explode(';', $command));
-		$command_name = array_pop(explode(' ', $command_name));
+		$cmdlist = explode(';', $command);
+		$command_name = array_shift($cmdlist);
+		$cmdwords = explode(' ', $command_name);
+		$command_name = array_pop($cmdwords);
 
 		$this->history[] = $command;
 		if (isset($this->outputs[$command_name]))

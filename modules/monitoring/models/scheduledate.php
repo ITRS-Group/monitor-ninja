@@ -365,13 +365,15 @@ class ScheduleDate_Model extends Model {
 	static public function time_to_seconds($time)
 	{
 		$seconds = 0;
-		$parts = explode(':', $time);
-		if (isset($parts[0]))
-			$seconds += $parts[0] * 3600;
-		if (isset($parts[1]))
-			$seconds += $parts[1] * 60;
-		if (isset($parts[2]))
-			$seconds += $parts[2];
+		if (is_string($time)) {
+			$parts = explode(':', $time);
+			if (isset($parts[0]))
+				$seconds += $parts[0] * 3600;
+			if (isset($parts[1]))
+				$seconds += $parts[1] * 60;
+			if (isset($parts[2]))
+				$seconds += $parts[2];
+		}
 		return $seconds;
 	}
 

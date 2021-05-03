@@ -75,7 +75,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	*/
 	public static function setUpBeforeClass() {
 		system( __DIR__. '/env/ldap/slapd_mock_start.sh', $exit_code);
-		assert('$exit_code == 0');
+		assert($exit_code == 0);
 		op5objstore::instance()->mock_add( 'op5log', new MockLog() );
 	}
 
@@ -84,7 +84,7 @@ class AuthDriverLDAPTest extends PHPUnit_Framework_TestCase
 	 */
 	public static function tearDownAfterClass() {
 		system( __DIR__. '/env/ldap/slapd_mock_stop.sh', $exit_code);
-		assert('$exit_code == 0');
+		assert($exit_code == 0);
 		op5objstore::instance()->clear();
 		op5objstore::instance()->mock_clear();
 	}
