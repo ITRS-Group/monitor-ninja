@@ -65,7 +65,10 @@ Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: php-phpunit-PHPUnit
 
+# Note: openldap-servers is not available on EL8, so those RPM files are
+# manually copied onto our internal repo server, as this is for tests only.
 Requires: openldap-servers
+
 # For performance graph links on extinfo
 Requires: monitor-pnp
 
