@@ -62,6 +62,7 @@ module Mock
         tmpname = Dir::Tmpname.create(['-', '.']) {}
         @file = File.join(Dir.pwd, "ci_tmp_mock" + tmpname)
         FileUtils::mkdir_p File.dirname(@file)
+        ENV["ci_tmp_mock_file"] = @file
       end
       @mocked_classes.each {|real_class, blk|
         @data["MockedClasses"] << {"real_class" => real_class}.merge(blk)

@@ -1,6 +1,5 @@
 When /^I have these mocked (.*)$/ do |type, table|
   @mock.mock(type, table.hashes)
-  page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
 When /^these authpoints are denied$/ do |table|
@@ -41,8 +40,6 @@ When /^I am logged in$/ do
       "mock_class" => "MockMayI",
       "args" => {}
   })
-
-  page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
 When /^I am logged in as administrator$/ do
@@ -69,8 +66,6 @@ When /^I am logged in as administrator$/ do
     'groups' => ['admins'],
     'modules' => ['Default']
   }])
-
-  page.driver.headers = {'X-op5-mock' => @mock.file}
 
   steps %Q{
     When I am on the main page
@@ -110,8 +105,6 @@ When /^I have an administrator account$/ do
     'groups' => ['admins'],
     'modules' => ['Default']
   }])
-
-  page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
 Then /^I should see the mocked (.*)$/ do | type |
@@ -128,7 +121,6 @@ end
 
 Given /^I have no users configured$/ do
 	@mock.mock('users', [])
-	page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
 Given /^I have the default authentication module configured$/ do
@@ -140,7 +132,6 @@ Given /^I have the default authentication module configured$/ do
 			}
 		}
 	])
-	page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
 When /^I am logged in as "(.*)"$/ do |user|
@@ -167,8 +158,6 @@ When /^I am logged in as "(.*)"$/ do |user|
 		'groups' => ['admins'],
 		'modules' => ['Default']
 	}])
-
-	page.driver.headers = {'X-op5-mock' => @mock.file}
 
 	steps %Q{
 		When I am on the main page
@@ -303,10 +292,10 @@ Given /^I have an (.*) user group with all rights$/ do |group|
 			]
 		}
 	])
-	page.driver.headers = {'X-op5-mock' => @mock.file}
 end
 
 Before do |scenario|
+  ENV.delete("ci_tmp_mock_file")
   @mock = Mock::Mock.new
 end
 

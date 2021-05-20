@@ -4,6 +4,7 @@ require 'capybara/rspec'
 require 'capybara/cucumber'
 require 'selenium-webdriver'
 require 'webdrivers'
+require 'billy/capybara/cucumber'
 require 'syslog'
 require 'fileutils'
 
@@ -16,24 +17,43 @@ if ENV['TEST_ENV_NUMBER']
   end
 end
 
-
-Capybara.register_driver :selenium_chrome_headless do |app|
-  options = Selenium::WebDriver::Chrome::Options.new(
-    args: %w[
-      headless
-      no-sandbox
-      disable-gpu
-      --ignore-certificate-errors
-      --blink-settings=imagesEnabled=false
-      --window-size=1920,1080
-    ]
-  )
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+Billy.configure do |c|
+  c.cache = false
+  c.logger.level = "error"
+  c.before_handle_request = proc { |method, url, headers, body|
+    if ENV["ci_tmp_mock_file"]
+      headers['X-op5-mock'] = ENV["ci_tmp_mock_file"]
+    end
+    [method, url, headers, body]
+  }
 end
 
-Capybara.default_driver = :selenium_chrome_headless
-Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.register_driver :selenium_chrome_headless_billy do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--ignore-certificate-errors')
+  options.add_argument('--blink-settings=imagesEnabled=false')
+  options.add_argument('--window-size=1920,1080')
+  options.add_argument('--enable-features=NetworkService,NetworkServiceInProcess')
+  options.add_argument("--proxy-server=http://#{Billy.proxy.host}:#{Billy.proxy.port}")
+  options.add_argument("--proxy-bypass-list=<-loopback>")
 
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome
+  capabilities['acceptInsecureCerts'] = true
+
+  Capybara::Selenium::Driver.new(
+    app,
+    browser: :chrome,
+    desired_capabilities: capabilities,
+    options: options,
+    clear_local_storage: true,
+    clear_session_storage: true
+  )
+end
+
+Capybara.default_driver = :selenium_chrome_headless_billy
+Capybara.javascript_driver = :selenium_chrome_headless_billy
 Capybara.run_server = false
 Capybara.default_max_wait_time = 30
 Capybara.match = :prefer_exact

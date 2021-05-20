@@ -37,6 +37,7 @@ post:
     gem install cliver --no-document
     gem install webdrivers
     gem install selenium-webdriver
+    gem install puffing-billy --no-document
     gem install xpath
 
     ulimit -c unlimited
