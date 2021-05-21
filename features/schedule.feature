@@ -56,6 +56,7 @@ Feature: Scheduled reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 
 	@reports
@@ -71,6 +72,7 @@ Feature: Scheduled reports
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
 		And I click "Save"
+		And I wait for 1 second
 		Then I shouldn't see "There are no scheduled availability reports"
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
@@ -103,6 +105,7 @@ Feature: Scheduled reports
 		Then "Filename" should contain "saved_test_report_Monthly.pdf"
 		When I enter "dev@op5.com" into "Recipients"
 		And I click "Save"
+		And I wait for 1 second
 		Then I should see "saved_test_report_Monthly.pdf"
 		And I shouldn't see "&nbsp;"
 		# Description comes before persistent path, so that's where we'll click
@@ -121,7 +124,7 @@ Feature: Scheduled reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "objects" should have option "LinuxServers"
-		When I click "Delete"
+		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
 		Then "objects_tmp" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
@@ -154,6 +157,7 @@ Feature: Scheduled reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 
 	@reports
@@ -172,6 +176,7 @@ Feature: Scheduled reports
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
 		And I click "Save"
+		And I wait for 1 second
 		Then I shouldn't see "There are no scheduled SLA reports"
 		And I should see "saved_test_report_Monthly.pdf"
 		And I should see "dev@op5.com"
@@ -200,7 +205,7 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 		And I should see "saved_test_report"
-		When I click "Delete scheduled report" on the row where "Report" is "saved test report"
+		When I click "Delete scheduled report" and confirm popup on the row where "Report" is "saved test report"
 		Then I should see "Schedule deleted"
 		And I should see "There are no scheduled SLA reports"
 		When I hover over the "Report" menu
@@ -220,7 +225,7 @@ Feature: Scheduled reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "objects" should have option "LinuxServers"
-		When I click "Delete"
+		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
 		Then "objects_tmp" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
@@ -251,6 +256,7 @@ Feature: Scheduled reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 
 	@reports
@@ -267,6 +273,7 @@ Feature: Scheduled reports
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
 		And I click "Save"
+		And I wait for 1 second
 		Then I shouldn't see "There are no scheduled alert summary reports"
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
@@ -294,7 +301,7 @@ Feature: Scheduled reports
 		When I select "saved test report"
 		Then "Custom" should be checked
 		And "objects" should have option "LinuxServers"
-		When I click "Delete"
+		When I click "Delete" and confirm popup
 		Then "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "LinuxServers"
 

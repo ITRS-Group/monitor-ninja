@@ -23,12 +23,12 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-10" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-10" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-10" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-10" into "end_date"
 		And I select "Weekly on Thursday" from "recurrence_select"
-		And I enter "weekly recurring downtime" into "comment"
+		And I clear and enter "weekly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "weekly recurring downtime"
@@ -43,7 +43,7 @@ Feature: Recurring downtime
 
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "weekly recurring downtime"
 
 	@configuration
@@ -55,12 +55,12 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-10" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-10" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-10" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-10" into "end_date"
 		And I select "Monthly on the 2nd Thursday" from "recurrence_select"
-		And I enter "monthly recurring downtime" into "comment"
+		And I clear and enter "monthly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "monthly recurring downtime"
@@ -75,7 +75,7 @@ Feature: Recurring downtime
 
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "monthly recurring downtime"
 
 
@@ -88,12 +88,12 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-31" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-31" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-31" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-31" into "end_date"
 		And I select "Monthly on the last day" from "recurrence_select"
-		And I enter "monthly last day recurring downtime" into "comment"
+		And I clear and enter "monthly last day recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "monthly last day recurring downtime"
@@ -108,7 +108,7 @@ Feature: Recurring downtime
 
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "monthly last day recurring downtime"
 
 
@@ -121,14 +121,14 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-31" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-31" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-31" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-31" into "end_date"
 		And I select "Custom recurrence" from "recurrence_select"
 		And I select "Day" from "recurrence_text"
-		And I enter "2019-05-10" into "finite_ends_value"
-		And I enter "custom daily recurring downtime" into "comment"
+		And I clear and enter "2019-05-10" into "finite_ends_value"
+		And I clear and enter "custom daily recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom daily recurring downtime"
@@ -143,7 +143,7 @@ Feature: Recurring downtime
 
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom daily recurring downtime"
 
 	@configuration
@@ -155,14 +155,14 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-31" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-31" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-31" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-31" into "end_date"
 		And I select "Custom recurrence" from "recurrence_select"
 		And I select "Year" from "recurrence_text"
-		And I enter "2019-05-10" into "finite_ends_value"
-		And I enter "custom yearly recurring downtime" into "comment"
+		And I clear and enter "2019-05-10" into "finite_ends_value"
+		And I clear and enter "custom yearly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom yearly recurring downtime"
@@ -177,7 +177,7 @@ Feature: Recurring downtime
 
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom yearly recurring downtime"
 
 	@configuration
@@ -189,15 +189,15 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-31" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-31" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-31" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-31" into "end_date"
 		And I select "Custom recurrence" from "recurrence_select"
-		And I enter "5" into "recurrence_no"
+		And I clear and enter "5" into "recurrence_no"
 		And I select "Month" from "recurrence_text"
-		And I enter "2019-05-10" into "finite_ends_value"
-		And I enter "custom monthly recurring downtime" into "comment"
+		And I clear and enter "2019-05-10" into "finite_ends_value"
+		And I clear and enter "custom monthly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom monthly recurring downtime"
@@ -212,7 +212,7 @@ Feature: Recurring downtime
 
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom monthly recurring downtime"
 
 	@configuration
@@ -224,11 +224,11 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-05-31" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-05-31" into "end_date"
-		And I enter "no repeat recurrence recurring downtime" into "comment"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-05-31" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-05-31" into "end_date"
+		And I clear and enter "no repeat recurrence recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "no repeat recurrence recurring downtime"
@@ -242,7 +242,7 @@ Feature: Recurring downtime
 		Then I should see "no repeat recurrence recurring downtime"
 		# thank batman there's only a single row, don't know how to select
 		# it otherwise
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "no repeat recurrence recurring downtime"
 
 	@configuration
@@ -254,12 +254,12 @@ Feature: Recurring downtime
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
 		And I select "switch32" from the multiselect "objects_tmp"
-		And I enter "10:00" into "start_time"
-		And I enter "2018-12-03" into "start_date"
-		And I enter "12:00" into "end_time"
-		And I enter "2018-12-03" into "end_date"
+		And I clear and enter "10:00" into "start_time"
+		And I clear and enter "2018-12-03" into "start_date"
+		And I clear and enter "12:00" into "end_time"
+		And I clear and enter "2018-12-03" into "end_date"
 		And I select "Weekly on Monday" from "recurrence_select"
-		And I enter "weekly recurring downtime on monday starts at 2018-12-03" into "comment"
+		And I clear and enter "weekly recurring downtime on monday starts at 2018-12-03" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "weekly recurring downtime on monday starts at 2018-12-03"
@@ -273,6 +273,5 @@ Feature: Recurring downtime
 		And I hover over the "Downtimes" menu
 		And I click "Recurring Downtimes"
 		Then I should see "weekly recurring downtime on monday starts at 2018-12-03"
-		When I click "Delete schedule"
+		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "weekly recurring downtime on monday starts at 2018-12-03"
-	

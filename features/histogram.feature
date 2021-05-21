@@ -302,6 +302,7 @@ Feature: Histogram reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 
 	@configuration @reports
@@ -335,7 +336,7 @@ Feature: Histogram reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "objects" should have option "LinuxServers"
-		When I click "Delete"
+		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
 		Then "objects_tmp" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"

@@ -46,7 +46,7 @@ Feature: SLA reports
 		And I hover over the "SLA" menu
 		When I click "Create SLA Report"
 		And I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "Please select what objects to base the report on"
 		And I should see "Report Settings"
@@ -60,7 +60,7 @@ Feature: SLA reports
 		And I select "EmptyGroup" from the multiselect "objects_tmp"
 		Then "objects" should have option "EmptyGroup"
 		When I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "The groups you selected (EmptyGroup) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
@@ -76,7 +76,7 @@ Feature: SLA reports
 		And I select "empty" from the multiselect "objects_tmp"
 		Then "objects" should have option "empty"
 		When I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "The groups you selected (empty) had no members, so cannot create a report from them"
 		And I should see "Report Settings"
@@ -104,7 +104,7 @@ Feature: SLA reports
 		Then "objects" should have option "linux-server1"
 		When I enter "9" into "Jan"
 		And I select "Europe/Stockholm" from "report_timezone"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: linux-server1"
 		And I should see "Europe/Stockholm"
@@ -126,7 +126,7 @@ Feature: SLA reports
 		Then "objects" should have option "linux-server1"
 		And "objects" should have option "win-server1"
 		When I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for custom group"
 		And I should see "Group members"
@@ -150,7 +150,7 @@ Feature: SLA reports
 		And I select "linux-server1;PING" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1;PING"
 		When I enter "9.1" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: linux-server1;PING"
 		And I shouldn't see "System Load"
@@ -171,7 +171,7 @@ Feature: SLA reports
 		Then "objects" should have option "linux-server1;PING"
 		And "objects" should have option "linux-server1;System Load"
 		When I enter "9,1" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for custom group"
 		And I should see "Group members"
@@ -198,7 +198,7 @@ Feature: SLA reports
 		Then "objects" should have option "linux-server1;PING"
 		And "objects" should have option "linux-server2;System Load"
 		When I enter "9.99" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for custom group"
 		And I should see "Group members"
@@ -224,7 +224,7 @@ Feature: SLA reports
 		And I select "LinuxServers" from the multiselect "objects_tmp"
 		Then "objects" should have option "LinuxServers"
 		When I enter "9,99" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: LinuxServers"
 		And I should see "Group members"
@@ -249,7 +249,7 @@ Feature: SLA reports
 		Then "objects" should have option "LinuxServers"
 		And "objects" should have option "WindowsServers"
 		When I enter "99.999" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: LinuxServers"
 		And I should see "SLA breakdown for: WindowsServers"
@@ -276,7 +276,7 @@ Feature: SLA reports
 		Then "objects" should have option "LinuxServers"
 		And "objects" should have option "MixedGroup"
 		When I enter "99,999" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: LinuxServers"
 		And I should see "SLA breakdown for: MixedGroup"
@@ -302,7 +302,7 @@ Feature: SLA reports
 		And I select "pings" from the multiselect "objects_tmp"
 		Then "objects" should have option "pings"
 		When I enter "100" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: pings"
 		And I should see "Group members"
@@ -331,7 +331,7 @@ Feature: SLA reports
 		Then "objects" should have option "pings"
 		And "objects" should have option "empty"
 		When I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown for: pings"
 		And I should see "SLA breakdown for: empty"
@@ -362,7 +362,7 @@ Feature: SLA reports
 		And I select "2013" from "End year"
 		And I select "Mar" from "End month"
 		And I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		Then "Jan" should contain "9"
 		And "Feb" should contain "9"
 		And "Mar" should contain "9"
@@ -380,7 +380,7 @@ Feature: SLA reports
 		Then "objects" should have option "LinuxServers"
 		When I select "Last 12 months" from "Reporting period"
 		And I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I click "Show report"
 		Then I should see "SLA breakdown"
 		And I should see "Reporting period: Last 12 months"
@@ -406,7 +406,7 @@ Feature: SLA reports
 		# Toggle *everything*!
 		When I select "Last year" from "Reporting period"
 		And I enter "9" into "Jan"
-		And I click "Click to propagate this value to all months"
+		And I click "Click to propagate this value to all months" and confirm popup
 		And I select "workhours" from "Report time period"
 		And I uncheck "Down"
 		And I select "Average" from "SLA calculation method"
@@ -432,6 +432,7 @@ Feature: SLA reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 
 	@configuration @reports
@@ -486,6 +487,7 @@ Feature: SLA reports
 		Then I should see "SLA breakdown"
 		And I click "Save report"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 
 	@configuration @reports
@@ -503,12 +505,14 @@ Feature: SLA reports
 		When I view a "sla" report with these settings:
 		| report_type    | objects              | use_alias | months  |
 		| hostgroups     | WindowsServers       | 0         | 100     |
+		And I wait for ajax
 		And "Use alias" should be unchecked
 		When I click "Show report"
 		Then I should see "SLA breakdown"
 		And I click "Save report"
 		And I enter "test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
@@ -528,7 +532,7 @@ Feature: SLA reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "objects" should have option "WindowsServers"
-		When I click "Delete"
+		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
 		Then "objects_tmp" should have option "WindowsServers"
 		And "Saved reports" shouldn't have option "saved test report"

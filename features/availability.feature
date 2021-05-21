@@ -62,7 +62,6 @@ Feature: Availability reports
 		And I should see "Report Settings"
 
 	@reports
-	@unreliable
 	Scenario: Generate report on empty servicegroup
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -371,7 +370,7 @@ Feature: Availability reports
 		And I click "Show report"
 		Then I should see "Hostgroup breakdown"
 		And I should see "up as down, down, unreachable, undetermined"
-		And I shouldn't see "Up"
+		And I shouldn't see regex "\bUp\b"
 		And the "Down" column should be "100 %" on the row where "LinuxServers" is "linux-server1"
 		And the "Undetermined" column should be "100 %" on the row where "LinuxServers" is "linux-server2"
 		When I am on address "/index.php/avail/edit_settings?with_chrome=1&report_type=hostgroups&objects%5B0%5D=Linux+servers&host_filter_status%5B0%5D=1"
@@ -390,12 +389,12 @@ Feature: Availability reports
 		When I select "Servicegroups" from "Report type"
 		And I select "pings" from the multiselect "objects_tmp"
 		Then I should see "Ok"
-		And I shouldn't see "Up"
+		And I shouldn't see regex "\bUp\b"
 		When I click "Show report"
 		Then I should see "Servicegroup breakdown"
 		When I am on address "/index.php/avail/edit_settings?with_chrome=1&report_type=servicegroups&objects%5B0%5D=pings"
 		Then I should see "Ok"
-		And I shouldn't see "Up"
+		And I shouldn't see regex "\bUp\b"
 
 	@reports
 	Scenario: Save report with misc options
@@ -437,6 +436,7 @@ Feature: Availability reports
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 
 	@reports
@@ -484,7 +484,7 @@ Feature: Availability reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "objects" should have option "LinuxServers"
-		When I click "Delete"
+		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
 		Then "objects_tmp" should have option "LinuxServers"
 		And "Saved reports" shouldn't have option "saved test report"
@@ -517,6 +517,7 @@ Feature: Availability reports
 		And I click "Save report"
 		And I enter "test report1" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
@@ -552,6 +553,7 @@ Feature: Availability reports
 		When I click "Save report"
 		And I enter "Report_Last_31_days" into "report_name"
 		And I click "Save report" inside "#save_report_form"
+		And I wait for 2 seconds
 		Then I should see "Report was successfully saved"
 
 	Scenario: Edit Saved report - Edit Settings with Custom Reporting Period
@@ -605,6 +607,6 @@ Feature: Availability reports
 		Then I should see "workhours"
 		And I should see "2013-03-04"
 		And I should see "2013-03-10"
-		Then I should see trend graph have background color "rgb(161, 158, 149)"
+		And I should see trend graph have background color "rgb(161, 158, 149)"
 		And I should see trend graph have background color "transparent"
-		Then I should see trend graph have background color "rgb(170, 222, 83)"
+		And I should see trend graph have background color "rgb(170, 222, 83)"

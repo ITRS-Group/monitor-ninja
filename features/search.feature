@@ -11,10 +11,10 @@ Feature: Global search
 			| Räksmörgås |
 		And I search for "host   with"
 		Then I should see the search result:
-			| A host with spaces |
+			| A  host   with    spaces |
 		When I search for "    spa"
 		Then I should see the search result:
-			| A host with spaces |
+			| A  host   with    spaces |
 		When I click "A  host   with    spaces"
 		Then I should be on list view with filter '[services] host.name="A  host   with    spaces"'
 

@@ -69,8 +69,8 @@ After do |scenario|
 	  screen_dir = './screenshots'
 	end
 	Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
-	screenshot = File.join(screen_dir, "FAILED_#{@scenario_name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
-	screenshot_embed_filename = "./screenshots/FAILED_#{@scenario_name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
+	screenshot = File.join(screen_dir, "FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
+	screenshot_embed_filename = "./screenshots/FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
 	page.save_screenshot(screenshot, full: true)
 	embed screenshot_embed_filename, 'image/png'
   end
@@ -84,8 +84,12 @@ Before do |scenario|
     @scenario_name = scenario.scenario_outline.name
   when Cucumber::Core::Ast::Scenario
     @scenario_name = scenario.name
+  when Cucumber::Core::Ast::ExamplesTable::Row
+    @scenario_name = scenario.name
+  when Cucumber::Core::Test::Case
+    @scenario_name = scenario.name
   else
-    raise('Unhandled scenario class')
+    raise("Unhandled scenario class: #{scenario.source.last}")
   end
 end
 

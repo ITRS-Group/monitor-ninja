@@ -1,3 +1,5 @@
+require_relative '../support/wait_for_ajax'
+
 When /^Debug$/ do
   puts "URL: #{current_url}"
   puts "Path: #{current_path}"
@@ -68,7 +70,7 @@ When /^I doubleclick "([^"]*)" from "([^"]*)"$/ do |opt, sel|
 end
 
 When /^I doubleclick "([^"]*)"$/ do |opt|
-  find('*', :text => opt).trigger(:dblclick)
+  find('*', :text => opt).double_click
 end
 
 When /^I click the delete icon for comment (\d+)$/ do |comment_id|
@@ -86,6 +88,12 @@ end
 
 When /^I click "([^"]*)"$/ do |id|
   click_on id
+end
+
+When /^I click "([^"]*)" and confirm popup$/ do |id|
+  accept_alert do
+    click_on(id)
+  end
 end
 
 When /^I check "([^"]*)"$/ do |id|
@@ -114,6 +122,7 @@ end
 
 
 When /^I select "(.*)" from "([^"]*)"$/ do |opt, sel|
+  WaitForAjax.wait_for_ajax
   select(opt, :from => sel)
 end
 
@@ -131,6 +140,13 @@ end
 
 When /^I enter "([^"]*)" into "([^"]*)"$/ do |val, sel|
   fill_in(sel % @params, :with => val)
+end
+
+When /^I clear and enter "([^"]*)" into "([^"]*)"$/ do |val, sel|
+  # OK so this shouldn't be necessary, but whatever works.
+  fill_in(sel % @params, :with => '')
+  fill_in(sel % @params, :with => val)
+  find(:css, 'body').click
 end
 
 When(/^I attach "(.*?)" to "(.*?)"$/) do |filename, sel|
@@ -261,18 +277,22 @@ Then /^"([^"]*)" should be unchecked$/ do |id|
 end
 
 Then /^"([^"]*)" should be selected from "([^"]*)"$/ do |opt, sel|
+  WaitForAjax.wait_for_ajax
   page.should have_select(sel, :selected => opt)
 end
 
 Then /^"([^"]*)" shouldn't be selected from "([^"]*)"$/ do |opt, sel|
+  WaitForAjax.wait_for_ajax
   page.should have_no_select(sel, :selected => opt)
 end
 
 Then /^"([^"]*)" should have option "(.*)"$/ do |sel, opt|
+  WaitForAjax.wait_for_ajax
   page.should have_select(sel, :with_options => [opt])
 end
 
 Then /^"([^"]*)" shouldn't have option "(.*)"$/ do |sel, opt|
+  WaitForAjax.wait_for_ajax
   page.should_not have_select(sel, :with_options => [opt])
 end
 
@@ -332,6 +352,10 @@ end
 
 Then /^(?:I )?wait for "?(\d+)"? seconds?$/ do | arg1 |
 	sleep(Integer(arg1))
+end
+
+Then /^I wait for ajax$/ do
+  WaitForAjax.wait_for_ajax
 end
 
 When /^I click "(.*?)" inside "(.*?)"$/ do |arg1, arg2|

@@ -1,3 +1,5 @@
+require_relative '../support/wait_for_ajax'
+
 When /^I enter the time in (\d) minutes into "(.+)"$/ do |minutes, selector|
 	require('date')
 	fill_in(selector, :with => (Time.now + minutes.to_i * 60).strftime('%F %T'))
@@ -140,6 +142,7 @@ Then /^I should see an icon with title "([^\"]+)"$/ do |title|
 end
 
 When /I select "(.*)" from the multiselect "(.*)"$/ do |option, selector|
+  WaitForAjax.wait_for_ajax
   tmp_sel = find_field(find_field(selector)[:id].sub('[', '_tmp['))
   tmp_sel.select(option)
   page.execute_script("$('##{tmp_sel[:id].gsub('[', '\\\\\[').gsub(']', '\\\\\]')}').trigger('change');")
@@ -189,7 +192,7 @@ When /^I sort the filter result table by "(.*?)"$/ do |arg1|
   Synchronization::wait_until do
     page.evaluate_script('$.active') == 0
   end
-  page.find("div#filter_result table thead:first-child th[data-column=#{arg1}]").trigger(:click)
+  page.find("div#filter_result table thead.floating-header th[data-column=#{arg1}]").click()
 end
 
 Then /^I should see this status:$/ do |table|
@@ -224,5 +227,5 @@ Then /^The (.*?) row of the filter result table should contain "(.*?)"$/ do |pos
 end
 
 Then /^I should see trend graph have background color "([^\"]+)"$/ do |color|
-  page.find("div", '[style="background: #{color};"]', :visible => true)
+  page.find("div[style*='background: #{color};']", :visible => true)
 end
