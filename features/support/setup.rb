@@ -41,6 +41,7 @@ Capybara.register_driver :selenium_chrome_headless_billy do |app|
 
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome
   capabilities['acceptInsecureCerts'] = true
+  capabilities['goog:loggingPrefs'] = { browser: 'ALL' }
 
   Capybara::Selenium::Driver.new(
     app,
@@ -63,16 +64,22 @@ Syslog.open("cucumber", 0, Syslog::LOG_DAEMON)
 # Screenshot any failed scenario
 After do |scenario|
   if scenario.failed?
-	if ENV['CUKE_SCREEN_DIR']
-	  screen_dir = ENV['CUKE_SCREEN_DIR']
-	else
-	  screen_dir = './screenshots'
-	end
-	Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
-	screenshot = File.join(screen_dir, "FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
-	screenshot_embed_filename = "./screenshots/FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
-	page.save_screenshot(screenshot, full: true)
-	embed screenshot_embed_filename, 'image/png'
+    if ENV['CUKE_SCREEN_DIR']
+      screen_dir = ENV['CUKE_SCREEN_DIR']
+    else
+      screen_dir = './screenshots'
+    end
+    Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
+    screenshot = File.join(screen_dir, "FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
+    screenshot_embed_filename = "./screenshots/FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
+    page.save_screenshot(screenshot, full: true)
+    embed screenshot_embed_filename, 'image/png'
+    puts 'Browser console output:'
+    puts '---'
+    for logitem in page.driver.browser.manage.logs.get(:browser)
+      puts logitem
+    end
+    puts '---'
   end
   Capybara.reset_sessions!
 end
