@@ -33,7 +33,7 @@ Capybara.register_driver :selenium_chrome_headless_billy do |app|
   options.add_argument('--headless')
   options.add_argument('--no-sandbox')
   options.add_argument('--ignore-certificate-errors')
-  options.add_argument('--blink-settings=imagesEnabled=false')
+  options.add_argument('--blink-settings=imagesEnabled=true')
   options.add_argument('--window-size=1920,1080')
   options.add_argument('--enable-features=NetworkService,NetworkServiceInProcess')
   options.add_argument("--proxy-server=http://#{Billy.proxy.host}:#{Billy.proxy.port}")
