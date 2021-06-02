@@ -56,7 +56,7 @@ end
 Capybara.default_driver = :selenium_chrome_headless_billy
 Capybara.javascript_driver = :selenium_chrome_headless_billy
 Capybara.run_server = false
-Capybara.default_max_wait_time = 30
+Capybara.default_max_wait_time = 6
 Capybara.match = :prefer_exact
 
 Syslog.open("cucumber", 0, Syslog::LOG_DAEMON)
