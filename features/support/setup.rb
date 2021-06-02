@@ -86,18 +86,6 @@ end
 
 Before do |scenario|
   @params = {}
-  case scenario.source.last
-  when Cucumber::Core::Ast::ScenarioOutline
-    @scenario_name = scenario.scenario_outline.name
-  when Cucumber::Core::Ast::Scenario
-    @scenario_name = scenario.name
-  when Cucumber::Core::Ast::ExamplesTable::Row
-    @scenario_name = scenario.name
-  when Cucumber::Core::Test::Case
-    @scenario_name = scenario.name
-  else
-    raise("Unhandled scenario class: #{scenario.source.last}")
-  end
 end
 
 Before ('@configuration') do

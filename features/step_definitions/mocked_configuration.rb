@@ -300,13 +300,6 @@ Before do |scenario|
 end
 
 After do |scenario|
-  case scenario
-  when Cucumber::Core::Ast::ScenarioOutline
-    name = scenario.scenario_outline.name
-  when Cucumber::Core::Ast::Scenario
-    name = scenario.name
-  end
-
   if @mock.active?
     if scenario.failed?
       puts "mock data stored in #{@mock.file}"
