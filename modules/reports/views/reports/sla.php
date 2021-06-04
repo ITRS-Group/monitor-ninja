@@ -89,7 +89,7 @@ foreach($report_data as $i =>  $report) {
 	</div>
 	<?php }
 	$members = $report['source'];
-	if (count($members) > 1) { ?>
+	if ($members && count($members) > 1) { ?>
 	<div class="members">
 
 		<table style="margin-bottom: 20px;">
