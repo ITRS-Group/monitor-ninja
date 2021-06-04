@@ -149,11 +149,15 @@ class Dashboard_Model extends BaseDashboard_Model
 	/**
 	 * Overrides previous read permissions
 	 *
-	 * @param $permissions array => ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
+	 * @param $value array => ['table1' => ['key1', 'key2', ...], 'table2' => ['key1', 'key2', ...]]
 	 */
-	public function set_read_perm(array $permissions = array()) {
+	public function set_read_perm($value) {
+		if (is_string($value))
+			return parent::set_read_perm($value);
+		if (!isset($value))
+			$value = array();
 		$quarks = array();
-		foreach($permissions as $table => $keys) {
+		foreach($value as $table => $keys) {
 			foreach($keys as $key) {
 				$quarks[] = PermissionQuarkPool_Model::build($table, $key);
 			}
