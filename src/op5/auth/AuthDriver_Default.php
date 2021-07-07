@@ -188,8 +188,8 @@ class op5AuthDriver_Default extends op5AuthDriver {
 			return base64_encode(sha1($pass, true)) === $hash;
 
 		case 'crypt':
-			// ... crypt() encrypted
-			return crypt($pass, $hash) === $hash;
+			// ... crypt() or password_hash() encrypted
+			return password_verify($pass, $hash);
 
 		case 'plain':
 			// ... plaintext (stupid, but true)
