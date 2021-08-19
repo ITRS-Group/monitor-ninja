@@ -178,7 +178,7 @@ class Schedule_Controller extends Authenticated_Controller
 				return false;
 			}
 		}
-		$extension = substr($opt_obj['filename'], count($opt_obj['filename'])-5);
+		$extension = strrchr($opt_obj['filename'], '.');
 		if ($extension == '.pdf')
 			$report['output_format'] = 'pdf';
 		else if ($extension == '.csv')
