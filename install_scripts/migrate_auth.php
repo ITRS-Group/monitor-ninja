@@ -86,14 +86,6 @@ $new_rights = array(
 	),
 );
 
-$deprecated_rights = array(
-	10 => array(
-		$considered_superadmin => 'allow_dangerous_characters',
-	),
-);
-
-
-
 require_once('op5/config.php');
 $c = op5config::instance();
 $config = $c->getConfig('auth');
@@ -103,10 +95,14 @@ $current_version = 0;
 if(isset($config['common']['version'])) {
        $current_version = $config['common']['version'];
 }
+$new_version = $current_version;
 
 foreach ($groups as &$group) {
-	for ($i = $current_version; $i < count($new_rights); $i++) {
-		foreach ($new_rights[$i] as $from => $to) {
+	foreach ($new_rights as $version => $perms) {
+		if ($version <= $current_version)
+			continue;
+		$new_version = $version;
+		foreach ($perms as $from => $to) {
 			if (in_array($from, $group)) {
 				if (is_array($to)) {
 					foreach ($to as $perm) {
@@ -119,7 +115,7 @@ foreach ($groups as &$group) {
 		}
 	}
 }
-$config['common']['version'] = $i;
+$config['common']['version'] = $new_version;
 
 $c->setConfig('auth', $config);
 $c->setConfig('auth_groups', $groups);
