@@ -231,9 +231,6 @@ timeperiod_add_delete           monitor.monitoring.timeperiods:{create,delete}  
 command_view_all                monitor.monitoring.commands:read                              true
 command_edit_all                monitor.monitoring.commands:{create,update,delete}            true
 
-logger_access                   monitor.logger.messages:read                                  true
-logger_configuration            monitor.logger.settings:update                                true
-
 manage_trapper                  monitor.trapper.handlers:                                     true
 manage_trapper                  monitor.trapper.log:                                          true
 manage_trapper                  monitor.trapper.matchers:                                     true
