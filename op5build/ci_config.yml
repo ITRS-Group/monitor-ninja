@@ -1,3 +1,6 @@
+pre:
+  exclude:
+    - el8/x86_64
 post:
   install:
      - libyaml
