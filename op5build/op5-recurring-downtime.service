@@ -1,0 +1,10 @@
+[Unit]
+Description=OP5 Monitor recurring downtimes
+JobTimeoutSec=30
+
+[Service]
+Type=oneshot
+User=monitor
+ExecStart=/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/downtime
+StandardOutput=journal
+StandardError=journal

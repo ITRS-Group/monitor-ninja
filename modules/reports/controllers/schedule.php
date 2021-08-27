@@ -263,10 +263,12 @@ class Schedule_Controller extends Authenticated_Controller
 		$schedules = Scheduled_reports_Model::get_period_schedules($period_str);
 
 		if(!$schedules) {
-			echo "No scheduled reports found, not sending any emails.\n";
+			$this->log->log('debug', 'No scheduled reports found, not sending any emails.');
 			return;
 		}
 		foreach ($schedules as $id) {
+			# Log to journal (via systemd service) for easier debugging:
+			echo "Creating report for schedule id '$id' now.\n";
 			$this->send_now($id);
 		}
 	}

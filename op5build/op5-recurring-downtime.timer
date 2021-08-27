@@ -1,0 +1,11 @@
+[Unit]
+Description=OP5 Monitor recurring downtimes timer
+Wants=mysqld.service
+
+[Timer]
+OnBootSec=
+OnCalendar=*-*-* 23:50:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

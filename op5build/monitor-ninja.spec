@@ -49,6 +49,7 @@ BuildRequires: php-process
 # For stack trace info
 Requires: psmisc
 Requires: pciutils
+%systemd_requires
 
 Source: %name-%version.tar.gz
 %description
@@ -146,9 +147,6 @@ cp op5build/icon.png \
 find %buildroot -print0 | xargs -0 chmod a+r
 find %buildroot -type d -print0 | xargs -0 chmod a+x
 
-mkdir -p %buildroot/etc/cron.d/
-install -m 644 install_scripts/scheduled_reports.crontab %buildroot/etc/cron.d/scheduled-reports
-install -m 644 install_scripts/recurring_downtime.crontab %buildroot/etc/cron.d/recurring-downtime
 install -d %buildroot%_sysconfdir/logrotate.d
 install -pm 0644 op5build/monitor-ninja.logrotate %{buildroot}%_sysconfdir/logrotate.d/monitor-ninja
 
@@ -161,6 +159,9 @@ done
 install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
 install -D -m 644 install_scripts/nacoma_hooks.pyc %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyc
 install -D -m 644 install_scripts/nacoma_hooks.pyo %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyo
+
+install -d %buildroot%_unitdir
+install -D -m 644 -t %buildroot%_unitdir op5build/*.{service,timer}
 
 %if 0%{?rhel} >= 8
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
@@ -186,16 +187,20 @@ fi
 # Verify that mysql-server is installed and running before executing sql scripts
 $(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
 if [ -n "$MYSQL_AVAILABLE" ]; then
-  pushd %prefix
+  cd %prefix
     sh install_scripts/ninja_db_init.sh
     php install_scripts/migrate_tac_hostperf_to_listview.php
-  popd
+  cd -
 else
   echo "WARNING: mysql-server is not installed or not running."
   echo "If a database is to be used you need to maually run:"
   echo "  %prefix/install_scripts/ninja_db_init.sh"
   echo "to complete the setup of %name"
 fi
+
+systemctl daemon-reload &>/dev/null || :
+systemctl enable --now op5-scheduled-reports.timer &>/dev/null || :
+systemctl enable --now op5-recurring-downtime.timer &>/dev/null || :
 
 # Cleanup symlinks we don't use anymore
 for link in %{htmlroot}/monitor %{htmlroot}/ninja /op5/monitor/op5/ninja/op5 /opt/monitor/op5/ninja/css /opt/monitor/op5/ninja/js /opt/monitor/op5/ninja/images /opt/monitor/op5/ninja/stylesheets
@@ -215,9 +220,13 @@ fi
 
 sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 
+%postun
+%systemd_postun_with_restart op5-scheduled-reports.timer
+%systemd_postun_with_restart op5-recurring-downtime.timer
+
 %files
 %prefix
-%attr(644,root,root) /etc/cron.d/*
+%_unitdir/*
 %{nacoma_hooks_path}/ninja_hooks.*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 %attr(755,root,root) /usr/bin/op5-manage-users
