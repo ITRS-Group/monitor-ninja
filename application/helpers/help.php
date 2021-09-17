@@ -24,8 +24,7 @@ class help
 	 */
 	public static function render($key, $controller = null)
 	{
-		$img_path = url::base(false).'application/views/icons/16x16/question-mark.png';
 		$controller = $controller !== null ? $controller : Router::$controller;
-		return '<a class="help-icon" style="background: url(\''.$img_path.'\')" data-popover="help:'.html::specialchars($controller).'.'.html::specialchars($key).'"></a>';
+		return '<a class="help-icon" data-popover="help:'.html::specialchars($controller).'.'.html::specialchars($key).'"><span class="material-icons">help_outlined</span></a>';
 	}
 }

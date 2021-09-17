@@ -66,11 +66,12 @@ Feature: Scheduled reports
 		When I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
-		When I select "Week" from "every_text"
-		And I select "saved test report" from "Select report"
+		And I wait for 1 second
+		When I select "saved test report" from "Select report"
 		And I enter "dev@op5.com" into "Recipients"
 		And I enter "This report comes from a cuke test. If the test worked, it would have been deleted, so if you're reading this, you've got work to do to fix tests. Chop, chop!" into "Description"
 		And I select "Yes" from "Attach description"
+		And I select "Week" from "every_text"
 		And I click "Save"
 		And I wait for 1 second
 		Then I shouldn't see "There are no scheduled availability reports"

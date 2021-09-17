@@ -44,7 +44,7 @@
 				foreach ($quicklinks['internal'] as $quicklink) {
 					echo $quicklink->get_html();
 				}
-				echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="icon-16 x16-link"></span></a></li>';
+				echo '<li><a id="dojo-add-quicklink" href="#dojo-add-quicklink-menu" title="Manage quickbar" class="image-link"><span class="material-icons">add_circle</span></a></li>';
 				echo '</ul>';
 
 			?>

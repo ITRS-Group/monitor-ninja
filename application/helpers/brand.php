@@ -13,7 +13,7 @@ class brand {
   /**
    * The image to use when in menu
    */
-  const MENU_IMAGE = 'om_menu.png';
+  const MENU_IMAGE = 'logo_op5monitor.svg';
 
   /**
    * Generates brading based based on license, if any, and
