@@ -162,6 +162,29 @@ var LightboxManager = (function() {
 				return box;
 			};
 
+			box.quicklink_header = function (source, callback) {
+				var close_button = element("a", {
+					"class": "icon-cancel link-icon",
+					"title": "Close this window",
+					"href": "#"
+				});
+				close_button.addEventListener("click", function(ev) {
+					box.hide();
+					ev.preventDefault();
+					callback();
+					return false;
+				});
+
+				if (source instanceof Node) {
+					source.appendChild(close_button);
+					header.appendChild(source);
+				} else if (source instanceof NodeList) {
+					Array.prototype.slice.call(source, 0).forEach(box.header);
+					source.appendChild(close_button);
+				} else throw new LightboxError("Source passed to footer must be an instanceof Node or NodeList");
+				return box;
+			};
+
 			box.hide = function () {
 				overlay.style.display = 'none';
 				return box;
