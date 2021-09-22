@@ -82,7 +82,7 @@
 
   }
 
-  $('#verify_backup').live('click', function(){
+  $('#verify_backup').on('click', function(){
 
     var link = $(this);
 
@@ -119,7 +119,7 @@
 
   });
 
-  $('a.restore_backup').live('click', function(ev){
+  $('a.restore_backup').on('click', function(ev){
 
     var link = $(this);
     var notification = Notify.message('Do you really want to restore this backup?', {
@@ -158,7 +158,7 @@
 
   });
 
-  $('a.delete_backup').live('click', function(){
+  $('a.delete_backup').on('click', function(){
 
     var link = $(this);
     var notification = Notify.message(
