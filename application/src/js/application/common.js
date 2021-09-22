@@ -347,7 +347,7 @@ $(document).ready(function() {
 					$('#dojo-quicklink-remove').append(quicklink);
 				}
 	
-				var lightbox = LightboxManager.create();
+				var lightbox = LightboxManager.create(false);
 				var header = document.createElement('h1');
 				header.textContent = 'Add new quicklink';
 	
