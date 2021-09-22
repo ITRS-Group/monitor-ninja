@@ -984,7 +984,11 @@
     */
     function PrepareSortablePlaces(sortableItems, settings) {
         var s = settings;
-        $(s.selectors.places).sortable('destroy');
+
+        if ($(s.selectors.places).data("ui-sortable")){
+            $(s.selectors.places).sortable('destroy');   
+        };
+
         $(s.selectors.places).sortable({
             items: sortableItems,
             forcePlaceholderSize: true,
