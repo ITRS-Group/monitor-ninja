@@ -61,6 +61,10 @@ class Auth_Controller extends Chromeless_Controller {
 		 */
 		if ($auth->logged_in()) {
 			$requested_uri = $this->input->get('uri', Kohana::config('routes.logged_in_default'));
+			// Prevent attempts that would redirect us to a different host.
+			if (strpos($requested_uri, '://') !== FALSE && strpos($requested_uri, url::base()) !== 0) {
+			    $requested_uri = Kohana::config('routes.logged_in_default');
+			}
 			return url::redirect($requested_uri);
 		}
 
