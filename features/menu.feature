@@ -57,6 +57,7 @@ Feature: Menu
 		And I shouldn't see "Add new quicklink"
 
 	Scenario: Remove quicklink
+		Then I wait for 2 seconds
 		When I click "Manage quickbar"
 		# The dialog will fade in, and if it's not done, it won't fade out properly
 		And I wait for 1 second
