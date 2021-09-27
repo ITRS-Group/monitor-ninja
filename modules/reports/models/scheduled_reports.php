@@ -238,7 +238,7 @@ class Scheduled_reports_Model extends Model
 		$id = (int)$id;
 		$field = $db->escape_column(trim($field));
 		$value = $db->escape(trim($value));
-		$sql = "UPDATE scheduled_reports SET ${field}=${value} WHERE id=${id}";
+		$sql = "UPDATE scheduled_reports SET {$field}={$value} WHERE id={$id}";
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
