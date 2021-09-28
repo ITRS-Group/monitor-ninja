@@ -254,7 +254,7 @@ EOF;
 
 		$parts = explode('.',$id);
 		if( count($parts) == 3 && $parts[0] == 'listview' && $parts[1] == 'columns' ) {
-			printf(_("A comma-seperated list of columns visible in the list view for table %s. Use string \"all\" to see all columns. See documentation for advanced syntax and column names."), $parts[2]);
+			printf(_("A comma-separated list of columns visible in the list view for table %s. Use string \"default\" to see the default set of columns. See documentation for advanced syntax and column names."), $parts[2]);
 			return;
 		}
 
