@@ -6651,9 +6651,9 @@ msgstr ""
 #: modules/lsfilter/controllers/listview.php:252
 #, php-format
 msgid ""
-"A comma-seperated list of columns visible in the list view for table %s. Use "
-"string \"all\" to see all columns. See documentation for advanced syntax and "
-"column names."
+"A comma-separated list of columns visible in the list view for table %s. Use "
+"string \"default\" to see the default set of columns. See documentation for "
+"advanced syntax and column names."
 msgstr ""
 
 #: modules/lsfilter/views/listview/listview.php:21
