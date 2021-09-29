@@ -8,7 +8,7 @@
 	if ($query !== false && Router::$controller == 'search' && Router::$method == 'lookup') {
 		echo form::input('query', html::specialchars($query));
 	} else {
-		echo form::input(array('name' => 'query', 'placeholder' => 'Find...'));
+		echo form::input(array('name' => 'query', 'placeholder' => 'Search...'));
 	}
 
 	echo help::render('search_help', 'search');
