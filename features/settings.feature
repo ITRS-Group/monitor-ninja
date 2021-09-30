@@ -13,7 +13,7 @@ Feature: Settings
 			|Barbarella|
 		When I go to the listview for [hosts] all
 		And I click "Barbarella"
-		And I select "Actions > Add a new comment" from the "Options" menu
+		And I select "Actions > Add a new comment" from the "OPTIONS" menu
 		Then "comment" should contain "This is for fun"
 
 	# using two scenarios so that we can trust the mocked fixture, even if

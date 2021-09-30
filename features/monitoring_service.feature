@@ -137,12 +137,12 @@ Feature: Monitoring Service
 			| Babaruajan  | Rosalind |
 
 		And I visit the object details page for service "Babaruajan" on host "Rosalind"
-		When I hover "Links" from the "Options" menu
+		When I hover "Links" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Notifications |
 			| Graphs |
 
-		When I hover "Actions" from the "Options" menu
+		When I hover "Actions" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Cancel all downtimes |
 			| Add a new comment |
@@ -150,14 +150,14 @@ Feature: Monitoring Service
 			| Schedule downtime |
 			| Send custom notification |
 
-		When I hover "Report" from the "Options" menu
+		When I hover "Report" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Event log |
 			| Availability |
 			| Alert history |
 			| Histogram |
 
-		When I hover "Configuration" from the "Options" menu
+		When I hover "Configuration" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Configure |
 			| Delete |

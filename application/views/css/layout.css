@@ -776,7 +776,7 @@ h1.emote b {
 
 .menu ul li.profile-info {
   padding: 0 12px 0 0;
-  margin-top: 8px;
+  margin-top: 6px;
   background: #7e7f7f;
   border-radius: 15px;
 }
@@ -794,7 +794,7 @@ h1.emote b {
 
 .finder {
   float: right;
-  padding: 6px 6px 8px 4px;
+  padding: 6.5px 4px;
 }
 
 .finder input {
@@ -824,6 +824,7 @@ h1.emote b {
 }
 .header > .finder .help-icon {
   background: url("/monitor/application/views/icons/mui-question-mark-white.svg") no-repeat !important;
+  margin-top: 6px;
 }
 
 .autocomplete {
@@ -960,6 +961,7 @@ h1.emote b {
 }
 .menu ul li ul li:hover {
   background: #f0f0f0;
+  border-radius: 4px;
 }
 
 .menu ul li ul li:first-child {
@@ -1442,9 +1444,16 @@ h1.emote b {
 /* Toolbar specifics */
 
 .main-toolbar {
-  border-top: 1px solid #dddddd;
-  background: #fff;
+  color: #fff;
+  background: #999;
   clear: both;
+}
+.main-toolbar a {
+  color: #fff;
+  padding: 8px 5px;
+}
+.main-toolbar a:hover {
+  background: #adadad;
 }
 
 .main-toolbar .main-toolbar-menu {
@@ -1455,7 +1464,6 @@ h1.emote b {
 }
 
 .main-toolbar .main-toolbar-menu > ul > li {
-  border-left: 1px solid #dddddd;
   padding: 2px 2px;
   margin: 0 0;
 }
@@ -1464,10 +1472,15 @@ h1.emote b {
 	float: right;
 	display: block;
 	font-size: 0.75em;
-	content: "▼";
+	content: "▾";
 	margin-top: 0.4em;
 	margin-right: 0.6em;
-	color: #555555;
+  color: #fff;
+}
+
+.main-toolbar-menu ul li ul li > a, .main-toolbar-menu ul li ul li > span
+{
+  color: #555;
 }
 
 .main-toolbar .main-toolbar-menu > ul > li > a {
@@ -1476,28 +1489,33 @@ h1.emote b {
 
 .main-toolbar .main-toolbar-menu > ul > li > a > span{
   padding: 0 4px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.36px;
+  line-height: 14px;
+  text-transform: uppercase;
 }
 
 .main-toolbar .main-toolbar-title {
   display: inline-block;
-  vertical-align: middle;
   margin: 2px 20px 2px 0;
-  padding: 3px 24px 2px 12px;
-  border-right: 1px solid #dddddd;
-  font-size: 120%;
+  padding: 8px 24px 8px 12px;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 0.36px;
+  line-height: 14px;
+  text-transform: uppercase;
 }
 
 .main-toolbar .main-toolbar-subtitle {
   display: inline-block;
-  vertical-align: middle;
   margin: 2px 6px 2px 0;
-  padding: 3px 4px 2px 0;
-  font-size: 120%;
+  padding: 6.5px 6px;
 }
 
 .main-toolbar .main-toolbar-info {
   display: inline-block;
-  vertical-align: middle;
   padding: 3px 0 1px 0;
 }
 
@@ -1514,7 +1532,6 @@ h1.emote b {
 .main-toolbar .main-toolbar-info span {
   display: inline-block;
   min-height: 14px;
-  vertical-align: middle;
 }
 
 .main-toolbar .main-toolbar-info form {
@@ -1534,16 +1551,19 @@ h1.emote b {
 .main-toolbar .main-toolbar-buttons input[type=submit] {
   display: inline-block;
   box-sizing: border-box;
-
   border: none;
   width: auto;
-
-  padding: 5px 6px 4px 6px !important;
+  padding: 8px 6px 6px 6px !important;
   background: transparent;
   border-radius: 0;
   border-left: 1px solid #dddddd;
-  height: 28px;
+  height: 38px;
   margin: 0;
+  color: #fff;
+}
+.main-toolbar .main-toolbar-buttons a:hover,
+.main-toolbar .main-toolbar-buttons input[type=submit]:hover {
+  background: #adadad;
 }
 
 .main-toolbar .main-toolbar-buttons form {
@@ -1563,7 +1583,6 @@ h1.emote b {
 }
 
 .main-toolbar-buttons a span.toolbar-icon-label span.changes_count {
-  color: #51c0E4;
   padding-left: 5px;
   font-size: 12px;
 }

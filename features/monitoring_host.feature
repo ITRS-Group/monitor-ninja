@@ -139,13 +139,13 @@ Feature: Monitoring Host
 			| Babaruajan |
 
 		And I visit the object details page for host "Babaruajan"
-		When I hover "Links" from the "Options" menu
+		When I hover "Links" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Locate host on map |
 			| Notifications |
 			| Graphs |
 
-		When I hover "Actions" from the "Options" menu
+		When I hover "Actions" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Cancel all downtimes |
 			| Add a new comment |
@@ -153,14 +153,14 @@ Feature: Monitoring Host
 			| Schedule downtime |
 			| Send custom notification |
 
-		When I hover "Report" from the "Options" menu
+		When I hover "Report" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Event log |
 			| Availability |
 			| Alert history |
 			| Histogram |
 
-		When I hover "Service Operations" from the "Options" menu
+		When I hover "Service Operations" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Disable checks of all services |
 			| Disable notifications for all services |
@@ -168,7 +168,7 @@ Feature: Monitoring Host
 			| Enable checks of all services |
 			| Schedule a check of all services |
 
-		When I hover "Configuration" from the "Options" menu
+		When I hover "Configuration" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Configure |
 			| Delete |
@@ -299,7 +299,7 @@ Feature: Monitoring Host
 			|Barbarella|
 		When I go to the listview for [hosts] all
 		And I click "Barbarella"
-		And I select "Actions > Send custom notification" from the "Options" menu
+		And I select "Actions > Send custom notification" from the "OPTIONS" menu
 		Then I should see "Comment"
 		And I should see "Broadcast"
 		And I should see "Force notification"
