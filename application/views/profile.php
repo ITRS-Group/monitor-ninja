@@ -2,7 +2,7 @@
 	<ul>
 	<li class="profile-info">
 		<div class="profile-image">
-			<img src="<?php echo $avatar; ?>">
+			<img src="/monitor/application/views/icons/mui-account-icon.svg">
 		</div>
 		<div class="profile-name">
 <?php
