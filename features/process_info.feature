@@ -11,25 +11,25 @@ Feature: Monitoring process info
 	Scenario: Process commands are available
 
 		Given I visit the process information page
-		When I hover "Process" from the "Options" menu
+		When I hover "Process" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Restart the Naemon process |
 			| Shut down the Naemon process |
 
-		When I hover "Operations" from the "Options" menu
+		When I hover "Operations" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Disable notifications |
 			| Disable event handlers |
 			| Disable flap detection |
 			| Disable performance data processing |
 
-		When I hover "Service operations" from the "Options" menu
+		When I hover "Service operations" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Stop executing service checks |
 			| Stop accepting passive service checks |
 			| Stop obsessing over services |
 
-		When I hover "Host operations" from the "Options" menu
+		When I hover "Host operations" from the "OPTIONS" menu
 		Then I should see these menu items:
 			| Stop executing host checks |
 			| Stop accepting passive host checks |

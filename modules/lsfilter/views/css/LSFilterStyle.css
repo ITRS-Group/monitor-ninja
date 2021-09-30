@@ -128,12 +128,10 @@
     vertical-align: middle; }
 /* line 113, sass/LSFilterStyle.sass */
 .main-toolbar ul a {
-  color: #444444;
   border-bottom: none; }
 /* line 116, sass/LSFilterStyle.sass */
 .main-toolbar ul a:hover {
-  border: none;
-  color: black; }
+  border: none; }
 
 /* line 120, sass/LSFilterStyle.sass */
 .listview-col-hover {
@@ -361,15 +359,12 @@ tr {
 .lsfilter_visual_field_select, .lsfilter_visual_operator_select, .lsfilter_visual_value_field {
   width: 30%; }
 
-/* line 303, sass/LSFilterStyle.sass */
-li.filter-query-button a img {
-  vertical-align: middle; }
-
 /* line 306, sass/LSFilterStyle.sass */
 li.filter-query-button a span {
-  vertical-align: middle;
   margin: 4px 2px; }
 
 /* line 310, sass/LSFilterStyle.sass */
 li.filter-query-button a .filter-button-label {
   margin-left: 4px; }
+li.filter-query-button strong a.extra_link {
+    margin-top: -6px; }

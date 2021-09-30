@@ -66,7 +66,7 @@ Feature: Mocked
 		And I am logged in
 		And I am on the Host details page
 		When I click "<name>"
-		And I select "<link>" from the "Options" menu
+		And I select "<link>" from the "OPTIONS" menu
 		Then I should be on url "<url>"
 
 		Examples:
@@ -84,7 +84,7 @@ Feature: Mocked
 			|Fermin Miller|
 		And I am on the Host details page
 		When I click "Fermin Miller"
-		And I select "Links > Notifications" from the "Options" menu
+		And I select "Links > Notifications" from the "OPTIONS" menu
 		Then I should see "Notifications"
 		And I should see "Count:"
 
@@ -157,7 +157,7 @@ Feature: Mocked
 			|<name>     |Sincere Carroll|
 		And I am on the Service details page
 		When I click "<name>"
-		And I select "<link>" from the "Options" menu
+		And I select "<link>" from the "OPTIONS" menu
 		Then I should be on url "<url>"
 
 		Examples:
@@ -179,7 +179,7 @@ Feature: Mocked
 
 		Given I am on the Service details page
 		When I click "Bhin Phan"
-		And I select "Links > Notifications" from the "Options" menu
+		And I select "Links > Notifications" from the "OPTIONS" menu
 		Then I should see "Notifications"
 		And I should see "Count:"
 
@@ -195,7 +195,7 @@ Feature: Mocked
 			|Manami Kaneshiro |Champey Hong|
 		And I am on the Service details page
 		When I click "Manami Kaneshiro"
-		And I select "Report > Availability" from the "Options" menu
+		And I select "Report > Availability" from the "OPTIONS" menu
 		Then I should be on url "/index.php/avail/generate?report_type=services&objects%5B%5D=Champey+Hong%3BManami+Kaneshiro"
 		And I should see "Service details for Manami Kaneshiro on host Champey Hong"
 		And I should see "Reporting period: Last 7 days"
