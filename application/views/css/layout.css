@@ -766,12 +766,12 @@ h1.emote b {
   font-size: 14px;
   color: #fff;
   padding: 0 2px;
-  margin-top: 2px;
 }
 
 .profile-host {
   font-size: 10px;
   color: #d6d6d6;
+  margin-top: -2px;
 }
 
 .menu ul li.profile-info {
@@ -786,10 +786,11 @@ h1.emote b {
 
 .profile-image {
   display: inline-block;
-  padding: 2px 2px 0 2px;
-}
-.profile-image img {
   border-radius: 50%;
+  background: #eaeaea;
+  width: 25px;
+  height: 25px;
+  margin-left: 3px;
 }
 
 .finder {

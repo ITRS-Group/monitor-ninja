@@ -120,7 +120,6 @@
 
 		if (Auth::instance()->logged_in()) {
 			echo View::factory('profile', array(
-				'avatar' => Auth::instance()->get_user()->get_avatar_url(),
 				'user' => Auth::instance()->get_user(),
 				'host' => gethostname()
 			))->render();
