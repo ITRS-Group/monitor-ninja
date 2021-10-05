@@ -325,10 +325,11 @@ table tr {
 }
 
 table td {
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid #EAEAEA;
   padding: 3px 4px 4px 4px;
   vertical-align: middle;
   text-align: left;
+  height: 34px;
 }
 
 table td:first-child {
@@ -345,9 +346,10 @@ table tr:last-child td {
 
 table th {
   background: #ffffff;
-  border-bottom: 1px solid #dddddd;
-  padding: 8px 4px;
+  border-bottom: 1px solid #EAEAEA;
+  padding: 12px 4px 0 4px !important;
   word-wrap: nowrap;
+  height: 30px;
 }
 
 table tr:hover td {
@@ -712,6 +714,10 @@ h1.emote b {
 
 .alert .license p {
   margin: 1em 0 1em 0;
+}
+
+#summary_form .showlog input#Update {
+  margin-top: 130px;
 }
 
 .long_output {

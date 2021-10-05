@@ -70,7 +70,7 @@ input[type="submit"].plain {
 
 .page-flow-layout h2 {
   margin-top: 16px;
-  padding: 3px;
+  padding: 7px;
   background: #EEEEEE;
 }
 
@@ -160,6 +160,10 @@ a.external {
 
 #response ul.help {
   background-image: url(icons/x16/shield-help.png);
+}
+
+tr.even {
+  background-color: #F8F8F8;
 }
 
 tr.even td.cell_svccnt_ok {

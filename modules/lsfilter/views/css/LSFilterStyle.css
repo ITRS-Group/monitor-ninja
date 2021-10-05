@@ -152,7 +152,7 @@ th span.header-icon {
 /* line 133, sass/LSFilterStyle.sass */
 #filter_result thead th {
   border-top: none;
-  border-bottom: 1px solid #aaaaaa;
+  border-bottom: 1px solid #EAEAEA;
   padding-bottom: 0;
   padding-right: 0;
   white-space: nowrap; }
