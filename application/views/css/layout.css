@@ -767,6 +767,9 @@ h1.emote b {
   display: inline-block;
   padding: 2px 2px 0 2px;
 }
+.profile-image img {
+  background: #eaeaea;
+}
 
 .finder {
   float: right;
