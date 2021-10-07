@@ -391,11 +391,11 @@ function check_custom_months()
 
 function confirm_delete_report()
 {
-	var id = $("#report_id").attr('value')
+	var id = $("#report_id").prop('value')
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
 	var msg = _reports_confirm_delete + "\n";
-	var type = $('input[name=type]').attr('value');
+	var type = $('input[name=type]').prop('value');
 	if (!id)
 		return;
 	if (is_scheduled) {
