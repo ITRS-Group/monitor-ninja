@@ -216,17 +216,21 @@ select.auto {
 }
 
 button, input[type=reset], input[type=submit], input[type=button] {
-  background: #cdcdcd url(default/images/bg.png) repeat-x;
-  border: 1px solid #cccccc;
   cursor: pointer;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
   padding: 2px 5px;
   margin-bottom: 5px;
+  height: 30px;
+  border-radius: 2px;
+  border-style: none;
+  background: #6C6E6E;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 button:hover, input[type=reset]:hover, input[type=submit]:hover, input[type=button]:hover {
-  background-color: #a0a0a0;
+  background-color: #adadad;
 }
 
 input[type=button], input[type=submit], input[type=reset], input[type=checkbox], input[type=radio] {
@@ -1459,15 +1463,18 @@ h1.emote b {
   color: #fff;
   padding: 8px 5px;
 }
-.main-toolbar a:hover {
-  background: #adadad;
-}
 
 .main-toolbar .main-toolbar-menu {
   float: right;
   display: inline-block;
   vertical-align: middle;
   margin-right: 0;
+}
+
+.main-toolbar-menu > a.menu-section, 
+.main-toolbar-menu > a.menu-section:hover {
+  border: none;
+  background: transparent;
 }
 
 .main-toolbar .main-toolbar-menu > ul > li {
@@ -1479,7 +1486,7 @@ h1.emote b {
 	float: right;
 	display: block;
 	font-size: 0.75em;
-	content: "▾";
+	content: "▼";
 	margin-top: 0.4em;
 	margin-right: 0.6em;
   color: #fff;

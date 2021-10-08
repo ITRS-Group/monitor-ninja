@@ -322,7 +322,7 @@ table.setup-tbl tr td {
   vertical-align: top;
 }
 
-table.setup-tbl input, table.setup-tbl select {
+table.setup-tbl input[type=text], table.setup-tbl select {
   background: #fafafa;
   border: 1px solid #cccccc;
   -moz-border-radius: 4px;
@@ -443,14 +443,7 @@ select:hover {
 }
 
 button, input[type=reset], input[type=submit], input[type=button] {
-  background: #cdcdcd url(images/bg.png) repeat-x;
-  border: 1px solid #cccccc;
   cursor: pointer;
-  border-radius: 4px;
-}
-
-button:hover, input[type=reset]:hover, input[type=submit]:hover, input[type=button]:hover {
-  background-color: #a0a0a0;
 }
 
 input[type=checkbox], input[type=radio] {
