@@ -13,7 +13,7 @@ $(document).ready(function() {
 				.html('<form>'+_label_direct_link+' <input class="wide" type="text" value="'
 					+ document.location.protocol + '//'
 					+ document.location.host
-					+ $('#current_report_params').attr('href')
+					+ $('#current_report_params').prop('href')
 					+ '"></form>')
 				.css('position', 'absolute')
 				.css('top', this.offsetHeight + this.offsetTop + 5)
@@ -313,7 +313,7 @@ function check_form_values(form)
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
 			var input = $('input[id="' + field_name + '"]', form);
-			var value = input.attr('value');
+			var value = input.prop('value');
 			value = value.replace(',', '.');
 			if (value > max_val || isNaN(value)) {
 				input.css('background', sla_month_error_color);
