@@ -36,7 +36,7 @@ post:
     gem install syntax:1.2.2 --no-document
     gem install cliver --no-document
     gem install webdrivers
-    gem install selenium-webdriver
+    gem install selenium-webdriver:3.142.7
     gem install puffing-billy --no-document
     gem install xpath
 
