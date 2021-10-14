@@ -1209,8 +1209,11 @@ h1.emote b {
 .alert.notice,
 .state-background.info,
 .state-background.notice {
-  background: #50c0e4;
+  background: #6C6E6E;
   color: #fff;
+  font-size: 10px !important;
+	font-weight: bold;
+  font-family: 'Open sans', sans-serif;
 }
 
 .notify-notification-bar .notify-notification.warning,
