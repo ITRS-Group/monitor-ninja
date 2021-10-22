@@ -19,8 +19,11 @@ post:
     gpg --import op5build/gpg_keys/*
     curl -sSL https://get.rvm.io | bash -s stable
     source /usr/local/rvm/scripts/rvm
-    rvm install 2.5
-    rvm use 2.5
+    rvm install 2.7
+    rvm use 2.7
+
+    # Do not fail build on ruby warnings
+    export RUBYOPT='-W:no-deprecated -W:no-experimental'
 
     #Install chrome
     curl -OL https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
@@ -36,7 +39,7 @@ post:
     gem install syntax:1.2.2 --no-document
     gem install cliver --no-document
     gem install webdrivers
-    gem install selenium-webdriver:3.142.7
+    gem install selenium-webdriver
     gem install puffing-billy --no-document
     gem install xpath
 
