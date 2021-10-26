@@ -60,6 +60,7 @@ Requires: op5-lmd
 Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: php-phpunit-PHPUnit
+Requires: op5int_webtest
 
 Requires: openldap-servers
 # For performance graph links on extinfo
