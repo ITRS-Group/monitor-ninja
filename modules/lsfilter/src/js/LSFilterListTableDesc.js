@@ -387,7 +387,7 @@ var LSColumnsFilterListVisitor = function(all_columns, all_db_columns, metadata)
 				}, args);
 				for (var i = 0; i < list.length; i++) {
 					subargs.local[name3] = list[i];
-					if (expr7(subargs))
+					if (expr7.evaluator(subargs))
 						result.push(expr1.evaluator(subargs));
 				}
 				return result;
