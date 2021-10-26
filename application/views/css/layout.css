@@ -1458,12 +1458,12 @@ h1.emote b {
 /* Toolbar specifics */
 
 .main-toolbar {
-  color: #fff;
-  background: #999;
+  color: #555;
+  background: #fff;
   clear: both;
 }
 .main-toolbar a {
-  color: #fff;
+  color: #555;
   padding: 8px 5px;
 }
 
@@ -1576,11 +1576,7 @@ h1.emote b {
   border-left: 1px solid #dddddd;
   height: 38px;
   margin: 0;
-  color: #fff;
-}
-.main-toolbar .main-toolbar-buttons a:hover,
-.main-toolbar .main-toolbar-buttons input[type=submit]:hover {
-  background: #adadad;
+  color: #555;
 }
 
 .main-toolbar .main-toolbar-buttons form {
