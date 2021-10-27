@@ -33,13 +33,9 @@ class showlog
 		}
 
 		$limit = 2500;
-		$cgi_cfg = false;
-		$etc_path = System_Model::get_nagios_etc_path();
-		$cgi_cfg = rtrim($etc_path, '/').'/cgi.cfg';
 
 		$args = array(
-			self::get_path(),
-			"--cgi-cfg=$cgi_cfg"
+			self::get_path()
 		);
 
 		foreach ($options as $k => $v) {
