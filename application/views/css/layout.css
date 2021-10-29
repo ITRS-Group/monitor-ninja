@@ -1484,6 +1484,9 @@ h1.emote b {
   padding: 2px 2px;
   margin: 0 0;
 }
+.main-toolbar .main-toolbar-menu > ul > li:hover {
+  background: #f0f0f0;
+}
 
 .main-toolbar .main-toolbar-menu > ul > li:after {
 	float: right;
@@ -1492,7 +1495,6 @@ h1.emote b {
 	content: "▼";
 	margin-top: 0.4em;
 	margin-right: 0.6em;
-  color: #fff;
 }
 
 .main-toolbar-menu ul li ul li > a, .main-toolbar-menu ul li ul li > span
@@ -1506,7 +1508,6 @@ h1.emote b {
 
 .main-toolbar .main-toolbar-menu > ul > li > a > span{
   padding: 0 4px;
-  color: #fff;
   font-size: 10px;
   font-weight: bold;
   letter-spacing: 0.36px;
