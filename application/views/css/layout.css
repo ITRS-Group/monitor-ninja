@@ -1127,9 +1127,9 @@ h1.emote b {
 
 /* Notification bars */
 
-.info, .notice {
+div.info, div.notice {
   border-color: #50c0e4;
-  color: #50c0e4;
+  background: #50c0e4 !important;
 }
 
 .info.supplementary, .notice.supplementary {
