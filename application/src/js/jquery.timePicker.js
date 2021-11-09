@@ -223,10 +223,6 @@
 		elm.value = $(sel).text();
 		// Trigger element's change events.
 		$(elm).change();
-		// Keep focus for all but IE (which doesn't like it)
-		if (!$.browser.msie) {
-			elm.focus();
-		}
 		// Hide picker
 		$tpDiv.hide();
 	}
