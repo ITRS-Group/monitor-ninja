@@ -62,6 +62,9 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$_SESSION = array ('this_should_be_untouched' => 17);
 		// unset the env var
 		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
+		op5objstore::instance()->mock_add(
+			'op5auth', new MockAuthSession()
+		);
 	}
 
 	public function tearDown() : void {
@@ -75,7 +78,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 	 * states
 	 */
 	public function test_login_logout() {
-		$auth = new op5auth();
+		$auth = op5auth::instance();
 
 		$this->assertEquals(array ('this_should_be_untouched' => 17), $_SESSION);
 		$this->assertEquals(
@@ -151,7 +154,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 	 * library is logged out, but the session remains
 	 */
 	public function test_login_close_logout() {
-		$auth = new op5auth();
+		$auth = op5auth::instance();
 
 		$this->assertEquals(array ('this_should_be_untouched' => 17), $_SESSION);
 		$this->assertEquals(
@@ -249,7 +252,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 	 * out.
 	 */
 	public function test_close_login_logout() {
-		$auth = new op5auth();
+		$auth = op5auth::instance();
 
 		$this->assertEquals(array ('this_should_be_untouched' => 17), $_SESSION);
 		$this->assertEquals(
@@ -328,7 +331,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$original_session = $_SESSION;
 
 		/* User should be loaded, session untouched */
-		$auth = new op5auth();
+		$auth = op5auth::instance();
 
 		$this->assertEquals($original_session, $_SESSION);
 		$this->assertEquals(
@@ -402,7 +405,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		);
 
 		/* User should be loaded */
-		$auth = new op5auth();
+		$auth = op5auth::instance();
 
 		$this->assertEquals(
 			array (
@@ -499,7 +502,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$original_session = $_SESSION;
 
 		/* User should be loaded */
-		$auth = new op5auth();
+		$auth = op5auth::instance();
 
 		$this->assertEquals(
 			array (

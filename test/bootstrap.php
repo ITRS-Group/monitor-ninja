@@ -45,6 +45,8 @@ op5objstore::instance()->mock_add('op5config', new MockConfig(array(
 require_once ($ninja_base . '/index.php');
 op5objstore::instance()->mock_clear();
 
+require_once ($ninja_base . '/modules/test/libraries/MockAuth.php');
+
 /*
  * If using this bootstrap from a module repository, uncomment those lines
  * below, and update $ninja_base above to the install path of ninja.

@@ -287,6 +287,7 @@ class op5auth implements op5MayI_Actor {
 		if ($this->authorize_user($user, $auth_method)) {
 
 			$this->user = $user;
+			$this->session_regenerate_id();
 			$this->session_store($this->config['session_key']);
 
 			if ($apc_tag !== false) {
@@ -537,6 +538,33 @@ class op5auth implements op5MayI_Actor {
 		if (isset($_SESSION[$key])) {
 			unset($_SESSION[$key]);
 		}
+	}
+
+	/**
+	 * Reliably generate a new session id, avoiding lost sessions as
+	 * described in example code at:
+	 * https://www.php.net/manual/en/function.session-regenerate-id.php
+	 *
+	 * @return void
+	 */
+	protected function session_regenerate_id() {
+		// Mark the current session as destroyed to avoid other clients from hi-jacking it.
+		$_SESSION['destroyed'] = time();
+
+		// Store the new session id, to handle unstable network from the authenticated client.
+		$_SESSION['new_session_id'] = session_create_id();
+
+		// Close the old session.
+		session_write_close();
+
+		// Disable strict mode for the rest of this request, to allow setting custom session_id.
+		ini_set('session.use_strict_mode', 0);
+		session_id($_SESSION['new_session_id']);
+		session_start();
+
+		// The new session doesn't need these:
+		unset($_SESSION['destroyed']);
+		unset($_SESSION['new_session_id']);
 	}
 
 	/**

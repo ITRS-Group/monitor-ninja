@@ -59,8 +59,11 @@ class AuthDriverDefaultTest extends \PHPUnit\Framework\TestCase {
 		op5objstore::instance()->mock_add( 'op5config',
 		new MockConfig(self::$config) );
 		op5objstore::instance()->mock_add( 'op5log', new MockLog() );
+		op5objstore::instance()->mock_add(
+			'op5auth', new MockAuthSession()
+		);
 
-		$this->auth = new op5Auth();
+		$this->auth = op5auth::instance();
 	}
 
 	public function tearDown() : void {

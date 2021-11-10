@@ -61,3 +61,11 @@ class MockAuth extends op5auth
 		return $user;
 	}
 }
+
+/**
+ * A mock implementation of op5Auth, without session_regenerate_id, to prevent
+ * "Headers already sent" errors in unit tests.
+ */
+class MockAuthSession extends op5Auth {
+	protected function session_regenerate_id() {}
+}

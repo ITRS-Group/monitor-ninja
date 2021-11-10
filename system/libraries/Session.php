@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+require_once('op5/log.php');
 /**
  * Session library.
  *
@@ -52,7 +53,36 @@ class Session {
 
 		// Start the session!
 		session_start();
-
+		if (isset($_SESSION['destroyed'])) {
+			// Client provided a session id that expired due to user login.
+			$destroyed_at = $_SESSION['destroyed'];
+			if (time() - $destroyed_at > 60) {
+				/* Should not happen usually. This could be due to attack or unstable
+				 * network. Remove all authentication status of this users session.
+				 */
+				$_SESSION = array();
+				op5log::instance('auth')->log(
+					'error',
+					"A client tried to use a session that was destroyed at $destroyed_at. id: '"
+					. session_id() . "'. This could be due to an attack attempt or an unstable connection."
+				);
+			}
+			elseif (isset($_SESSION['new_session_id'])) {
+				/* The session id provided by client browser is marked as expired,
+				 * but is still within grace period. This could be due to lost cookie
+				 * by unstable network.
+				 * Set the session cookie to what was stored in new_session_id on login.
+				 */
+				op5log::instance('auth')->log(
+					'debug',
+					'Session ' . session_id() . " marked for destruction at $destroyed_at, "
+					. "but not yet expired, create new session with id {$_SESSION['new_session_id']}");
+				session_write_close();
+				ini_set('session.use_strict_mode', 0);
+				session_id($_SESSION['new_session_id']);
+				session_start();
+			}
+		}
 	}
 
 	public function csrf_token_valid($token)
