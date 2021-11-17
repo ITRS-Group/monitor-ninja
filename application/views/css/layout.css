@@ -1041,7 +1041,6 @@ h1.emote b {
 }
 .main-menu > ul > li:first-child {
   padding: 6px 22px;
-  background: #598488;
 }
 
 .main-menu > ul > li > a {
@@ -1814,11 +1813,10 @@ a.help-icon {
 }
 
 div#header div.main-menu img.brand-icon {
-  width: 136px;
-  height: 49px;
+  height: 48px;
   margin-top: -9px;
-  margin-left: -12px;
-  margin-right: -21px;
+  margin-left: -28px;
+  margin-right: -36px;
 }
 
 span.brand {

@@ -1,5 +1,5 @@
 <div class="popup-about">
-		<img class="popup-about-img" src="/ninja/modules/menu/views/itrs-about-logo.png">
+		<img class="popup-about-img" src="/ninja/modules/menu/views/itrs_op5_expanded.png">
   <table class="popup-about-table">
     <tr class="popup-about-row popup-about-row-links">
       <td>

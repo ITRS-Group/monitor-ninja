@@ -512,7 +512,7 @@ Feature: SLA reports
 		And I click "Save report"
 		And I enter "test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
-		And I wait for 2 seconds
+		And I wait for 3 seconds
 		Then I should see "Report was successfully saved"
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
