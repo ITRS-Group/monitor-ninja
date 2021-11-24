@@ -539,7 +539,7 @@ h1.emote b {
   position: relative;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
-  min-width: 900px;
+  min-width: 1000px;
   width: 100%;
   z-index: 2;
   background: #6C6E6E;
@@ -577,7 +577,7 @@ h1.emote b {
 
 .quicklinks {
   float: left;
-  margin: 9px 0 0 32px;
+  margin: 9px 0 0 15px;
   font-size: 0.9em;
   padding: 0;
   background: #fff;
@@ -834,7 +834,6 @@ h1.emote b {
   background: #EAEAEA url("/monitor/application/views/icons/mui-search-icon-hover.png") no-repeat center right;
 }
 .header > .finder .help-icon {
-  background: url("/monitor/application/views/icons/mui-question-mark-white.svg") no-repeat !important;
   margin-top: 6px;
 }
 
@@ -1035,7 +1034,7 @@ h1.emote b {
 
 .main-menu > ul > li {
   height: 36px;
-  padding: 6px 20px;
+  padding: 6px 10px;
   vertical-align: top;
   border-right: 1px solid #999;
 }
@@ -1813,7 +1812,7 @@ a.help-icon {
 }
 
 div#header div.main-menu img.brand-icon {
-  height: 48px;
+  height: 49px;
   margin-top: -9px;
   margin-left: -28px;
   margin-right: -36px;
