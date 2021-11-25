@@ -142,7 +142,7 @@ class User_Controller extends Authenticated_Controller {
 						continue;
 					}
 					$current_val = Ninja_setting_Model::fetch_page_setting($cfgkey[0], '*');
-					if (is_object($current_val) && count($current_val)) {
+					if (is_object($current_val) && !empty($current_val)) {
 						$current_values[$cfgkey[0]] = $current_val->setting;
 					} else {
 						$current_values[$cfgkey[0]] = Kohana::config($cfgkey[0]);
