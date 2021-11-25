@@ -217,9 +217,9 @@ select.auto {
 
 button, input[type=reset], input[type=submit], input[type=button] {
   cursor: pointer;
-  padding: 2px 5px;
+  padding: 2px 8px;
   margin-bottom: 5px;
-  height: 30px;
+  height: 22px;
   border-radius: 2px;
   border-style: none;
   background: #6C6E6E;
