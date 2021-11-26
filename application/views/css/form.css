@@ -17,6 +17,7 @@ form.renderable-login {
 	margin: 0 auto;
 	padding-top: 35px;
 	margin-top: 80px;
+	padding-bottom: 1px;
 }
 
 p.error {
