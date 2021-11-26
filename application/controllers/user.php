@@ -125,10 +125,8 @@ class User_Controller extends Authenticated_Controller {
 		$settings['listview'] = $listview_settings;
 
 		$settings['config'] = false;
-		$available_skins = ninja::get_skins();
 		$settings['config'] = array(
-			_('List view refresh rate') => array('config.listview_refresh_rate', self::$var_types['config.listview_refresh_rate']),
-			_('Current Skin') => array('config.current_skin', self::$var_types['config.current_skin'], $available_skins)
+			_('List view refresh rate') => array('config.listview_refresh_rate', self::$var_types['config.listview_refresh_rate'])
 		);
 
 		$current_values = false;
