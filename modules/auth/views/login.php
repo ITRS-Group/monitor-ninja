@@ -49,8 +49,6 @@
 		<input type="submit" value="Log in">
 	</fieldset>
 
-	<p class="rights">&#169;2019 ITRS GROUP LTD, ALL RIGHTS RESERVED</p>
-
 	<?php
 		echo form::close()
 	?>
