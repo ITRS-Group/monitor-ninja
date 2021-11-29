@@ -153,8 +153,10 @@ class Ninja_Reports_Test extends Status_Reports_Model
 			if (!$opts->set($k, $v))
 				echo "Failed to set option '$k' to '$v'\n";
 		}
-		$opts->properties_copy['rpttimeperiod']['options'][$timeperiod['name']] = $timeperiod['name'];
-		$opts['rpttimeperiod'] = $timeperiod['name'];
+		if (is_array($timeperiod)) {
+			$opts->properties_copy['rpttimeperiod']['options'][$timeperiod['name']] = $timeperiod['name'];
+			$opts['rpttimeperiod'] = $timeperiod['name'];
+		}
 
 		# force logs to be kept so we can analyze them and make
 		# sure the durations add up
