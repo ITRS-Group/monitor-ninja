@@ -417,7 +417,6 @@ Feature: Availability reports
 		And I check "Use alias"
 		And I check "Include trends graph"
 		And I check "Include pie charts"
-		And I select "pink_n_fluffy" from "Skin"
 		And I enter "This is a saved test report" into "Description"
 		And I click "Show report"
 		# I don't care where, but I want everything to be visible somehow
@@ -458,7 +457,6 @@ Feature: Availability reports
 		And "Use alias" should be checked
 		And "Include trends graph" should be checked
 		And "Include pie charts" should be checked
-		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"
 		When I click "Show report"
 		Then I should see "Last month"
