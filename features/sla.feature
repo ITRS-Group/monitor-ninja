@@ -414,7 +414,6 @@ Feature: SLA reports
 		And I select "Undetermined" from "Count program downtime as"
 		And I select "Hard and soft states" from "State types"
 		And I check "Use alias"
-		And I select "pink_n_fluffy" from "Skin"
 		And I enter "This is a saved test report" into "Description"
 		And I click "Show report"
 		# I don't care where, but I want everything to be visible somehow
@@ -452,7 +451,6 @@ Feature: SLA reports
 		And "Uptime, with difference" should be selected from "Count scheduled downtime as"
 		And "Undetermined" should be selected from "Count program downtime as"
 		And "Use alias" should be checked
-		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"
 		And "Jan" should contain "9"
 		And "Feb" should contain "9"

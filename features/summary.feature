@@ -777,7 +777,6 @@ Feature: Summary reports
 		And I check "Critical"
 		And I check "Unknown"
 		And I uncheck "Undetermined"
-		And I select "pink_n_fluffy" from "Skin"
 		And I enter "This is a saved test report" into "Description"
 		And I click "Show report"
 		# I don't care where, but I want everything to be visible somehow
@@ -817,7 +816,6 @@ Feature: Summary reports
 		And "Warning" should be checked
 		And "Critical" should be checked
 		And "Unknown" should be checked
-		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"
 		When I click "Show report"
 		Then I should see "2013-01-01 01:31:00 to 2013-04-03 22:32:00"

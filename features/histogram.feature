@@ -292,7 +292,6 @@ Feature: Histogram reports
 		And I select "Day of week" from "Statistics breakdown"
 		And I select "Soft states" from "State types"
 		And I check "Ignore repeated states"
-		And I select "pink_n_fluffy" from "Skin"
 		And I enter "This is a saved test report" into "Description"
 		And I click "Show report"
 		# I don't care where, but I want everything to be visible somehow
@@ -319,7 +318,6 @@ Feature: Histogram reports
 		And "Day of week" should be selected from "Statistics breakdown"
 		And "Soft states" should be selected from "State types"
 		And "Ignore repeated states" should be checked
-		And "pink_n_fluffy" should be selected from "Skin"
 		And "Description" should contain "This is a saved test report"
 		When I click "Show report"
 		Then I should see "Last month"
