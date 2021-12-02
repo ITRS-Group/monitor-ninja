@@ -223,6 +223,8 @@
 		elm.value = $(sel).text();
 		// Trigger element's change events.
 		$(elm).change();
+		// Keep focus
+		elm.focus();
 		// Hide picker
 		$tpDiv.hide();
 	}
