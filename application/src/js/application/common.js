@@ -243,213 +243,212 @@ $(document).ready(function() {
 		};
 	}
 
-		/* QUICKLINK EXTENSION */
+	/* QUICKLINK EXTENSION */
 
-		var global_quicklinks = [];
+	var global_quicklinks = [];
 
-		function quicklinks_save_all() {
-			$.ajax(_site_domain + _index_page + '/ajax/save_page_setting', {
-				data: {
-					'type': 'dojo-quicklinks',
-					'page': 'tac',
-					'setting': JSON.stringify(global_quicklinks),
-					'csrf_token': _csrf_token
-				},
-				type: 'POST',
-				complete: function () {
-					$('#dojo-add-quicklink-href').attr('value', '');
-					$('#dojo-add-quicklink-title').attr('value', '');
-					$('#dojo-add-quicklink-icon').attr('value', '');
-				}
-			});
-		}
-	
-		function quicklink_icon_listener() {
-			$("#dojo-icon-container").on('click', 'span', function () {				
-				var span = $(this);
-				$('#dojo-add-quicklink-icon').val(span.data('icon'));
-	
-				// we have to change the background of the td, since the span already
-				// has the icon image as its background
-				var all_tds = $('#dojo-icon-container td');
-				all_tds.removeClass('highlight');
-				span.parents('td').addClass('highlight');
-			});
-		}
-
-		function quicklink_icon_cleanup() {
-			var all_tds = $('#dojo-icon-container td');
-			all_tds.removeClass('highlight');
-		}
-	
-		function quicklink_cleanup() {
-			$('#dojo-quicklink-remove').html('');
-			for (var i = 0; i < global_quicklinks.length; i += 1) {
-				var l = global_quicklinks[i];
-				var vid = l.title + ':' + l.href;
-				var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
-				quicklink
-					.find('label')
-					.text(l.title)
-					.prepend($('<span class="icon-16"></span>').addClass('x16-' + l.icon))
-					.prepend($('<input type="checkbox" />')
-						.attr('value', vid)
-						.attr('id', vid)
-						.attr('title', l.title)
-					);
-				quicklink
-					.find('a')
-					.attr('href', l.href)
-					.text(l.href);
-				$('#dojo-quicklink-remove').append(quicklink);
-			}
-			quicklink_clear_errors()
-		}
-	
-		function quicklink_markup() {
-			let markup = document.querySelectorAll("#dojo-add-quicklink-menu");
-			return markup[0];
-		}
-	
-		function quicklink_clear_errors() {
-			if ($(".quicklink-error")) {
-				$(".quicklink-error").remove();
-			}
-		}
-	
-		function quicklink_error(error) {
-			quicklink_clear_errors()
-			$("#dojo-add-quicklink-menu").prepend(
-				`<span class="quicklink-error info-notice-warning">${error}</span>`
-			)
-		}
-	
-		$('#dojo-add-quicklink').on("click", function () {
-			$('#dojo-quicklink-remove').html('');
-			for (var i = 0; i < global_quicklinks.length; i += 1) {
-				var l = global_quicklinks[i];
-				var vid = l.title + ':' + l.href;
-				var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
-				quicklink
-					.find('label')
-					.text(l.title)
-					.prepend($('<span class="icon-16"></span>').addClass('x16-' + l.icon))
-					.prepend($('<input type="checkbox" />')
-						.attr('value', vid)
-						.attr('id', vid)
-						.attr('title', l.title)
-					);
-				quicklink
-					.find('a')
-					.attr('href', l.href)
-					.text(l.href);
-				$('#dojo-quicklink-remove').append(quicklink);
-			}
-
-			var lightbox = LightboxManager.create(false);
-			var header = document.createElement('h1');
-			header.textContent = 'Add new quicklink';
-
-			lightbox.show();
-
-			// Callback to clear the options when you close the window with the X
-			lightbox.quicklink_header(header, function () {
+	function quicklinks_save_all() {
+		$.ajax(_site_domain + _index_page + '/ajax/save_page_setting', {
+			data: {
+				'type': 'dojo-quicklinks',
+				'page': 'tac',
+				'setting': JSON.stringify(global_quicklinks),
+				'csrf_token': _csrf_token
+			},
+			type: 'POST',
+			complete: function () {
 				$('#dojo-add-quicklink-href').attr('value', '');
 				$('#dojo-add-quicklink-title').attr('value', '');
 				$('#dojo-add-quicklink-icon').attr('value', '');
-				quicklink_icon_cleanup();
-				quicklink_clear_errors();
-			});
+			}
+		});
+	}
 
-			// Get the contents of the quicklink markup
-			var quicklink_nodelist = quicklink_markup();
+	function quicklink_icon_listener() {
+		$("#dojo-icon-container").on('click', 'span', function () {				
+			var span = $(this);
+			$('#dojo-add-quicklink-icon').val(span.data('icon'));
 
-			lightbox.content(quicklink_nodelist);
+			// we have to change the background of the td, since the span already
+			// has the icon image as its background
+			var all_tds = $('#dojo-icon-container td');
+			all_tds.removeClass('highlight');
+			span.parents('td').addClass('highlight');
+		});
+	}
 
-			// Setup listeners for the icons
-			quicklink_icon_listener(quicklink_nodelist)
+	function quicklink_icon_cleanup() {
+		var all_tds = $('#dojo-icon-container td');
+		all_tds.removeClass('highlight');
+	}
 
-			lightbox.button("Save", function () {
-				if(quicklink_save(lightbox)){
-					quicklink_cleanup();
+	function quicklink_cleanup() {
+		$('#dojo-quicklink-remove').html('');
+		for (var i = 0; i < global_quicklinks.length; i += 1) {
+			var l = global_quicklinks[i];
+			var vid = l.title + ':' + l.href;
+			var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
+			quicklink
+				.find('label')
+				.text(l.title)
+				.prepend($('<span class="icon-16"></span>').addClass('x16-' + l.icon))
+				.prepend($('<input type="checkbox" />')
+					.attr('value', vid)
+					.attr('id', vid)
+					.attr('title', l.title)
+				);
+			quicklink
+				.find('a')
+				.attr('href', l.href)
+				.text(l.href);
+			$('#dojo-quicklink-remove').append(quicklink);
+		}
+		quicklink_clear_errors()
+	}
+
+	function quicklink_markup() {
+		let markup = document.querySelectorAll("#dojo-add-quicklink-menu");
+		return markup[0];
+	}
+
+	function quicklink_clear_errors() {
+		if ($(".quicklink-error")) {
+			$(".quicklink-error").remove();
+		}
+	}
+
+	function quicklink_error(error) {
+		quicklink_clear_errors()
+		$("#dojo-add-quicklink-menu").prepend(
+			`<span class="quicklink-error info-notice-warning">${error}</span>`
+		)
+	}
+
+	$('#dojo-add-quicklink').on("click", function () {
+		$('#dojo-quicklink-remove').html('');
+		for (var i = 0; i < global_quicklinks.length; i += 1) {
+			var l = global_quicklinks[i];
+			var vid = l.title + ':' + l.href;
+			var quicklink = $('<li><label></label> (<a target="_blank" class="external"></a>)</li>');
+			quicklink
+				.find('label')
+				.text(l.title)
+				.prepend($('<span class="icon-16"></span>').addClass('x16-' + l.icon))
+				.prepend($('<input type="checkbox" />')
+					.attr('value', vid)
+					.attr('id', vid)
+					.attr('title', l.title)
+				);
+			quicklink
+				.find('a')
+				.attr('href', l.href)
+				.text(l.href);
+			$('#dojo-quicklink-remove').append(quicklink);
+		}
+
+		var lightbox = LightboxManager.create(false);
+		var header = document.createElement('h1');
+		header.textContent = 'Add new quicklink';
+
+		lightbox.show();
+
+		// Callback to clear the options when you close the window with the X
+		lightbox.quicklink_header(header, function () {
+			$('#dojo-add-quicklink-href').attr('value', '');
+			$('#dojo-add-quicklink-title').attr('value', '');
+			$('#dojo-add-quicklink-icon').attr('value', '');
+			quicklink_icon_cleanup();
+			quicklink_clear_errors();
+		});
+
+		// Get the contents of the quicklink markup
+		var quicklink_nodelist = quicklink_markup();
+
+		lightbox.content(quicklink_nodelist);
+
+		// Setup listeners for the icons
+		quicklink_icon_listener(quicklink_nodelist)
+
+		lightbox.button("Save", function () {
+			if(quicklink_save(lightbox)){
+				quicklink_cleanup();
+			}
+		});
+		
+	})
+
+	// Saves the quicklink to the user settings
+	function quicklink_save(lightbox) {
+		var href = $('#dojo-add-quicklink-href').prop('value'),
+			title = $('#dojo-add-quicklink-title').prop('value'),
+			icon = $('#dojo-add-quicklink-icon').prop('value'),
+			target = $('#dojo-add-quicklink-target').prop('value'),
+			changed = false;
+		let error = '';
+		let selected = 0;
+		if (href && title && icon) {
+			selected += 3;
+			var i = global_quicklinks.length;
+			for (i; i--;) {
+				if (global_quicklinks[i].href === href) {
+					error += 'This href is already used in a quicklink. <br />';
 				}
-			});
+				if (global_quicklinks[i].title === title) {
+					error += 'This title is already in use, titles must be unique. <br />';
+				}
+			}
+			if (error.length === 0) {
+				var remove_script_tags = new RegExp("(javascript:)|<[^>]*script", "gmi");
+				if (remove_script_tags.test(href)) {
+					href = "/";
+				}
+				global_quicklinks.push({ 'href': href, 'title': title, 'icon': icon, 'target': target });
+				var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
+				quicklink
+					.find('a')
+					.prop('target', target)
+					.prop('href', href)
+					.prop('title', title);
+				$('#dojo-add-quicklink').parent().before(quicklink);
+				changed = true;
+			} else {
+				quicklink_error(error)
+				return false;
+			}
+		}
 
-		})
-
-		// Saves the quicklink to the user settings
-		function quicklink_save(lightbox) {
-			var href = $('#dojo-add-quicklink-href').prop('value'),
-				title = $('#dojo-add-quicklink-title').prop('value'),
-				icon = $('#dojo-add-quicklink-icon').prop('value'),
-				target = $('#dojo-add-quicklink-target').prop('value'),
-				changed = false;
-			let error = '';
-			let selected = 0;
-			if (href && title && icon) {
-				selected += 3;
-				var i = global_quicklinks.length;
+		// This removes selected quicklinks
+		$('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
+			var i = global_quicklinks.length;
+			var vid = '';
+			if (this.checked) {
+				selected++;
 				for (i; i--;) {
-					if (global_quicklinks[i].href === href) {
-						error += 'This href is already used in a quicklink. <br />';
+					vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
+					if (this.value === vid) {
+						$('#quicklinks li a[title="' + this.title + '"]').parent().remove();
+						global_quicklinks.splice(i, 1);
+						changed = true;
 					}
-					if (global_quicklinks[i].title === title) {
-						error += 'This title is already in use, titles must be unique. <br />';
-					}
-				}
-				if (error.length === 0) {
-					var remove_script_tags = new RegExp("(javascript:)|<[^>]*script", "gmi");
-					if (remove_script_tags.test(href)) {
-						href = "/";
-					}
-					global_quicklinks.push({ 'href': href, 'title': title, 'icon': icon, 'target': target });
-					var quicklink = $('<li><a class="image-link"><span class="icon-16 x16-' + icon + '"></span></a></li>');
-					quicklink
-						.find('a')
-						.prop('target', target)
-						.prop('href', href)
-						.prop('title', title);
-					$('#dojo-add-quicklink').parent().before(quicklink);
-					changed = true;
-				} else {
-					quicklink_error(error)
-					return false;
 				}
 			}
 
-			// This removes selected quicklinks
-			$('#dojo-quicklink-remove input[type="checkbox"]').each(function () {
-				var i = global_quicklinks.length;
-				var vid = '';
-				if (this.checked) {
-					selected++;
-					for (i; i--;) {
-						vid = global_quicklinks[i].title + ':' + global_quicklinks[i].href;
-						if (this.value === vid) {
-							$('#quicklinks li a[title="' + this.title + '"]').parent().remove();
-							global_quicklinks.splice(i, 1);
-							changed = true;
-						}
-					}
-				}
+		});
+		if (changed) {
+			quicklinks_save_all();
+		}
+		
+		if (!selected) {
+			error += 'Invalid input';
+			quicklink_error(error);
+		}
 
-			});
-			if (changed) {
-				quicklinks_save_all();
-			}
-			
-			if (!selected) {
-				error += 'Invalid input';
-				quicklink_error(error);
-			}
-
-			if (!error) {
-				lightbox.hide();
-				quicklink_clear_errors();
-			}
-		};
+		if (!error) {
+			lightbox.hide();
+			quicklink_clear_errors();
+		}
+	};
 	
-
 	$.ajax(_site_domain + _index_page + '/ajax/get_setting', {
 			data: {
 				'type': 'dojo-quicklinks',
