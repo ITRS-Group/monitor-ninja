@@ -307,7 +307,7 @@ $(document).ready(function() {
 	}
 
 	function quicklink_markup() {
-		let markup = document.querySelectorAll("#dojo-add-quicklink-menu");
+		var markup = document.querySelectorAll("#dojo-add-quicklink-menu");
 		return markup[0];
 	}
 
@@ -374,7 +374,7 @@ $(document).ready(function() {
 				quicklink_cleanup();
 			}
 		});
-		
+
 	})
 
 	// Saves the quicklink to the user settings
@@ -384,8 +384,8 @@ $(document).ready(function() {
 			icon = $('#dojo-add-quicklink-icon').prop('value'),
 			target = $('#dojo-add-quicklink-target').prop('value'),
 			changed = false;
-		let error = '';
-		let selected = 0;
+		var error = '';
+		var selected = 0;
 		if (href && title && icon) {
 			selected += 3;
 			var i = global_quicklinks.length;
