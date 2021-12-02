@@ -3,7 +3,7 @@
 <?php
 $base_set = HostPool_Model::all();
 if ($object->get_table() === 'hostgroups') {
-	$base_set = $base_set->reduce_by('host.groups', $object->get_name(), '>=');
+	$base_set = $base_set->reduce_by('groups', $object->get_name(), '>=');
 } else {
 ?>
 <div class="information-cell">
