@@ -19,7 +19,7 @@ $().ready(function() {
 			return false;
 		}
 	});
-	$(document).on("hover", "#filter_result table td a span.x16-add-comment", function() {
+	$(document).on("mouseenter", "#filter_result table td a span.x16-add-comment", function() {
 		$(this).removeAttr("title");
 	});
 });

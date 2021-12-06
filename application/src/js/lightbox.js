@@ -162,6 +162,29 @@ var LightboxManager = (function() {
 				return box;
 			};
 
+			box.quicklink_header = function (source, callback) {
+				var close_button = element("a", {
+					"class": "icon-cancel link-icon",
+					"title": "Close this window",
+					"href": "#"
+				});
+				close_button.addEventListener("click", function(ev) {
+					box.hide();
+					ev.preventDefault();
+					callback();
+					return false;
+				});
+
+				if (source instanceof Node) {
+					source.appendChild(close_button);
+					header.appendChild(source);
+				} else if (source instanceof NodeList) {
+					Array.prototype.slice.call(source, 0).forEach(box.header);
+					source.appendChild(close_button);
+				} else throw new LightboxError("Source passed to footer must be an instanceof Node or NodeList");
+				return box;
+			};
+
 			box.hide = function () {
 				overlay.style.display = 'none';
 				return box;
@@ -254,6 +277,20 @@ var LightboxManager = (function() {
 		} else if(event.keyCode && event.keyCode == 27) {
 			// escape was pressed
 			LightboxManager.remove_topmost();
+		}
+	};
+
+
+	var hide_handler = function(event) {
+		var tag_name = (event.target || event.srcElement).tagName;
+		if(tag_name == 'INPUT' || tag_name == 'SELECT' || tag_name == 'TEXTAREA') {
+			return;
+		}
+		if(event.key && event.key == "Escape") {
+			LightboxManager.hide_topmost();
+		} else if(event.keyCode && event.keyCode == 27) {
+			// escape was pressed
+			LightboxManager.hide_topmost();
 		}
 	};
 
@@ -418,9 +455,13 @@ var LightboxManager = (function() {
 					lb.button(yes_text, yes_cb);
 				}
 			},
-			"create": function() {
-				if(!boxes.length) {
-					document.addEventListener('keydown', escape_handler, false);
+			"create": function(should_close) {
+				if (should_close) {
+					if(!boxes.length) {
+						document.addEventListener('keydown', escape_handler, false);
+					}
+				} else{
+					document.addEventListener('keydown', hide_handler, false)
 				}
 				var lb = new Lightbox();
 				boxes.push(lb);
@@ -445,6 +486,12 @@ var LightboxManager = (function() {
 					return boxes[boxes.length-1];
 				}
 				return undefined;
+			},
+			"hide_topmost": function() {
+				var topmost = LightboxManager.topmost();
+				if (topmost) {
+					topmost.hide()
+				}
 			}
 		};
 	}();

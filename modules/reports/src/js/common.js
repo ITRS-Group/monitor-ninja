@@ -2,15 +2,6 @@ var sla_month_error_color    = 'red';
 var sla_month_disabled_color = '#cdcdcd';
 var sla_month_enabled_color  = '#fafafa';
 $(document).ready(function() {
-	$(".fancybox").fancybox({
-		'overlayOpacity'        :       0.7,
-		'overlayColor'          :       '#ffffff',
-		'hideOnContentClick' : false,
-		'autoScale':true,
-		'autoDimensions': true,
-		'onComplete': function(obj) { $($(obj).attr('href')).find('.filter-status').each(filter_mapping_mapping); }
-	});
-
 	$('.filter-status').on('change', filter_mapping_mapping).each(filter_mapping_mapping);
 
 	var direct_link_visible = false;
@@ -22,7 +13,7 @@ $(document).ready(function() {
 				.html('<form>'+_label_direct_link+' <input class="wide" type="text" value="'
 					+ document.location.protocol + '//'
 					+ document.location.host
-					+ $('#current_report_params').attr('href')
+					+ $('#current_report_params').prop('href')
 					+ '"></form>')
 				.css('position', 'absolute')
 				.css('top', this.offsetHeight + this.offsetTop + 5)
@@ -322,7 +313,7 @@ function check_form_values(form)
 		for (i=1;i<=12;i++) {
 			var field_name = 'month_' + i;
 			var input = $('input[id="' + field_name + '"]', form);
-			var value = input.attr('value');
+			var value = input.prop('value');
 			value = value.replace(',', '.');
 			if (value > max_val || isNaN(value)) {
 				input.css('background', sla_month_error_color);
@@ -400,11 +391,11 @@ function check_custom_months()
 
 function confirm_delete_report()
 {
-	var id = $("#report_id").attr('value')
+	var id = $("#report_id").prop('value')
 
 	var is_scheduled = $('#is_scheduled').text()!='' ? true : false;
 	var msg = _reports_confirm_delete + "\n";
-	var type = $('input[name=type]').attr('value');
+	var type = $('input[name=type]').prop('value');
 	if (!id)
 		return;
 	if (is_scheduled) {

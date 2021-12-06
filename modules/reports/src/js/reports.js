@@ -17,9 +17,9 @@ $(document).ready(function() {
 	});
 
 	$("#report_period").bind('change', function() {
-		show_calendar($(this).attr('value'));
+		show_calendar($(this).prop('value'));
 	});
-	show_calendar($("#report_period").attr('value'));
+	show_calendar($("#report_period").prop('value'));
 
 	$('.autofill').click(function() {
 		var the_val = $(this).siblings('input').val();
@@ -51,7 +51,7 @@ $(document).ready(function() {
 		input.val(filename);
 	});
 
-	$('#include_trends').live('click', function(ev) {
+	$('#include_trends').on('click', function(ev) {
 		if (ev.target.checked)
 			$('.trend_options').show();
 		else

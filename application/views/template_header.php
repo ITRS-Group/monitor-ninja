@@ -50,10 +50,10 @@
 			?>
 	</div>
 	<div style="display: none">
+		<!-- This is the template for the quicklink modal -->
 		<div id="dojo-add-quicklink-menu">
+			<!-- Javascript handles the sending of the form -->
 			<form action="">
-				<h1>Add new quicklink</h1>
-				<hr />
 				<table class="no_border">
 					<tr>
 						<td><label for="dojo-add-quicklink-href"><?php echo _('URI') ?>:</label></td>
@@ -98,11 +98,6 @@
 						<td><?php echo _('Remove selected quicklinks') ?>:</td>
 						<td>
 							<ul id="dojo-quicklink-remove"></ul>
-					</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<input type="submit" value="<?php echo _('Save') ?>" />
 						</td>
 					</tr>
 				</table>
