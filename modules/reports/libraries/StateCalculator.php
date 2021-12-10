@@ -145,7 +145,11 @@ abstract class StateCalculator
 	 */
 	public function st_update($end_time)
 	{
-		$prev_time = $this->prev_row['the_time'];
+		if (empty($this->prev_row)) {
+			$prev_time = 0;
+		} else {
+			$prev_time = $this->prev_row['the_time'];
+		}
 		$duration = $end_time - $prev_time;
 		$active = intval($this->timeperiod->active_time($prev_time, $end_time));
 		$this->st_inactive += ($end_time - $prev_time) - $active;
