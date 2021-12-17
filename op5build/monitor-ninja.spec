@@ -3,7 +3,8 @@
 %define httpconfdir httpd/conf.d
 %define phpdir /usr/share/php
 %define daemon_group apache
-%define nacoma_hooks_path /opt/monitor/op5/nacoma/hooks/save
+%define base_prefix /opt/monitor
+%define nacoma_hooks_path %{base_prefix}/op5/nacoma/hooks/save
 
 Name: monitor-ninja
 Version: %{op5version}
@@ -13,7 +14,7 @@ Vendor: op5 AB
 BuildRoot: %{_tmppath}/%{name}-%{version}
 Summary: op5 monitor ninja
 Group: op5/monitor
-Prefix: /opt/monitor/op5/ninja
+Prefix: %{base_prefix}/op5/ninja
 Obsoletes: monitor-gui <= 3.5.13
 Obsoletes: monitor-reports-gui <= 1.4.9
 Obsoletes: op5-nagios-gui-core <= 4.0.4
@@ -161,7 +162,8 @@ install -D -m 644 install_scripts/nacoma_hooks.pyc %{buildroot}%{nacoma_hooks_pa
 install -D -m 644 install_scripts/nacoma_hooks.pyo %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyo
 
 install -d %buildroot%_unitdir
-install -D -m 644 -t %buildroot%_unitdir op5build/*.{service,timer}
+install -D -m 644 -t %buildroot%_unitdir op5build/systemd/*.{service,timer}
+install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libexec/op5_scheduled_reports.py
 
 %if 0%{?rhel} >= 8
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
@@ -199,7 +201,7 @@ else
 fi
 
 systemctl daemon-reload &>/dev/null || :
-systemctl enable --now op5-scheduled-reports.timer &>/dev/null || :
+systemctl enable --now op5-scheduled-reports.service &>/dev/null || :
 systemctl enable --now op5-recurring-downtime.timer &>/dev/null || :
 
 # Cleanup symlinks we don't use anymore
@@ -221,11 +223,14 @@ fi
 sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 
 %postun
-%systemd_postun_with_restart op5-scheduled-reports.timer
+%systemd_postun_with_restart op5-scheduled-reports.service
 %systemd_postun_with_restart op5-recurring-downtime.timer
+if [ $1 -eq 0 ]; then
+	systemctl disable op5-recurring-downtime.timer &>/dev/null || :
+fi
 
 %files
-%prefix
+%base_prefix/*
 %_unitdir/*
 %{nacoma_hooks_path}/ninja_hooks.*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf

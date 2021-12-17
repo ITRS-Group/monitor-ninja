@@ -1,0 +1,12 @@
+[Unit]
+Description=OP5 Monitor check report schedules
+Wants=mariadb.service
+
+[Service]
+ExecStart=/opt/monitor/libexec/op5_scheduled_reports.py
+Restart=always
+RestartSec=10
+User=monitor
+
+[Install]
+WantedBy=merlind.service

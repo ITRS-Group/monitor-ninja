@@ -1,9 +1,0 @@
-[Unit]
-Description=OP5 Monitor check report schedules
-JobTimeoutSec=30
-
-[Service]
-Type=oneshot
-User=monitor
-ExecStart=/usr/bin/php /opt/monitor/op5/ninja/index.php default/cron/schedule
-StandardOutput=journal
