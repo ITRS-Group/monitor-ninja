@@ -45,13 +45,6 @@ class Input {
 
 		if (self::$instance === NULL)
 		{
-			// magic_quotes_gpc is enabled
-			if (get_magic_quotes_gpc())
-			{
-				echo ('Disable magic_quotes_gpc! It is evil and deprecated: http://php.net/magic_quotes');
-				exit(1);
-			}
-
 			// register_globals is enabled
 			if (ini_get('register_globals'))
 			{
