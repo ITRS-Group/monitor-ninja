@@ -1,5 +1,4 @@
-(function () {
-
+$( document ).ready(function(){
   var baseurl = _site_domain + _index_page + '/';
 
   var nl2br = function(text) {
@@ -185,7 +184,6 @@
       });
 
     return false;
-
   });
+});
 
-})();
