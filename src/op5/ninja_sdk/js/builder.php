@@ -17,6 +17,8 @@ class js_loader_hook_generator extends class_generator {
 		$this->write('$module_path = Kohana::$module_path;');
 		$this->write('Event::add("system.post_controller_constructor", function () use ($module_path) {');
 		$this->write(    '$controller = Event::$data;');
+		$this->write(    'if (!isset($controller->template))');
+		$this->write(    '    $controller->template = new stdClass();');
 		$this->write(    '$controller->template->js[] = $module_path.%s;', $this->bundle_path);
 		$this->write('});');
 	}
