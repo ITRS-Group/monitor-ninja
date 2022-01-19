@@ -31,62 +31,60 @@ if (!empty($base_href)) {
 		$v->render(true);
 	?>
 	<script>
-		if(!window.frameElement) {
-			window.addEventListener("load", function(){
-				window.cookieconsent.initialise({
-					"palette": {
-	                    "popup": {
-	                        "background": "#E4E4E4",
-	                        "text": "#212121"
-	                    },
-	                    "button": {
-	                        "background":  "#457D8C",
-	                        "text": "#ffffff"
-	                    }
-	                },
-					"theme": "classic",
-					"content": {
-						"message": "OP5 Monitor uses cookies to ensure you get the best browsing experience. If you continue to use our website you agree to our use of cookies.",
-						"dismiss": "Got it",
-						"link": "Learn More",
-						"href": "https://docs.itrsgroup.com/docs/op5-monitor/current/topics/other-documents/other-documents/cookie-policy.html"
-					},
-					onPopupOpen: function() { 
-						$('#content').append('<div id="extra_div_for_cookie" style="height:200px"></div>'); 
-						$('.cc-link').css('border','none')
-	                           .css('color','#5C5C5C');
-	                    $('body').on('mouseover', '.cc-btn', function() {
-	                    $(this).css('background-color','#295F6D')
-	                           .css('border','2px solid transparent');
-			            });
+		window.addEventListener("load", function(){
+			window.cookieconsent.initialise({
+				"palette": {
+                    "popup": {
+                        "background": "#E4E4E4",
+                        "text": "#212121"
+                    },
+                    "button": {
+                        "background":  "#457D8C",
+                        "text": "#ffffff"
+                    }
+                },
+				"theme": "classic",
+				"content": {
+					"message": "OP5 Monitor uses cookies to ensure you get the best browsing experience. If you continue to use our website you agree to our use of cookies.",
+					"dismiss": "Got it",
+					"link": "Learn More",
+					"href": "https://kb.op5.com/x/txNrAQ"
+				},
+				onPopupOpen: function() { 
+					$('#content').append('<div id="extra_div_for_cookie" style="height:200px"></div>'); 
+					$('.cc-link').css('border','none')
+                           .css('color','#5C5C5C');
+                    $('body').on('mouseover', '.cc-btn', function() {
+                    $(this).css('background-color','#295F6D')
+                           .css('border','2px solid transparent');
+		            });
 
-			            $('body').on('mouseout', '.cc-btn', function() {
-			                    $(this).css('background-color','#457D8C');
-			            });
+		            $('body').on('mouseout', '.cc-btn', function() {
+		                    $(this).css('background-color','#457D8C');
+		            });
 
-			            $('body').on('mouseover', '.cc-link', function() {
-			                    $(this).css('border','none')
-			                           .css('color','#212121');
-			            });
-			            $('body').on('mouseout', '.cc-link', function() {
-	                    		$(this).css('border','none')
-	                           		   .css('color','#5C5C5C');
-	            		});
+		            $('body').on('mouseover', '.cc-link', function() {
+		                    $(this).css('border','none')
+		                           .css('color','#212121');
+		            });
+		            $('body').on('mouseout', '.cc-link', function() {
+                    		$(this).css('border','none')
+                           		   .css('color','#5C5C5C');
+            		});
 
-					},
-					onPopupClose: function() { $('#extra_div_for_cookie').remove(); }
-				})
-			});
-		}
+				},
+				onPopupClose: function() { $('#extra_div_for_cookie').remove(); }
+			})
+		});
 	</script>
-	<script type="text/javascript">
-	/* Hack for lack of console.log() in ie7 */
-			if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
-			var listview_renderer_table = {};
-			var listview_renderer_buttons = {};
-			var listview_renderer_extra_objects = {};
-			var listview_renderer_totals = {};
-	</script>
+<script type="text/javascript">
+/* Hack for lack of console.log() in ie7 */
+		if (!window.console) console = {log: function() {}, error: function() {}, dir: function() {}};
+		var listview_renderer_table = {};
+		var listview_renderer_buttons = {};
+		var listview_renderer_extra_objects = {};
+		var listview_renderer_totals = {};
+</script>
 
 	<script type="text/javascript">
 		//<!--
