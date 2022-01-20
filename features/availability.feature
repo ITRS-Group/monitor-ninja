@@ -37,7 +37,6 @@ Feature: Availability reports
 			| 2013-03-09 00:03:00 |        701 |  NULL |   NULL | linux-server1 | PING                |     0 |    1 |     1 |              0 | OK - linux-server1  |
 		And I have activated the configuration
 		And I am logged in as administrator
-		And I check for cookie bar
 
 	@reports
 	Scenario: Generate report without objects

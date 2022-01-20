@@ -3,7 +3,6 @@ Feature: Backup/Restore configuration
 
 	Background:
 		Given I am logged in as administrator
-		And I check for cookie bar
 
 	Scenario: Create a config backup and then restore to it
 		When I am on address "/index.php/backup"

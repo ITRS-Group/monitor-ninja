@@ -39,8 +39,6 @@ Feature: Summary reports
 			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen |
 		And I have activated the configuration
 		And I am logged in as administrator
-		And I am on the main page
-		And I check for cookie bar
 
 	@configuration @reports
 	Scenario: See that the default-custom selector works
