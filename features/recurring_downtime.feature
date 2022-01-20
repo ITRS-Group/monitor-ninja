@@ -12,7 +12,7 @@ Feature: Recurring downtime
 		And I have activated the configuration
 		And I am logged in as administrator
 		And I am on the main page
-
+		And I check for cookie bar
 
 	@configuration
 	Scenario: Add a weekly recurring downtime

@@ -4,6 +4,7 @@ Feature: Report namespace are respected
 		Given I have an admins user group with all rights
 		And I am logged in
 		And I am on the main page
+		And I check for cookie bar
 
 	Scenario Outline: HTML reports are restricted
 		Given these actions are denied

@@ -6,3 +6,14 @@ Then(/^I should have a tasty cookie$/) do
 		cookie.httponly?.should be == true
 	}
 end
+
+Then(/^I check for cookie bar$/) do
+	steps %Q{
+		And I should see "OP5 Monitor uses cookies"
+		And I click the got it button
+	}
+end
+
+And(/^I click the got it button$/) do
+  page.find("a", :text => "Got it").click
+end
