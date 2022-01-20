@@ -4,6 +4,7 @@ Feature: Menu
 	Background:
 		Given I am logged in
 		And I am on the main page
+		And I check for cookie bar
 
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
