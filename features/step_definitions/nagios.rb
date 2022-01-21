@@ -57,5 +57,5 @@ And /^I have activated the configuration$/ do
   # It seems sleep is the most reliable way to ensure the config files
   # are all in place prior to the scenarios starting. For some reason
   # this is needed after upgrading to PHP 7.4.
-  sleep(2)
+  #sleep(2)
 end
