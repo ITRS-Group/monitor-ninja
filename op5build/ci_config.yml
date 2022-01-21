@@ -6,6 +6,10 @@ post:
     dnf install -y dnf-plugins-core
     dnf module switch-to php:7.4
 
+    # disable apc
+    sed -i 's/apc.enabled=1/apc.enabled=0/g' /etc/php.d/40-apcu.ini
+    systemctl restart php-fpm
+
     if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
     if [ -f /etc/init.d/mysqld ]; then service mysqld restart; fi
 
