@@ -168,6 +168,22 @@ module Configuration
       FileUtils.chmod 0777, @OP5LIBCFG
     end
 
+    def wait_for_config
+      auth_yml = File.join(@OP5LIBCFG, "auth.yml")
+      file_wait(auth_yml)
+      while File.readlines(auth_yml).grep(/common/).size <= 0
+        puts "#{auth_yml} DOESN'T INCLUDE COMMON, sleeping"
+        sleep(2)
+      end
+
+      if File.readlines(auth_yml).grep(/common/).size > 0
+        puts "#{auth_yml} includes common"
+      else
+        puts "#{auth_yml} DOESN'T INCLUDE COMMON!"
+      end
+
+   end
+
     ##
     # @param socket_path [String]
     # @raise [RuntimeError] Livestatus was not enabled
