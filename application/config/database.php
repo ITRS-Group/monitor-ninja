@@ -64,7 +64,7 @@ $config['nacoma'] = array
 		# that overrides the options above here:
 		'conn_str' => FALSE
 	),
-	'character_set' => 'latin1',
+	'character_set' => 'utf8mb4',
 	'table_prefix'  => '',
 	'object'        => TRUE,
 	'cache'         => FALSE,
