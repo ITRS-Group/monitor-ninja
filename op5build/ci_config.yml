@@ -7,7 +7,8 @@ post:
     dnf module switch-to php:7.4
 
     # disable apc
-    sed -i 's/apc.enabled=1/apc.enabled=0/g' /etc/php.d/40-apcu.ini
+    sed -i 's/opcache.enable=1/opcache.enable=0/g' /etc/php.d/10-opcache.ini
+    sed -i 's/opcache.enable_cli=1/opcache.enable_cli=0/g' /etc/php.d/10-opcache.ini
     systemctl restart php-fpm
 
     if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
