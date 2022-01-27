@@ -54,8 +54,4 @@ And /^I have activated the configuration$/ do
   # inject code between the execution of the background and the actual
   # scenario. I probably just haven't looked hard enough...?
   @configuration.activate
-  # It seems sleep is the most reliable way to ensure the config files
-  # are all in place prior to the scenarios starting. For some reason
-  # this is needed after upgrading to PHP 7.4.
-  sleep(2)
 end
