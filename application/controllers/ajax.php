@@ -33,6 +33,9 @@ class Ajax_Controller extends Authenticated_Controller {
 			return $setting;
 		}
 		$setting_info = json_decode($setting, true);
+		if (!is_array($setting_info)) {
+			return $setting;
+		}
 		$setting_href = array();
 		foreach ($setting_info as $setting_data) {
 			if (array_key_exists('href', $setting_data)) {
