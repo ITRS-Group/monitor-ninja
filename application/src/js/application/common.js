@@ -94,7 +94,7 @@ $(document).ready(function() {
 
 	// listview refresh helper code
 	$("#listview_refresh_control").bind('change', function() {
-		if ($("#listview_refresh_control").attr('checked')) {
+		if ($("#listview_refresh_control").prop("checked")) {
 			// save previous refresh rate
 			// to be able to restore it later
 			$('#listview_refresh_lable').css('font-weight', 'bold');
@@ -112,18 +112,6 @@ $(document).ready(function() {
 	});
 	if ($('#listview_refresh_edit').text()!=='') {
 		create_slider('listview_refresh');
-		$('#listview_refresh_slider').on('slidechange', function() {
-			var delay = parseInt($('#listview_refresh_value').val(), 10);
-			Notify.message(_listview_refresh_msg.replace('{delay}', delay), {type: "success"});
-			clearTimeout(lsfilter_storage.list.autorefresh_timer);
-			if (delay > 0) {
-				lsfilter_storage.list.config.autorefresh_enabled = true;
-			} else {
-				lsfilter_storage.list.config.autorefresh_enabled = false;
-			}
-			lsfilter_storage.list.config.autorefresh_delay = delay * 1000;
-			lsfilter_storage.list.start_autorefresh_timer();
-		});
 	}
 	// -- end listview refresh helper code
 
@@ -223,6 +211,16 @@ $(document).ready(function() {
 						complete: function() {
 							last_update_request = false;
 							id.val(interval);
+							// Popup message about updated time
+							Notify.message(_listview_refresh_msg.replace('{delay}', interval), {type: "success"});
+							clearTimeout(lsfilter_storage.list.autorefresh_timer);
+							if (interval > 0) {
+								lsfilter_storage.list.config.autorefresh_enabled = true;
+							} else {
+								lsfilter_storage.list.config.autorefresh_enabled = false;
+							}
+							lsfilter_storage.list.config.autorefresh_delay = interval * 1000;
+							lsfilter_storage.list.start_autorefresh_timer();
 						},
 						type: 'POST'
 					}
