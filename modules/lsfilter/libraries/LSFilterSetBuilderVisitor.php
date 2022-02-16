@@ -271,7 +271,7 @@ class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 			case 'date':
 				$ret = strtotime($arg_list2[0]);
 				if (false === $ret) {
-					throw new ORMException("Don't know how to translate \"" . htmlspecialchars($arg_list2[0]) . "\" into a date, please <a href=\"https://docs.itrsgroup.com/docs/op5-monitor/current/topics/other-documents/gui-ninja/listview-filter-date-function.html\" target=\"blank\">click here</a> for information on supported date formats.");
+					throw new ORMException('Don\'t know how to translate "' . htmlspecialchars($arg_list2[0]) . '" into a date, please <a href="' . Kohana::config('product.docs_url', true) . 'topics/other-documents/gui-ninja/listview-filter-date-function.html" target="blank">click here</a> for information on supported date formats.');
 				}
 				return $ret;
 				break;

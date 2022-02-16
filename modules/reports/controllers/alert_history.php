@@ -11,7 +11,7 @@ class Alert_history_Controller extends Summary_Controller
 	public function index($input = false)
 	{
 		if (isset($_SESSION['report_err_msg'])) {
-			$this->template->content = _("<h1>You're not authorized to see any hosts, so I can't show you a history of their alerts.</h1>\n<p>But then, you <i>were</i> allowed to log in, so I bet something is broken. Please <a href=\"https://support.itrsgroup.com\">contact support</a> with any information you have.</p>");
+			$this->template->content = _("<h1>You're not authorized to see any hosts, so I can't show you a history of their alerts.</h1>\n<p>But then, you <i>were</i> allowed to log in, so I bet something is broken. Please <a href=\"" . Kohana::config('product.support_url', true) . '">contact support</a> with any information you have.</p>');
 			unset($_SESSION['report_err_msg']);
 		}
 		else {

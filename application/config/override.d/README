@@ -1,0 +1,4 @@
+config/override.d/ directory is used by OP5 Monitor packages.
+For user defined custom configuration, use config/custom/ directory.
+Files from other packages in config/override.d/ overrides config files with the
+same name in config/.

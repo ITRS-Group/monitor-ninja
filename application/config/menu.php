@@ -1,4 +1,4 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 
 $config['items'] = false;
-$config['manual_url'] = 'https://docs.itrsgroup.com/docs/op5-monitor/';
+$config['manual_url'] = Kohana::config('product.docs_url', true);

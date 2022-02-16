@@ -87,7 +87,7 @@ class User_Controller extends Authenticated_Controller {
 		);
 
 		$sub_headings = array(
-			'listview' => array("https://docs.itrsgroup.com/docs/op5-monitor/current/topics/other-documents/gui-ninja/customizing-listview-columns.html", _('Read specification online'))
+			'listview' => array(Kohana::config('product.docs_url', true) . "topics/other-documents/gui-ninja/customizing-listview-columns.html", _('Read specification online'))
 		);
 
 		$settings['pagination'] = array(

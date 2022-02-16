@@ -459,6 +459,18 @@ final class Kohana {
 			}
 		}
 
+		if ($files = self::find_file('config/override.d', $name, false))
+		{
+			foreach ($files as $file)
+			{
+				require $file;
+				if (isset($config) and is_array($config))
+				{
+					$configuration = array_merge($configuration, $config);
+				}
+			}
+		}
+
 		if ($files = self::find_file('config/custom', $name, false))
 		{
 			foreach ($files as $file)
@@ -788,7 +800,7 @@ final class Kohana {
 		// Nothing found, yet
 		$found = NULL;
 
-		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'config/custom')
+		if ($directory === 'config' OR $directory === 'i18n' OR $directory === 'config/custom' OR $directory === 'config/override.d')
 		{
 			// Search in reverse, for merging
 			$paths = array_reverse($paths);
