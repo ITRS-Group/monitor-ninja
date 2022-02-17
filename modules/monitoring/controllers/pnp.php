@@ -58,7 +58,7 @@ class Pnp_Controller extends Authenticated_Controller {
 	/**
 	 * Get graph setting for a specific host/service
 	 */
-	public function get_pnp_default()
+	public function get_pnp_default_graph_setting()
 	{
 
 		/* Ajax calls shouldn't be rendered. This doesn't, because some unknown
@@ -72,9 +72,10 @@ class Pnp_Controller extends Authenticated_Controller {
 
 		if ($pnp_path != '') {
 			$settings = Ninja_setting_Model::fetch_page_setting('default_graph', $page);
+			
+			// Outputs false on no entry found
+			echo $settings->setting;
 		}
-		// Returns false on no entry found
-		echo $settings->setting;
 	}
 
 }

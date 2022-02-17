@@ -345,7 +345,7 @@
     }
 
     $.ajax(
-      _site_domain + _index_page + '/pnp/get_pnp_default/',
+      _site_domain + _index_page + '/pnp/get_pnp_default_graph_setting/',
       {
         data: {
           page: _pnp_web_path + '/image?host=' + host + '&srv=' + service,
