@@ -11,8 +11,8 @@ $(document).ready(function () {
 					{
 						data: {
 							param: match[1],
-							view: match[2],
-							source: match[3],
+							source: match[2],
+							view: match[3],
 							csrf_token: _csrf_token
 						},
 						success: function () {
