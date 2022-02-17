@@ -49,9 +49,33 @@ class Pnp_Controller extends Authenticated_Controller {
 		if ($pnp_path != '') {
 			$source = intval($this->input->post('source', false));
 			$view = intval($this->input->post('view', false));
+			$settings = json_encode(array("source"=>$source, "view"=>$view));
 
-			Ninja_setting_Model::save_page_setting('source', $pnp_path.'/image?'.$param, $source);
-			Ninja_setting_Model::save_page_setting('view', $pnp_path.'/image?'.$param, $view);
+			Ninja_setting_Model::save_page_setting('default_graph', $pnp_path.'/image?'.$param, $settings);
 		}
 	}
+
+	/**
+	 * Get graph setting for a specific host/service
+	 */
+	public function get_pnp_default_graph_setting()
+	{
+
+		/* Ajax calls shouldn't be rendered. This doesn't, because some unknown
+		 * magic doesn't render templates in ajax requests, but for debugging
+		 */
+		$this->auto_render = false;
+
+		$page = $this->input->post('page', false);
+
+		$pnp_path = Kohana::config('config.pnp4nagios_path');
+
+		if ($pnp_path != '') {
+			$settings = Ninja_setting_Model::fetch_page_setting('default_graph', $page);
+			
+			// Outputs false on no entry found
+			echo $settings->setting;
+		}
+	}
+
 }

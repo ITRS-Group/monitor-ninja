@@ -339,16 +339,51 @@
       host = encodeURIComponent(ns[0]),
       service = "_HOST_";
 
-    if(ns[1]) service = encodeURIComponent(ns[1]);
+    // If a service
+    if (ns[1]) {
+      service = encodeURIComponent(ns[1]);
+    }
 
-    var img = $('<img>').one('load', function(e){
-      Popover.display(img.get(0), target);
-      tooltip.css('width', 'auto');
-    }).one('error', function(e){
-      Popover.display("Could not fetch graph", target);
-    }).attr({
-      src: _pnp_web_path + 'image?host=' + host + '&srv=' + service + '&source=0&view=0'
-    });
+    $.ajax(
+      _site_domain + _index_page + '/pnp/get_pnp_default_graph_setting/',
+      {
+        data: {
+          page: _pnp_web_path + '/image?host=' + host + '&srv=' + service,
+          csrf_token: _csrf_token
+        },
+        success: function (data) {
+          var pnp_settings = JSON.parse(data)
+          var src_string = ""
+          if (pnp_settings) {
+            src_string =  _pnp_web_path +
+                          'image?host=' +
+                          host +
+                          '&srv=' +
+                          service +
+                          `&source=${pnp_settings.source}&view=${pnp_settings.view}`
+          } else {
+            src_string =  _pnp_web_path +
+                          'image?host=' +
+                          host +
+                          '&srv=' +
+                          service +
+                          `&source=0&view=0`
+          }
+          var img = $('<img>').one('load', function (e) {
+            Popover.display(img.get(0), target);
+            tooltip.css('width', 'auto');
+          }).one('error', function (e) {
+            Popover.display("Could not fetch graph", target);
+          }).attr({
+            src: src_string
+          });
+        },
+        error: function () {
+          Popover.display("Popover error", target);
+        },
+        type: 'POST'
+      }
+    );
 
   });
 
