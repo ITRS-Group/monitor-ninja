@@ -77,8 +77,7 @@ class Pnp_Controller extends Authenticated_Controller {
 			if ($settings){
 				echo $settings->setting;
 			} else {
-				http_response_code(404);
-				echo "Default graph setting not found";
+				echo '{"source":0, "view":0}';
 			}
 		}
 	}
