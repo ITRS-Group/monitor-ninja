@@ -333,7 +333,7 @@
 
   });
 
-  Popover.register(/^pnp\:/, function(data, target){
+  Popover.register(/^pnp\:/, function (data, target) {
 
     var ns = data.split(';'),
       host = encodeURIComponent(ns[0]),
@@ -353,33 +353,34 @@
         },
         success: function (data) {
           var pnp_settings = JSON.parse(data)
-          var src_string = ""
-          if (pnp_settings) {
-            src_string =  _pnp_web_path +
-                          'image?host=' +
-                          host +
-                          '&srv=' +
-                          service +
-                          `&source=${pnp_settings.source}&view=${pnp_settings.view}`
-          } else {
-            src_string =  _pnp_web_path +
-                          'image?host=' +
-                          host +
-                          '&srv=' +
-                          service +
-                          `&source=0&view=0`
-          }
           var img = $('<img>').one('load', function (e) {
             Popover.display(img.get(0), target);
             tooltip.css('width', 'auto');
           }).one('error', function (e) {
             Popover.display("Could not fetch graph", target);
           }).attr({
-            src: src_string
+            src: _pnp_web_path +
+              'image?host=' +
+              host +
+              '&srv=' +
+              service +
+              `&source=${pnp_settings.source}&view=${pnp_settings.view}`
           });
         },
         error: function () {
-          Popover.display("Popover error", target);
+          var img = $('<img>').one('load', function (e) {
+            Popover.display(img.get(0), target);
+            tooltip.css('width', 'auto');
+          }).one('error', function (e) {
+            Popover.display("Could not fetch graph", target);
+          }).attr({
+            src: _pnp_web_path +
+              'image?host=' +
+              host +
+              '&srv=' +
+              service +
+              `&source=0&view=0`
+          });
         },
         type: 'POST'
       }

@@ -73,8 +73,13 @@ class Pnp_Controller extends Authenticated_Controller {
 		if ($pnp_path != '') {
 			$settings = Ninja_setting_Model::fetch_page_setting('default_graph', $page);
 			
-			// Outputs false on no entry found
-			echo $settings->setting;
+			// Returns default settings if no setting present
+			if ($settings){
+				echo $settings->setting;
+			} else {
+				http_response_code(404);
+				echo "Default graph setting not found";
+			}
 		}
 	}
 
