@@ -335,7 +335,8 @@
 
   Popover.register(/^pnp\:/, function (data, target) {
 
-    // Count the number of times every 
+    // Count the number of times this function is called.
+    // This is to control when to do database lookups for the default_graph settings. 
     if (target[0].timesHovered >= 0) {
       target[0].timesHovered++
     } else {
