@@ -5,7 +5,7 @@ $(document).ready(function () {
 			$(this).append('<td align="right"><a href="#" class="default" title="Make default graph" alt="Make default graph"><img src="' + _site_domain + '/application/views/icons/x16/shield-ok.png"/></a></td>');
 			$(this).find('.default').click(function() {
 				var src = $(this).closest('div').next('div').find('img').attr('src');
-				var match = src.match(/\?(.*)&source=(\d)&view=(\d)/);
+				var match = src.match(/\?(.*)&view=(\d)&source=(\d)/);
 				$.ajax(
 					_site_domain + _index_page + '/pnp/pnp_default/',
 					{
