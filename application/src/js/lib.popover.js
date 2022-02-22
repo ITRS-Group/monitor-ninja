@@ -333,7 +333,15 @@
 
   });
 
-  Popover.register(/^pnp\:/, function(data, target){
+  Popover.register(/^pnp\:/, function (data, target) {
+
+    // Count the number of times this function is called.
+    // This is to control when to do database lookups for the default_graph settings. 
+    if (target[0].timesHovered >= 0) {
+      target[0].timesHovered++
+    } else {
+      target[0].timesHovered = 0
+    }
 
     var ns = data.split(';'),
       host = encodeURIComponent(ns[0]),
@@ -343,47 +351,51 @@
     if (ns[1]) {
       service = encodeURIComponent(ns[1]);
     }
+    // Only ping the database every 5 hovers if no page reload is done.
+    if (target[0].timesHovered == 0 || target[0].timesHovered % 5 == 0) {
+      $.ajax(
+        _site_domain + _index_page + '/pnp/get_pnp_default_graph_setting/',
+        {
+          data: {
+            page: _pnp_web_path + '/image?host=' + host + '&srv=' + service,
+            csrf_token: _csrf_token
+          },
+          success: function (data) {
+            var pnp_settings = JSON.parse(data)
+            var src_string = _pnp_web_path +
+              'image?host=' +
+              host +
+              '&srv=' +
+              service +
+              `&source=${pnp_settings.source}&view=${pnp_settings.view}`
 
-    $.ajax(
-      _site_domain + _index_page + '/pnp/get_pnp_default_graph_setting/',
-      {
-        data: {
-          page: _pnp_web_path + '/image?host=' + host + '&srv=' + service,
-          csrf_token: _csrf_token
-        },
-        success: function (data) {
-          var pnp_settings = JSON.parse(data)
-          var src_string = ""
-          if (pnp_settings) {
-            src_string =  _pnp_web_path +
-                          'image?host=' +
-                          host +
-                          '&srv=' +
-                          service +
-                          `&source=${pnp_settings.source}&view=${pnp_settings.view}`
-          } else {
-            src_string =  _pnp_web_path +
-                          'image?host=' +
-                          host +
-                          '&srv=' +
-                          service +
-                          `&source=0&view=0`
-          }
-          var img = $('<img>').one('load', function (e) {
-            Popover.display(img.get(0), target);
-            tooltip.css('width', 'auto');
-          }).one('error', function (e) {
+            target[0].cachedUrl = src_string
+
+            var img = $('<img>').one('load', function (e) {
+              Popover.display(img.get(0), target);
+              tooltip.css('width', 'auto');
+            }).one('error', function (e) {
+              Popover.display("Could not fetch graph", target);
+            }).attr({
+              src: src_string
+            });
+          },
+          error: function () {
             Popover.display("Could not fetch graph", target);
-          }).attr({
-            src: src_string
-          });
-        },
-        error: function () {
-          Popover.display("Popover error", target);
-        },
-        type: 'POST'
-      }
-    );
+          },
+          type: 'POST'
+        }
+      );
+    } else {
+        var img = $('<img>').one('load', function (e) {
+          Popover.display(img.get(0), target);
+          tooltip.css('width', 'auto');
+        }).one('error', function (e) {
+          Popover.display("Could not fetch graph", target);
+        }).attr({
+          src: target[0].cachedUrl
+        });
+    }
 
   });
 
