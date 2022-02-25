@@ -327,7 +327,8 @@ class AuthFilesTest extends \PHPUnit\Framework\TestCase {
 	private function flatten_new_rights($new_rights) {
 		$rights = array();
 		array_walk_recursive($new_rights, function($provided_right) use (&$rights) {
-			$rights[] = $provided_right;
+			if (!is_callable($provided_right))
+				$rights[] = $provided_right;
 		});
 		return $rights;
 	}

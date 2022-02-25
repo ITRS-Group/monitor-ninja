@@ -170,8 +170,6 @@ limited_edit:
   - "servicegroup_edit_all"
   - "servicegroup_view_all"
   - "system_information"
-  - "test_this_host"
-  - "test_this_service"
   - "timeperiod_view_all"
   - "wiki"
 limited_view:
