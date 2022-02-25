@@ -8,6 +8,8 @@ $considered_superadmin = 'system_commands';
 
 /**
  * [version => [existing => new]]
+ * or [version => function($group_name, &$permissions): bool]
+ *   where function returns true if it changed the $permissions array.
  */
 $new_rights = array(
 	0 => array(
@@ -84,6 +86,21 @@ $new_rights = array(
 			'traps_view_all',
 		)
 	),
+	11 => function($group_name, &$permissions) {
+		// Remove 'test_this_host' and 'test_this_service' from the 'limited_edit' group
+		if ($group_name != "limited_edit")
+			return;
+		$changed = false;
+		foreach (array('test_this_host', 'test_this_service') as $perm) {
+			$index = array_search($perm, $permissions);
+			if ($index !== false) {
+				$changed = true;
+				echo "INFO: Migrate auth_groups: removing permission '$perm' from '$group_name' group.\n";
+				unset($permissions[$index]);
+			}
+		}
+		return $changed;
+	},
 );
 
 require_once('op5/config.php');
@@ -97,19 +114,27 @@ if(isset($config['common']['version'])) {
 }
 $new_version = $current_version;
 
-foreach ($groups as &$group) {
+foreach ($groups as $group_name => &$group) {
 	foreach ($new_rights as $version => $perms) {
 		if ($version <= $current_version)
 			continue;
 		$new_version = $version;
-		foreach ($perms as $from => $to) {
-			if (in_array($from, $group)) {
-				if (is_array($to)) {
-					foreach ($to as $perm) {
-						$group[] = $perm;
+		if (is_callable($perms)) {
+			$changed = $perms($group_name, $group);
+			if ($changed) {
+				$group = array_values($group);
+			}
+		}
+		else {
+			foreach ($perms as $from => $to) {
+				if (in_array($from, $group)) {
+					if (is_array($to)) {
+						foreach ($to as $perm) {
+							$group[] = $perm;
+						}
+					} else {
+						$group[] = $to;
 					}
-				} else {
-					$group[] = $to;
 				}
 			}
 		}
