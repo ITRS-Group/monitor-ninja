@@ -113,8 +113,6 @@ admins:
   - "timeperiod_edit_all"
   - "timeperiod_view_all"
   - "traps_view_all"
-  - "wiki"
-  - "wiki_admin"
 guest:
   - "api_report"
   - "api_status"
@@ -135,7 +133,6 @@ guest:
   - "servicegroup_view_all"
   - "system_information"
   - "timeperiod_view_all"
-  - "wiki"
 limited_edit:
   - "FILE"
   - "api_report"
@@ -171,7 +168,6 @@ limited_edit:
   - "servicegroup_view_all"
   - "system_information"
   - "timeperiod_view_all"
-  - "wiki"
 limited_view:
   - "api_report"
   - "api_status"
@@ -182,4 +178,3 @@ limited_view:
   - "nagvis_view"
   - "service_view_contact"
   - "servicegroup_view_all"
-  - "wiki"
