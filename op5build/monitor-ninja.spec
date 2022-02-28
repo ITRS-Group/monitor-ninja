@@ -165,39 +165,22 @@ install -d %buildroot%_unitdir
 install -D -m 644 -t %buildroot%_unitdir op5build/systemd/*.{service,timer}
 install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libexec/op5_scheduled_reports.py
 
-%if 0%{?rhel} >= 8
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
-%else
-install -D -m 640 op5build/ninja-httpd.conf.el7 %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
-%endif
+install -D -m 644 op5build/php-ninja.ini %buildroot%_sysconfdir/php.d/50-op5-ninja.ini
 
-sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
-
-mkdir -p %buildroot%prefix/application/config/custom
-install -m 755 test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
+install -D test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
-
-%pre
-# This needs to be removed for us to be able to upgrade ninja 2.0.7
-# for some reason.
-if test -d %buildroot%prefix/application/vendor/phptap/.git; then
-	rm -rf %buildroot%prefix/application/vendor/phptap/.git
-fi
-
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
-$(mysql -Be "quit" 2>/dev/null) && MYSQL_AVAILABLE=1
-if [ -n "$MYSQL_AVAILABLE" ]; then
-  cd %prefix
-    sh install_scripts/ninja_db_init.sh
-    php install_scripts/migrate_tac_hostperf_to_listview.php
-  cd -
+if mysql -Be "quit" 2>/dev/null; then
+	%prefix/install_scripts/ninja_db_init.sh
+	php %prefix/install_scripts/migrate_tac_hostperf_to_listview.php
 else
-  echo "WARNING: mysql-server is not installed or not running."
-  echo "If a database is to be used you need to maually run:"
-  echo "  %prefix/install_scripts/ninja_db_init.sh"
-  echo "to complete the setup of %name"
+	echo "WARNING: mysql-server is not installed or not running."
+	echo "If a database is to be used you need to maually run:"
+	echo "  %prefix/install_scripts/ninja_db_init.sh"
+	echo "to complete the setup of %name"
 fi
 
 systemctl daemon-reload &>/dev/null || :
@@ -217,10 +200,8 @@ php %prefix/install_scripts/migrate_auth.php
 # The line above can leave artifacts created by root, making ninja-backup fail
 chown %daemon_user:%daemon_group %_sysconfdir/op5/*.yml
 if [ -f %_sysconfdir/op5/ninja_menu.yml ]; then
-   chown %daemon_group:%daemon_group %_sysconfdir/op5/ninja_menu.yml
+	chown %daemon_group:%daemon_group %_sysconfdir/op5/ninja_menu.yml
 fi
-
-sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 
 %postun
 %systemd_postun_with_restart op5-scheduled-reports.service
@@ -234,10 +215,12 @@ fi
 %_unitdir/*
 %{nacoma_hooks_path}/ninja_hooks.*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
+%_sysconfdir/php.d/50-op5-ninja.ini
 %attr(755,root,root) /usr/bin/op5-manage-users
 
 %dir %attr(775,%daemon_user,%daemon_group) %_sysconfdir/op5
 %config(noreplace) %attr(660,%daemon_user,%daemon_group) %_sysconfdir/op5/*.yml
+%ghost %_sysconfdir/op5/ninja_menu.yml
 
 %dir %attr(775,%daemon_user,%daemon_group) /var/log/op5
 %dir %attr(775,%daemon_user,%daemon_group) /var/log/op5/ninja
