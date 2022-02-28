@@ -113,6 +113,18 @@ $new_rights = array(
 		}
 		return $changed;
 	},
+	13 => function($group_name, &$permissions) {
+		// Remove logger permissions
+		$changed = false;
+		foreach (array('logger_access', 'logger_configuration', 'logger_schedule_archive_search') as $perm) {
+			$index = array_search($perm, $permissions);
+			if ($index !== false) {
+				$changed = true;
+				unset($permissions[$index]);
+			}
+		}
+		return $changed;
+	},
 );
 
 require_once('op5/config.php');
