@@ -238,8 +238,6 @@ Given /^I have an (.*) user group with all rights$/ do |group|
 				"test_this_command",
 				"export",
 				"configuration_all",
-				"wiki",
-				"wiki_admin",
 				"nagvis_edit",
 				"nagvis_view",
 				"nagvis_add_delete",

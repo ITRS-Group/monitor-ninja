@@ -5,6 +5,6 @@ common:
   apc_enabled: false
   apc_ttl: 60
   apc_store_prefix: "op5_login_"
-  version: 11
+  version: 12
 Default:
   driver: "Default"

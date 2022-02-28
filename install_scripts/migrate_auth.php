@@ -101,6 +101,18 @@ $new_rights = array(
 		}
 		return $changed;
 	},
+	12 => function($group_name, &$permissions) {
+		// Remove docuwiki permissions
+		$changed = false;
+		foreach (array('wiki', 'wiki_admin') as $perm) {
+			$index = array_search($perm, $permissions);
+			if ($index !== false) {
+				$changed = true;
+				unset($permissions[$index]);
+			}
+		}
+		return $changed;
+	},
 );
 
 require_once('op5/config.php');

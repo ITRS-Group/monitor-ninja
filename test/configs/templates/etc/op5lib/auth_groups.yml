@@ -56,8 +56,6 @@ admins:
   - test_this_command
   - export
   - configuration_all
-  - wiki
-  - wiki_admin
   - nagvis_edit
   - nagvis_view
   - nagvis_add_delete
@@ -82,7 +80,6 @@ guest:
   - contactgroup_view_all
   - timeperiod_view_all
   - command_view_all
-  - wiki
   - nagvis_view
 limited_edit:
   - system_information
@@ -110,7 +107,6 @@ limited_edit:
   - timeperiod_view_all
   - command_view_all
   - export
-  - wiki
   - nagvis_edit
   - nagvis_view
   - FILE
@@ -122,4 +118,3 @@ limited_view:
   - service_view_contact
   - hostgroup_view_contact
   - servicegroup_view_all
-  - wiki
