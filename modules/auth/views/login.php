@@ -55,6 +55,11 @@
 
 	<script>
 		$(document).ready(function(){
+			// Resize the ITRS OP5 Monitor logo just for this page.
+			$(".brand-icon").css({
+				"height": "65px",
+				"padding-left": "7px",
+			});
 			// Change the background-color just for this page.
 			$("#content").css("background", "rgb(245,245,245)"); 
 		});
