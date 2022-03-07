@@ -236,6 +236,16 @@ class Backup_Controller extends Ninja_Controller {
 			return;
 		}
 
+		proc::open(array('/usr/bin/asmonitor', '/usr/bin/php', '/opt/monitor/op5/nacoma/api/monitor.php', '-a', 'undo_config'), $stdout, $stderr, $status);
+
+		if ($status) {
+			$this->template = json::fail_view(array(
+				"message" => "The configuration '{$file}' has been restored, but it could not be loaded into the database.",
+				"debug" => $stderr
+			));
+			return;
+		}
+
 		$this->template = json::ok_view("The configuration '{$file}' has been restored successfully");
 	}
 
