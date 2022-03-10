@@ -278,7 +278,7 @@ class op5auth implements op5MayI_Actor {
 		}
 
 		if ($user === null) {
-			$this->log->log('debug', "Failed to authenticate '$username' using driver '" . get_class($driver) . "'");
+			$this->log->log('notice', "Failed to authenticate '$username' using driver '" . get_class($driver) . "'");
 			return false;
 		}
 
@@ -295,10 +295,11 @@ class op5auth implements op5MayI_Actor {
 				apcu_store($apc_tag, $user->export(), (int) $this->config['apc_ttl']);
 			}
 
+			$this->log->log('notice', "Successfully authorized user '$username' using driver '" . get_class($driver) . "'");
 			return true;
 		}
 
-		$this->log->log('debug', "Failed to authorize in '$username' using driver '" . get_class($driver) . "'");
+		$this->log->log('notice', "Failed to authorize in '$username' using driver '" . get_class($driver) . "'");
 
 		if ($apc_tag !== false) {
 			$seconds = (int) $this->config['apc_ttl'];
