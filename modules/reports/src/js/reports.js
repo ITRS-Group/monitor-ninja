@@ -9,10 +9,10 @@ $(document).ready(function() {
 
 	$('#include_trends').click(function() {
 		if (this.checked) {
-			$('#include_trends_scaling').attr('disabled', false);
+			$('#include_trends_scaling').prop('disabled', false);
 		} else {
-			$('#include_trends_scaling').attr('disabled', true);
-			$('#include_trends_scaling').attr('checked', false);
+			$('#include_trends_scaling').prop('disabled', true);
+			$('#include_trends_scaling').prop('checked', false);
 		}
 	});
 

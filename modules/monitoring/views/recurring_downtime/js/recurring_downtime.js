@@ -738,7 +738,7 @@ $(document).ready(function() {
 function summary_show(){
   return; // Don't render the summary.
 
-  var flexible = $('#fixed').attr('checked');
+  var flexible = $('#fixed').prop('checked');
   var start_time = $('#fixed-duration-start-time').val();
   var end_time = $('#fixed-duration-end-time').val();
   var start_date = $('#fixed-duration-start-date').val();
