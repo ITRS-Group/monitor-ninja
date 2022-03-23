@@ -242,7 +242,8 @@ class Scheduled_reports_Model extends Model
 		try {
 			$res = $db->query($sql);
 		} catch (Kohana_Database_Exception $e) {
-			print $e->getMessage();
+			op5log::instance('ninja')->log('error', "Database request failed, {$e->getMessage()}");
+			print "Invalid request, see ninja log for details.";
 			return false;
 		}
 		return true;
