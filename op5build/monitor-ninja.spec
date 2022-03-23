@@ -37,11 +37,12 @@ BuildRequires: python2
 BuildRequires: doxygen
 BuildRequires: graphviz
 Requires: python2
-Requires: php >= 5.3
+Requires: php
+Requires: php-cli
 Requires: php-json
 Requires: php-ldap
 Requires: php-pecl-apcu
-BuildRequires: php >= 5.3
+BuildRequires: php-cli
 BuildRequires: php-json
 BuildRequires: shadow-utils
 Requires: php-process
@@ -50,7 +51,7 @@ BuildRequires: php-process
 # For stack trace info
 Requires: psmisc
 Requires: pciutils
-%systemd_requires
+%{?systemd_requires}
 
 Source: %name-%version.tar.gz
 %description

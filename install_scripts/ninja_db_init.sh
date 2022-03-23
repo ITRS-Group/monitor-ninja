@@ -10,6 +10,8 @@ db_pass=merlin
 db_name=merlin
 
 progname="$0"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PREFIX_DIR="$(realpath "$SCRIPT_DIR/../")"
 
 show_usage()
 {
@@ -67,8 +69,6 @@ while test "$1"; do
 done
 
 
-prefix=$(dirname $0)"/.."
-
 run_sql_file () # (db_login_opts, sql_script_path)
 {
 	db_login_opts=$1
@@ -90,7 +90,7 @@ if [ "$db_ver" = '' ]
 then
 	# nothing found, insert ninja.sql
 	echo "Installing database tables for Ninja GUI"
-	run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja.sql"
+	run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/ninja.sql"
 	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" 2>/dev/null | sed -n \$p)
 fi
 
@@ -109,7 +109,7 @@ function all_versions()
 	db_ver="$1"
 	new_ver=`expr $db_ver + 1`
 	echo "Upgrading ninja db from v${db_ver} to v${new_ver}"
-	run_sql_file "$db_login_opts" "$prefix/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
+	run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
 	mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
 	db_ver=$new_ver
 }
@@ -119,13 +119,13 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	1)
 		# add table for recurring_downtime
 		echo "Installing database table for Recurring Downtime"
-		run_sql_file "$db_login_opts" "$prefix/sql/mysql/recurring_downtime.sql"
+		run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/recurring_downtime.sql"
 		mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=2" 2>/dev/null
 		db_ver=2
 		;;
 	12)
 		all_versions 12
-		php install_scripts/upgrade_recurring_downtime.php
+		php "$SCRIPT_DIR/upgrade_recurring_downtime.php"
 		;;
 	13)
 		all_versions 13
@@ -138,11 +138,11 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 				case "$sla_ver" in
 				[5-7])
 					new_ver='8'
-					upgrade_script="$prefix/sql/mysql/sla_v5_to_v8.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/sla_v5_to_v8.sql"
 					;;
 				*)
 					new_ver=`expr $sla_ver + 1 `
-					upgrade_script="$prefix/sql/mysql/sla_v${sla_ver}_to_v${new_ver}.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/sla_v${sla_ver}_to_v${new_ver}.sql"
 					;;
 				esac
 
@@ -167,15 +167,15 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 				case "$avail_ver" in
 				[2-4])
 					new_ver=5
-					upgrade_script="$prefix/sql/mysql/avail_v2_to_v5.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/avail_v2_to_v5.sql"
 					;;
 				[6-7])
 					new_ver=8
-					upgrade_script="$prefix/sql/mysql/avail_v6_to_v8.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/avail_v6_to_v8.sql"
 					;;
 				*)
 					new_ver=`expr $avail_ver + 1 `
-					upgrade_script="$prefix/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
 
 					;;
 				esac
@@ -194,12 +194,12 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 				avail_ver=$new_ver
 			done
 		fi
-		php install_scripts/db_migrate_v13_to_v14.php
+		php "$SCRIPT_DIR/db_migrate_v13_to_v14.php"
 		;;
 	18)
 		all_versions 18
 		# Upgrade widgets to Dashboard_Model / Dashboard_Widget_Model
-		php install_scripts/migrate_widgets.php
+		php "$SCRIPT_DIR/migrate_widgets.php"
 		;;
 	*)
 		all_versions "$db_ver"
@@ -213,7 +213,7 @@ sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_d
 if [ "$sched_db_ver" = "" ]
 then
 	echo "Installing database tables for scheduled reports configuration"
-	upgrade_script="$prefix/sql/mysql/scheduled_reports.sql"
+	upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports.sql"
 	run_sql_file "$db_login_opts" $upgrade_script
 	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
 fi
@@ -224,11 +224,11 @@ while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	[1-5])
 		sched_db_ver=5
 		new_ver=6
-		upgrade_script="$prefix/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
 		;;
 	*)
 		new_ver=`expr $sched_db_ver + 1`
-		upgrade_script="$prefix/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
 		;;
 	esac
 
