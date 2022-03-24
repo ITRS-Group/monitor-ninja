@@ -17,7 +17,7 @@ $config['path'] = '/';
  * Lifetime of the cookie. A setting of 0 makes the cookie active until the
  * users browser is closed or the cookie is deleted.
  */
-$config['expire'] = 0;
+$config['expire'] = 300;
 
 /**
  * Set to true, to only allow logging in through HTTPS, or false to allow
