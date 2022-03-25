@@ -84,7 +84,7 @@ $(document).on('click','div[data-setting-toggle-command]', function () {
 		}
 	}).fail(function () {
 		Notify.message("Failed to toggle setting.", {type: "error", sticky: true});
-	}).complete(function () {
+	}).always(function () {
 		toggler.removeClass('toggle-waiting');
 	});
 
