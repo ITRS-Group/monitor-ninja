@@ -195,8 +195,8 @@ Then /^I should see "([^"]*)", compensating for DST$/ do |string|
   #NOTE: Only works for strings of the form Nd, where N is some integer between
   # 1 and 31, inclusive. FML.
   days = DateTime.strptime(string,"%dd").day
-  was_dst = (DateTime.now - days).to_time.dst?
-  is_dst = DateTime.now.to_time.dst?
+  was_dst = (DateTime.now - days).to_time.localtime.dst?
+  is_dst = DateTime.now.to_time.localtime.dst?
   if was_dst and not is_dst then
     #plus one hour
     string = string + " 1h"
