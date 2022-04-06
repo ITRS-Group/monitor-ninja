@@ -250,7 +250,7 @@ $(window).on('load', function () {
 
 			for (var i = low; i <= high; i++) {
 				boxes.eq(i)
-					.attr('checked', checked)
+					.prop('checked', checked)
 					.trigger('change');
 			}
 		}

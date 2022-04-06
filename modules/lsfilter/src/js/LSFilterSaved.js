@@ -87,7 +87,7 @@ var lsfilter_saved = {
 
 		if (name) {
 
-			if ($('#lsfilter_save_filter_global').attr('checked')) {
+			if ($('#lsfilter_save_filter_global').prop('checked')) {
 				save["scope"] = "global";
 			}
 

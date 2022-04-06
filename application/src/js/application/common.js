@@ -116,18 +116,18 @@ $(document).ready(function() {
 	// -- end listview refresh helper code
 
 	$('.select_all_items_service').on('click', function() {
-		if ($(this).attr('checked')) {
+		if ($(this).prop('checked')) {
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
-				if (!$(this).attr('disabled') && !$(this).is(':hidden')) {
-					$(this).attr('checked', true);
+				if (!$(this).prop('disabled') && !$(this).is(':hidden')) {
+					$(this).prop('checked', true);
 				}
 				else if ($(this).is(':hidden')) {
-					$(this).attr('checked', false);
+					$(this).prop('checked', false);
 				}
 			});
 		} else {
 			$(this).parents('table').find(".item_select_service input[type='checkbox']").not('.select_all_items_service').each(function() {
-				$(this).attr('checked', false);
+				$(this).prop('checked', false);
 			});
 		}
 	});
