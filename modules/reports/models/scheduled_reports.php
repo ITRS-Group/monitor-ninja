@@ -247,7 +247,7 @@ class Scheduled_reports_Model extends Model
 			return false;
 		}
 
-		$dbconn = Kohana::config('database.default');;
+		$dbconn = Kohana::config('database.default');
 		// Create connection
 		$conn = new mysqli(
 			$dbconn['connection']['host'],
