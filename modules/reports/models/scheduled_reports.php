@@ -235,19 +235,11 @@ class Scheduled_reports_Model extends Model
 	static function update_report_field($id=false, $field=false, $value=false)
 	{
 		$allowed_columns = [
-			"username",
-			"report_type_id",
-			"report_id",
 			"recipients",
 			"description",
-			"period_id",
 			"filename",
 			"local_persistent_filepath",
 			"attach_description",
-			"report_time",
-			"report_on",
-			"report_period",
-			"last_sent",
 		];
 		$column = array_search($field, $allowed_columns, TRUE);
 
