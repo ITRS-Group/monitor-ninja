@@ -264,7 +264,7 @@ class Scheduled_reports_Model extends Model
 		try {
 			$stmt->bind_param("si", $value, $id);
 		} catch (Exception $e) {
-			print($e);
+			print(htmlspecialchars($e));
 		}
 
 		try {
