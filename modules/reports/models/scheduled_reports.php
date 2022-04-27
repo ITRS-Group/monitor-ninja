@@ -234,17 +234,47 @@ class Scheduled_reports_Model extends Model
 	 */
 	static function update_report_field($id=false, $field=false, $value=false)
 	{
-		$db = Database::instance();
-		$id = (int)$id;
-		$field = $db->escape_column(trim($field));
-		$value = $db->escape(trim($value));
-		$sql = "UPDATE scheduled_reports SET {$field}={$value} WHERE id={$id}";
-		try {
-			$res = $db->query($sql);
-		} catch (Kohana_Database_Exception $e) {
-			print $e->getMessage();
+		$allowed_columns = [
+			"recipients",
+			"description",
+			"filename",
+			"local_persistent_filepath",
+			"attach_description",
+		];
+		$column = array_search($field, $allowed_columns, TRUE);
+
+		if (!$column) {
 			return false;
 		}
+
+		$dbconn = Kohana::config('database.default');
+		// Create connection
+		$conn = new mysqli(
+			$dbconn['connection']['host'],
+			$dbconn['connection']['user'],
+			$dbconn['connection']['pass'],
+			$dbconn['connection']['database']
+		);
+		// Check connection
+		if ($conn->connect_error) {
+			throw new Exception("Error connecting to datase");
+		}
+		// Prepared statement
+		$stmt = $conn->prepare("UPDATE scheduled_reports SET {$allowed_columns[$column]}=? WHERE id=?");
+		try {
+			$stmt->bind_param("si", $value, $id);
+		} catch (Exception $e) {
+			print(htmlspecialchars($e));
+		}
+
+		try {
+			$res = $stmt->execute();
+		} catch (Exception $e) {
+			op5log::instance('ninja')->log('error', "Database request failed, {$e->getMessage()}");
+			print "Invalid request, see ninja log for details.";
+			return false;
+		}
+		$stmt->close();
 		return true;
 	}
 
