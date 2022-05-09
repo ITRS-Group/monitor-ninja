@@ -192,7 +192,9 @@ class Schedule_Controller extends Authenticated_Controller
 		$process = proc_open($cmd, $pipe_desc, $pipes, DOCROOT);
 		$this->log->log('debug', $cmd);
 		if (is_resource($process)) {
-			fwrite($pipes[0], "\n");
+			# This fwrite does not work when executed via XHR. 
+			# Does not seem to break if removed when running via CLI
+			#fwrite($pipes[0], "\n");
 			fclose($pipes[0]);
 			$out = stream_get_contents($pipes[1]);
 			$err = stream_get_contents($pipes[2]);

@@ -1170,7 +1170,7 @@
 		TEXT_NEXT_MONTH		:	'Next month',
 		TEXT_CLOSE			:	'Close',
 		TEXT_CHOOSE_DATE	:	'Choose date',
-		HEADER_FORMAT		:	'yyyy'
+		HEADER_FORMAT		:	'yyyy-mm'
 	};
 	// version
 	$.dpVersion = '$Id$';
