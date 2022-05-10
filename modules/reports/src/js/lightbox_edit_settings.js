@@ -46,6 +46,7 @@ $(document).ready(function() {
 		if ( settings.url === edit_settings_url ) {
 			setTimeout(function() {
 				filterable_init();
+				$('.filter-status').on('change', filter_mapping_mapping).each(filter_mapping_mapping);
 				$( ".lightbox-content" ).css({"display": "block"});
 				$('.lightbox-content #header').remove();
 				$('.lightbox-content').find('.filter-status').each(lightbox_filter_mapping_mapping);
