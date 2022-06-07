@@ -218,6 +218,7 @@ if [ $1 -eq 0 ]; then
 fi
 
 %files
+%license ASL2.txt
 %base_prefix/*
 %_unitdir/*
 %{nacoma_hooks_path}/ninja_hooks.*
