@@ -240,6 +240,7 @@ class Scheduled_reports_Model extends Model
 			"filename",
 			"local_persistent_filepath",
 			"attach_description",
+			"last_sent"
 		];
 		$column = array_search($field, $allowed_columns, TRUE);
 
