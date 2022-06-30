@@ -67,6 +67,8 @@ Requires: op5-lmd
 Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: php-phpunit-PHPUnit
+Requires: op5int_webtest
+
 
 # Note: openldap-servers is not available on EL8, so those RPM files are
 # manually copied onto our internal repo server, as this is for tests only.
