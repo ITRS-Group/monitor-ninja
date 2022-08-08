@@ -14,6 +14,7 @@
 			<label><?php echo form::checkbox('hide_logrotation', 1, isset($options['hide_logrotation'])).' '._('Hide logrotation messages'); ?></label><br />
 			<?php echo $is_authorized ? '<label>'.form::checkbox('hide_commands', 1, isset($options['hide_commands'])).' '._('Hide external commands').'</label><br />' : ''; ?>
 			<label><?php echo form::checkbox('parse_forward', 1, isset($options['parse_forward'])).' '._('Older entries first'); ?>
+			<label><?php echo form::checkbox('all_nodes', 1, isset($options['all_nodes'])).' '._('Show logs from all nodes'); ?></label><br />
 			</td>
 			<td class="showlog_options">
 				<table>
