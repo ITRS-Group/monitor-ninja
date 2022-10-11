@@ -59,6 +59,7 @@ Requires: monitor-livestatus
 Requires: op5-lmd
 Requires: monitor-nagvis
 Requires: monitor-nacoma
+Requires: monitor-plugin-check_dummyv2
 Requires: php-phpunit-PHPUnit
 Requires: op5int_webtest
 
