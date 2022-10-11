@@ -157,6 +157,7 @@ mkdir -p %buildroot/opt/monitor/op5/nacoma/hooks/save
 install -m 755 install_scripts/nacoma_hooks.py %buildroot/opt/monitor/op5/nacoma/hooks/save/ninja_hooks.py
 
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
+install -D -m 644 op5build/php-ninja-tests.ini %buildroot%_sysconfdir/php.d/52-ninja-tests.ini
 
 sed -i 's/Ninja/op5 Monitor/' %buildroot%prefix/application/media/report_footer.html
 
@@ -250,6 +251,7 @@ sed -i 's/expose_php = .*/expose_php = off/g' /etc/php.ini
 %prefix/modules/test
 %prefix/Makefile
 %prefix/application/config/custom/exception.php
+%_sysconfdir/php.d/52-ninja-tests.ini
 
 %clean
 rm -rf %buildroot
