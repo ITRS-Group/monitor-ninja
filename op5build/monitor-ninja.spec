@@ -171,6 +171,7 @@ install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libe
 
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 install -D -m 644 op5build/php-ninja.ini %buildroot%_sysconfdir/php.d/50-op5-ninja.ini
+install -D -m 644 op5build/php-ninja-tests.ini %buildroot%_sysconfdir/php.d/52-ninja-tests.ini
 
 install -D test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
@@ -259,6 +260,7 @@ fi
 %prefix/modules/test
 %prefix/Makefile
 %prefix/application/config/custom/exception.php
+%_sysconfdir/php.d/52-ninja-tests.ini
 
 %clean
 rm -rf %buildroot

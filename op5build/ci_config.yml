@@ -13,7 +13,7 @@ post:
 
     # make sure deprecated code paths throw errors in our CI environment, MON-9199:
     echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
-    TZ='Europe/Stockholm' make -C /opt/monitor/op5/ninja test
+    make -C /opt/monitor/op5/ninja test
 
     # Install Chrome, Ruby 2.7 and Ruby gems.
     # Runs the script in the current shell
