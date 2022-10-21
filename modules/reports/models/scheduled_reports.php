@@ -244,7 +244,7 @@ class Scheduled_reports_Model extends Model
 		];
 		$column = array_search($field, $allowed_columns, TRUE);
 
-		if (!$column) {
+		if ($column === false) {
 			return false;
 		}
 
