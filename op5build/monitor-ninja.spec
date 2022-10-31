@@ -62,6 +62,7 @@ Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
 Requires: op5-naemon
+Requires: op5-monitor-user
 Requires: monitor-livestatus
 Requires: op5-lmd
 Requires: monitor-nagvis
@@ -90,6 +91,7 @@ Additional test files for ninja
 %package monitoring
 Summary: Naemon and Livestatus module for ninja
 Group: op5/monitor
+Requires: op5-monitor-user
 Requires: op5-naemon
 Requires: monitor-merlin
 Requires: monitor-livestatus
