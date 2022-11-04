@@ -298,7 +298,7 @@ class Service_Model extends BaseService_Model {
 	 */
 	public function acknowledge_problem($comment, $sticky=true, $notify=true, $persistent=true) {
 		if(empty(trim($comment))) {
-			$comment = "Acknowledged by <".$this->get_current_user().">";
+			$comment = "Acknowledged by ".$this->get_current_user();
 		}
 		return $this->submit_naemon_command("ACKNOWLEDGE_SVC_PROBLEM", $sticky?2:0, $notify?1:0, $persistent?1:0, $this->get_current_user(), $comment);
 	}

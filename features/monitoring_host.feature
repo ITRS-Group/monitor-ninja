@@ -317,4 +317,4 @@ Feature: Monitoring Host
 		When I go to the listview for [hosts] all    
     	And I click "Babaruajan"        
     	Then I should see "ACKNOWLEDGED"   
-    	Then I should see "Acknowledged by <root>" 
+    	Then I should see "Acknowledged by root" 
