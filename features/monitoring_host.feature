@@ -310,9 +310,11 @@ Feature: Monitoring Host
 
 		And I visit the object details page for host "Babaruajan"
 		Then I should see "ACKNOWLEDGE"
-		And I click "Acknowledge"
-		Then I should see "Comment"
+		And I click "acknowledge"
+		Then "comment" should contain ""
 		And I click "Submit"
 		Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-		And I click "Done"
-		Then I should see "ACKNOWLEDGED"
+		When I go to the listview for [hosts] all    
+    	And I click "Babaruajan"        
+    	Then I should see "ACKNOWLEDGED"   
+    	Then I should see "Acknowledged by <root>" 
