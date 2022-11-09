@@ -301,3 +301,20 @@ Feature: Monitoring Host
 		Then I should see "Comment"
 		And I should see "Broadcast"
 		And I should see "Force notification"
+
+	Scenario: Acknowledge a host problem
+
+		Given I have these mocked hosts
+			| name       | state |
+			| Babaruajan | 1     |
+
+		And I visit the object details page for host "Babaruajan"
+		Then I should see "ACKNOWLEDGE"
+		And I click "acknowledge"
+		Then "comment" should contain ""
+		And I click "Submit"
+		Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+		When I go to the listview for [hosts] all    
+    	And I click "Babaruajan"        
+    	Then I should see "ACKNOWLEDGED"   
+    	Then I should see "Acknowledged by root" 
