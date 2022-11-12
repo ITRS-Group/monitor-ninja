@@ -9,6 +9,9 @@
         <a href="https://www.itrsgroup.com/products/network-monitoring-op5-monitor">ITRS OP5 Monitor</a>
       </td>
       <td>
+        <a href="/monitor/index.php/menu/license_info" target="_blank">License Information</a>
+      </td>
+      <td>
         <a href="<?php echo Kohana::config('product.support_url'); ?>">Support</a>
       </td>
     </tr>
