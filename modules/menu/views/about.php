@@ -16,10 +16,9 @@
       </td>
     </tr>
   </table>
-
-    <?php
-      $data = $about->get_all();
-      echo html::get_definition_list($data);
-    ?>
+<?php
+$data = $about->get_all();
+echo html::get_definition_list($data);
+?>
 
 </div>
