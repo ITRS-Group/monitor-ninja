@@ -7,12 +7,16 @@
 }
 
 .popup-about-table {
-  margin-top: 16px;
-  border-collapse: collapse;
+    margin: 0 10%;
+    padding: 2% 0 4% 0%;
 }
 
 .popup-about-row {
-  border: none;
+  display: flex;
+}
+
+.popup-link{
+  cursor: pointer;
 }
 
 .popup-about-row.popup-about-row-links {
