@@ -445,13 +445,14 @@ dd {
 
 .popup-about > dl > dd,
 .popup-about > dl > dt {
-  margin: 4px 0;
+  margin: 1% 0;
 }
 
 .popup-about table tr td {
   text-align: center;
-  width: 33%;
-  max-width: 33%;
+  width: 20%;
+  max-width: 20%;
+  padding: 0;
 }
 
 .popup-about table tr:hover td {
@@ -459,7 +460,7 @@ dd {
 }
 
 .popup-about table {
-  margin: 8px 0 16px 0;
+  margin: 8px 5%;
 }
 
 .comments .content {
