@@ -50,7 +50,18 @@ class Ajax_Controller extends Authenticated_Controller {
 					$href = str_replace('<', '%3C', $href);
 					$href = str_replace('>', '%3E', $href);
 				}
-				$setting_href[] = array('href' => $href);
+				
+				$icon = $setting_data['icon'];
+				$icon = str_replace('(', '', $icon);
+				$icon = str_replace(')', '', $icon);
+				$icon = str_replace('.', '', $icon);
+				$icon = str_replace('=', '', $icon);
+				$icon = htmlspecialchars(trim($icon), ENT_QUOTES);
+
+				$title = $setting_data['title'];
+				$title = htmlspecialchars(trim($title), ENT_QUOTES);
+
+				$setting_href[] = array('href' => $href, 'icon' => $icon, 'title' => $title);
 			}
 		}
 		$setting = array_replace_recursive($setting_info, $setting_href);

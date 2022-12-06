@@ -88,6 +88,11 @@ class showlog
 		if (empty($options['parse_forward'])) {
 			$args[] = '--reverse';
 		}
+
+		if (!empty($options['all_nodes'])) {
+			$args[] = '--all-nodes';
+		}
+
 		# invoke a hard limit in case the user didn't set any.
 		# This will prevent php from exiting with an out-of-memory
 		# error, and will also stop users' browsers from hanging
