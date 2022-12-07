@@ -448,19 +448,27 @@ dd {
   margin: 1% 0;
 }
 
-.popup-about table tr td {
-  text-align: center;
-  width: 20%;
-  max-width: 20%;
-  padding: 0;
+.popup-about-table {
+  margin: 0 10%;
+  padding: 2% 0 0% 0%;
 }
 
-.popup-about table tr:hover td {
-  background: inherit;
+.popup-about-row {
+  display: flex;
 }
 
-.popup-about table {
-  margin: 8px 5%;
+.popup-link{
+  cursor: pointer;
+  margin-right: 2em;
+}
+
+.popup-link:hover{
+  border-bottom: 1px solid #444444;
+  margin-bottom: -1px;
+}
+
+.popup-divider{
+  margin: 2% 10%;
 }
 
 .comments .content {
