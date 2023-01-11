@@ -16,6 +16,9 @@ and fill out the support form.</p>
 
 <h1>Software Licensing Information</h1>
 <p>The ITRS OP5 Monitor System and most of the added extra software packages included under the GNU General Public License (GPL) 2.0. The Apache web server is licensed under the Apache Software Foundation License.</p>
+<p>Run this command to get the list of installed OP5 package licenses on the system:</p>
+<code>op5-software-licenses --format list --list-format '%{NVR} %{URL}'</code>
+<br>
 <p>ITRS retains strict legal copyright on all software, be it scripts, source code or binaries, that are written from scratch by the ITRS development team. All rights are reserved.</p>
 
 <p>For further questions regarding copyright and licensing, get in touch at:
