@@ -15,3 +15,7 @@ Feature: Menu About
 		Then I should see "Version"
 		And I should see "Release"
 		And I should see "License"
+
+	Scenario: See that Licensing Information page content rendered correct
+		When I am on address "/index.php/menu/license_info"
+		Then I should see "Software Licensing Information"

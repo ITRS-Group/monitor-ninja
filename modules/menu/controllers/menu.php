@@ -17,5 +17,11 @@ class Menu_Controller extends Ninja_Controller {
     $this->template->about = $about;
 
   }
+  
+  public function license_info () {
+
+    $this->template = new View('license_info');
+
+  }
 
 }
