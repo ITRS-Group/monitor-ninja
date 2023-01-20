@@ -21,6 +21,7 @@ var LSFilterMetadataVisitor = function LSFilterMetadataVisitor(){
 	this.visit_filter_not       = function(filter1)                   { return filter1; };
 	this.visit_filter_ok        = function(match0)                    { return match0; };
 	this.visit_match_all        = function()                          { return []; };
+	this.visit_match_none       = function()                          { return []; };
 	this.visit_match_in         = function(set_descr1)                { return []; };
 	this.visit_match_field_in   = function(field0, set_descr2)        { return [field0]; };
 	this.visit_match_not_re_ci  = function(field0, arg_string2)       { return [field0]; };
