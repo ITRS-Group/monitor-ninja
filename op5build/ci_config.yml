@@ -18,6 +18,13 @@ post:
     echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
     make -C /opt/monitor/op5/ninja test
 
+    # Workaround for DST issue. This will use CI default timezone as UTC for PHP in 
+    # /etc/php.d/10-op5ci.in
+    mv /etc/php.d/52-ninja-tests.ini .
+    if [ -f /etc/init.d/httpd ]; then service httpd restart; fi
+    if [ -f /usr/lib/systemd/system/httpd.service ]; then systemctl restart httpd; fi
+    mon restart
+
     # Install Chrome, Ruby 2.7 and Ruby gems.
     # Runs the script in the current shell
     # Provided by op5int_webtest, current dir needs to be passed to the script.
