@@ -40,8 +40,8 @@ Feature: Alert history reports
 	@configuration
 	Scenario: Single host alert history
 		Given I visit the alert history page for host "linux-server1"
-		Then I should see "OK - Sven Melander"
-		And I should see "Reporting period: Forever"
+		Then I should see "Reporting period: Today"
+		And I should see "No log data recorded during this time"
 		And I shouldn't see "win-server"
 
 	@configuration
@@ -52,6 +52,7 @@ Feature: Alert history reports
 		Then "Show all" should be unchecked
 		And "objects" should have option "linux-server1"
 		When I uncheck "Up"
+		And select "Forever" from "Reporting period"
 		And I click "Update"
 		Then I shouldn't see "Sven Melander"
 
