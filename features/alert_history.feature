@@ -170,6 +170,7 @@ Feature: Alert history reports
 		| report_type    | objects       |
 		| hosts          | win-server1   |
 		And I enter "1" into "Items to show"
+		And select "Forever" from "Reporting period"
 		And I check "Older entries first"
 		And I click "Update"
 		Then I should see "OK - laa-laa"
