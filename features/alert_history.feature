@@ -45,12 +45,11 @@ Feature: Alert history reports
 	@configuration
 	Scenario: See that host edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
-		| report_type    | objects       |
-		| hosts          | linux-server1 |
+		| report_type    | objects       | report_period
+		| hosts          | linux-server1 | forever
 		Then "Show all" should be unchecked
 		And "objects" should have option "linux-server1"
 		When I uncheck "Up"
-		And select "Forever" from "Reporting period"
 		And I click "Update"
 		Then I shouldn't see "Sven Melander"
 
@@ -165,10 +164,9 @@ Feature: Alert history reports
 	@configuration
 	Scenario: See that pagination edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
-		| report_type    | objects       |
-		| hosts          | win-server1   |
+		| report_type    | objects       | report_period
+		| hosts          | win-server1   | forever
 		And I enter "1" into "Items to show"
-		And select "Forever" from "Reporting period"
 		And I check "Older entries first"
 		And I click "Update"
 		Then I should see "OK - laa-laa"
