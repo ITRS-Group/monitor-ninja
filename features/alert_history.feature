@@ -45,8 +45,8 @@ Feature: Alert history reports
 	@configuration
 	Scenario: See that host edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
-		| report_type    | objects       | report_period
-		| hosts          | linux-server1 | forever
+		| report_type    | objects       | report_period	|
+		| hosts          | linux-server1 | forever			|
 		Then "Show all" should be unchecked
 		And "objects" should have option "linux-server1"
 		When I uncheck "Up"
@@ -164,8 +164,8 @@ Feature: Alert history reports
 	@configuration
 	Scenario: See that pagination edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
-		| report_type    | objects       | report_period
-		| hosts          | win-server1   | forever
+		| report_type    | objects       | report_period	|
+		| hosts          | win-server1   | forever			|
 		And I enter "1" into "Items to show"
 		And I check "Older entries first"
 		And I click "Update"
