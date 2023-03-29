@@ -49,7 +49,7 @@ Feature: Alert history reports
 		Then I should see "Reporting period: Today"
 		And I should see "OK - Bravo"
 		And I shouldn't see "win-server"
-		
+
 	@configuration
 	Scenario: See that host edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
