@@ -46,7 +46,7 @@ Feature: Alert history reports
 			| 2023-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Bravo		|
 			| 2023-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - Charlie    |
 			| 2023-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - Mike    |
-		Then I should see "Reporting period: Today"
+		Then I should see "Reporting period: Last 24 hours"
 		And I should see "OK - Bravo"
 		And I shouldn't see "win-server"
 
