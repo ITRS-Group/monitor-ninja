@@ -38,8 +38,14 @@ Feature: Alert history reports
 	@configuration
 	Scenario: Single host alert history
 		Given I visit the alert history page for host "linux-server1"
+		And I have these additional report data entries on current timestamp:
+			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output			|
+			| 2023-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - Alpha		|
+			| 2023-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Bravo		|
+			| 2023-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - Charlie    |
+			| 2023-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - Mike    |
 		Then I should see "Reporting period: Today"
-		And I should see "No log data recorded during this time"
+		And I should see "OK - Bravo"
 		And I shouldn't see "win-server"
 
 	@configuration
