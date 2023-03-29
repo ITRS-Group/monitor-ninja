@@ -40,15 +40,21 @@ Feature: Alert history reports
 	@configuration
 	Scenario: Single host alert history
 		Given I visit the alert history page for host "linux-server1"
-		Then I should see "OK - Sven Melander"
-		And I should see "Reporting period: Forever"
+		And I have these additional report data entries on current timestamp:
+			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output			|
+			| 2023-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - Alpha		|
+			| 2023-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Bravo		|
+			| 2023-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - Charlie    |
+			| 2023-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - Mike    |
+		Then I should see "Reporting period: Last 24 hours"
+		And I should see "OK - Bravo"
 		And I shouldn't see "win-server"
 
 	@configuration
 	Scenario: See that host edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
-		| report_type    | objects       |
-		| hosts          | linux-server1 |
+		| report_type    | objects       | report_period	|
+		| hosts          | linux-server1 | forever			|
 		Then "Show all" should be unchecked
 		And "objects" should have option "linux-server1"
 		When I uncheck "Up"
@@ -166,8 +172,8 @@ Feature: Alert history reports
 	@configuration
 	Scenario: See that pagination edit settings form content rendered correct
 		When I view a "alert_history" report with these settings:
-		| report_type    | objects       |
-		| hosts          | win-server1   |
+		| report_type    | objects       | report_period	|
+		| hosts          | win-server1   | forever			|
 		And I enter "1" into "Items to show"
 		And I check "Older entries first"
 		And I click "Update"
