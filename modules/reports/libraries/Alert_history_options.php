@@ -7,7 +7,7 @@ class Alert_history_options extends Summary_options {
 
 	public function setup_properties() {
 		parent::setup_properties();
-		$this->properties['report_period']['default'] = 'forever';
+		$this->properties['report_period']['default'] = 'last24hours';
 		$this->properties['report_type']['default'] = 'hosts';
 		$this->properties['summary_items']['default'] = config::get('pagination.default.items_per_page');
 		$this->properties['objects']['default'] = Report_options::ALL_AUTHORIZED;
