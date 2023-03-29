@@ -25,6 +25,13 @@ Given /^I have these report data entries:$/ do |table|
   SQLHelpers::insert_sql_data_into_table("merlin", "report_data", table);
 end
 
+Given /^I have these additional report data entries on current timestamp:$/ do |table|
+  table.map_column!('timestamp') { | timestamp |
+    DateTime.now.strftime('%F %T %s') rescue timestamp
+  }
+  SQLHelpers::insert_sql_data_into_table("merlin", "report_data", table);
+end
+
 When /^I have submitted a passive ([a-z]+) check result "(.*)"$/ do |type, check_result|
   if type == 'host' then
     @configuration.add_host_check_result check_result
