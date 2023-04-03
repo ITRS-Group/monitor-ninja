@@ -125,7 +125,7 @@ if(count($perf_data)) {
 			</td>
 			<td>
 <?php
-		echo (isset($ds['value']) ? $ds['value'] : '') . (isset($ds['unit']) ? $ds['unit'] : '');
+		echo (isset($ds['value']) ? $ds['value'] . (isset($ds['unit']) ? $ds['unit'] : '') : '');
 ?>
 			</td>
 			<td>
@@ -140,12 +140,12 @@ if(count($perf_data)) {
 			</td>
 			<td>
 <?php
-		echo (isset($ds['min']) ? $ds['min'] : '') . (isset($ds['unit']) ? $ds['unit'] : '');
+		echo (isset($ds['min']) ? $ds['min'] . (isset($ds['unit']) ? $ds['unit'] : '') : '');
 ?>
 			</td>
 			<td>
 <?php
-		echo (isset($ds['max']) ? $ds['max'] : '') . (isset($ds['unit']) ? $ds['unit'] : '');
+		echo (isset($ds['max']) ? $ds['max'] . (isset($ds['unit']) ? $ds['unit'] : '') : '');
 ?>
 			</td>
 		</tr>
