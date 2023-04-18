@@ -738,10 +738,6 @@ h1.emote b {
   margin: 1em 0 1em 0;
 }
 
-#summary_form .showlog input#Update {
-  margin-top: 160px;
-}
-
 .long_output {
   -ms-word-break: break-all;
   word-break: break-all;
@@ -1403,6 +1399,7 @@ div.info, div.notice {
   vertical-align: top;
   float: left;
   margin-right: 32px;
+  margin-bottom: 150px;
 }
 
 .report-page-setup, .report-page {
