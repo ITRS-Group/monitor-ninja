@@ -127,20 +127,30 @@ class LSFilter_Saved_Queries_Model extends Model {
 				throw new Exception("Unknown scope");
 		}
 
-		/* It should be an update on duplicate key, but that doesn't work well with null-valued columns, delete instead */
+		// Check if exist
 		if( $user === null ) {
-			$sql_query = "DELETE FROM ".self::tablename." WHERE username IS NULL AND filter_name = %s";
-			$args = array($name);
+			$sql_query = "SELECT `id` FROM ".self::tablename." WHERE username IS NULL AND filter_name = %s";
+			$args = array($name, $metadata['name']);
 		} else {
-			$sql_query = "DELETE FROM ".self::tablename." WHERE username = %s AND filter_name = %s";
-			$args = array($user, $name);
+			$sql_query = "SELECT `id` FROM ".self::tablename." WHERE username = %s AND filter_name = %s";
+			$args = array($user, $name, $metadata['name']);
 		}
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
 		$res = $db->query($sql_query);
 
-		/* And insert it's value */
-		$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s)";
-		$args = array($user, $name, $metadata['name'], $query, $name);
+		// Insert if not exist
+		if (count($res) === 0) {
+			$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s)";
+			$args = array($user, $name, $metadata['name'], $query, $name);
+		} else {
+			if( $user === null ) {
+				$sql_query = "UPDATE ".self::tablename." SET filter_table = %s, filter = %s, filter_description = %s WHERE filter_name = %s AND username IS NULL";
+				$args = array($metadata['name'], $query, $name, $name);
+			} else {
+				$sql_query = "UPDATE ".self::tablename." SET filter_table = %s, filter = %s, filter_description = %s WHERE filter_name = %s AND username = %s";
+				$args = array($metadata['name'], $query, $name, $name, $user);
+			}
+		}
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
 		$db->query($sql_query);
 	}
