@@ -137,19 +137,15 @@ class LSFilter_Saved_Queries_Model extends Model {
 		}
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
 		$res = $db->query($sql_query);
+		$id = $res[0]->id;
 
 		// Insert if not exist
 		if (count($res) === 0) {
 			$sql_query = "INSERT INTO ".self::tablename." (username, filter_name, filter_table, filter, filter_description) VALUES (%s,%s,%s,%s,%s)";
 			$args = array($user, $name, $metadata['name'], $query, $name);
 		} else {
-			if( $user === null ) {
-				$sql_query = "UPDATE ".self::tablename." SET filter_table = %s, filter = %s, filter_description = %s WHERE filter_name = %s AND username IS NULL";
-				$args = array($metadata['name'], $query, $name, $name);
-			} else {
-				$sql_query = "UPDATE ".self::tablename." SET filter_table = %s, filter = %s, filter_description = %s WHERE filter_name = %s AND username = %s";
-				$args = array($metadata['name'], $query, $name, $name, $user);
-			}
+			$sql_query = "UPDATE ".self::tablename." SET filter_table = %s, filter = %s, filter_description = %s WHERE id = %s";
+			$args = array($metadata['name'], $query, $name, $id);
 		}
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
 		$db->query($sql_query);
