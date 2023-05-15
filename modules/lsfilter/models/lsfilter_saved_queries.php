@@ -129,10 +129,10 @@ class LSFilter_Saved_Queries_Model extends Model {
 
 		// Check if exist
 		if( $user === null ) {
-			$sql_query = "SELECT `id` FROM ".self::tablename." WHERE username IS NULL AND filter_name = %s LIMIT 1";
+			$sql_query = "SELECT `id` FROM ".self::tablename." WHERE username IS NULL AND filter_name = %s";
 			$args = array($name, $metadata['name']);
 		} else {
-			$sql_query = "SELECT `id` FROM ".self::tablename." WHERE username = %s AND filter_name = %s LIMIT 1";
+			$sql_query = "SELECT `id` FROM ".self::tablename." WHERE username = %s AND filter_name = %s";
 			$args = array($user, $name, $metadata['name']);
 		}
 		$sql_query = vsprintf( $sql_query, array_map( array($db, 'escape'), $args ) );
