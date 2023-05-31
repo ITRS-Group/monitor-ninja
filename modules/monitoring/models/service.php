@@ -566,6 +566,10 @@ class Service_Model extends BaseService_Model {
 	 * @return array ['status' => boolean, 'output' => string]
 	 */
 	public function schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $comment) {
+		if(empty(trim($comment))) {
+			$comment = "Scheduled by ".$this->get_current_user();
+		}
+		
 		$duration_sec = intval(floatval($duration) * 3600);
 
 		$trigger_id = intval($trigger_id);
