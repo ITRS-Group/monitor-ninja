@@ -549,6 +549,10 @@ class Host_Model extends BaseHost_Model {
 	 * @ninja orm_command view monitoring/naemon_command
 	 */
 	public function schedule_downtime($start_time, $end_time, $flexible, $duration, $trigger_id, $propagation, $comment) {
+		if(empty(trim($comment))) {
+			$comment = "Scheduled by ".$this->get_current_user();
+		}
+		
 		$duration_sec = intval(floatval($duration) * 3600);
 
 		$trigger_id = intval($trigger_id);
