@@ -79,6 +79,10 @@ EOF;
 		$columns = $this->input->get('columns',$this->input->post('columns',false));
 		$sort = $this->input->get('sort',$this->input->post('sort',array()));
 
+		if(strpos($query, "[comments]") !== false && count($sort)==0){
+			$sort = array("entry_time desc");
+		} 
+
 		$limit = $this->input->get('limit',$this->input->post('limit',false));
 		$offset = $this->input->get('offset',$this->input->post('offset',false));
 
