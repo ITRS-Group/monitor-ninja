@@ -7,7 +7,7 @@ ETC_GROUP := apache
 
 PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
 
-all: generate-php compile-python2
+all: generate-php compile-python3
 
 generate-php:
 	php build.php

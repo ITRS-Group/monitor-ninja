@@ -33,10 +33,9 @@ Requires: op5-bootstrap
 # Merlin creates our database
 Requires: merlin
 Requires: monitor-ninja-monitoring
-BuildRequires: python2
 BuildRequires: doxygen
 BuildRequires: graphviz
-Requires: python2
+BuildRequires: python39-devel
 Requires: php
 Requires: php-cli
 Requires: php-json
@@ -164,8 +163,8 @@ for f in cli-helpers/apr_md5_validate \
 done
 
 install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
-install -D -m 644 install_scripts/nacoma_hooks.pyc %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyc
-install -D -m 644 install_scripts/nacoma_hooks.pyo %{buildroot}%{nacoma_hooks_path}/ninja_hooks.pyo
+install -d %buildroot%{nacoma_hooks_path}/__pycache__
+for i in $( ls install_scripts/__pycache__); do cp "install_scripts/__pycache__/$i" "%buildroot%{nacoma_hooks_path}/__pycache__/ninja_hooks.${i#*.}"; done
 
 install -d %buildroot%_unitdir
 install -D -m 644 -t %buildroot%_unitdir op5build/systemd/*.{service,timer}
@@ -221,7 +220,6 @@ fi
 %license ASL2.txt
 %base_prefix/*
 %_unitdir/*
-%{nacoma_hooks_path}/ninja_hooks.*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 %_sysconfdir/php.d/50-op5-ninja.ini
 %attr(755,root,root) /usr/bin/op5-manage-users
