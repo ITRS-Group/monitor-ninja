@@ -52,7 +52,9 @@
 							// Check Livestatus.
 							exec('service naemon status', $output, $return_var_le);
 
-							if($return_var_lmd !== 0 && $return_var_le === 0){
+							if($return_var_lmd !== 0 && $return_var_le !== 0){
+								$services_down = "The OP5 Monitor services LMD and Naemon are not running, please";
+							} elseif($return_var_lmd !== 0 && $return_var_le === 0){
 								$service_down = "The OP5 Monitor service LMD is not running, please";
 							} elseif($return_var_lmd === 0 && $return_var_le !== 0) {
 								$service_down = "The OP5 Monitor service Naemon is not running, please";
