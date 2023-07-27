@@ -17,7 +17,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 			return;
 		}
 
-		$this->backup_location =  __DIR__.'/a_temp_dir_heyo';
+		$this->backup_location =  './a_temp_dir_heyo';
 		exec("mkdir $this->backup_location", $output, $exit_code);
 		if($exit_code != 0) {
 			$this->markTestSkipped("Could not create a temporary ".
