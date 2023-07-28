@@ -45,18 +45,24 @@
 								echo $content;
 							}
 						} else {
-							$services_down = 'services LMD and Naemon are not running';
+							$services_down = '';
 
 							// Check LMD.
 							exec('service lmd status', $output, $return_var_lmd);
 							// Check Livestatus.
 							exec('service naemon status', $output, $return_var_le);
 
-							if($return_var_lmd !== 0 && $return_var_le === 0){
-								$services_down = 'service LMD is not running';
+							if($return_var_lmd !== 0 && $return_var_le !== 0){
+								$services_down = "The OP5 Monitor services LMD and Naemon are not running, please";
+							} elseif($return_var_lmd !== 0 && $return_var_le === 0){
+								$service_down = "The OP5 Monitor service LMD is not running, please";
+							} elseif($return_var_lmd === 0 && $return_var_le !== 0) {
+								$service_down = "The OP5 Monitor service Naemon is not running, please";
+							} else {
+								$services_down = 'Issues encountered, check LMD and Naemon Logs for details or';
 							}
 							echo '<div class=" info-notice info-notice-error info-notice-service-error">';
-								echo 'The OP5 Monitor '.$services_down.', please contact your administrator.';
+								echo $services_down." contact your administrator.";
 							echo '</div>';
 						}
 					?>
