@@ -17,8 +17,13 @@ if ($result['status']) {
 	echo "</div>\n";
 	$this->footer = '<input style="margin-left: 12px" type="button" value="Done" onclick="history.go(-2)" />'."\n";
 } else {
-	echo '<div class="alert error" style="display: none;">'.sprintf(_('There was an error submitting your commands to %s.'), Kohana::config('config.product_name'));
-	if (!empty($result['output'])) {
+	exec('/usr/bin/systemctl status naemon.service', $output, $return_var_le);
+	if($return_var_le == "127"){
+		echo '<div class="alert error" style="display: none;"> The OP5 Monitor service Naemon is not running.';
+	} else {
+		echo '<div class="alert error" style="display: none;">'.sprintf(_('There was an error submitting your commands to %s.'), Kohana::config('config.product_name'));
+	}
+	if (!empty($result['output'])) { 
 		echo '<br /><br />'._('ERROR').': '.html::specialchars($result['output']);
 	}
 	echo "</div>\n";

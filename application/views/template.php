@@ -48,16 +48,16 @@
 							$services_down = '';
 
 							// Check LMD.
-							exec('service lmd status', $output, $return_var_lmd);
+							exec('/usr/bin/systemctl status lmd.service', $output, $return_var_lmd);
 							// Check Livestatus.
-							exec('service naemon status', $output, $return_var_le);
+							exec('/usr/bin/systemctl status naemon.service', $output, $return_var_le);
 
-							if($return_var_lmd !== 0 && $return_var_le !== 0){
+							if($return_var_lmd === 127 && $return_var_le === 127){
 								$services_down = "The OP5 Monitor services LMD and Naemon are not running, please";
 							} elseif($return_var_lmd !== 0 && $return_var_le === 0){
-								$service_down = "The OP5 Monitor service LMD is not running, please";
+								$services_down = "The OP5 Monitor service LMD is not running, please";
 							} elseif($return_var_lmd === 0 && $return_var_le !== 0) {
-								$service_down = "The OP5 Monitor service Naemon is not running, please";
+								$services_down = "The OP5 Monitor service Naemon is not running, please";
 							} else {
 								$services_down = 'Issues encountered, check LMD and Naemon Logs for details or';
 							}
