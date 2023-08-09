@@ -52,7 +52,7 @@
 							// Check Livestatus.
 							exec('/usr/bin/systemctl status naemon.service', $output, $return_var_le);
 
-							if($return_var_lmd === 127 && $return_var_le === 127){
+							if($return_var_lmd === 3 && $return_var_le === 3){
 								$services_down = "The OP5 Monitor services LMD and Naemon are not running, please";
 							} elseif($return_var_lmd !== 0 && $return_var_le === 0){
 								$services_down = "The OP5 Monitor service LMD is not running, please";
