@@ -64,6 +64,8 @@ class Showlog_Controller extends Ninja_Controller
 		if (!$this->mayi->run('monitoring.status:read.showlog')) {
 			$this->options['hide_process'] = 1;
 			$this->options['hide_commands'] = 1;
+			//sets an initial value on First Time Calendar Date
+			$this->options['first'] = date(strtotime("-1 week"));
 		}
 	}
 
