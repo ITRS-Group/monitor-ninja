@@ -87,71 +87,97 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 */
 	protected function generate_pdf()
 	{
+		//  Require tcpdf
+		require Kohana::find_file('vendor', 'tcpdf/tcpdf');
+
 		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
 		$this->_clear_print_notification();
 		$this->_verify_access($resource.':read.report.'.$this->type.'.pdf');
 		$this->template->base_href = 'https://localhost'.url::base();
 
-		# not using exec, so STDERR (used for status info) will be loggable
-		$pipe_desc = array(
-			0 => array('pipe', 'r'),
-			1 => array('pipe', 'w'),
-			2 => array('pipe', 'w'));
-		$pipes = false;
-
-		$command = Kohana::config('reports.pdf_command');
-		$brand = brand::get('http://localhost', false);
-		$command .= ' --replace brand "' . $brand . '"';
-		$command .= ' - -';
-
-		$this->log->log('debug', "Running pdf generation command '$command'");
-		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
-
-		if (is_resource($process)) {
-			// Render and store output
-			$content = $this->template->render();
-			$this->log->log('debug', "HTML: $content");
-			$this->auto_render = false;
-
-			$filename = $this->type;
-			if ($this->options['schedule_id']) {
-				$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
-				if ($schedule_info)
-					$filename = $schedule_info['filename'];
-			}
-			$months = date::abbr_month_names();
-			$month = $months[date('m')-1]; // January is [0]
-			$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
-
-			fwrite($pipes[0], $content);
-			fclose($pipes[0]);
-
-			$out = stream_get_contents($pipes[1]);
-			$err = stream_get_contents($pipes[2]);
-			if (trim($out)) {
-				header("Content-disposition: attachment; filename=$filename");
-				header('Content-Type: application/pdf');
-				header("Pragma: public");
-				header("Expires: 0");
-				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-				header("Cache-Control: private", false);
-				header("Content-Transfer-Encoding: binary");
-				echo $out;
-			} else {
-				$this->log->log('error', "Pdf command " . $command . "resulted in no output. stderr:");
-				$this->log->log('error', $err);
-			}
-			fclose($pipes[1]);
-			fclose($pipes[2]);
-			$return_value = proc_close($process);
-			if ($return_value != 0) {
-				$this->log->log('debug', "Pdf command " . $command . " returned $return_value:");
-				$this->log->log('debug', "stderr: $err");
-			}
-		} else {
-			$this->log->log('error', "Tried running the following command but was unsuccessful:");
-			$this->log->log('error', $command);
+		// Set filename
+		$filename = $this->type;
+		if ($this->options['schedule_id']) {
+			$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
+			if ($schedule_info)
+				$filename = $schedule_info['filename'];
 		}
+		$months = date::abbr_month_names();
+		$month = $months[date('m')-1]; // January is [0]
+		$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
+
+		// Get Contents
+		$content = $this->template->content->render();
+
+		// Fix HTML Query - Ongoing
+
+		// Use a regular expression to: 
+		// match image tags
+		$img_pattern = '/<img\s+[^>]*src="([^"]+)"[^>]*>/';
+		preg_match_all($img_pattern, $content, $img_matches);
+
+		// Iterate through matched image tags
+		foreach ($img_matches[1] as $index=>$src) {
+			// Check if the image exists
+			if (file_exists($src)===false)
+				// Replace the image tag with a placeholder // Temporary - Ongoing
+				$content = str_replace($img_matches[0][$index],'<span style="color: red;">[IMG]</span>', $content);
+		}
+
+		// match form tags
+		$form_pattern = '/<div\s+id="save_report_form"[^>]*>(.*?)<\/div>/s';
+		preg_match_all($form_pattern, $content, $form_matches);
+
+		// remove the hidden form
+		foreach ($form_matches[0] as $i=>$x) {
+			$content = str_replace($form_matches[0][$i], '', $content);
+		}
+
+		//prepare css file - Ongoing - Test
+		$prep_css = 'application/media/css/jquery.filterable.css';
+		$contentwithcss = '<style>'.file_get_contents($prep_css).'</style>' . $content;
+
+		//============================================================+
+		// START OF DOCUMENT
+		//============================================================+
+
+		// Create PDF Document
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+		// Set document information
+		$pdf->SetTitle($filename);
+		$pdf->SetSubject($filename);
+
+		// set margins
+		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+
+		// set auto page breaks
+		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+		// set image scale factor
+		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+		// set font
+		// $pdf->SetFont('opensans', 'R', 10);
+
+		// add a page
+		$pdf->AddPage();
+
+		// Set header and footer - Ongoing
+
+		// print HTMLstring
+		$pdf->writeHTML($contentwithcss, false, false, false, false, 'UTF-8');
+		
+		// $pdf->IncludeJS($content_script);
+
+		//Close and output PDF document
+		$pdf->Output($filename, 'I');
+
+		//============================================================+
+		// END OF FILE
+		//============================================================+
+
+		// Create logs - Ongoing
 	}
 
 	/**
