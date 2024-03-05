@@ -51,7 +51,8 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		$this->template->toolbar = new Toolbar_Controller('Report');
 
 		if($this->type != 'histogram') {
-			$pdf_button = form::open($this->type.'/generate', array('target'=>'_blank'));
+			$pdf_button = form::open($this->type.'/generate', array('target'=>'_blank')
+		);
 			$pdf_button .= $this->options->as_form();
 			$pdf_button .= '<input type="hidden" name="output_format" value="pdf" />';
 			$pdf_button .= sprintf('<input type="submit" value="%s" />', _('As PDF'));
@@ -106,36 +107,24 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		$month = $months[date('m')-1]; // January is [0]
 		$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
 
-		// Get Contents
-		$content = $this->template->content->render();
-
-		// Fix HTML Query - Ongoing
-
-		// Use a regular expression to: 
-		// match image tags
-		$img_pattern = '/<img\s+[^>]*src="([^"]+)"[^>]*>/';
-		preg_match_all($img_pattern, $content, $img_matches);
-
-		// Iterate through matched image tags
-		foreach ($img_matches[1] as $index=>$src) {
-			// Check if the image exists
-			if (file_exists($src)===false)
-				// Replace the image tag with a placeholder // Temporary - Ongoing
-				$content = str_replace($img_matches[0][$index],'<span style="color: red;">[IMG]</span>', $content);
+		// GET contents from _POST
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			if (isset($_POST['content'])) {
+				// Retrieve the HTML content sent from JavaScript
+				$content = $_POST['htmlContent'];
+			} else {
+				// 'content' key is not set in the POST data
+				echo "Error: 'content' key not found in POST data";
+			}
+		} else {
+			echo "Error!";
 		}
 
-		// match form tags
-		$form_pattern = '/<div\s+id="save_report_form"[^>]*>(.*?)<\/div>/s';
-		preg_match_all($form_pattern, $content, $form_matches);
-
-		// remove the hidden form
-		foreach ($form_matches[0] as $i=>$x) {
-			$content = str_replace($form_matches[0][$i], '', $content);
-		}
-
-		//prepare css file - Ongoing - Test
-		$prep_css = 'application/media/css/jquery.filterable.css';
-		$contentwithcss = '<style>'.file_get_contents($prep_css).'</style>' . $content;
+		//prepare css file - Ongoing : Still looking for styles for tables and graphs
+		$contentwithcss = '<style>'.
+							file_get_contents('application/views/css/classic/jquery-ui.css').
+							file_get_contents('modules/reports/views/reports/css/tgraph.css').
+						'</style>' . $content;
 
 		//============================================================+
 		// START OF DOCUMENT
@@ -149,16 +138,13 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		$pdf->SetSubject($filename);
 
 		// set margins
-		$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+		$pdf->SetMargins(10, 10, 10);
 
 		// set auto page breaks
-		$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+		$pdf->SetAutoPageBreak(TRUE, 10);
 
 		// set image scale factor
-		$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-		// set font
-		// $pdf->SetFont('opensans', 'R', 10);
+		$pdf->setImageScale(1.13);
 
 		// add a page
 		$pdf->AddPage();
@@ -167,8 +153,6 @@ abstract class Base_reports_Controller extends Ninja_Controller
 
 		// print HTMLstring
 		$pdf->writeHTML($contentwithcss, false, false, false, false, 'UTF-8');
-		
-		// $pdf->IncludeJS($content_script);
 
 		//Close and output PDF document
 		$pdf->Output($filename, 'I');
