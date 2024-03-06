@@ -51,8 +51,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		$this->template->toolbar = new Toolbar_Controller('Report');
 
 		if($this->type != 'histogram') {
-			$pdf_button = form::open($this->type.'/generate', array('target'=>'_blank')
-		);
+			$pdf_button = form::open($this->type.'/generate', array('target'=>'_blank'));
 			$pdf_button = '<input type="hidden" name="output_format" value="pdf" />';
 			$pdf_button .= sprintf('<input type="submit" value="%s" id="generate_pdf_file"/>', _('As PDF'));
 			$this->template->toolbar->html_as_button($pdf_button);
