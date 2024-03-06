@@ -112,12 +112,12 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			if (isset($_POST['content'])) {
 				// Retrieve the HTML content sent from JavaScript
 				$content = $_POST['htmlContent'];
+				$this->log->log('debug', "HTML: $content");
 			} else {
-				// 'content' key is not set in the POST data
-				echo "Error: 'content' key not found in POST data";
+				$this->log->log('debug', "Error: 'htmlContent' key not found in POST data");
 			}
 		} else {
-			echo "Error!";
+			$this->log->log('debug', "Error: No POST data found");
 		}
 
 		//prepare css file - Ongoing : Still looking for styles for tables and graphs
