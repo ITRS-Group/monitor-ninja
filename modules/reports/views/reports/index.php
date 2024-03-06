@@ -54,33 +54,3 @@
 	}
 ?>
 </div>
-<script>
-	// this will capture rendered output as html strings
-	function captureReport() {
-		var htmlContent = document.getElementById('report-page').innerHTML;
-		// working on captured html string will match the displayed data to the pdf to be generated
-		// and this will also remove the use of javascripts that will avoid missing components on the pdf
-		console.log(htmlContent);
-
-		// using ajax to submit client-side variables to the controller
-		var xhr = new XMLHttpRequest();
-		<?php 
-			$reportcontroller = Kohana::find_file('controllers','base_reports');
-			// ninja/modules/reports/controllers/base_reports.php
-		?>
-		xhr.open('POST', '<?php echo json_encode($reportcontroller);?>', true); // checking if this needs an update
-		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.onreadystatechange = function() {
-			if (xhr.status == 200) {
-				console.log('Submit successful');
-			} else {
-				console.log('Status:'+xhr.status); // currently results to 403 (FORBIDDEN)
-			}
-		}; 
-		xhr.send('htmlContent=' + encodeURIComponent(htmlContent));
-	}
-
-	$(window).on("load", function () {
-		captureReport();
-	});
-</script>

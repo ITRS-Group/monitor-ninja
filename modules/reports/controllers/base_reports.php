@@ -53,10 +53,8 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		if($this->type != 'histogram') {
 			$pdf_button = form::open($this->type.'/generate', array('target'=>'_blank')
 		);
-			$pdf_button .= $this->options->as_form();
-			$pdf_button .= '<input type="hidden" name="output_format" value="pdf" />';
-			$pdf_button .= sprintf('<input type="submit" value="%s" />', _('As PDF'));
-			$pdf_button .= '</form>';
+			$pdf_button = '<input type="hidden" name="output_format" value="pdf" />';
+			$pdf_button .= sprintf('<input type="submit" value="%s" id="generate_pdf_file"/>', _('As PDF'));
 			$this->template->toolbar->html_as_button($pdf_button);
 
 			$csv_button = form::open($this->type.'/generate');
@@ -160,8 +158,6 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		//============================================================+
 		// END OF FILE
 		//============================================================+
-
-		// Create logs - Ongoing
 	}
 
 	/**
