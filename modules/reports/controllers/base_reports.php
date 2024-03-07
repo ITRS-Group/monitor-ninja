@@ -107,8 +107,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		// GET contents from _POST
 		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			if (isset($_POST['content'])) {
-				// Retrieve the HTML content sent from JavaScript
-				$content = $_POST['htmlContent'];
+				$content = $_POST['content'];
 				$this->log->log('debug', "HTML: $content");
 			} else {
 				$this->log->log('debug', "Error: 'htmlContent' key not found in POST data");
