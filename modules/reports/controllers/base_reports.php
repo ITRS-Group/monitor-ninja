@@ -83,7 +83,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 *
 	 * Assumes that $this->template is set up correctly
 	 */
-	protected function generate_pdf()
+	public function generate_pdf()
 	{
 		//  Require tcpdf
 		require Kohana::find_file('vendor', 'tcpdf/tcpdf');

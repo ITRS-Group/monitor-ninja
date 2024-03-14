@@ -97,33 +97,6 @@ $(document).ready(function() {
 
 });
 
-function run_generation_pdf()
-{
-	var htmlString = document.getElementById('report-page').innerHTML;
-
-	var parser = new DOMParser();
-	var doc = parser.parseFromString(htmlString, 'text/html');
-	// remove div that contains links
-	var divToRemove = doc.getElementById('report-links-internal');
-	if (divToRemove) {
-		divToRemove.parentNode.removeChild(divToRemove);
-	}
-	var source = doc.documentElement.innerHTML;
-
-	$.ajax({
-		url: _site_domain + _index_page + '/base_reports/generate_pdf/',
-		type: 'post',
-		data: {content:source},
-		success: function(response) {
-			console.log('Response from PHP Controller:', response);
-		},
-		error: function(xhr, status, error) {
-			console.error('Error: ', error+' Status: '+status);
-		},
-		dataType: 'json'
-	});
-}
-
 // Propagate sla values
 function set_report_form_values(the_val)
 {
