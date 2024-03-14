@@ -51,11 +51,9 @@ abstract class Base_reports_Controller extends Ninja_Controller
 		$this->template->toolbar = new Toolbar_Controller('Report');
 
 		if($this->type != 'histogram') {
-			$pdf_button = form::open($this->type.'/generate');
-			$pdf_button .= $this->options->as_form();
-			$pdf_button .= '<input type="hidden" name="output_format" value="pdf" />';
-			$pdf_button .= sprintf('<input type="submit" value="%s" />', _('As PDF'));
-			$pdf_button .= '</form>';
+			$pdf_button = form::open($this->type.'/generate', array('target'=>'_blank'));
+			$pdf_button = '<input type="hidden" name="output_format" value="pdf" />';
+			$pdf_button .= sprintf('<input type="submit" value="%s" id="generate_pdf_file"/>', _('As PDF'));
 			$this->template->toolbar->html_as_button($pdf_button);
 
 			$csv_button = form::open($this->type.'/generate');
@@ -85,73 +83,79 @@ abstract class Base_reports_Controller extends Ninja_Controller
 	 *
 	 * Assumes that $this->template is set up correctly
 	 */
-	protected function generate_pdf()
+	public function generate_pdf()
 	{
+		//  Require tcpdf
+		require Kohana::find_file('vendor', 'tcpdf/tcpdf');
+
 		$resource = ObjectPool_Model::pool('hosts')->all()->mayi_resource();
 		$this->_clear_print_notification();
 		$this->_verify_access($resource.':read.report.'.$this->type.'.pdf');
 		$this->template->base_href = 'https://localhost'.url::base();
 
-		# not using exec, so STDERR (used for status info) will be loggable
-		$pipe_desc = array(
-			0 => array('pipe', 'r'),
-			1 => array('pipe', 'w'),
-			2 => array('pipe', 'w'));
-		$pipes = false;
+		// Set filename
+		$filename = $this->type;
+		if ($this->options['schedule_id']) {
+			$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
+			if ($schedule_info)
+				$filename = $schedule_info['filename'];
+		}
+		$months = date::abbr_month_names();
+		$month = $months[date('m')-1]; // January is [0]
+		$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
 
-		$command = Kohana::config('reports.pdf_command');
-		$brand = brand::get('http://localhost', false);
-		$command .= ' --replace brand "' . $brand . '"';
-		$command .= ' - -';
-
-		$this->log->log('debug', "Running pdf generation command '$command'");
-		$process = proc_open($command, $pipe_desc, $pipes, DOCROOT);
-
-		if (is_resource($process)) {
-			// Render and store output
-			$content = $this->template->render();
-			$this->log->log('debug', "HTML: $content");
-			$this->auto_render = false;
-
-			$filename = $this->type;
-			if ($this->options['schedule_id']) {
-				$schedule_info = Scheduled_reports_Model::get_scheduled_data($this->options['schedule_id']);
-				if ($schedule_info)
-					$filename = $schedule_info['filename'];
-			}
-			$months = date::abbr_month_names();
-			$month = $months[date('m')-1]; // January is [0]
-			$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
-
-			fwrite($pipes[0], $content);
-			fclose($pipes[0]);
-
-			$out = stream_get_contents($pipes[1]);
-			$err = stream_get_contents($pipes[2]);
-			if (trim($out)) {
-				header("Content-disposition: attachment; filename=$filename");
-				header('Content-Type: application/pdf');
-				header("Pragma: public");
-				header("Expires: 0");
-				header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-				header("Cache-Control: private", false);
-				header("Content-Transfer-Encoding: binary");
-				echo $out;
+		// GET contents from _POST
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			if (isset($_POST['content'])) {
+				$content = $_POST['content'];
+				$this->log->log('debug', "HTML: $content");
 			} else {
-				$this->log->log('error', "Pdf command " . $command . "resulted in no output. stderr:");
-				$this->log->log('error', $err);
-			}
-			fclose($pipes[1]);
-			fclose($pipes[2]);
-			$return_value = proc_close($process);
-			if ($return_value != 0) {
-				$this->log->log('debug', "Pdf command " . $command . " returned $return_value:");
-				$this->log->log('debug', "stderr: $err");
+				$this->log->log('debug', "Error: 'htmlContent' key not found in POST data");
 			}
 		} else {
-			$this->log->log('error', "Tried running the following command but was unsuccessful:");
-			$this->log->log('error', $command);
+			$this->log->log('debug', "Error: No POST data found");
 		}
+
+		//prepare css file - Ongoing : Still looking for styles for tables and graphs
+		$contentwithcss = '<style>'.
+							file_get_contents('application/views/css/classic/jquery-ui.css').
+							file_get_contents('modules/reports/views/reports/css/tgraph.css').
+						'</style>' . $content;
+
+		//============================================================+
+		// START OF DOCUMENT
+		//============================================================+
+
+		// Create PDF Document
+		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+		// Set document information
+		$pdf->SetTitle($filename);
+		$pdf->SetSubject($filename);
+
+		// set margins
+		$pdf->SetMargins(10, 10, 10);
+
+		// set auto page breaks
+		$pdf->SetAutoPageBreak(TRUE, 10);
+
+		// set image scale factor
+		$pdf->setImageScale(1.13);
+
+		// add a page
+		$pdf->AddPage();
+
+		// Set header and footer - Ongoing
+
+		// print HTMLstring
+		$pdf->writeHTML($contentwithcss, false, false, false, false, 'UTF-8');
+
+		//Close and output PDF document
+		$pdf->Output($filename, 'I');
+
+		//============================================================+
+		// END OF FILE
+		//============================================================+
 	}
 
 	/**

@@ -444,3 +444,36 @@ function filter_mapping_mapping()
 	if (!$(this).siblings('.configure_mapping').find('.filter_map:visible').length)
 		$(this).siblings('.configure_mapping').hide();
 }
+
+function run_generation_pdf()
+{
+	var htmlString = document.getElementById('report-page').innerHTML;
+
+	var parser = new DOMParser();
+	var doc = parser.parseFromString(htmlString, 'text/html');
+	// remove div that contains links
+	var divToRemove = doc.getElementById('report-links-internal');
+	if (divToRemove) {
+		divToRemove.parentNode.removeChild(divToRemove);
+	}
+	var source = doc.documentElement.innerHTML;
+
+	$.ajax({
+		url: _site_domain + _index_page + '/' + _controller_name + '/generatepdf',
+		type: 'post',
+		data: {content:source},
+		success: function(response) {
+			console.log('Request Successful! :', response);
+		},
+		error: function(xhr, status, error) {
+			var msg;
+			if (xhr.status === 403) {
+				msg ='You do not have permission to access this resource.';
+			} else {
+				msg ='An error occurred. '+error;
+			}
+			$.notify("Failed to generate report: " + msg, {'sticky': true});
+		},
+		dataType: 'json'
+	});
+}
