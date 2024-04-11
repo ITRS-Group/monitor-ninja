@@ -1,0 +1,53 @@
+.x-item {
+    overflow: hidden; 
+    width: 100%;
+}
+.tgraph-row {
+    position: relative;
+    width: 84%;
+    height: 40px;
+    color: #333;
+    float: left;
+    display: flex;
+    padding-left: 1%;
+    font: normal normal 8pt Helvetica, Arial, Verdana, sans-serif;
+}
+.tgraph-block-line {
+    margin: 1% 0;
+    position: relative;
+    width: 100%;
+
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    direction: rtl;
+}
+.tgraph-time {
+    float: left;
+    text-align: left;
+    font-size: 7pt;
+}
+.tgraph-time-line {
+    margin: 0 0;
+    border-left: 1px solid #000;
+    opacity: 0.1;
+    z-index: 0;
+    width: 0;
+}
+.y-label {
+    float: left;
+    width: 15%;
+    padding: 10px 0 0 0;
+    min-height: 30px;
+    font-size: 8pt;
+    text-align: right;
+}
+.bar {
+    height: 20px;
+    background-color: #007bff;
+    margin: 0;
+    color: white;
+    display: flex;
+    align-items: right;
+    justify-content: flex-end;
+}
