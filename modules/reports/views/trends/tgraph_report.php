@@ -109,7 +109,8 @@
 						$bars = count($data[$y])-1;
 						for($z=$bars; $z>=0; $z--){
 							$barW = ($data[$y][$z]['duration'] / $totalInterval)*100;
-							echo "<div class='bar' style='width:".round($barW,2)."%; background: ".$data[$y][$z]['color'].";'></div>";
+							$description = str_replace('\'', '', $data[$y][$z]['short']);
+							echo "<div class='bar' data-label='" . $data[$y][$z]['label'] . "' data-value='" . $description . "' id='bar' style='width:".round($barW,2)."%; background: ".$data[$y][$z]['color'].";'></div>";
 						}
 					echo "</div>";
 			echo "</div>";
@@ -135,3 +136,24 @@
 		printf(_("<p>Not showing %d graphs due to being 100%% OK</p>"), $skipped);
 	} ?>
 </div>
+
+<script>
+    var tooltip = document.getElementById('tooltip');
+    var bars = document.querySelectorAll('.bar');
+    
+    bars.forEach(function(bar) {
+        bar.addEventListener('mouseover', function(e) {
+            var label = e.target.getAttribute('data-label');
+            var value = e.target.getAttribute('data-value');
+            tooltip.style.display = 'block';
+
+            tooltip.style.left = (e.pageX + 10) + 'px';
+            tooltip.style.top = (e.pageY + 10) + 'px';
+            tooltip.innerHTML = label + ': ' + value;
+        });
+
+        bar.addEventListener('mouseout', function(e) {
+            tooltip.style.display = 'none';
+        });
+    });
+</script>
