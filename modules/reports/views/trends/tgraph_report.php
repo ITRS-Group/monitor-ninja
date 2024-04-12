@@ -149,7 +149,7 @@
 
             tooltip.style.left = (e.pageX + 10) + 'px';
             tooltip.style.top = (e.pageY + 10) + 'px';
-            tooltip.innerHTML = label + ': ' + value;
+            tooltip.innerHTML = '<b>'+ label +'</b>: '+ value;
         });
 
         bar.addEventListener('mouseout', function(e) {
