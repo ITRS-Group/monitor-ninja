@@ -124,8 +124,8 @@
 			$i = 0;
 			while ($i < count($dateLabel)) {
 				echo "<div class='tgraph-time' style='width: ".(100/count($dateLabel))."%';'>".
+                        "<div class='tgraph-time-line' style='height: ".(count($labels)*40)."px; margin-top: -".(count($labels)*40)."px;'></div>".
 						"&nbsp;&nbsp;".$dateLabel[$i].
-						"<div class='tgraph-time-line' style='height: ".(count($labels)*40)."px; margin-top: -".(count($labels)*40)."px;'></div>".
 					"</div>";
 				$i++;
 			}

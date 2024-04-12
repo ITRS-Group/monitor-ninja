@@ -31,7 +31,6 @@
     font-size: 7pt;
 }
 .tgraph-time-line {
-    position: relative;
     margin: 0 0;
     border-left: 1px solid #000;
     opacity: 0.1;
@@ -51,9 +50,7 @@
     background-color: #007bff;
     margin: 0;
     color: white;
-    align-items: right;
     justify-content: flex-end;
-    position: unset;
 }
 #tooltip {
     position: absolute;
