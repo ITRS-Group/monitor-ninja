@@ -64,8 +64,8 @@
 	function generateDates($startDate, $endDate) {
 		$dates = array();
 	
-		$start = new DateTime(date("Y-m-d H:i:s",$startDate));
-		$end = new DateTime(date("Y-m-d H:i:s",$endDate));
+		$start = new DateTime(date("Y-m-d G:i:s",$startDate));
+		$end = new DateTime(date("Y-m-d G:i:s",$endDate));
 		$end->modify('-1 days');
 		$interval = $start->diff($end);
 		$daysDifference = $interval->days;
@@ -107,10 +107,15 @@
 			echo "<div class='tgraph-row'>";
 					echo "<div class='tgraph-block-line'>";
 						$bars = count($data[$y])-1;
-						for($z=$bars; $z>=0; $z--){
+						$lastDateTime = new DateTime(date("Y-m-d G:i:s", $graph_end_date));
+                        $startDateTime = new DateTime(date("Y-m-d G:i:s", $graph_end_date));
+						for($z=$bars; $z>=0; $z--){ 
 							$barW = ($data[$y][$z]['duration'] / $totalInterval)*100;
-							$description = str_replace('\'', '', $data[$y][$z]['short']);
-							echo "<div class='bar' data-label='" . $data[$y][$z]['label'] . "' data-value='" . $description . "' id='bar' style='width:".round($barW,2)."%; background: ".$data[$y][$z]['color'].";'></div>";
+                            $description = str_replace('\'', '', $data[$y][$z]['short']);
+                            $startDateTime->modify('-'.$data[$y][$z]['duration'].' second');
+                            $dataValue = "<br />".$startDateTime->format('M d, Y g:i A')." to ".$lastDateTime->format('M d, Y g:i A') . "<br />" . $description;
+							echo "<div class='bar' data-label='" . $data[$y][$z]['label'] . "' data-value='" . $dataValue . "' id='bar' style='width:".round($barW,2)."%; background: ".$data[$y][$z]['color'].";'></div>";
+                            $lastDateTime->modify('-'.$data[$y][$z]['duration'].' second');
 						}
 					echo "</div>";
 			echo "</div>";
