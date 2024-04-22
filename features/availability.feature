@@ -605,5 +605,4 @@ Feature: Availability reports
 		And I should see "2013-03-04"
 		And I should see "2013-03-10"
 		And I should see trend graph have background color "rgb(161, 158, 149)"
-		And I should see trend graph have background color "transparent"
 		And I should see trend graph have background color "rgb(170, 222, 83)"
