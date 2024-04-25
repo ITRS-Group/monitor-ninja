@@ -11,8 +11,8 @@
     padding-left: 1%;
     font: normal normal 8pt Helvetica, Arial, Verdana, sans-serif;
 }
-.tgraph-block-line {
-    margin: 1% 0;
+.tgraph-blockline {
+    margin: 2px 0;
     position: relative;
     width: 100%;
     overflow: hidden;
@@ -25,12 +25,44 @@
     display: flex;        
     justify-content: space-around;
 }
+.tgraph-blockline .bar {
+    height: 20px;
+    margin: 0;
+    color: white;
+}
+.tgraph-sub-blockline {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    align-items: center;
+    direction: rtl;
+    display: -webkit-box; 
+    display: -moz-box;    
+    display: -ms-flexbox;  
+    display: -webkit-flex; 
+    display: flex;        
+    justify-content: space-around;
+}
+.tgraph-sub-blockline .bar {
+	position: relative;
+	margin: 0 auto;
+	height: 10px;
+	min-width: 45px;
+    color: white;
+}
+.tgraph-sub-blockline .bar-transparent {
+	position: relative;
+	margin: 0;
+	height: 10px;
+    color: white;
+    background: 'transparent';
+}
 .tgraph-time {
     float: left;
     text-align: left;
     font-size: 7pt;
 }
-.tgraph-time-line {
+.tgraph-timeline {
     margin: 0 0;
     border-left: 1px solid #000;
     opacity: 0.1;
@@ -44,13 +76,6 @@
     min-height: 30px;
     font-size: 8pt;
     text-align: right;
-}
-.bar {
-    height: 20px;
-    background-color: #007bff;
-    margin: 0;
-    color: white;
-    justify-content: flex-end;
 }
 #tooltip {
     position: absolute;
