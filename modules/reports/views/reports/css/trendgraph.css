@@ -47,7 +47,7 @@
 	position: relative;
 	margin: 0 auto;
 	height: 10px;
-	min-width: 45px;
+	min-width: 10px;
     color: white;
 }
 .tgraph-sub-blockline .bar-transparent {
