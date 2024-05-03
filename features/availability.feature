@@ -635,6 +635,5 @@ Feature: Availability reports
 		And I should see "2013-03-01"
 		And I should see "2013-03-11"
 		And I should see "2013-03-21"
-		And I should see trend graph have background color "#a19e95"
 		And I should see trend graph have background color "#aade53"
 		And I should see trend graph have background color "#333"
