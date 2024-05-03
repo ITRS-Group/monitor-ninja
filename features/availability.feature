@@ -39,7 +39,7 @@ Feature: Availability reports
 			| 2013-03-01 00:01:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |
 			| 2013-03-03 00:01:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |
 			| 2013-03-05 00:03:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | ERROR - cannot find linux-server2  |
-			| 2013-03-05 00:03:20 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |	
+			| 2013-03-05 00:08:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |	
 		And I have activated the configuration
 		And I am logged in as administrator
 
@@ -632,4 +632,4 @@ Feature: Availability reports
 		And I click "Show report"
 		And I should see trend graph have background color "#a19e95"
 		And I should see trend graph have background color "#aade53"
-		And I should see trend graph have background color "transparent"
+		And I should see trend graph have background color "#333"
