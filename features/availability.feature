@@ -611,10 +611,11 @@ Feature: Availability reports
 		Given I am on the Host details page
 		And I have these report data entries:
 		| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output |
-		| 2013-03-01 00:01:00 |        801 |  NULL |   NULL | linux-server2 | System Load         |     0 |    1 |     1 |              0 | OK - linux-server2  |
-		| 2013-03-03 00:01:00 |        801 |  NULL |   NULL | linux-server2 | System Load         |     0 |    1 |     1 |              0 | OK - linux-server2  |
-		| 2013-03-05 00:03:00 |        801 |  NULL |   NULL | linux-server2 | System Load         |     0 |    1 |     1 |           NULL | ERROR - cannot find linux-server2  |
-		| 2013-03-05 00:08:00 |        801 |  NULL |   NULL | linux-server2 | System Load         |     0 |    1 |     1 |              0 | OK - linux-server2  |	
+		| 2013-03-01 00:01:00 |        801 |  NULL |   NULL | linux-server2 |          			  |     0 |    1 |     1 |              0 | OK - linux-server2  |
+		| 2013-03-01 12:00:00 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander |
+		| 2013-03-03 00:01:00 |        801 |  NULL |   NULL | linux-server2 |         			  |     0 |    1 |     1 |              0 | OK - linux-server2  |
+		| 2013-03-05 00:03:00 |        801 |  NULL |   NULL | linux-server2 |        			  |     0 |    1 |     1 |           NULL | ERROR - cannot find linux-server2  |
+		| 2013-03-05 00:08:00 |        801 |  NULL |   NULL | linux-server2 |       		      |     0 |    1 |     1 |              0 | OK - linux-server2  |	
 		And I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		When I click "Create Availability Report"
