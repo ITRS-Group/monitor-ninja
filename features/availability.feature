@@ -26,6 +26,7 @@ Feature: Availability reports
 			| System Load         | linux-server2 | check_nrpe!load | 1                     | 1                     |                |
 			| PING                | win-server1   | check_ping      | 1                     | 0                     | pings          |
 			| PING                | win-server2   | check_ping      | 0                     | 1                     | pings          |
+			| PING                | linux-server2 | check_ping      | 1                     | 1                     | pings          |
 		And I have these report data entries:
 			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output |
 			| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                |
@@ -35,6 +36,10 @@ Feature: Availability reports
 			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky |
 			| 2013-03-09 00:01:00 |        701 |  NULL |   NULL | linux-server1 | PING                |     1 |    0 |     1 |              0 | OK - linux-server1  |
 			| 2013-03-09 00:03:00 |        701 |  NULL |   NULL | linux-server1 | PING                |     0 |    1 |     1 |              0 | OK - linux-server1  |
+			| 2013-03-01 00:01:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |
+			| 2013-03-03 00:01:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |
+			| 2013-03-05 00:03:00 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | ERROR - cannot find linux-server2  |
+			| 2013-03-05 00:03:20 |        701 |  NULL |   NULL | linux-server2 | PING                |     0 |    1 |     1 |              0 | OK - linux-server2  |	
 		And I have activated the configuration
 		And I am logged in as administrator
 
@@ -617,6 +622,11 @@ Feature: Availability reports
 		And I select "linux-server2" from the multiselect "objects_tmp"
 		Then "objects" should have option "linux-server1"
 		Then "objects" should have option "linux-server2"
+		When I select "Custom" from "Reporting period"
+		And I enter "2013-03-01" into "Start date"
+		And I enter "23:31" into "time_start"
+		And I enter "2013-04-01" into "End date"
+		And I enter "22:32" into "time_end"
 		And I check "Include trends graph"
 		And I check "Show trends re-scaling"
 		And I click "Show report"
