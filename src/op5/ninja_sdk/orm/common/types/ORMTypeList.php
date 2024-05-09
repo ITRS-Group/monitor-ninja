@@ -29,7 +29,7 @@ class ORMTypeList implements ORMTypeI {
 		$context->init_function( "set_{$this->name}", array('value') );
 
 		$context->write("if(is_array(\$value)) {");
-		$context->write("\$value = @unserialize(\$value);");
+		$context->write("\$value = @unserialize(array \$value);");
 		$context->write("} else if(!is_array(\$value)) {");
 		$context->raise(
 			'InvalidArgumentException',
