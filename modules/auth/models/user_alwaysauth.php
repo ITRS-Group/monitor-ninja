@@ -19,6 +19,7 @@ class User_AlwaysAuth_Model extends User_Model {
 			foreach($levels as $auth_point => $value)
 				$rights[$auth_point] = true;
 		}
+		$rights = serialize($rights);
 		$this->set_auth_data($rights);
 	}
 
