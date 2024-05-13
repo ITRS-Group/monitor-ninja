@@ -56,6 +56,7 @@ class ORMTypeList implements ORMTypeI {
 	}
 
 	public function generate_iterator_set ($context) {
+		$context->write("var_dump(\$values);");
 		$context->write("if(array_key_exists(\$prefix.'{$this->backend_name}', \$values)) {");
 		$context->write("\$value = \$values[\$prefix.'{$this->backend_name}'];");
 		$context->write("if(is_array(@unserialize(\$value))) {");
