@@ -59,8 +59,8 @@ class ORMTypeList implements ORMTypeI {
 		$context->write("var_dump(\$values);");
 		$context->write("if(array_key_exists(\$prefix.'{$this->backend_name}', \$values)) {");
 		$context->write("\$value = \$values[\$prefix.'{$this->backend_name}'];");
-		$context->write("if(is_array(@unserialize(\$value))) {");
-		$context->write("\$value = unserialize(\$value);");
+		$context->write("if(is_array(\$value)) {");
+		$context->write("\$value = array_map('unserialize', \$value);");
 		$context->write("} else if(!is_array(\$value)) {");
 		$context->raise(
 			'InvalidArgumentException',
