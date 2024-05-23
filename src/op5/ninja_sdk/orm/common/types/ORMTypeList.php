@@ -58,9 +58,7 @@ class ORMTypeList implements ORMTypeI {
 	public function generate_iterator_set ($context) {
 		$context->write("if(array_key_exists(\$prefix.'{$this->backend_name}', \$values)) {");
 		$context->write("\$value = \$values[\$prefix.'{$this->backend_name}'];");
-		$context->write("if(is_array(@unserialize(\$value))) {");
-		$context->write("\$value = unserialize(\$value);");
-		$context->write("} else if(!is_array(\$value)) {");
+		$context->write("if(!is_array(\$value)) {");
 		$context->raise(
 			'InvalidArgumentException',
 			"\"'\" . gettype(\$value) . \"' is not valid for list '{$this->name}'\""
