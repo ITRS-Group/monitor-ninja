@@ -77,7 +77,7 @@ class System_Model extends Model
 		foreach($lines as $line) {
 			// skip empty lines and non-variables
 			$line = trim($line);
-			if(!strlen($line) || $line{0} === '#') continue;
+			if(!strlen($line) || $line[0] === '#') continue;
 			$str = explode('=', $line);
 			if(!isset($str[1])) continue;
 
