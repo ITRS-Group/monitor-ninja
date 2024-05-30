@@ -106,7 +106,7 @@
                     echo "<div class='tgraph-sub-blockline'>";
                         for($z = $bars; $z >= 0; $z--){
                             $barAve = round($data[$y][$z]['duration'] / $totalInterval,3);
-                            $barWidth = round($barAve*100);
+                            $barWidth = round($barAve*100,3);
                             $scaleStartDT->modify('-'.$data[$y][$z]['duration'].' second');
                             $dataValue = "<br />".$scaleStartDT->format('M d, Y h:i a')." to ".$scaleLastDT->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
 
@@ -128,7 +128,7 @@
 
                     for($z = $bars; $z >= 0; $z--){
                         $barAve = round($data[$y][$z]['duration'] / $totalInterval,3);
-                        $barWidth = round($barAve*100);
+                        $barWidth = round($barAve*100,3);
                         $startDateTime->modify('-'.$data[$y][$z]['duration'].' second');
                         $dataValue = "<br />".$startDateTime->format('M d, Y h:i a')." to ".$lastDateTime->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
 
