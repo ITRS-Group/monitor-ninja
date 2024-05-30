@@ -99,9 +99,6 @@
 		echo "<div class='x-item'>";
 			echo "<label class='y-label'>".$rowLabel."</label>";
 			echo "<div class='tgraph-row'>"; 
-            if ($bars > 100) {
-                echo "<div> The number of items exceeds the allowable display limit. </div>";
-            } else {
                 if($use_scaling) {
                     $scaleLastDT = new DateTime(date("Y-m-d H:i:s", $graph_end_date));
                     $scaleStartDT =  new DateTime(date("Y-m-d H:i:s", $graph_end_date));
@@ -140,7 +137,6 @@
                         $lastDateTime->modify('-'.$data[$y][$z]['duration'].' second');
                     }
                 echo "</div>";
-            }
 			echo "</div>";
 		echo "</div>";
 	}
