@@ -16,13 +16,12 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    direction: rtl;
+    direction: ltr;
     display: -webkit-box; 
     display: -moz-box;    
     display: -ms-flexbox;  
     display: -webkit-flex; 
     display: flex;        
-    justify-content: space-around;
 }
 .tgraph-blockline .bar {
     height: 20px;
@@ -34,7 +33,7 @@
     width: 100%;
     overflow: hidden;
     align-items: center;
-    direction: rtl;
+    direction: ltr;
     display: -webkit-box; 
     display: -moz-box;    
     display: -ms-flexbox;  

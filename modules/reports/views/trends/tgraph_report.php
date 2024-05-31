@@ -104,41 +104,41 @@
                     $scaleStartDT =  new DateTime(date("Y-m-d H:i:s", $graph_end_date));
 
                     echo "<div class='tgraph-sub-blockline'>";
-                        for($z = $bars; $z >= 0; $z--){
-                            $barAve = round($data[$y][$z]['duration'] / $totalInterval,3);
-                            $barWidth = round($barAve*100,3);
-                            $scaleStartDT->modify('-'.$data[$y][$z]['duration'].' second');
-                            $dataValue = "<br />".$scaleStartDT->format('M d, Y h:i a')." to ".$scaleLastDT->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
+                    for($z = 0; $z <= $bars; $z++){
+                        $barAve = $data[$y][$z]['duration'] / $totalInterval;
+                        $barWidth = round($barAve*100,3);
+                        $scaleLastDT->modify('+'.$data[$y][$z]['duration'].' second');
+                        $dataValue = "<br />".$scaleStartDT->format('M d, Y h:i a')." to ".$scaleLastDT->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
 
-                            if($barAve < 0.03) {
-                                echo "<div class='bar' data-label='".$data[$y][$z]['label']."' data-value='".$dataValue."' id='bar' style='width:".$barWidth."%; background: ".$data[$y][$z]['color'].";'></div>";
+                        if($barAve < 0.03) {
+                            echo "<div class='bar' data-label='".$data[$y][$z]['label']."' data-value='".$dataValue."' id='bar' style='width:".$barWidth."%; background: ".$data[$y][$z]['color'].";'></div>";
 
-                                $data[$y][$z]['color'] = "#333";
-                            } else {
-                                echo "<div class='bar-transparent' style='width:".$barWidth."%;'></div>";
-                            }
-                            $scaleLastDT->modify('-'.$data[$y][$z]['duration'].' second');
+                            $data[$y][$z]['color'] = "#333";
+                        } else {
+                            echo "<div class='bar-transparent' style='width:".$barWidth."%;'></div>";
                         }
+                        $scaleStartDT->modify('+'.$data[$y][$z]['duration'].' second');
+                    }
                     echo "</div>";
                 }
 
                 echo "<div class='tgraph-blockline'>";
-                    $lastDateTime = new DateTime(date("Y-m-d H:i:s", $graph_end_date));
-                    $startDateTime = new DateTime(date("Y-m-d H:i:s", $graph_end_date));
+                    $lastDateTime = new DateTime(date("Y-m-d H:i:s", $graph_start_date));
+                    $startDateTime = new DateTime(date("Y-m-d H:i:s", $graph_start_date));
                     $totalBar = 0;
 
-                    for($z = $bars; $z >= 0; $z--){
+                    
+                    for($z=0; $z<=$bars; $z++){
                         $barWidth = round(($data[$y][$z]['duration'] / $totalInterval)*100,3);
-                        
-                        if($z == 0 && $totalBar < 100) {
+                        if($z==$bars && $totalBar > 0) {
                             $barWidth = round(100 - $totalBar,3);
                         }
-                        $startDateTime->modify('-'.$data[$y][$z]['duration'].' second');
+                        $lastDateTime->modify('+'.$data[$y][$z]['duration'].' second');
                         $dataValue = "<br />".$startDateTime->format('M d, Y h:i a')." to ".$lastDateTime->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
 
                         echo "<div class='bar' data-label='".$data[$y][$z]['label']."' data-value='".$dataValue."' id='bar' style='width:".$barWidth."%; background: ".$data[$y][$z]['color'].";'></div>";
                         
-                        $lastDateTime->modify('-'.$data[$y][$z]['duration'].' second');
+                        $startDateTime->modify('+'.$data[$y][$z]['duration'].' second');
                         $totalBar += $barWidth;
                     }
                 echo "</div>";
