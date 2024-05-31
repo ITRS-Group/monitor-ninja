@@ -106,7 +106,7 @@
                     echo "<div class='tgraph-sub-blockline'>";
                         for($z = $bars; $z >= 0; $z--){
                             $barAve = round($data[$y][$z]['duration'] / $totalInterval,3);
-                            $barWidth = round($barAve*100);
+                            $barWidth = round($barAve*100,3);
                             $scaleStartDT->modify('-'.$data[$y][$z]['duration'].' second');
                             $dataValue = "<br />".$scaleStartDT->format('M d, Y h:i a')." to ".$scaleLastDT->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
 
@@ -125,16 +125,21 @@
                 echo "<div class='tgraph-blockline'>";
                     $lastDateTime = new DateTime(date("Y-m-d H:i:s", $graph_end_date));
                     $startDateTime = new DateTime(date("Y-m-d H:i:s", $graph_end_date));
+                    $totalBar = 0;
 
                     for($z = $bars; $z >= 0; $z--){
-                        $barAve = round($data[$y][$z]['duration'] / $totalInterval,5);
-                        $barWidth = round($barAve*100,5);
+                        $barWidth = round(($data[$y][$z]['duration'] / $totalInterval)*100,3);
+                        
+                        if($z == 0 && $totalBar < 100) {
+                            $barWidth = round(100 - $totalBar,3);
+                        }
                         $startDateTime->modify('-'.$data[$y][$z]['duration'].' second');
                         $dataValue = "<br />".$startDateTime->format('M d, Y h:i a')." to ".$lastDateTime->format('M d, Y h:i a')."<br />".$data[$y][$z]['short'];
 
                         echo "<div class='bar' data-label='".$data[$y][$z]['label']."' data-value='".$dataValue."' id='bar' style='width:".$barWidth."%; background: ".$data[$y][$z]['color'].";'></div>";
                         
                         $lastDateTime->modify('-'.$data[$y][$z]['duration'].' second');
+                        $totalBar += $barWidth;
                     }
                 echo "</div>";
 			echo "</div>";

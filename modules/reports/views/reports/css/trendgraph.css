@@ -16,7 +16,6 @@
     position: relative;
     width: 100%;
     overflow: hidden;
-    align-items: center;
     direction: rtl;
     display: -webkit-box; 
     display: -moz-box;    
@@ -41,7 +40,6 @@
     display: -ms-flexbox;  
     display: -webkit-flex; 
     display: flex;        
-    justify-content: space-around;
 }
 .tgraph-sub-blockline .bar {
 	position: relative;
