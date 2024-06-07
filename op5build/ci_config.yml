@@ -14,7 +14,7 @@ post:
 
     # make sure deprecated code paths throw errors in our CI environment, MON-9199:
     echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml
-    #make -C /opt/monitor/op5/ninja test
+    make -C /opt/monitor/op5/ninja test
 
     # Install Chrome, Ruby 2.7 and Ruby gems.
     # Runs the script in the current shell
@@ -25,7 +25,7 @@ post:
     mkdir -p /mnt/logs
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
-    #cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
+    cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
 
 vm-config: |
     {"numCPUs": 4, "memoryMB": 8192}
