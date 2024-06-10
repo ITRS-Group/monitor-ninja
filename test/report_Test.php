@@ -237,7 +237,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 						$rpt = new Report_query_builder_Model('report_data', $opts);
 						$query = $rpt->build_alert_summary_query();
 						$this->assertIsString($query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
-						$this->assertObjectHasAttribute('select_type', $db->query("EXPLAIN " . $query)->current());
+						$this->assertObjectHasProperty('select_type', $db->query("EXPLAIN " . $query)->current());
 					}
 				}
 			}

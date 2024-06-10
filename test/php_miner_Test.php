@@ -165,7 +165,7 @@ EOF;
 
 		$this->assertInstanceOf( 'php_miner_statement_class', $classes[0] );
 		$this->assertEquals( 'boll', $classes[0]->name );
-		$this->assertRegexp( '/boll class things/', $classes[0]->docstring );
+		$this->assertMatchesRegularExpression( '/boll class things/', $classes[0]->docstring );
 
 		$classes = $miner->extract( 'php_miner_statement_class', true );
 		/* @var $classes php_miner_statement_class[] */
@@ -173,7 +173,7 @@ EOF;
 
 		$this->assertInstanceOf( 'php_miner_statement_class', $classes[0] );
 		$this->assertEquals( 'boll', $classes[0]->name );
-		$this->assertRegexp( '/boll class things/', $classes[0]->docstring );
+		$this->assertMatchesRegularExpression( '/boll class things/', $classes[0]->docstring );
 
 		$funcs = $classes[0]->extract( 'php_miner_statement_function', false );
 		/* @var $funcs php_miner_statement_class[] */
@@ -181,11 +181,11 @@ EOF;
 
 		$this->assertInstanceOf( 'php_miner_statement_function', $funcs[0] );
 		$this->assertEquals( 'stuff', $funcs[0]->name );
-		$this->assertRegexp( '/function stuff/', $funcs[0]->docstring );
+		$this->assertMatchesRegularExpression( '/function stuff/', $funcs[0]->docstring );
 
 		$this->assertInstanceOf( 'php_miner_statement_function', $funcs[1] );
 		$this->assertEquals( 'things', $funcs[1]->name );
-		$this->assertRegexp( '/comment for things/', $funcs[1]->docstring );
+		$this->assertMatchesRegularExpression( '/comment for things/', $funcs[1]->docstring );
 
 		$this->assertInstanceOf( 'php_miner_statement_function', $funcs[2] );
 		$this->assertEquals( 'nothing', $funcs[2]->name );
@@ -197,11 +197,11 @@ EOF;
 
 		$this->assertInstanceOf( 'php_miner_statement_function', $funcs[0] );
 		$this->assertEquals( 'stuff', $funcs[0]->name );
-		$this->assertRegexp( '/function stuff/', $funcs[0]->docstring );
+		$this->assertMatchesRegularExpression( '/function stuff/', $funcs[0]->docstring );
 
 		$this->assertInstanceOf( 'php_miner_statement_function', $funcs[1] );
 		$this->assertEquals( 'things', $funcs[1]->name );
-		$this->assertRegexp( '/comment for things/', $funcs[1]->docstring );
+		$this->assertMatchesRegularExpression( '/comment for things/', $funcs[1]->docstring );
 
 		$this->assertInstanceOf( 'php_miner_statement_function', $funcs[2] );
 		$this->assertEquals( 'nothing', $funcs[2]->name );

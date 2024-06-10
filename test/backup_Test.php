@@ -126,7 +126,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 			"The sanity check of the backup's existence failed"
 		);
 		$controller->delete($this_backup);
-		$this->assertFileNotExists(
+		$this->assertFileDoesNotExist(
 			$complete_filename,
 			"The file should no longer exist"
 		);
