@@ -80,7 +80,7 @@ class Reports_Model extends Model
 		if (self::DEBUG === true) {
 			assert_options(ASSERT_ACTIVE, 1);
 			assert_options(ASSERT_WARNING, 0);
-			assert_options(ASSERT_QUIET_EVAL, 0);
+			// assert_options(ASSERT_QUIET_EVAL, 0); // disable error_reporting during assertion expression evaluation. Removed as of PHP 8.0.0. 
 			assert_options(ASSERT_BAIL, 1);
 
 			# use report helper callback
