@@ -95,7 +95,7 @@ class Orm_Command_Test extends \PHPUnit\Framework\TestCase {
 		$host_name = 'my cat had a hat';
 		$host = Host_Model::factory_from_setiterator(array('name' => $host_name), '', array('name'));
 		$host->disable_check();
-		$this->assertRegExp(
+		$this->assertMatchesRegularExpression(
 			'/\[\d+\] DISABLE_HOST_CHECK;'.$host_name.'/',
 			$this->m->last_cmd()
 		);
@@ -111,7 +111,7 @@ class Orm_Command_Test extends \PHPUnit\Framework\TestCase {
 		$name = 'bosse bildoktor';
 		$host = Host_Model::factory_from_setiterator(array('name' => $name), '', array('name'));
 		$host->check_now();
-		$this->assertRegExp(
+		$this->assertMatchesRegularExpression(
 			"/\[\d+\] SCHEDULE_HOST_CHECK;$name;$now/",
 			$this->m->last_cmd()
 		);
@@ -134,8 +134,8 @@ class Orm_Command_Test extends \PHPUnit\Framework\TestCase {
 		$sg = Servicegroup_Model::factory_from_setiterator(array('name' => $name), '', array('name'));
 
 		$sg->schedule_service_downtime($start_time, $end_time, !$fixed, $duration_in, $trigger_id, $comment);
-		$this->assertRegExp("/\[\d+\] SCHEDULE_SVC_DOWNTIME;a_hst;s_c;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
-		$this->assertRegExp("/\[\d+\] SCHEDULE_SVC_DOWNTIME;myhst;s_a;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
+		$this->assertMatchesRegularExpression("/\[\d+\] SCHEDULE_SVC_DOWNTIME;a_hst;s_c;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
+		$this->assertMatchesRegularExpression("/\[\d+\] SCHEDULE_SVC_DOWNTIME;myhst;s_a;$start_time;$end_time;$fixed;$trigger_id;$duration_out;$this->author;$comment/", $this->m->last_cmd());
 		$this->assertNull($this->m->last_cmd());
 	}
 
@@ -148,7 +148,7 @@ class Orm_Command_Test extends \PHPUnit\Framework\TestCase {
 
 		$host = Host_Model::factory_from_setiterator(array('name' => $host_name), '', array('name'));
 		$host->acknowledge_problem($comment, $persistent, $notify, $sticky);
-		$this->assertRegExp(
+		$this->assertMatchesRegularExpression(
 			sprintf(
 				'/\[\d+\] ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s/',
 				$host_name,
