@@ -93,7 +93,8 @@ class ORMDriverNative implements ORMDriverInterface {
 							}
 						} else {
 							/* Livestatus implicit references */
-							$foreign_table = $pool_model::get_table();
+							$pool_model_class = new $pool_model();
+							$foreign_table = $pool_model_class->get_table();
 							$my_foreign_ref = array($field);
 						}
 						foreach ($this->storage[$foreign_table] as $foreign_row) {
