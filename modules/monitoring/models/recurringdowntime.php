@@ -162,8 +162,10 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 					$end_text = ' until '.$rec_ends;
 				}
 				if($rec != ''){
-					if(strval($rec->label) == 'no'){
-						return "No recurrence";
+					if(is_object($rec) && isset($rec->label)){
+						if(strval($rec->label) == 'no'){
+							return "No recurrence";
+						}
 					}
 					if($rec->text == 'day'){
 						if($rec->no == 1){
