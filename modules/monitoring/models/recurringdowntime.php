@@ -162,97 +162,97 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 					$end_text = ' until '.$rec_ends;
 				}
 				if($rec != ''){
-					if(is_object($rec) && isset($rec->label)){
+					if(is_object($rec)){
 						if(strval($rec->label) == 'no'){
 							return "No recurrence";
 						}
-					}
-					if($rec->text == 'day'){
-						if($rec->no == 1){
-							$repeat_text = "daily";
-						}else{
-							$repeat_text = "every ".$rec->no." days";
-						}
-						$ret = 'Repeat '.$repeat_text.''.$end_text;
-					}elseif($rec->text == 'week'){
-						$all_days = '';
-						$i = 0; 
-						foreach($rec_on as $key => $value){
-							/**
-							 * recurrence_on format
-							 * ^^^^^^^^^^^^^^^^^^^^
-							 *
-							 * The `recurrence_on` field can be either an object or an array of objects.
-							 * The block below ensures compatibility with both formats.
-							 */
-
-							if(is_object($value)) {
-								if(!property_exists($value, 'day')) {
-									// Silently skip non-day recurrences for week
-									continue;
-								}
-								$day_number = $value->day;
-							} elseif(array_key_exists($value, $valid_weekdays)) {
-								$day_number = $value;
-							} else {
-								throw new UnexpectedValueException(sprintf(
-									"Unable to map value %s to a name", $value
-								));
-							}
-
-							$day_name = ucfirst($valid_weekdays[$day_number]);
-
-							if($i == 0){
-								$all_days .= $day_name;
+						if($rec->text == 'day'){
+							if($rec->no == 1){
+								$repeat_text = "daily";
 							}else{
-								$next_i = $i+1;
-								if(array_key_exists($next_i,$rec_on)){
-									$all_days .= ', ';
+								$repeat_text = "every ".$rec->no." days";
+							}
+							$ret = 'Repeat '.$repeat_text.''.$end_text;
+						}elseif($rec->text == 'week'){
+							$all_days = '';
+							$i = 0; 
+							foreach($rec_on as $key => $value){
+								/**
+								 * recurrence_on format
+								 * ^^^^^^^^^^^^^^^^^^^^
+								 *
+								 * The `recurrence_on` field can be either an object or an array of objects.
+								 * The block below ensures compatibility with both formats.
+								 */
+
+								if(is_object($value)) {
+									if(!property_exists($value, 'day')) {
+										// Silently skip non-day recurrences for week
+										continue;
+									}
+									$day_number = $value->day;
+								} elseif(array_key_exists($value, $valid_weekdays)) {
+									$day_number = $value;
+								} else {
+									throw new UnexpectedValueException(sprintf(
+										"Unable to map value %s to a name", $value
+									));
+								}
+
+								$day_name = ucfirst($valid_weekdays[$day_number]);
+
+								if($i == 0){
 									$all_days .= $day_name;
 								}else{
-									$all_days .= ' and ';
-									$all_days .= $day_name;
+									$next_i = $i+1;
+									if(array_key_exists($next_i,$rec_on)){
+										$all_days .= ', ';
+										$all_days .= $day_name;
+									}else{
+										$all_days .= ' and ';
+										$all_days .= $day_name;
+									}
+								}
+								$i = $i+1;
+							}
+							if($rec->no == 1){
+								$repeat_text = "weekly on ".$all_days;
+							}else{
+								$repeat_text =  "every ".$rec->no." week on ".$all_days;
+							}
+							$ret = 'Repeat '.$repeat_text.''.$end_text;
+						}elseif($rec->text == 'month'){
+
+							if($rec_on->day_no == "last" && $rec_on->day == "last"){
+								if($rec->no == 1){
+									$repeat_text = "monthly on the last day";
+								}else{
+									$repeat_text = "every ".$rec_no." months on the last day";
+								}
+							}else{
+								$day_name = ucfirst($valid_weekdays[$rec_on->day]);
+								if($rec->no == 1){
+									$repeat_text = "monthly on the ".$this->format_date($rec_on->day_no)." ".$day_name;
+								}else{
+									$repeat_text = "every ".$rec->no." months on the ".$this->format_date($rec_on->day_no).' '.$day_name;
 								}
 							}
-							$i = $i+1;
-						}
-						if($rec->no == 1){
-							$repeat_text = "weekly on ".$all_days;
-						}else{
-							$repeat_text =  "every ".$rec->no." week on ".$all_days;
-						}
-						$ret = 'Repeat '.$repeat_text.''.$end_text;
-					}elseif($rec->text == 'month'){
-
-						if($rec_on->day_no == "last" && $rec_on->day == "last"){
-							if($rec->no == 1){
-								$repeat_text = "monthly on the last day";
-							}else{
-								$repeat_text = "every ".$rec_no." months on the last day";
-							}
-						}else{
+							$ret = 'Repeat '.$repeat_text.''.$end_text;
+						}elseif($rec->text == 'year'){
 							$day_name = ucfirst($valid_weekdays[$rec_on->day]);
-							if($rec->no == 1){
-								$repeat_text = "monthly on the ".$this->format_date($rec_on->day_no)." ".$day_name;
+							$month_name = ucfirst($valid_months[($rec_on->month)]);
+							if($rec_on->day_no == "last"){
+								$day_no="last";
 							}else{
-								$repeat_text = "every ".$rec->no." months on the ".$this->format_date($rec_on->day_no).' '.$day_name;
+								$day_no=$this->format_date($rec_on->day_no);
 							}
+							if($rec->no == 1){
+								$repeat_text = "yearly on the ".$day_no. ' '.$day_name.' of '.$month_name;
+							}else{
+								$repeat_text = "every ".$rec->no." years on the ".$day_no.' '.$day_name.' of '.$month_name;
+							}
+							$ret = 'Repeat '.$repeat_text.''.$end_text;
 						}
-						$ret = 'Repeat '.$repeat_text.''.$end_text;
-					}elseif($rec->text == 'year'){
-						$day_name = ucfirst($valid_weekdays[$rec_on->day]);
-						$month_name = ucfirst($valid_months[($rec_on->month)]);
-						if($rec_on->day_no == "last"){
-							$day_no="last";
-						}else{
-							$day_no=$this->format_date($rec_on->day_no);
-						}
-						if($rec->no == 1){
-							$repeat_text = "yearly on the ".$day_no. ' '.$day_name.' of '.$month_name;
-						}else{
-							$repeat_text = "every ".$rec->no." years on the ".$day_no.' '.$day_name.' of '.$month_name;
-						}
-						$ret = 'Repeat '.$repeat_text.''.$end_text;
 					}
 				}
 			}
