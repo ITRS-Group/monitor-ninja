@@ -100,6 +100,48 @@ then
 	exit 1
 fi
 
+# check that we have the scheduled reports tables in merlin
+sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
+
+if [ "$sched_db_ver" = "" ]
+then
+	echo "Installing database tables for scheduled reports configuration"
+	upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports.sql"
+	run_sql_file "$db_login_opts" $upgrade_script
+	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
+fi
+
+echo "sched_db_ver :$sched_db_ver"
+
+sched_db_ver=$(echo $sched_db_ver | cut -d '.' -f1)
+while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
+	case "$sched_db_ver" in
+	[1-5])
+		sched_db_ver=5
+		new_ver=6
+		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		;;
+	*)
+		new_ver=`expr $sched_db_ver + 1`
+		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		;;
+	esac
+
+	echo -n "Upgrading scheduled reports tables from v${sched_db_ver} to v${new_ver}.sql ... "
+	if [ -r "$upgrade_script" ]
+	then
+		run_sql_file "$db_login_opts" $upgrade_script
+		mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '${new_ver}'" 2>/dev/null
+		echo "done."
+	else
+		echo "SCRIPT MISSING."
+		echo "Tried to use $upgrade_script"
+	fi
+
+	sched_db_ver=$new_ver
+done;
+
+
 # deprecated and should be deleted if they exist
 sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/null | sed -n \$p)
 avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
@@ -209,46 +251,5 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 		;;
 	esac
 done
-
-# check that we have the scheduled reports tables in merlin
-sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
-
-if [ "$sched_db_ver" = "" ]
-then
-	echo "Installing database tables for scheduled reports configuration"
-	upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports.sql"
-	run_sql_file "$db_login_opts" $upgrade_script
-	sched_db_ver=$(mysql $db_login_opts -Be "SELECT version FROM scheduled_reports_db_version" 2>/dev/null | sed -n \$p)
-fi
-
-echo "sched_db_ver :$sched_db_ver"
-
-sched_db_ver=$(echo $sched_db_ver | cut -d '.' -f1)
-while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
-	case "$sched_db_ver" in
-	[1-5])
-		sched_db_ver=5
-		new_ver=6
-		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
-		;;
-	*)
-		new_ver=`expr $sched_db_ver + 1`
-		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
-		;;
-	esac
-
-	echo -n "Upgrading scheduled reports tables from v${sched_db_ver} to v${new_ver}.sql ... "
-	if [ -r "$upgrade_script" ]
-	then
-		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '${new_ver}'" 2>/dev/null
-		echo "done."
-	else
-		echo "SCRIPT MISSING."
-		echo "Tried to use $upgrade_script"
-	fi
-
-	sched_db_ver=$new_ver
-done;
 
 echo "Database upgrade complete."
