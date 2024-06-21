@@ -105,6 +105,7 @@ sla_ver=$(mysql $db_login_opts -Be "SELECT version FROM sla_db_version" 2>/dev/n
 avail_ver=$(mysql $db_login_opts -Be "SELECT version FROM avail_db_version" 2>/dev/null | sed -n \$p)
 
 run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/avail_v1.sql"
+run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/sla_v1.sql"
 
 function all_versions()
 {
