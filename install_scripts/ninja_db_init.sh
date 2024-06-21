@@ -10,7 +10,7 @@ db_pass=merlin
 db_name=merlin
 
 progname="$0"
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "{$BASH_SOURCE[0]}")" && pwd)"
 PREFIX_DIR="$(realpath "$SCRIPT_DIR/../")"
 
 show_usage()
@@ -108,8 +108,8 @@ function all_versions()
 {
 	db_ver="$1"
 	new_ver=`expr $db_ver + 1`
-	echo "Upgrading ninja db from v${db_ver} to v${new_ver}"
-	run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/ninja_db_v${db_ver}_to_v${new_ver}.sql"
+	echo "Upgrading ninja db from v{$db_ver} to v{$new_ver}"
+	run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/ninja_db_v{$db_ver}_to_v{$new_ver}.sql"
 	mysql $db_login_opts -Be "UPDATE ninja_db_version SET version=$new_ver" 2>/dev/null
 	db_ver=$new_ver
 }
@@ -142,11 +142,11 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 					;;
 				*)
 					new_ver=`expr $sla_ver + 1 `
-					upgrade_script="$PREFIX_DIR/sql/mysql/sla_v${sla_ver}_to_v${new_ver}.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/sla_v{$sla_ver}_to_v{$new_ver}.sql"
 					;;
 				esac
 
-				echo -n "Upgrading SLA tables from v${sla_ver} to v${new_ver} ... "
+				echo -n "Upgrading SLA tables from v{$sla_ver} to v{$new_ver} ... "
 				if [ -r "$upgrade_script" ]
 				then
 					run_sql_file "$db_login_opts" $upgrade_script
@@ -175,12 +175,12 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 					;;
 				*)
 					new_ver=`expr $avail_ver + 1 `
-					upgrade_script="$PREFIX_DIR/sql/mysql/avail_v${avail_ver}_to_v${new_ver}.sql"
+					upgrade_script="$PREFIX_DIR/sql/mysql/avail_v{$avail_ver}_to_v{$new_ver}.sql"
 
 					;;
 				esac
 
-				echo -n "Upgrading AVAIL tables from v${avail_ver} to v${new_ver} ... "
+				echo -n "Upgrading AVAIL tables from v{$avail_ver} to v{$new_ver} ... "
 				if [ -r "$upgrade_script" ]
 				then
 					run_sql_file "$db_login_opts" $upgrade_script
@@ -224,19 +224,19 @@ while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	[1-5])
 		sched_db_ver=5
 		new_ver=6
-		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v{$sched_db_ver}_to_v{$new_ver}.sql"
 		;;
 	*)
 		new_ver=`expr $sched_db_ver + 1`
-		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v${sched_db_ver}_to_v${new_ver}.sql"
+		upgrade_script="$PREFIX_DIR/sql/mysql/scheduled_reports_v{$sched_db_ver}_to_v{$new_ver}.sql"
 		;;
 	esac
 
-	echo -n "Upgrading scheduled reports tables from v${sched_db_ver} to v${new_ver}.sql ... "
+	echo -n "Upgrading scheduled reports tables from v{$sched_db_ver} to v{$new_ver}.sql ... "
 	if [ -r "$upgrade_script" ]
 	then
 		run_sql_file "$db_login_opts" $upgrade_script
-		mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '${new_ver}'" 2>/dev/null
+		mysql $db_login_opts -Be "UPDATE scheduled_reports_db_version SET version = '{$new_ver}'" 2>/dev/null
 		echo "done."
 	else
 		echo "SCRIPT MISSING."
