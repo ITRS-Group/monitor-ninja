@@ -554,9 +554,8 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals($original_session, $_SESSION);
 	}
 
-	/**
-	 * @ticket MON-9199
-	 */
+	#[Test]
+	#[Group('MON-9199')]
 	public function test_user_model_compatible_with_removed_op5user() {
 		$expected_username = 'Honkytonk';
 
