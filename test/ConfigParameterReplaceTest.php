@@ -4,11 +4,9 @@ require_once("op5/config.php");
 require_once("op5/auth/Auth.php");
 require_once("op5/objstore.php");
 
-/**
- * Tests replacement of config parameters
- *
- * @group group
- */
+#[Test]
+#[Tests replacement of config parameters]
+#[Group('group')]
 class ConfigParameterReplaceTest extends \PHPUnit\Framework\TestCase
 {
 
