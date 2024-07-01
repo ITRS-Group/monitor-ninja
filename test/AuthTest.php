@@ -570,9 +570,8 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($expected_username, $new_syntax);
 	}
 
-	/**
-	 * @group MON-9199
-	 */
+	#[Test]
+	#[Group('MON-9199')]
 	public function test_user_model_get_property_backwards_compatible() {
 		$user = new User_Model();
 		$new_username = 'MasterBlaster';
@@ -581,9 +580,8 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($new_username, $user->username);
 	}
 
-	/**
-	 * @group MON-9199
-	 */
+	#[Test]
+	#[Group('MON-9199')]
 	public function test_user_model_set_property_backwards_compatible() {
 		$user = new User_Model();
 		$user->username = 'Mister Big';
@@ -591,9 +589,8 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('Mister Big', $user->username);
 	}
 
-	/**
-	 * @group MON-9199
-	 */
+	#[Test]
+	#[Group('MON-9199')]
 	public function test_user_model_isset_property_backwards_compatible() {
 		$user = new User_Model();
 		$user->username = 'Mister Big';
@@ -602,9 +599,8 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(true, isset($user->export), "Sadly, we must expose privately used variables too, through __isset() :(");
 	}
 
-	/**
-	 * @group MON-9199
-	 */
+	#[Test]
+	#[Group('MON-9199')]
 	public function test_user_model_set_property_that_exists_as_non_public_interface() {
 		// reusing the old interface by attempting to set arbitrary
 		// strings that might collide with existing properties in
