@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
 class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 {
 	function setUp() : void
@@ -190,11 +191,9 @@ class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 		$this->assertSame(false, $opts->save($msg));
 	}
 
-	/**
-	 * @dataProvider fill_sla
-	 * @group MON-6154
-	 * @group time::get_limits
-	 */
+	#[DataProvider('fill_sla')]
+	#[Group('MON-6154')]
+	#[Group('time::get_limits')]
 	function test_sla_create_special($input, $expected, $time)
 	{
 		Report_options::$now = $time;

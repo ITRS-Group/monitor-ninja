@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 require_once ("op5/objstore.php");
 require_once ("op5/mayi.php");
 
@@ -409,8 +410,8 @@ class MayIConstraintsTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Verify that messages is returned given the correct priorities and result
-	 * @dataProvider ds_msg_priorities
 	 */
+	#[DataProvider('ds_msg_priorities')]
 	public function test_msg_priorities($result, $ca_conf, $cb_conf, $cc_conf) {
 		$mayi = op5MayI::instance();
 

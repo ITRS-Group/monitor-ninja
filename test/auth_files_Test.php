@@ -279,6 +279,7 @@ class AuthFilesTest extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
+	#[DataProvider('migrate_auth_yml_files_provider')]
 	/**
 	 * When we add new auth rights, they are added to the auth_groups.yml,
 	 * other tests in this test suite guarantees that. Now, we should kill
@@ -286,7 +287,6 @@ class AuthFilesTest extends \PHPUnit\Framework\TestCase {
 	 * and make sure that we have run migrate_auth.php so that
 	 * etc/auth_groups.yml always is checked into git in its newest form.
 	 *
-	 * @dataProvider migrate_auth_yml_files_provider
 	 */
 	public function test_auth_files_are_checked_in_after_auth_migrate($auth_file) {
 		// op5config is in need of proper designing (since it assumes

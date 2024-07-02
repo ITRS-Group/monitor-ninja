@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 require_once ('op5/objstore.php');
 class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 
@@ -268,9 +269,7 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider custom_variables_provider
-	 */
+	#[DataProvider('custom_variables_provider')]
 	public function test_visibility_of_custom_variable($custom_variable, $is_public) {
 		$this->assertSame($is_public, custom_variable::is_public($custom_variable));
 	}
@@ -307,9 +306,7 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider objects_with_hidden_custom_varible_provider
-	 */
+	#[DataProvider('objects_with_hidden_custom_varible_provider')]
 	public function test_custom_variables_that_should_be_hidden_are_not_public(Object_Model $object, $expected) {
 		$this->assertSame(
 			$expected,

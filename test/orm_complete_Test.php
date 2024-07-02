@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 
 require_once ('op5/objstore.php');
 
@@ -26,9 +27,8 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * As to not move the validation of the return value to the call-site the
 	 * set_by_key function for all Pools should return an iterable Set even if
 	 * that Set may be empty.
-	 *
-	 * @dataProvider object_manifest_provider
 	 */
+	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::set_by_key('');
 		$this->assertInstanceOf($set_model, $set);
@@ -38,9 +38,8 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * MayI resource should be available for all object Sets, while ninja will
 	 * allow a Set without a mayi_resource for all things except listview this
 	 * test enforces this to supply a more consistent ORM.
-	 *
-	 * @dataProvider object_manifest_provider
 	 */
+	#[DataProvider('object_manifest_provider')]
 	public function test_mayi_resource_available_for_all_sets ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::all();
 		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
@@ -56,9 +55,9 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * should always return true.
 	 *
 	 * Enforcing this supplies a more consistent ORM.
-	 *
-	 * @dataProvider object_manifest_provider
 	 */
+	
+	 #[DataProvider('object_manifest_provider')]
 	public function test_mayi_resource_with_acl_using_alwaysauth ($object_model, $set_model, $pool_model) {
 
 		$user = new User_AlwaysAuth_Model();
@@ -85,9 +84,9 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * mayi constraint should always return false.
 	 *
 	 * Enforcing this supplies a more consistent ORM.
-	 *
-	 * @dataProvider object_manifest_provider
 	 */
+	
+	#[DataProvider('object_manifest_provider')]
 	public function test_mayi_resource_with_acl_using_noauth ($object_model, $set_model, $pool_model) {
 
 		$user = new User_NoAuth_Model();

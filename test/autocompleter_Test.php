@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
 
 class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	private $mock_log;
@@ -142,10 +143,8 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider data_for_test_can_match_on_multiple_tables
-	 * @group MON-9409
-	 */
+	#[DataProvider('data_for_test_can_match_on_multiple_tables')]
+	#[Group('MON-9409')]
 	public function test_can_autocomplete($autocompleter_backend,
 		$search_term, $search_tables, $expected_result) {
 
@@ -450,10 +449,8 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider data_with_wrong_string_placeholders
-	 * @group MON-9409
-	 */
+	#[DataProvider('data_with_wrong_string_placeholders')]
+	#[Group('MON-9409')]
 	public function test_throws_exception_if_table_spec_query_has_wrong_amounts_of_string_placeholders($query) {
 		$this->expectException('AutocompleterException');
 		$this->expectExceptionMessage('Wrong format of $table_information, each $table_spec must have a query with exactly one %s in it');

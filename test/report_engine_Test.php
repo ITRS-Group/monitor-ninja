@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+use PHPUnit\Framework\Attributes\Depends;
 /**
  * We have a bunch of fixtures checked in, that represents events and the
  * expected calculated summaries after our report engine has transformed the
@@ -63,11 +64,9 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 		return $tests;
 	}
 
-	/**
-	 * @depends test_make_sure_we_execute_tests_from_within_CET
-	 * @dataProvider report_test_files_provider
-	 * @group nonlocal
-	 */
+	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
+	#[DataProvider('report_test_files_provider')]
+	#[Group('nonlocal')]
 	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
 		ob_start();
 		$failed_tests = $test->run_test_series();
