@@ -86,14 +86,14 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         * key-value array which then is converted into a standard phpunit test array due to the phpunit standard being
         * rather unclear when it comes to readability
         */
-        $configPermissionPairs = array(
-            array(
+        $configPermissionPairs[] = [
+            [
                 'filename' => APPPATH . '/config/database.php',
                 'expectedPermission' => 440,
                 'expectedOwner' => 'monitor',
                 'expectedGroup' => 'apache'
-            )
-        );
+            ]
+        ];
 
         $returnArray = array();
         foreach ($configPermissionPairs as $permissionPair) {
