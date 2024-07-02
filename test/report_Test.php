@@ -1212,11 +1212,9 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider time_input_for_report_options
-	 * @group MON-7264
-	 * @group time::get_limits
-	 */
+	#[DataProvider('time_input_for_report_options')]
+	#[Group('MON-7264')]
+	#[Group('time::get_limits')]
 	public function test_relative_timeperiods_for_report_options($report_period, $now, $expected_start, $expected_end) {
 		$now = strtotime($now);
 
@@ -1243,9 +1241,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 			$friendly($expected, $actual));
 	}
 
-	/**
-	 * @group time::get_limits
-	 */
+	#[Group('time::get_limits')]
 	public function test_relative_timeperiod_throws_exception_on_invalid_report_type() {
 		$this->expectException('InvalidTimePeriod_Exception');
 		$this->expectExceptionMessage("'non-existing' is not a valid value for \$time_period");

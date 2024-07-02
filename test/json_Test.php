@@ -1,8 +1,8 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 class json_Test extends \PHPUnit\Framework\TestCase {
-	/**
-	 * @dataProvider data_structures
-	 */
+	
+	#[DataProvider('data_structures')]
 	public function testJson($value) {
 		$this->assertEquals($value, json_decode(json::pretty($value), true));
 	}

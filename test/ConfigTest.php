@@ -128,10 +128,10 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the owner of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
-     * @dataProvider config_file_permission_data_provider
      * @param $filename String The name and path of the file tested
      * @param $expectedPermission Int Expected permission mask
      * @param $expectedUser String The expected username of the owner of the file
@@ -148,10 +148,10 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the group of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
-     * @dataProvider config_file_permission_data_provider
      * @param $filename String The name and path of the file tested
      * @param $expectedPermission Int Expected permission mask
      * @param $expectedUser String The expected username of the owner of the file

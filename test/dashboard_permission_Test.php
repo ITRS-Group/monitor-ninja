@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 	private function mock_data($tables) {
 		foreach ( $tables as $driver => $tables ) {
@@ -77,9 +78,7 @@ class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider provider_read_users
-	 */
+	#[DataProvider('provider_read_users')]
 	public function test_read_permissions($username, $groups, $dashboards) {
 		$user = new User_Model ();
 		$user->set_username ( $username );
@@ -112,9 +111,7 @@ class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider provider_write_users
-	 */
+	#[DataProvider('provider_write_users')]
 	public function test_write_permissions($username, $groups, $dashboards) {
 		$user = new User_Model();
 		$user->set_username( $username );

@@ -9,55 +9,43 @@ class ORM_Type_Float_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_array ($value, $expect) {
 		$set = TestClassBPool_Model::all();
 		$from_array = TestClassA_Model::factory_from_array(array("float" => $value), array());
 		$this->assertSame($expect, $from_array->get_float());
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator ($value, $expect) {
 		$set = TestClassBPool_Model::all();
 		$from_iterator = TestClassA_Model::factory_from_setiterator(array("float" => $value), false, array());
 		$this->assertSame($expect, $from_iterator->get_float());
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_using_setter ($value, $expect) {
 		$set_instance = TestClassA_Model::factory_from_setiterator(array(), false, array());
 		$set_instance->set_float($value);
 		$this->assertSame($expect, $set_instance->get_float());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+    #[Group('ORMType')]
 	public function test_factory_from_array_set_not_existing () {
 		$from_array = TestClassA_Model::factory_from_array(array(), array());
 		$this->assertSame(0.0, $from_array->get_float());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+    #[Group('ORMType')]
 	public function test_factory_from_setiterator_set_not_existing () {
 		$from_iterator = TestClassA_Model::factory_from_setiterator(array(), false, array());
 		$this->assertSame(0.0, $from_iterator->get_float());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+    #[Group('ORMType')]
 	public function test_factory_setter_set_not_existing () {
 		$set_instance = TestClassA_Model::factory_from_array(array(), array());
 		$set_instance->set_set(TestClassBPool_Model::none());
@@ -76,30 +64,24 @@ class ORM_Type_Float_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_array_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		TestClassA_Model::factory_from_array(array("float" => $value), array());
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		TestClassA_Model::factory_from_setiterator(array("float" => $value), false, array());
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_setter_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);

@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 class performance_data_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Test performance data processing.
@@ -170,9 +171,7 @@ class performance_data_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider thresholds_provider
-	 */
+	#[DataProvider('thresholds_provider')]
 	public function test_match_threshold($threshold, $value, $expected_result) {
 		$perf_data_class = new performance_data();
 		$this->assertSame($expected_result, $perf_data_class->match_threshold($threshold, $value));
