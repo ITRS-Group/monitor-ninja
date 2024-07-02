@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Metadata\DataProvider;
 
 require_once "op5/config.php";
 require_once "op5/objstore.php";
@@ -108,14 +109,14 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         return $returnArray;
     }
 
+    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
-     * @dataProvider config_file_permission_data_provider
-     * @param $filename String The name and path of the file tested
-     * @param $expectedPermission Int Expected permission mask
-     * @param $expectedUser String The expected username of the owner of the file
-     * @param $expectedGroup String The expected group name of the owner of the file
+     * @param string $filename String The name and path of the file tested
+     * @param int $expectedPermission Int Expected permission mask
+     * @param string $expectedUser String The expected username of the owner of the file
+     * @param string $expectedGroup String The expected group name of the owner of the file
      * @internal param Int $actual Actual permission mask returned from fileparms()
      */
 	public function test_config_file_permissions($filename, $expectedPermission, $expectedUser, $expectedGroup) {
