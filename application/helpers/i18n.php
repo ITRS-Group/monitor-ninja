@@ -13,14 +13,14 @@ class i18n {
 		if ($ret !== false)
 			return $ret;
 
-
+		$string_enc = mb_detect_encoding($string, mb_detect_order(), true);
 		// When upgrading from <5.3.2 to >=5.3.2, this is needed
-		$ret = @unserialize(@utf8_encode($string));
+		$ret = unserialize(mb_convert_encoding($string, 'UTF-8', $string_enc));
 		if ($ret !== false)
 			return $ret;
 
 		// This shouldn't ever happen, but why not try? If we get this far,
 		// all the reasonable methods have already failed.
-		return @unserialize(@utf8_decode($string));
+		return unserialize(mb_convert_encoding($string, $string_enc, 'UTF-8'));
 	}
 }

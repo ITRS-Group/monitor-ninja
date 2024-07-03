@@ -48,7 +48,8 @@ class mock_livestatus_connection extends op5livestatus_connection {
 	public function mock_query($result, $lsq, $custom_error=false) {
 		/* Mock result - what op5livestatus gets from livestatus */
 		if(is_array($result)) {
-			$result = utf8_decode(json_encode($result));
+			$string_enc = mb_detect_encoding(json_encode($result), mb_detect_order(), true);
+			$result = mb_convert_encoding(json_encode($result), $string_enc, 'UTF-8');
 		}
 		$result_code = 200;
 		$this->outbuf = sprintf("%03d %11d\n%s", $result_code, strlen($result), $result);
