@@ -159,7 +159,7 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		$this->auth->set_authorized_for('hostgroup_edit_contact', false);
 		$this->auth->set_authorized_for('servicegroup_edit_contact', false);
 		$stats = RecurringDowntimePool_Model::all();
-		$this->assertCount(4, $stats);
+		$this->assertCount(4, $stats, "Expected 4 recurring downtimes");
 
 		$one = $stats->it(false)->current()->export();
 		$one['author'] = 'you';
