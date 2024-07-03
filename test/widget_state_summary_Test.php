@@ -28,9 +28,7 @@ class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	/**
-	 * @group MON-9212
-	 */
+	#[Group('MON-9212')]
 	public function test_hardcoded_host_all_widget_filter() {
 		$this->mock_data(array(
 			'ORMDriverLS default' => array(
@@ -70,9 +68,7 @@ class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(0, $data['stats'][3]);
 	}
 
-	/**
-	 * @group MON-9212
-	 */
+	#[Group('MON-9212')]
 	public function test_hardcoded_service_all_widget_filter() {
 		$this->mock_data(array(
 			'ORMDriverLS default' => array(
@@ -119,9 +115,7 @@ class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(0, $data['stats'][4]);
 	}
 
-	/**
-	 * @group MON-9212
-	 */
+	#[Group('MON-9212')]
 	public function test_saved_widget_filter() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -173,9 +167,7 @@ class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(0, $data['stats'][3]);
 	}
 
-	/**
-	 * @group MON-9212
-	 */
+	#[Group('MON-9212')]
 	public function test_hardcoded_widget_filter_without_pending () {
 		$this->mock_data(array(
 			'ORMDriverLS default' => array(
@@ -199,10 +191,8 @@ class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('no-display', $css_class($data['stats'][3]));
 	}
 
-	/**
-	 * @group MON-9212
-	 * @group MON-9304
-	 */
+	#[Group('MON-9212')]
+	#[Group('MON-9304')]
 	public function test_title_reflects_content () {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(

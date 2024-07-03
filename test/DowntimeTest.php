@@ -13,8 +13,8 @@ function get_exclude_schedule($days) {
 class Downtime_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * External command input type should translate into the expected downtime command
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_downtime_types() {
 		function get_command_type($type) {
 			$mock = new DowntimeDayModel();
@@ -40,8 +40,8 @@ class Downtime_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * External command string generated should contain the expected start and end dates
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_downtime_command_start_end() {
 		$start = mock_date('1984-01-13 10:12:13');
 		$end = mock_date('1984-01-13 12:13:14');
@@ -66,8 +66,8 @@ class Downtime_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * is_excluded() should evaluate to true if the given date is within range
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_exclude_days_range_included() {
 		$sched = get_exclude_schedule('2019-03-13 to 2019-03-16, 2019-03-13 to 2019-03-18');
 		$this->assertTrue($sched->is_excluded('2019-03-13'));
@@ -82,8 +82,8 @@ class Downtime_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * is_excluded() should evaluate to false if the given date is /not/ within range
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_exclude_days_range_not_included() {
 		$sched = get_exclude_schedule('2019-03-13 to 2019-03-16, 2019-03-17 to 2019-03-18');
 		$this->assertFalse($sched->is_excluded('2019-03-19'));
@@ -92,8 +92,8 @@ class Downtime_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * is_excluded() should evaluate to true if the given date is excluded
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_exclude_days_single_included() {
 		$sched = get_exclude_schedule('2019-03-13, 2019-03-14');
 		$this->assertTrue($sched->is_excluded('2019-03-13'));
@@ -102,8 +102,8 @@ class Downtime_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * is_excluded() should evaluate to true if the given date is excluded
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_exclude_days_single_not_included() {
 		$sched = get_exclude_schedule('1984-09-25, 1984-09-27');
 		$this->assertFalse($sched->is_excluded('1984-09-24'));
@@ -114,8 +114,8 @@ class Downtime_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * External command string generated should not have have certain words replaced
 	 * See: MON-12387
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_no_reserved_words() {
 		$start = mock_date('1984-01-13 10:12:13');
 		$end = mock_date('1984-01-13 12:13:14');

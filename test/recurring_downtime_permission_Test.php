@@ -227,9 +227,7 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		$this->assertCount(0, $stats);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function testLimitedHost()
 	{
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_Model(array('username' => 'limited')));

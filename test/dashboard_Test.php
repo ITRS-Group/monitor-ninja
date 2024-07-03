@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
 /**
  * Tests dashboard.
  *
@@ -304,9 +305,8 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 	 * After an upgrade of Ninja, some users got a missing value for
 	 * "position". Let's mimick that faulty state and see if we can self
 	 * heal.
-	 *
-	 * @group MON-9491
 	 */
+	#[Group('MON-9491')]
 	public function test_widgets_with_missing_position_gets_placed_last_in_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(

@@ -618,6 +618,7 @@ class AuthTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Needed for @group MON-9199
 	 */
+	#[Group('MON-9199')]
 	private function login_fixture($username) {
 		$mock_config = array(
 			'auth' => array (

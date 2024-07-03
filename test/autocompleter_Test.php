@@ -209,10 +209,9 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Integration test, depends on data found in Ninja (search for
 	 * autocomplete.php manifest files)
-	 *
-	 * @group MON-9409
-	 * @group integration
 	 */
+	#[Group('MON-9409')]
+	#[Group('integration')]
 	public function test_can_use_installed_manifests_for_autocompletion_information() {
 		$this->mock_data(array(
 			'ORMDriverLS default' => array(
@@ -242,11 +241,10 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Integration test, depends on data found in Ninja (search for
 	 * autocomplete.php manifest files)
-	 *
-	 * @group MON-9409
-	 * @group MON-9519
-	 * @group integration
 	 */
+	#[Group('MON-9409')]
+	#[Group('MON-9519')]
+	#[Group('integration')]
 	public function test_can_use_installed_manifests_for_matching_service_by_hostname() {
 		$this->mock_data(array(
 			'ORMDriverLS default' => array(
@@ -281,10 +279,9 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Integration test, depends on data found in Ninja (search for
 	 * autocomplete.php manifest files)
-	 *
-	 * @group MON-9539
-	 * @group integration
 	 */
+	#[Group('MON-9539')]
+	#[Group('integration')]
 	public function test_can_use_installed_manifests_for_matching_user_by_name() {
 		$this->mock_data(array(
 			'ORMDriverYAML default' => array(
@@ -311,10 +308,9 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Integration test, depends on data found in Ninja (search for
 	 * autocomplete.php manifest files)
-	 *
-	 * @group MON-9539
-	 * @group integration
 	 */
+	#[Group('MON-9539')]
+	#[Group('integration')]
 	public function test_can_use_installed_manifests_for_matching_usergroup_by_name() {
 		$this->mock_data(array(
 			'ORMDriverYAML default' => array(
@@ -338,9 +334,7 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($expected_result, $calculated_result);
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_logs_when_searching_for_unspecified_table() {
 		$ac = new Autocompleter(array(
 			'an_unrelated_table' => array(
@@ -364,9 +358,7 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(null, $this->mock_log->dequeue_message());
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_autocompleter_requires_mayi_read_autocomplete_rights() {
 		$this->mock_data(array(
 			"ORMDriverYAML default" => array(
@@ -409,9 +401,7 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_throws_exception_if_table_spec_is_missing_display_column() {
 		$this->expectException('AutocompleterException');
 		$this->expectExceptionMessage('Wrong format of $table_information, each $table_spec must have a display_column');
@@ -425,9 +415,7 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		new Autocompleter($table_spec);
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_throws_exception_if_table_spec_is_missing_query() {
 		$this->expectException('AutocompleterException');
 		$this->expectExceptionMessage('Wrong format of $table_information, each $table_spec must have a query');

@@ -11,8 +11,8 @@ function get_week_mock($stepping, $dow = array(MONDAY)) {
 class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_week_interval() should evaluate to true if scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_hit() {
 		$mock = get_week_mock(5);
 		$mock->set_start('1980-03-01');
@@ -30,8 +30,8 @@ class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_year_interval() should evaluate to true if scheduled [weekly]
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_hit_one() {
 		$mock = get_week_mock(1);
 		$mock->set_start('1980-01-01');
@@ -44,8 +44,8 @@ class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * recurrence_on should work with single items not contained in an array
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_legacy_recurrence_on() {
 		$mock = new DowntimeModel();
 		$mock->set_start('2019-04-10');
@@ -69,8 +69,8 @@ class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_week_interval() should evaluate to false if the stepping does /not/ match
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_miss() {
 		$mock = get_week_mock(7);
 		$mock->set_start('1980-03-01');
@@ -87,8 +87,8 @@ class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_week_interval() should evaluate to true if schedule matches week number and dow
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_interval() {
 		$dow_input = array(MONDAY, FRIDAY);
 		$mock = get_week_mock(2, $dow_input);
@@ -119,8 +119,8 @@ class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * plucking a non-existent key should result in an empty array
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_pluck_invalid_unit() {
 		$mock = get_week_mock(3, array(MONDAY, TUESDAY));
 		$schedule = new RecurringDowntime($mock);
@@ -131,8 +131,8 @@ class Downtime_Week_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Test case for recurring downtimes scheduled on a Sunday
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_recurring_sunday() {
 		$mock = get_week_mock(1, array(SUNDAY));
 		$mock->set_start('2019-01-01 11:55');

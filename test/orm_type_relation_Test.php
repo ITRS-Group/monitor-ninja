@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\Group;
 
 class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 
@@ -20,54 +21,42 @@ class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_array_relation_existing ($value, $expect) {
 		$set = TestClassBPool_Model::all();
 		$from_array = TestClassA_Model::factory_from_array(array("relation" => $value), array());
 		$this->assertInstanceOf($expect, $from_array->get_relation());
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator_relation_existing ($value, $expect) {
 		$from_iterator = TestClassA_Model::factory_from_setiterator(array("relation" => $value), false, array());
 		$this->assertInstanceOf($expect, $from_iterator->get_relation());
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_using_setter_relation_existing ($value, $expect) {
 		$set_instance = TestClassA_Model::factory_from_setiterator(array(), false, array());
 		$set_instance->set_relation($value);
 		$this->assertInstanceOf($expect, $set_instance->get_relation());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+	#[Group('ORMType')]
 	public function test_factory_from_array_relation_not_existing () {
 		$from_array = TestClassA_Model::factory_from_array(array(), array());
 		$this->assertNull($from_array->get_relation());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator_relation_not_existing () {
 		$from_iterator = TestClassA_Model::factory_from_setiterator(array(), false, array());
 		$this->assertNull($from_iterator->get_relation());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+	#[Group('ORMType')]
 	public function test_factory_setter_relation_not_existing () {
 		$set_instance = TestClassA_Model::factory_from_array(array(), array());
 		$set_instance->set_set(TestClassBPool_Model::none());
@@ -88,30 +77,24 @@ class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_array_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		TestClassA_Model::factory_from_array(array("relation" => $value), array());
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		TestClassA_Model::factory_from_setiterator(array("relation" => $value), false, array());
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_setter_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);

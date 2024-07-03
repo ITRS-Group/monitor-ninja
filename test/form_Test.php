@@ -127,9 +127,7 @@ class Form_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_form_field_that_is_member_of_a_group_can_be_optional() {
 		$group_field = new Form_Field_Group_Model('All your personal information', array(
 			new Form_Field_Text_Model('something_personal', 'Something personal'),

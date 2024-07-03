@@ -14,8 +14,8 @@ function get_month_mock($stepping, $occurrence = FIRST, $dow = MONDAY) {
 class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_month_interval() should evaluate to true if the given month is scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_hit() {
 		$mock = get_month_mock(6);
 		$mock->set_start('2019-03-13');
@@ -32,8 +32,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_month_interval() should evaluate to false if the given month is not scheduled.
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_miss() {
 		$mock = get_month_mock(3);
 		$mock->set_start('2019-03-15');
@@ -56,8 +56,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Matching first Friday should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_first_dow() {
 		$mock = get_month_mock(5, FIRST, FRIDAY);
 		$mock->set_start('2018-03-20');
@@ -70,8 +70,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Matching second Tuesday should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_second_dow() {
 		$mock = get_month_mock(7, SECOND, TUESDAY);
 		$mock->set_start('2018-03-10');
@@ -84,8 +84,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Matching third Wednesday should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_third_dow() {
 		$mock = get_month_mock(3, THIRD, WEDNESDAY);
 		$mock->set_start('2018-01-25');
@@ -98,8 +98,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Matching fourth Sunday should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_fourth_dow() {
 		$mock = get_month_mock(2, FOURTH, SUNDAY);
 		$mock->set_start('2015-02-12');
@@ -112,8 +112,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Matching fifth Friday should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_fifth_dow() {
 		$mock = get_month_mock(1, FIFTH, FRIDAY);
 		$mock->set_start('2016-02-12');
@@ -125,8 +125,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Matching last saturday should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_nested_recurrences_last_dow() {
 		$mock = get_month_mock(1, LAST, SATURDAY);
 		$mock->set_start('2012-05-01');
@@ -139,8 +139,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Get recurrence by an invalid ordinal should fail
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_invalid_number_ordinal() {
 		$mock = get_month_mock(3, 'THIRST', FRIDAY);
 		$schedule = new RecurringDowntime($mock);
@@ -151,8 +151,8 @@ class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Get recurrence by an invalid month should fail
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_invalid_day() {
 		$mock = get_month_mock(3, FIRST, 'SATURMON');
 		$schedule = new RecurringDowntime($mock);
