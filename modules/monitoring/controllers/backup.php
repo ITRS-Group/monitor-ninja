@@ -190,7 +190,7 @@ class Backup_Controller extends Ninja_Controller {
 
 		$this->auto_render = true;
 
-		$file = strftime('backup-%Y-%m-%d_%H.%M.%S') . self::BACKUP_EXTENSION;
+		$file = date_format(new DateTime(), 'backup-Y-m-d_H.i.s') . self::BACKUP_EXTENSION;
 
 		$command_line = array_merge(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/backup', $this->backup_directory .'/'. $file), $backup);
 		proc::open($command_line, $stdout, $stderr, $status);
