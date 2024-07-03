@@ -13,8 +13,8 @@ function get_day_mock($stepping) {
 class Downtime_Day_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_day_interval() should evaluate to true if the given date is scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_repeat_hit() {
 		$mock = get_day_mock(6);
 		$mock->set_start('1984-01-13 10:00');
@@ -28,8 +28,8 @@ class Downtime_Day_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_day_interval() should evaluate to true if the given date is scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_repeat_hit_one() {
 		$mock = get_day_mock(1);
 		$mock->set_start('1984-09-26 10:00');
@@ -43,8 +43,8 @@ class Downtime_Day_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_day_interval() should evaluate to false if the given date is not scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_repeat_miss() {
 		$mock = get_day_mock(6);
 		$mock->set_start('1984-01-13 10:00');

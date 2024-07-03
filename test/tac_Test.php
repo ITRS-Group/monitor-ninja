@@ -497,9 +497,7 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue($this->tac->template->success);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_on_refresh() {
 		$this->setup_some_widgets();
 
@@ -796,9 +794,7 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_can_share_dashboard_with_group() {
 		$this->mock_data(array(
 			"ORMDriverMySQL default" => array(
@@ -853,9 +849,7 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_cannot_share_dashboard_with_myself() {
 		// let's login as "superuser" here to not rely on setUp() as
 		// much.
@@ -915,9 +909,8 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * The check for mayi is placed inside of the controller, because
 	 * that's our convention.
-	 *
-	 * @group MON-9539
 	 */
+	#[Group('MON-9539')]
 	public function test_sharing_dashboard_can_be_denied_by_insufficient_mayi_rights() {
 		$this->expectException('Kohana_Reroute_Exception');
 		$this->expectExceptionMessage("Reroute to Auth/_no_access");
@@ -952,9 +945,8 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * The check for mayi is placed inside of the controller, because
 	 * that's our convention.
-	 *
-	 * @group MON-9539
 	 */
+	#[Group('MON-9539')]
 	public function test_can_share_dashboard_and_deny_unsharing_it_through_mayi() {
 		$this->expectException('Kohana_Reroute_Exception');
 		$this->expectExceptionMessage("Reroute to Auth/_no_access");

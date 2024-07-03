@@ -32,9 +32,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * Warning, Critical etc.) for all slots (time slots, and max, min etc.).
 	 *
 	 * I.e the event data is not checked.
-	 *
-	 * @group MON-6031
 	 */
+	#[Group('MON-6031')]
 	public function test_summary_report_histogram() {
 		// Hourly time slots.
 		$time_slots = array(
@@ -127,9 +126,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($visible_states, array_keys($result_array[$key]));
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_restricted_access() {
 		/* Store old user, so we can reset afterward */
 		$authmod = op5auth::instance();
@@ -193,9 +190,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		$authmod->force_user($stasheduser, false);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_overlapping_timeperiods() {
 		$db = Database::instance();
 		$opts = array(
@@ -288,8 +283,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * Test bug #8602
 	 *
 	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
-	 * @group nonlocal
 	 */
+	#[Group('nonlocal')]
 	function test_saved_filter_hostgroup_collission() {
 
 		try {
@@ -326,9 +321,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * Test bug #8602
 	 *
 	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
-	 *
-	 * @group nonlocal
 	 */
+	#[Group('nonlocal')]
 	function test_saved_filter_servicegroup_collission() {
 
 		try {
@@ -382,9 +376,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 *
 	 * We don't care about output, but almost anything that can go wrong will
 	 * print errors on lines, which we implicitly catch here, so we should be OK
-	 *
-	 * @group nonlocal
 	 */
+	#[Group('nonlocal')]
 	function test_csv()
 	{
 		$month = date('n') - 1;
@@ -566,9 +559,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals(array(0 => -2, 1 => -2, 2 => -2, 3 => -2), $obj->options['service_filter_status']);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	function test_timeperiod_import()
 	{
 			/*

@@ -7,9 +7,7 @@ use PHPUnit\Framework\Attributes\Depends;
  */
 class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_make_sure_we_execute_tests_from_within_CET() {
 		$current_offset = 3600 * (1 + date("I"));
 		$this->assertEquals($current_offset, date::utc_offset(),

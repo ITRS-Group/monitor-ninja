@@ -12,8 +12,8 @@ function get_year_mock($stepping, $month = JANUARY, $occurrence = FIRST, $dow = 
 class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_year_interval() should evaluate to true if scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_hit() {
 		$mock = get_year_mock(6);
 		$mock->set_start('1984-09-26');
@@ -27,8 +27,8 @@ class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_year_interval() should evaluate to true if scheduled [yearly]
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_yearly() {
 		$mock = get_year_mock(1);
 		$mock->set_start('1984-09-26');
@@ -42,8 +42,8 @@ class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * match_year_interval() should evaluate to false if not scheduled
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_interval_miss() {
 		$mock = get_year_mock(2);
 		$mock->set_start('1984-09-26');
@@ -57,8 +57,8 @@ class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Getting recurrence with a scheduled dom should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_valid_nested_recurrence() {
 		$mock = get_year_mock(8, SEPTEMBER, FIRST, FRIDAY);
 		$mock->set_start('1970-01-01');
@@ -72,8 +72,8 @@ class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Getting recurrence with an unscheduled dom should fail
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_invalid_nested_recurrence() {
 		$mock = get_year_mock(3, JUNE, THIRD, TUESDAY);
 		$mock->set_start('1970-01-01');
@@ -90,8 +90,8 @@ class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Getting a yearly recurrence with a scheduled nested dom should work
-	 * @group recurring_downtime
 	 */
+	#[Group('recurring_downtime')]
 	public function test_valid_nested_last_recurrence() {
 		$mock = get_year_mock(3,  MARCH, LAST, MONDAY);
 		$mock->set_start('1975-01-01');

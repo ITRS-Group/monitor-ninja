@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\Depends;
 /**
  * Test the backup functions that are reached through the GUI. There are other
  * types of backups being run too, you can read more about backups here:
@@ -77,10 +78,9 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 	 * will be replaced with itself though, if everything goes alright.
 	 * If you got a better idea on how to mock these things, but still
 	 * test the core, feel free to push some commits :)
-	 *
-	 * @group nonlocal
-	 * @depends test_backup
 	 */
+	#[Group('nonlocal')]
+	#[Depends('test_backup')]
 	public function test_backup_restore() {
 		if(!is_executable('/opt/monitor/op5/backup/restore')) {
 			$this->markTestSkipped("Need access to the restoring ".
@@ -111,9 +111,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @depends test_backup
-	 */
+	#[Depends('test_backup')]
 	public function test_backup_delete() {
 		$controller = $this->controller;
 		$controller->backup();
