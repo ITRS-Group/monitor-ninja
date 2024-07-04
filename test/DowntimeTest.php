@@ -10,7 +10,7 @@ function get_exclude_schedule($days) {
 }
 
 
-class Downtime_Test extends \PHPUnit\Framework\TestCase {
+class DowntimeTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * External command input type should translate into the expected downtime command
 	 */
