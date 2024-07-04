@@ -9,7 +9,7 @@ function get_year_mock($stepping, $month = JANUARY, $occurrence = FIRST, $dow = 
 }
 
 
-class Downtime_Year_Test extends \PHPUnit\Framework\TestCase {
+class DowntimeYearTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_year_interval() should evaluate to true if scheduled
 	 */

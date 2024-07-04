@@ -11,7 +11,7 @@ function get_month_mock($stepping, $occurrence = FIRST, $dow = MONDAY) {
 /**
  * Class Downtime_Month_Test
  */
-class Downtime_Month_Test extends \PHPUnit\Framework\TestCase {
+class DowntimeMonthTest extends \PHPUnit\Framework\TestCase {
 	/**
 	 * match_month_interval() should evaluate to true if the given month is scheduled
 	 */

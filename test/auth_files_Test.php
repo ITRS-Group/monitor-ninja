@@ -8,7 +8,7 @@ require_once "op5/auth/Authorization.php";
  * Ensures the validity of the etc/auth* files, and that they are up to date,
  * through cross referencing with the auth code in Ninja.
  */
-class AuthFilesTest extends \PHPUnit\Framework\TestCase {
+class auth_files_Test extends \PHPUnit\Framework\TestCase {
 	private $tmp_auth_groups_file;
 	private $tmp_auth_file;
 	private $preexisting_rights = array();
