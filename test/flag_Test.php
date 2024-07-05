@@ -31,13 +31,11 @@ class Flag_Test extends \PHPUnit\Framework\TestCase {
 		op5objstore::instance()->mock_clear();
 	}
 
-	#[Test]
 	#[Group('MON-9199')]
 	public function test_env_disabled_should_be_ignored() {
 		$this->assertSame('one hundred billion dollars', SouthWest_Hospital::write_budget_for_1984());
 	}
 
-	#[Test]
 	#[Group('MON-9199')]
 	public function test_default_env_enabled_should_throw_exception() {
 		$this->expectException('DeprecationException');
@@ -47,7 +45,6 @@ class Flag_Test extends \PHPUnit\Framework\TestCase {
 		SouthWest_Hospital::write_budget_for_1984();
 	}
 
-	#[Test]
 	#[Group('MON-9199')]
 	public function test_user_model_fails_if_deprecation_is_not_wanted() {
 		// now we just test that our dev environment actually has the
