@@ -7,7 +7,6 @@ require_once("op5/objstore.php");
 /**
  * Tests for replacing config parameters
 */
-#[Test]
 #[Group('group')]
 class ConfigParameterReplaceTest extends \PHPUnit\Framework\TestCase
 {

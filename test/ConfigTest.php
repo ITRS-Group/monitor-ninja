@@ -59,7 +59,6 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 		$this->assertSame(array("__version" => 3), $this->config->getConfig("something_new", true), "Prefixed values should be returned when we ask for them");
 	}
 
-	#[Test]
 	#[Group('MON-9199')]
 	public function test_env_takes_precedence_over_files()
 	{
