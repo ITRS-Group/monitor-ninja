@@ -530,7 +530,8 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Countable: count
 	 */
-	public function count(): int
+	#[\ReturnTypeWillChange]
+	public function count()
 	{
 		return $this->total_rows;
 	}
