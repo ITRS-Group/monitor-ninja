@@ -14,12 +14,12 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 			"basepath" => __DIR__."/fixtures"
 		));
 		// unset the test env var
-		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
+		$this->assertTrue(putenv(self::TEST_ENV_VAR) !== false);
 	}
 
 	protected function tearDown() : void
 	{
-		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
+		$this->assertTrue(putenv(self::TEST_ENV_VAR) !== false);
 	}
 
 	public function test_no_croak_on_nonexistent_namespace()
