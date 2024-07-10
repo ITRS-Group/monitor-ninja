@@ -109,8 +109,9 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         return $returnArray;
     }
 
-    #[DataProvider('config_file_permission_data_provider')]
+     
     /**
+
      * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
      * @param string $filename String The name and path of the file tested
@@ -128,7 +129,6 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the owner of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
@@ -137,6 +137,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      * @param $expectedUser String The expected username of the owner of the file
      * @param $expectedGroup String The expected group name of the owner of the file
      * @internal param Int $actual Actual permission mask returned from fileparms()
+     * @dataProvider config_file_permission_data_provider
      */
     public function test_config_file_user($filename, $expectedPermission, $expectedUser, $expectedGroup) {
         $output = posix_getpwuid(fileowner($filename));
@@ -148,7 +149,6 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the group of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
@@ -157,6 +157,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
      * @param $expectedUser String The expected username of the owner of the file
      * @param $expectedGroup String The expected group name of the owner of the file
      * @internal param Int $actual Actual permission mask returned from fileparms()
+     * @dataProvider config_file_permission_data_provider
      */
     public function test_config_file_group($filename, $expectedPermission, $expectedUser, $expectedGroup) {
         $output = posix_getgrgid(filegroup($filename));
