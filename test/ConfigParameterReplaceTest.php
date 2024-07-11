@@ -12,6 +12,7 @@ class ConfigParameterReplaceTest extends \PHPUnit\Framework\TestCase
 {
 
 	private $config;
+	private $auth;
 
 	private $default_config = [
 		'auth' => [
