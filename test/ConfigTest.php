@@ -7,19 +7,20 @@ require_once "op5/objstore.php";
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
 	const TEST_ENV_VAR = 'OP5_TURTLES_PURPLE_NAME';
+    protected $config;
 
 	protected function setUp() : void
 	{
-		$this->config = new op5config(array(
+		$this->config = new op5config([
 			"basepath" => __DIR__."/fixtures"
-		));
+		]);
 		// unset the test env var
-		$this->assertTrue(putenv(self::TEST_ENV_VAR) !== false);
+		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
 	}
 
 	protected function tearDown() : void
 	{
-		$this->assertTrue(putenv(self::TEST_ENV_VAR) !== false);
+		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
 	}
 
 	public function test_no_croak_on_nonexistent_namespace()
