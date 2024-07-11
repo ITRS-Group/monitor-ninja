@@ -264,22 +264,22 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 	 * Upgrade from ninja db version 18 to 19
 	 */
 	public function test_upgrade_v18() {
-		$mock = array(
-			'ORMDriverMySQL default' => array(
+		$mock = [
+			'ORMDriverMySQL default' => [
 				'dashboards' => array(),
 				'dashboard_widgets' => array(),
-				'ninja_widgets' => array(
-					array(
+				'ninja_widgets' => [
+					[
 						'username' => 'superuser',
 						'page' => 'tac/index',
 						'name' => 'netw_health',
 						'friendly_name' => 'My little widget',
 						'setting' => 'a:1:{s:8:"something";s:2:"17";}',
 						'instance_id' => 13
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 		$this->mock_data($mock, __FUNCTION__);
 
 		Auth::instance(array('session_key' => false))->force_user(

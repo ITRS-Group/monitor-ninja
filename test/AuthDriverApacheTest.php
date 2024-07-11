@@ -116,7 +116,7 @@ class AuthDriverApacheTest extends \PHPUnit\Framework\TestCase
 
 	function test_groups_available() {
 		$this->assertEquals(
-			$this->dut->groups_available(array(
+			$this->dut->groups_available([
 				'grpa',
 				'grpb',
 				'grpc',
@@ -124,13 +124,13 @@ class AuthDriverApacheTest extends \PHPUnit\Framework\TestCase
 				'user_usrb',
 				'user_usrc',
 				'apache_auth_user'
-			)),
-			array(
+			]),
+			[
 				'grpa' => true,
 				'grpb' => true,
 				'grpc' => false,
 				'apache_auth_user' => true
-			),
+			],
 			'Test group list returns expected data'
 		);
 	}
