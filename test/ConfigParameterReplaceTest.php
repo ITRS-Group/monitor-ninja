@@ -13,38 +13,38 @@ class ConfigParameterReplaceTest extends \PHPUnit\Framework\TestCase
 
 	private $config;
 
-	private $default_config = array(
-		'auth' => array(
-			'common' => array(
+	private $default_config = [
+		'auth' => [
+			'common' => [
 				'default_auth' => 'Shredder',
 				'enable_auto_login' => false
-			),
-			'Shredder' => array(
+			],
+			'Shredder' => [
 				'driver' => 'Default'
-			),
-		),
-		'auth_users' => array(
-			'Rocksteady' => array(
+			],
+		],
+		'auth_users' => [
+			'Rocksteady' => [
 				'username' => 'Rocksteady',
-				'modules' => array(
+				'modules' => [
 					'Shredder',
-				),
-				'groups' => array(
+				],
+				'groups' => [
 					'Splinter'
-				),
-			)
-		),
-		'auth_groups' => array(
-			'Splinter' => array(
+				],
+			]
+			],
+		'auth_groups' => [
+			'Splinter' => [
 				'host_view_all',
 				'service_view_all',
 				'hostgroup_view_all',
 				'servicegroup_view_all',
 				'export',
 				'FILE'
-			)
-		)
-	);
+			]
+		]
+	];
 
 	/**
 	 * Setup before testsuite starts
