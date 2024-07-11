@@ -2,6 +2,8 @@
 use PHPUnit\Metadata\DataProvider;
 
 class Form_Test extends \PHPUnit\Framework\TestCase {
+
+	public $form;
 	public function get_form_provider() {
 		// phpunit wants to be able to iterate through the dataset
 		return array(array(new Form_Model('my_action_url', 'POST', array(
@@ -76,12 +78,12 @@ class Form_Test extends \PHPUnit\Framework\TestCase {
 	public function test_process_fail($form) {
 		$this->expectException('FormException');
 		$this->expectExceptionMessage('trouble has not a valid option value');
-		$form->process_data(array(
+		$form->process_data([
 			'unknown_field' => 12,
 			'trouble' => 'boll',
 			'name' => 'Someone',
 			'why' => ''
-		));
+		]);
 	}
 
 	#[Group('MON-9409')]
