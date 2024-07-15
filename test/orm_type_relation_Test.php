@@ -3,7 +3,7 @@ use PHPUnit\Framework\Attributes\Group;
 
 class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 
-	public static function setUp () : void {
+	public function setUp () : void {
 		op5objstore::instance()->mock_add(
 			"ORMDriverMySQL default",
 			new ORMDriverNative(array(
