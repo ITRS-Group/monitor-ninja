@@ -11,16 +11,26 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 	public static function object_manifest_provider () {
 
-		$obj_pool_model = new ObjectPool_Model();
-		$manifest = $obj_pool_model::load_table_classes();
+		$manifests = ObjectPool_Model::load_table_classes();
 
 		/* Object_Model is the only one built from the ORM Root generator
 		 * and does not have the required functionality (set_by_key) for these tests,
 		 * in addition it is not an object that we instantiate on its own.  */
-		unset($manifest['object']);
+		unset($manifests['object']);
 
-		$this->assertGreaterThan(0, count($manifest));
-		return $manifest;
+		$this->assertGreaterThan(0, count($manifests));
+
+		var_dump($manifests); die();
+
+		$return_manifest = array();
+		foreach ($manifests as $manifest) {
+			$return_manifest[] = array(
+				$manifest['object_model'],
+				$manifest['set_model'],
+				$manifest['pool_model']
+			);
+		}
+		return $return_manifest;
 
 	}
 
