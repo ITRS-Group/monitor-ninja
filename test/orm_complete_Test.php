@@ -11,7 +11,8 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 	public static function object_manifest_provider () {
 
-		$manifest = ObjectPool_Model::load_table_classes();
+		$obj_pool_model = new ObjectPool_Model();
+		$manifest = $obj_pool_model::load_table_classes();
 
 		/* Object_Model is the only one built from the ORM Root generator
 		 * and does not have the required functionality (set_by_key) for these tests,
