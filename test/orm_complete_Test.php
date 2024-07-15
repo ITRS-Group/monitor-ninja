@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Assert; 
 
 require_once ('op5/objstore.php');
 
@@ -19,8 +20,6 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		unset($manifests['object']);
 
 		$this->assertGreaterThan(0, count($manifests));
-
-		var_dump($manifests); die();
 
 		$return_manifest = array();
 		foreach ($manifests as $manifest) {
@@ -42,7 +41,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::set_by_key('');
-		$this->assertInstanceOf($set_model, $set);
+		Assert::assertInstanceOf($set_model, $set);
 	}
 
 	/**
@@ -53,7 +52,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('object_manifest_provider')]
 	public function test_mayi_resource_available_for_all_sets ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::all();
-		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
+		Assert::assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
 		return true;
 	}
 
@@ -81,7 +80,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 		$set = $pool_model::all();
 		$resource = $set->mayi_resource();
-		$this->assertTrue(
+		Assert::assertTrue(
 			op5MayI::instance()->run($resource . ":read"),
 			"A fully authenticated/authorized user should be able to read " .
 			"'$resource', you should probably check the ACL (in " .
@@ -110,7 +109,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 		$set = $pool_model::all();
 		$resource = $set->mayi_resource();
-		$this->assertFalse(
+		Assert::assertFalse(
 			op5MayI::instance()->run($resource . ":read"),
 			"An unauthenticated/unauthorized user should not be able to read " .
 			"'$resource', you should probably check the ACL (in " .
