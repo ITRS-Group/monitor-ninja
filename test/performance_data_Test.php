@@ -1,5 +1,5 @@
 <?php
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 class performance_data_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Test performance data processing.

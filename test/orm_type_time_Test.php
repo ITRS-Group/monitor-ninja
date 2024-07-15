@@ -1,5 +1,5 @@
 <?php
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\TextUI\Configuration\Group;
 
 class ORM_Type_Time_Test extends \PHPUnit\Framework\TestCase {

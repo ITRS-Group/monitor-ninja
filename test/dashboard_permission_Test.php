@@ -1,5 +1,5 @@
 <?php
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 	private function mock_data($tables) {
 		foreach ( $tables as $driver => $tables ) {
