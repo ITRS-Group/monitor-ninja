@@ -2,7 +2,7 @@
 
 class ORM_Type_Dict_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array(array(), array()),
 			array(array("foo" => "bar"), array("foo" => "bar")),
@@ -56,7 +56,7 @@ class ORM_Type_Dict_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (strings) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array("foobar", "'string' is not valid for dict 'dict'"),
 			array(true, "'boolean' is not valid for dict 'dict'"),

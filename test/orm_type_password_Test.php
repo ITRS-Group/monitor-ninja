@@ -2,7 +2,7 @@
 
 class ORM_Type_Password_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array("", ""),
 			array("abcdef", "abcdef"),
@@ -56,7 +56,7 @@ class ORM_Type_Password_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (passwords) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array(1, "'integer' is not valid for password 'password'"),
 			array(1.1, "'double' is not valid for password 'password'"),

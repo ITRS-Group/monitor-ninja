@@ -4,7 +4,7 @@ use PHPUnit\TextUI\Configuration\Group;
 
 class ORM_Type_Time_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array(123, 123),
 			array("123", 123),
@@ -54,7 +54,7 @@ class ORM_Type_Time_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame(0, $set_instance->get_time());
 	}
 
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array("foobar", "'string' is not valid for time 'time'"),
 			array(array(), "'array' is not valid for time 'time'"),

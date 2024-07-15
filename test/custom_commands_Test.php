@@ -256,7 +256,7 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 
-	public function custom_variables_provider() {
+	public static function custom_variables_provider() {
 		return array(
 			// name of custom variable, publicly visible?
 			array("OP5H_", false),
@@ -274,7 +274,7 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($is_public, custom_variable::is_public($custom_variable));
 	}
 
-	public function objects_with_hidden_custom_varible_provider() {
+	public static function objects_with_hidden_custom_varible_provider() {
 		$actually_public_custom_variables = array(
 			"IS_AUSTRALIA_DANGEROUS" => "yes"
 		);

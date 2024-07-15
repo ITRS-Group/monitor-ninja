@@ -3,7 +3,7 @@ use PHPUnit\Framework\Attributes\Group;
 
 class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 
-	public function setUp () : void {
+	public static function setUp () : void {
 		op5objstore::instance()->mock_add(
 			"ORMDriverMySQL default",
 			new ORMDriverNative(array(
@@ -67,7 +67,7 @@ class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (strings) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array(1, "'integer' is not valid for relation 'relation'"),
 			array(1.1, "'double' is not valid for relation 'relation'"), # double because PHP gettype is stupid

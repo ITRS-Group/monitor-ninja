@@ -107,7 +107,7 @@ class performance_data_Test extends \PHPUnit\Framework\TestCase {
 	 * thresholds provider
 	 * @return array
 	 */
-	public function thresholds_provider() {
+	public static function thresholds_provider() {
 		return array(
 			//Test invalid threshold string
 			array("abc", 5, false),

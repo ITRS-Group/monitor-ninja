@@ -7,7 +7,7 @@ class json_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals($value, json_decode(json::pretty($value), true));
 	}
 
-	public function data_structures() {
+	public static function data_structures() {
 		return array(
 			array(1),
 			array("foo"),
