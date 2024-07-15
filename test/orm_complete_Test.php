@@ -1,6 +1,5 @@
 <?php
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Assert; 
 
 require_once ('op5/objstore.php');
 
@@ -10,7 +9,7 @@ require_once ('op5/objstore.php');
  */
 class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
-	public static function object_manifest_provider () {
+	public static function object_manifest_provider() {
 
 		$manifests = ObjectPool_Model::load_table_classes();
 
@@ -37,11 +36,15 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * As to not move the validation of the return value to the call-site the
 	 * set_by_key function for all Pools should return an iterable Set even if
 	 * that Set may be empty.
+	 * @param mixed $object_model
+	 * @param mixed $set_model
+	 * @param mixed $pool_model
+	 * @return void
 	 */
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::set_by_key('');
-		Assert::assertInstanceOf($set_model, $set);
+		$this->assertInstanceOf($set_model, $set);
 	}
 
 	/**
@@ -52,7 +55,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('object_manifest_provider')]
 	public function test_mayi_resource_available_for_all_sets ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::all();
-		Assert::assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
+		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
 		return true;
 	}
 
@@ -80,7 +83,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 		$set = $pool_model::all();
 		$resource = $set->mayi_resource();
-		Assert::assertTrue(
+		$this->assertTrue(
 			op5MayI::instance()->run($resource . ":read"),
 			"A fully authenticated/authorized user should be able to read " .
 			"'$resource', you should probably check the ACL (in " .
@@ -109,7 +112,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 		$set = $pool_model::all();
 		$resource = $set->mayi_resource();
-		Assert::assertFalse(
+		$this->assertFalse(
 			op5MayI::instance()->run($resource . ":read"),
 			"An unauthenticated/unauthorized user should not be able to read " .
 			"'$resource', you should probably check the ACL (in " .
