@@ -2,7 +2,7 @@
 
 class ORM_Type_Int_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array(123, 123),
 			array(1.53, 1), // will floor floats
@@ -57,7 +57,7 @@ class ORM_Type_Int_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (strings) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array("foobar", "'string' is not valid for int 'int'"),
 			array(array(), "'array' is not valid for int 'int'"),

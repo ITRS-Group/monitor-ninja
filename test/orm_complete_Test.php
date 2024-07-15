@@ -9,7 +9,7 @@ require_once ('op5/objstore.php');
  */
 class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
-	public function object_manifest_provider () {
+	public static function object_manifest_provider () {
 
 		$manifest = ObjectPool_Model::load_table_classes();
 

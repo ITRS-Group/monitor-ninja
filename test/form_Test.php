@@ -4,7 +4,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class Form_Test extends \PHPUnit\Framework\TestCase {
 
 	public $form;
-	public function get_form_provider() {
+	public static function get_form_provider() {
 		// phpunit wants to be able to iterate through the dataset
 		return array(array(new Form_Model('my_action_url', 'POST', array(
 			new Form_Field_Text_Model('name', "your name?"),

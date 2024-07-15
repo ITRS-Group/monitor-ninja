@@ -81,7 +81,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 		);
 	}
 
-	public function config_file_permission_data_provider() {
+	public static function config_file_permission_data_provider() {
         /*
         * Specifications of files which should be checked, and the permissions expected. And yes, I created this
         * key-value array which then is converted into a standard phpunit test array due to the phpunit standard being

@@ -49,7 +49,7 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	public function host_macro_provider () {
+	public static function host_macro_provider () {
 
 		$host_props = array(
 			'name' => 'Jabbaraj',
@@ -86,7 +86,7 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'host'));
 	}
 
-	public function service_macro_provider () {
+	public static function service_macro_provider () {
 
 		$service_props = array(
 			'host' => array(
@@ -138,7 +138,7 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'service'));
 	}
 
-	public function hostgroup_macro_provider () {
+	public static function hostgroup_macro_provider () {
 
 		$hostgroup_props = array(
 			'name' => 'Awesomesauce',
@@ -161,7 +161,7 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'hostgroup'));
 	}
 
-	public function servicegroup_macro_provider () {
+	public static function servicegroup_macro_provider () {
 
 		$servicegroup_props = array(
 			'name' => 'Awesomesauce',
@@ -184,7 +184,7 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'servicegroup'));
 	}
 
-	public function generic_group_macro_provider () {
+	public static function generic_group_macro_provider () {
 
 		$servicegroup_props = array(
 			'name' => 'AwesomesauceSG',

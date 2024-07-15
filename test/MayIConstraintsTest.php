@@ -315,7 +315,7 @@ class MayIConstraintsTest extends \PHPUnit\Framework\TestCase {
 	 *  - Priority
 	 *  - If message shold be visible
 	 */
-	public function ds_msg_priorities() {
+	public static function ds_msg_priorities() {
 		return array (
 			/*
 			 * Test that all messages is visible if allowed, independent of

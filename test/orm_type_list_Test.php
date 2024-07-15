@@ -2,7 +2,7 @@
 
 class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array(array(), array()),
 			// must be able to handle PHP serialized data du to donwtime settings
@@ -57,7 +57,7 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (strings) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array("foobar", "'string' is not valid for list 'list'"),
 			array(true, "'boolean' is not valid for list 'list'"),

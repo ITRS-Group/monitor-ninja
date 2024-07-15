@@ -2,7 +2,7 @@
 
 class ORM_Type_Set_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array(TestClassBPool_Model::all(), 'TestClassBSet_Model'),
 			array(TestClassBPool_Model::none(), 'TestClassBSet_Model'),
@@ -57,7 +57,7 @@ class ORM_Type_Set_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (strings) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
+	public static function invalid_data_provider () {
 		return array(
 			array("foobar", "'string' is not valid for set 'set'"),
 			array(1, "'integer' is not valid for set 'set'"),
