@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\Attributes\Depends;
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_preprocess_orm_object () {

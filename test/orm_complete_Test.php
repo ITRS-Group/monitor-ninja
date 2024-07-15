@@ -1,5 +1,5 @@
 <?php
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once ('op5/objstore.php');
 

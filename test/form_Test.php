@@ -1,5 +1,5 @@
 <?php
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class Form_Test extends \PHPUnit\Framework\TestCase {
 

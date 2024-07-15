@@ -1,5 +1,5 @@
 <?php
-use PHPUnit\Metadata\DataProvider;
+use PHPUnit\Framework\Attributes\DataProvider;
 class json_Test extends \PHPUnit\Framework\TestCase {
 	
 	#[DataProvider('data_structures')]
