@@ -98,12 +98,12 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 
         $returnArray = array();
         foreach ($configPermissionPairs as $permissionPair) {
-            $returnArray[] = [
+            $returnArray[] = array(
                 $permissionPair['filename'],
                 $permissionPair['expectedPermission'],
                 $permissionPair['expectedOwner'],
                 $permissionPair['expectedGroup']
-            ];
+            );
         }
 
         return $returnArray;
