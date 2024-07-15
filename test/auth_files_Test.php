@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 require_once "op5/objstore.php";
 require_once "op5/config.php";
 require_once "op5/auth/Authorization.php";
@@ -288,7 +290,7 @@ class auth_files_Test extends \PHPUnit\Framework\TestCase {
 	 * etc/auth_groups.yml always is checked into git in its newest form.
 	 *
 	 */
-	public function test_auth_files_are_checked_in_after_auth_migrate($auth_file) {
+	public function test_auth_files_are_checked_in_after_auth_migrate($auth_file, $auth_group) {
 		// op5config is in need of proper designing (since it assumes
 		// that it must work with files, what an untestable assumption).
 		// Until then, we must work around its desire and get the real
