@@ -19,7 +19,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		unset($manifest['object']);
 
 		$this->assertGreaterThan(0, count($manifest));
-		return $manifest;
+		return [$manifest];
 
 	}
 
