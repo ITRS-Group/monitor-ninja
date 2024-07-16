@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 class ORM_Type_Int_Test extends \PHPUnit\Framework\TestCase {
 
 	public static function valid_values_provider () {

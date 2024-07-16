@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\TextUI\Configuration\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 {
 	function setUp() : void

@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * We have a bunch of fixtures checked in, that represents events and the
  * expected calculated summaries after our report engine has transformed the
