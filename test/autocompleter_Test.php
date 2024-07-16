@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\TextUI\Configuration\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 	private $mock_log;

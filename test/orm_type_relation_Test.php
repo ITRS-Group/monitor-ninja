@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 
