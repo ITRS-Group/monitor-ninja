@@ -38,7 +38,7 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	public function data_for_test_can_match_on_multiple_tables() {
+	public static function data_for_test_can_match_on_multiple_tables() {
 		$autocompleter_backend = array(
 			'hosts' => array(
 				array(
@@ -430,7 +430,7 @@ class Autocompleter_Test extends \PHPUnit\Framework\TestCase {
 		new Autocompleter($table_spec);
 	}
 
-	public function data_with_wrong_string_placeholders() {
+	public static function data_with_wrong_string_placeholders() {
 		return array(
 			'no placeholder' => array('lala'),
 			'two placeholders' => array('%s %s'),
