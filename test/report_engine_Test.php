@@ -43,7 +43,6 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 
 		$glob_path = __DIR__.'/reports/*.tst.php';
 		$test_dir_glob = glob($glob_path);
-		$this->assertGreaterThan(0, count($test_dir_glob), "$glob_path seems to be a bad glob path, found no test files in it");
 
 		$tests = array();
 		foreach ($test_dir_glob as $tfile) {
@@ -61,6 +60,12 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			);
 		}
 		return $tests;
+	}
+
+	public function test_glob_path() {
+		$glob_path = __DIR__.'/reports/*.tst.php';
+		$test_dir_glob = glob($glob_path);
+		$this->assertGreaterThan(0, count($test_dir_glob), "$glob_path seems to be a bad glob path, found no test files in it");
 	}
 
 	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
