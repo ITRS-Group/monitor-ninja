@@ -276,8 +276,7 @@ class auth_files_Test extends \PHPUnit\Framework\TestCase {
 
 	public static function migrate_auth_yml_files_provider() {
 		return array(
-			array("auth.yml"),
-			array("auth_groups.yml"),
+			array("auth.yml","auth_groups.yml")
 		);
 	}
 
