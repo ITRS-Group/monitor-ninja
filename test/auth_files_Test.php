@@ -274,7 +274,7 @@ class auth_files_Test extends \PHPUnit\Framework\TestCase {
 		$this->check_traps_view_all_rights('limited_view');
 	}
 
-	public function migrate_auth_yml_files_provider() {
+	public static function migrate_auth_yml_files_provider() {
 		return array(
 			array("auth.yml"),
 			array("auth_groups.yml"),

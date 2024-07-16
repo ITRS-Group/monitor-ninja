@@ -1067,7 +1067,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * options, but we really, really, do not want phpunit to stop testing
 	 * after the first failure.
 	 */
-	public function time_input_for_report_options() {
+	public static function time_input_for_report_options() {
 		return array(
 			array(
 				'lastweek',
