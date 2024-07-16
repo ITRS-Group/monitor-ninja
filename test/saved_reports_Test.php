@@ -213,7 +213,7 @@ class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 		$this->assertTrue($opts->delete());
 	}
 
-	function fill_sla()
+	static function fill_sla()
 	{
 		$input_partial = array(8 => 8);
 		$expected_partial = array(1 => 0.0, 2 => 0, 3 => 0,
