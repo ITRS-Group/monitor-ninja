@@ -20,7 +20,7 @@ class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	private function mock_orm_tables(array $tables) {
-		$this->mock_data_path = __DIR__ . '/' . $this->getName(false) . '.json';
+		$this->mock_data_path = __DIR__ . '/' . $this->toString() . '.json';
 		file_put_contents($this->mock_data_path, json_encode($tables));
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
