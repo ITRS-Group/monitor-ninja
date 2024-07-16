@@ -15,7 +15,7 @@ class ORM_Type_Relation_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array('a', 'TestClassB_Model'),
 			array(TestClassB_Model::factory_from_array(array(), array()), 'TestClassB_Model'),

@@ -18,7 +18,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			"the current time");
 	}
 
-	public function report_test_files_provider() {
+	public static function report_test_files_provider() {
 		$config = Kohana::config('database.default');
 		if (isset($config['connection'])) {
 			$connection = $config['connection'];
