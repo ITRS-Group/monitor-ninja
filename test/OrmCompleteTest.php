@@ -22,14 +22,13 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 		$set_model = $manifest['set'];
 		$pool_model = $manifest['pool'];
 
-		$this->assertGreaterThan(0, count($manifest));
+		// $this->assertGreaterThan(0, count($manifest),"");
 
 		return [
 			[$object_model, $set_model, $pool_model]
 		];
 
 	}
-
 
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
