@@ -30,6 +30,7 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 
 	}
 
+	#[DataProvider('object_manifest_provider')]
 	public function test_object_manifest_provider($object_model, $set_model, $pool_model) {
 		$models[] = [$object_model, $set_model, $pool_model];
 		$this->assertGreaterThan(0, count($models), "No object models found");
