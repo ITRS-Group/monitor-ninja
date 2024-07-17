@@ -17,18 +17,11 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 		 * and does not have the required functionality (set_by_key) for these tests,
 		 * in addition it is not an object that we instantiate on its own.  */
 		unset($manifests['object']);
+		$manifest = array($manifests);
 
-		$this->assertGreaterThan(0, count($manifests));
+		$this->assertGreaterThan(0, count($manifest));
 
-		$return_manifest = array();
-		foreach ($manifests as $manifest) {
-			$return_manifest[] = array(
-				$manifest['object_model'],
-				$manifest['set_model'],
-				$manifest['pool_model']
-			);
-		}
-		return $return_manifest;
+		return $manifest;
 
 	}
 
@@ -43,8 +36,9 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 	 */
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
+		$model = $set_model::set_by_key('');
 		$set = $pool_model::set_by_key('');
-		$this->assertInstanceOf($set_model, $set);
+		$this->assertInstanceOf($model, $set);
 	}
 
 	/**
