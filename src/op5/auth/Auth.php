@@ -61,6 +61,9 @@ class op5auth implements op5MayI_Actor {
 	 * @param $config array
 	 * @return void
 	 */
+
+	public $log;
+	
 	static public function instance(array $config = array()) {
 		return op5objstore::instance()->obj_instance_callback(
 			__CLASS__,
