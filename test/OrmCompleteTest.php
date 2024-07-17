@@ -11,34 +11,30 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 
 	public static function object_manifest_provider() {
 
-		$manifests = ObjectPool_Model::load_table_classes();
+		$manifest = ObjectPool_Model::load_table_classes();
 
-		/* Object_Model is the only one built from the ORM Root generator
-		 * and does not have the required functionality (set_by_key) for these tests,
-		 * in addition it is not an object that we instantiate on its own.  */
-		unset($manifests['object']);
-		$manifest = array($manifests);
+		// /* Object_Model is the only one built from the ORM Root generator
+		//  * and does not have the required functionality (set_by_key) for these tests,
+		//  * in addition it is not an object that we instantiate on its own.  */
+		// unset($manifest['object']);
+
+		$object_model = $manifest['object'];
+		$set_model = $manifest['set'];
+		$pool_model = $manifest['pool'];
 
 		$this->assertGreaterThan(0, count($manifest));
 
-		return $manifest;
+		return [
+			[$object_model, $set_model, $pool_model]
+		];
 
 	}
 
-	/**
-	 * As to not move the validation of the return value to the call-site the
-	 * set_by_key function for all Pools should return an iterable Set even if
-	 * that Set may be empty.
-	 * @param mixed $object_model
-	 * @param mixed $set_model
-	 * @param mixed $pool_model
-	 * @return void
-	 */
+
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
-		$model = $set_model::set_by_key('');
 		$set = $pool_model::set_by_key('');
-		$this->assertInstanceOf($model, $set);
+		$this->assertInstanceOf($set_model, $set);
 	}
 
 	/**
