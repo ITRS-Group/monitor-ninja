@@ -8,7 +8,7 @@ class LSFilterSetBuilderVisitor extends LSFilterVisitor {
 	private $pool;
 	private $disabled_saved_filters = array();
 
-
+	private $all_set;
 	/**
 	 * Generate the visitor
 	 */

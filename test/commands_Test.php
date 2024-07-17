@@ -3,6 +3,8 @@ require_once('op5/objstore.php');
 
 /** Record incoming commands instead of executing them */
 class mock_queryhandler_response extends op5queryhandler {
+	private $history;
+	private $outputs;
     /** Reset history */
     function __construct() {
         parent::__construct();

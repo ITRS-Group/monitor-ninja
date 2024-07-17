@@ -13,7 +13,7 @@
  */
 class Tac_Controller extends Ninja_Controller {
 
-	private $input;
+	public $input;
 
 	/**
 	 * Iterate through all widgets one time, to add the widgets' assets.
