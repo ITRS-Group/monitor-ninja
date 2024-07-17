@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\Depends;
 class Backup_Test extends \PHPUnit\Framework\TestCase {
 
 	private $controller;
+	private $backup_location;
 
 	public function setUp() : void {
 		exec("id monitor", $output, $exit_code);
