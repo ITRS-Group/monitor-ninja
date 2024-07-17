@@ -27,6 +27,8 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		)
 	);
 
+	public $ls;
+
 	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 

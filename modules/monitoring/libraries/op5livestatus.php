@@ -340,6 +340,8 @@ class op5livestatus_connection {
 	private $connection  = null;
 	private $timeout     = 10;
 
+	private $connectionString;
+
 	/**
 	 * @param $path_to_ls_socket
 	 **/
