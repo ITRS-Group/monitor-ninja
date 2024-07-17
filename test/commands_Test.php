@@ -53,6 +53,8 @@ class mock_queryhandler_response extends op5queryhandler {
  */
 class commands_Test extends \PHPUnit\Framework\TestCase {
 
+	private $query_handler;
+
 	protected function setUp () : void {
 		$this->query_handler = new mock_queryhandler_response();
 		op5objstore::instance()->mock_add('op5queryhandler', $this->query_handler);

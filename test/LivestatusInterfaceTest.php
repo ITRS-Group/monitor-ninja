@@ -8,6 +8,8 @@ class mock_livestatus_connection extends op5livestatus_connection {
 	private $outbuf = '';
 	private $custom_error = false;
 
+	private $buffer;
+
 	public function __construct($unit_test_class) {
 		$this->test = $unit_test_class;
 		$this->test->lsconn = $this; /* circular referenses FTW :) */
