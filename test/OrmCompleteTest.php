@@ -30,6 +30,11 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 
 	}
 
+	public function test_object_manifest_provider($object_model, $set_model, $pool_model) {
+		$models[] = [$object_model, $set_model, $pool_model];
+		$this->assertGreaterThan(0, count($models), "No object models found");
+	}
+
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
 		$set = $pool_model::set_by_key('');
