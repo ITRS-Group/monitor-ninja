@@ -8,7 +8,7 @@ require_once ('op5/objstore.php');
  * These tests exist to enforce the structure of ORM objects, to validate that
  * they are complete and behave in a consistent manner.
  */
-class OrmCompleteTest extends TestCase{
+class ORM_Complete_Test extends TestCase {
 
 	public static function object_manifest_provider() {
 

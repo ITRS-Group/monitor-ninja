@@ -21,7 +21,7 @@ class Database_Mysqli_Driver extends Database_Driver {
 	 *
 	 * @param  array  database configuration
 	 */
-	public function __construct($config=null)
+	public function __construct($config)
 	{
 		$this->db_config = $config;
 
