@@ -17,28 +17,25 @@ class ORM_Complete_Test extends TestCase {
 		// /* Object_Model is the only one built from the ORM Root generator
 		//  * and does not have the required functionality (set_by_key) for these tests,
 		//  * in addition it is not an object that we instantiate on its own.  */
-		// unset($manifest['object']);
+		unset($manifest['object']);
 
-		$object_model = $manifest['object'];
 		$set_model = $manifest['set'];
 		$pool_model = $manifest['pool'];
 
-		// $this->assertGreaterThan(0, count($manifest),"");
-
 		return [
-			[$object_model, $set_model, $pool_model]
+			[$set_model, $pool_model]
 		];
 
 	}
 
 	#[DataProvider('object_manifest_provider')]
-	public function test_object_manifest_provider($object_model, $set_model, $pool_model) {
-		$models[] = [$object_model, $set_model, $pool_model];
-		$this->assertGreaterThan(0, count($models), "No object models found");
+	public function test_object_manifest_provider($set_model, $pool_model) {
+		$models[] = [$set_model, $pool_model];
+		$this->assertGreaterThan(0, count($models), "No models found");
 	}
 
 	#[DataProvider('object_manifest_provider')]
-	public function test_set_by_key_always_returns_set($object_model, $set_model, $pool_model) {
+	public function test_set_by_key_always_returns_set($set_model, $pool_model) {
 		$set = $pool_model::set_by_key('');
 		$this->assertInstanceOf($set_model, $set);
 	}
@@ -49,7 +46,7 @@ class ORM_Complete_Test extends TestCase {
 	 * test enforces this to supply a more consistent ORM.
 	 */
 	#[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_available_for_all_sets($object_model, $set_model, $pool_model) {
+	public function test_mayi_resource_available_for_all_sets($set_model, $pool_model) {
 		$set = $pool_model::all();
 		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
 		return true;
@@ -67,7 +64,7 @@ class ORM_Complete_Test extends TestCase {
 	 */
 	
 	 #[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_with_acl_using_alwaysauth($object_model, $set_model, $pool_model) {
+	public function test_mayi_resource_with_acl_using_alwaysauth($set_model, $pool_model) {
 
 		$user = new User_AlwaysAuth_Model();
 
@@ -96,7 +93,7 @@ class ORM_Complete_Test extends TestCase {
 	 */
 	
 	#[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_with_acl_using_noauth($object_model, $set_model, $pool_model) {
+	public function test_mayi_resource_with_acl_using_noauth($set_model, $pool_model) {
 
 		$user = new User_NoAuth_Model();
 
