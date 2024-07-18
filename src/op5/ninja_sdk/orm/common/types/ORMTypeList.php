@@ -29,7 +29,7 @@ class ORMTypeList implements ORMTypeI {
 		$context->init_function( "set_{$this->name}", array('value') );
 
 		$context->write("if(is_string(\$value) && is_array(@unserialize(\$value))) {");
-		$context->write("\$value = unserialize(\$value);");
+		$context->write("\$value = @unserialize(\$value);");
 		$context->write("} else if(!is_array(\$value)) {");
 		$context->raise(
 			'InvalidArgumentException',
@@ -59,7 +59,7 @@ class ORMTypeList implements ORMTypeI {
 		$context->write("if(array_key_exists(\$prefix.'{$this->backend_name}', \$values)) {");
 		$context->write("\$value = \$values[\$prefix.'{$this->backend_name}'];");
 		$context->write("if(is_string(\$value) && is_array(@unserialize(\$value))) {");
-		$context->write("\$value = unserialize(\$value);");
+		$context->write("\$value = @unserialize(\$value);");
 		$context->write("} else if(!is_array(\$value)) {");
 		$context->raise(
 			'InvalidArgumentException',
@@ -74,7 +74,7 @@ class ORMTypeList implements ORMTypeI {
 		$context->write("if(array_key_exists('{$this->name}', \$values)) {" );
 		$context->write("\$value = \$values['{$this->name}'];");
 		$context->write("if(is_string(\$value) && is_array(@unserialize(\$value))) {");
-		$context->write("\$value = unserialize(\$value);");
+		$context->write("\$value = @unserialize(\$value);");
 		$context->write("} else if(!is_array(\$value)) {");
 		$context->raise(
 			'InvalidArgumentException',
