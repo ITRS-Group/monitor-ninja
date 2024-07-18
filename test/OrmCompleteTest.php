@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\Framework\Attributes\DataProvider;
+use \PHPUnit\Framework\TestCase;
 
 require_once ('op5/objstore.php');
 
@@ -7,7 +8,7 @@ require_once ('op5/objstore.php');
  * These tests exist to enforce the structure of ORM objects, to validate that
  * they are complete and behave in a consistent manner.
  */
-class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
+class OrmCompleteTest extends TestCase{
 
 	public static function object_manifest_provider() {
 
@@ -37,7 +38,7 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 	}
 
 	#[DataProvider('object_manifest_provider')]
-	public function test_set_by_key_always_returns_set ($object_model, $set_model, $pool_model) {
+	public function test_set_by_key_always_returns_set($object_model, $set_model, $pool_model) {
 		$set = $pool_model::set_by_key('');
 		$this->assertInstanceOf($set_model, $set);
 	}
@@ -48,7 +49,7 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 	 * test enforces this to supply a more consistent ORM.
 	 */
 	#[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_available_for_all_sets ($object_model, $set_model, $pool_model) {
+	public function test_mayi_resource_available_for_all_sets($object_model, $set_model, $pool_model) {
 		$set = $pool_model::all();
 		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
 		return true;
@@ -66,7 +67,7 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 	 */
 	
 	 #[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_with_acl_using_alwaysauth ($object_model, $set_model, $pool_model) {
+	public function test_mayi_resource_with_acl_using_alwaysauth($object_model, $set_model, $pool_model) {
 
 		$user = new User_AlwaysAuth_Model();
 
@@ -95,7 +96,7 @@ class OrmCompleteTest extends \PHPUnit\Framework\TestCase {
 	 */
 	
 	#[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_with_acl_using_noauth ($object_model, $set_model, $pool_model) {
+	public function test_mayi_resource_with_acl_using_noauth($object_model, $set_model, $pool_model) {
 
 		$user = new User_NoAuth_Model();
 
