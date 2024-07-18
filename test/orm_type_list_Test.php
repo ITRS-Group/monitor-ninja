@@ -60,21 +60,28 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
 	public static function invalid_data_provider () {
-		return array(
-			array("foobar", "'string' is not valid for list 'list'"),
-			array(true, "'boolean' is not valid for list 'list'"),
-			array(1, "'integer' is not valid for list 'list'"),
-			array(1.1, "'double' is not valid for list 'list'"), # double because PHP gettype is stupid
-			array((object)array(), "'object' is not valid for list 'list'"),
-		);
+		return [
+			["foobar", "'string' is not valid for list 'list'"],
+			[true, "'boolean' is not valid for list 'list'"],
+			[1, "'integer' is not valid for list 'list'"],
+			[1.1, "'double' is not valid for list 'list'"], # double because PHP gettype is stupid
+			[(object)array(), "'object' is not valid for list 'list'"],
+		];
 	}
 
 	#[DataProvider('invalid_data_provider')]
 	#[Group('ORMType')]
+	/**
+	 * Test for factory from array with invalid values.
+	 *
+	 * @param mixed $value The value to test.
+	 * @param string $expected The expected error message.
+	 */
 	public function test_factory_from_array_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
-		TestClassA_Model::factory_from_array(array("list" => $value), array());
+		$testclassA = new TestClassA_Model();
+		$testclassA->factory_from_array(array("list" => $value), array());
 	}
 
 	#[DataProvider('invalid_data_provider')]
