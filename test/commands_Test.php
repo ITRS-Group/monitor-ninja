@@ -25,7 +25,7 @@ class mock_queryhandler_response extends op5queryhandler {
         // also: compare naemon commands, not queryhandler input, since
         // it makes the test more verbose and less focused on the real
 		// meaning of the test
-		$command = preg_replace("/^@command run /", null, $command);
+		$command = preg_replace("/^@command run /", '', $command);
 		$cmdlist = explode(';', $command);
 		$command_name = array_shift($cmdlist);
 		$cmdwords = explode(' ', $command_name);

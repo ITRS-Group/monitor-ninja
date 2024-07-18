@@ -22,7 +22,7 @@ class mock_queryhandler extends op5queryhandler {
 		// also: compare naemon commands, not queryhandler input, since
 		// it makes the test more verbose and less focused on the real
 		// meaning of the test
-		$command = preg_replace("/^@command run /", null, $command);
+		$command = preg_replace("/^@command run /", '', $command);
 
 		$this->history[] = $command;
 		return "Bogus, fixed output";
