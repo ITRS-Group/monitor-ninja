@@ -121,7 +121,7 @@ abstract class Base_reports_Controller extends Ninja_Controller
 			}
 			$months = date::abbr_month_names();
 			$month = $months[date('m')-1]; // January is [0]
-			$filename = preg_replace("~\.pdf$~", null, $filename)."_".date("Y_").$month.date("_d").'.pdf';
+			$filename = preg_replace("~\.pdf$~", '', $filename)."_".date("Y_").$month.date("_d").'.pdf';
 
 			fwrite($pipes[0], $content);
 			fclose($pipes[0]);
