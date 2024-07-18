@@ -381,7 +381,7 @@ class op5livestatus_connection {
 			if(!file_exists($address)) {
 				throw new op5LivestatusException("Cannot connect to Livestatus, '$address' is not a valid address to the Livestatus socket.");
 			}
-			$this->connection = @fsockopen('unix:'.$address, NULL, $errno, $errstr, $this->timeout);
+			$this->connection = @fsockopen('unix:'.$address, -1, $errno, $errstr, $this->timeout);
 		}
 		else {
 			throw new op5LivestatusException(
