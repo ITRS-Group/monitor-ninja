@@ -34,18 +34,10 @@ class ORM_Complete_Test extends TestCase {
 		$this->assertGreaterThan(0, count($models), "No models found");
 	}
 
-	// #[DataProvider('object_manifest_provider')]
-	public function test_set_by_key_always_returns_set() {
-
-		$manifest = ObjectPool_Model::load_table_classes();
-		if(isset($manifest['set']) && isset($manifest['pool'])) {
-			$set = $pool_model::set_by_key('');
-			$set_model = $manifest['set'];
-			$pool_model = $manifest['pool'];
-			$this->assertInstanceOf($set_model, $set);
-		}
-		// $set = $pool_model::set_by_key('');
-		// $this->assertInstanceOf($set_model, $set);
+	#[DataProvider('object_manifest_provider')]
+	public function test_set_by_key_always_returns_set($set_model, $pool_model) {
+		$set = $pool_model::set_by_key('');
+		$this->assertInstanceOf($set_model, $set);
 	}
 
 	/**
