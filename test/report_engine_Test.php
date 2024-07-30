@@ -71,7 +71,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
 	#[DataProvider('report_test_files_provider')]
 	#[Group('nonlocal')]
-	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
+	public function test_report_engine(Ninja_Reports_Test $test) {
 		ob_start();
 		$failed_tests = $test->run_test_series();
 		$test_result_output = ob_get_clean();
