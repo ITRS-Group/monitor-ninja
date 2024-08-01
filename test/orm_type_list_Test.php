@@ -81,7 +81,8 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		$testclassA = new TestClassA_Model();
-		$testclassA->factory_from_array(array("list" => $value), array());
+		$serialized_value = serialize($value);
+		$testclassA->factory_from_array(array("list" => $serialized_value), array());
 	}
 
 	#[DataProvider('invalid_data_provider')]
