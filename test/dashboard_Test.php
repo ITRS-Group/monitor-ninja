@@ -264,6 +264,7 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 	 * Upgrade from ninja db version 18 to 19
 	 */
 	public function test_upgrade_v18() {
+		$test_settings = serialize('a:1:{s:8:`something`;s:2:`17`;}');
 		$mock = [
 			'ORMDriverMySQL default' => [
 				'dashboards' => array(),
@@ -274,7 +275,7 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 						'page' => 'tac/index',
 						'name' => 'netw_health',
 						'friendly_name' => 'My little widget',
-						'setting' => 'a:1:{s:8:`something`;s:2:`17`;}',
+						'setting' => $test_settings,
 						'instance_id' => 13
 					]
 				]
