@@ -274,7 +274,7 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 						'page' => 'tac/index',
 						'name' => 'netw_health',
 						'friendly_name' => 'My little widget',
-						'setting' => 'a:1:{s:8:"something";s:2:"17";}',
+						'setting' => 'a:1:{s:8:`something`;s:2:`17`;}',
 						'instance_id' => 13
 					]
 				]
