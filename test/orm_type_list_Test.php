@@ -90,7 +90,8 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	public function test_factory_from_setiterator_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
-		TestClassA_Model::factory_from_setiterator(array("list" => $value), false, array());
+		$serialized_value = serialize($value);
+		TestClassA_Model::factory_from_setiterator(array("list" => $serialized_value), false, array());
 	}
 
 	#[DataProvider('invalid_data_provider')]
@@ -98,8 +99,9 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	public function test_setter_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
+		$serialized_value = serialize($value);
 		$from_array = TestClassA_Model::factory_from_array(array(), array());
-		$from_array->set_list($value);
+		$from_array->set_list($serialized_value);
 	}
 
 	public function test_list_values_are_the_same_when_read_as_saved () {
