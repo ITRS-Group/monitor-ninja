@@ -94,7 +94,7 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 		);
 
 		$dashboard = DashboardPool_Model::fetch_by_key(1);
-		$this->assertNull($dashboard);
+		$this->assertNull($dashboard, 'The dashboard should be null.');
 
 		// But as superuser we should.
 		Auth::instance(array('session_key' => false))->force_user(
@@ -281,14 +281,15 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 			]
 		];
 		$this->mock_data($mock, __FUNCTION__);
+		$auth_model = new User_AlwaysAuth_Model();
 
 		Auth::instance(array('session_key' => false))->force_user(
-			new User_AlwaysAuth_Model()
+			$auth_model
 		);
 
 		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'superuser', '=')->one();
 		/* Empty dashboard table, none exists prior to migration */
-		$this->assertNull($dashboard);
+		$this->assertNull($dashboard, 'The dashboard should be null.');
 
 		ob_start(); /* Don't output hashbang line */
 		require(__DIR__.'/../install_scripts/migrate_widgets.php');
