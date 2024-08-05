@@ -76,6 +76,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 		$failed_tests = $test->run_test_series();
 		$test_result_output = ob_get_clean();
 		ob_end_clean();
+		$this->assertNotEmpty($test_result_output, "Test result output is empty");
 		$this->assertEquals($failed_tests, $test_result_output);
 	}
 }
