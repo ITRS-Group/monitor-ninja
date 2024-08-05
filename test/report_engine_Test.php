@@ -75,6 +75,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 		ob_start();
 		$failed_tests = $test->run_test_series();
 		$test_result_output = ob_get_clean();
+		ob_end_clean();
 		$this->assertEquals($failed_tests, $test_result_output);
 	}
 }
