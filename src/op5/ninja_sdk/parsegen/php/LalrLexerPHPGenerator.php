@@ -16,6 +16,7 @@ class LalrLexerPHPGenerator extends class_generator {
 		$this->init_class();
 		$this->variable( 'buffer' );
 		$this->variable( 'query' );
+		$this->variable( 'visitor' );
 		$this->variable( 'position', 0 );
 		$this->generate_constructor();
 		$this->generate_fetch_token();
