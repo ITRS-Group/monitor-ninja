@@ -59,7 +59,7 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
 				$driver,
-				new ORMDriverNative($tables, null, $driver)
+				new ORMDriverNative($tables, 0, $driver)
 			);
 		}
 	}

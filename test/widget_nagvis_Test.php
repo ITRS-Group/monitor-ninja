@@ -2,6 +2,8 @@
 
 class Widget_NagVis_Test extends \PHPUnit\Framework\TestCase {
 
+	private $widget;
+
 	protected function setUp() : void {
 
 		$widget_model = new Ninja_Widget_Model();
