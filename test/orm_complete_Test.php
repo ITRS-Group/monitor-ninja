@@ -1,6 +1,6 @@
 <?php
 use PHPUnit\Framework\Attributes\DataProvider;
-use \PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 require_once ('op5/objstore.php');
 
@@ -22,9 +22,7 @@ class ORM_Complete_Test extends TestCase {
 		$set_model = $manifest['set'];
 		$pool_model = $manifest['pool'];
 
-		return [
-			[$set_model, $pool_model]
-		];
+		return [$set_model, $pool_model];
 
 	}
 
