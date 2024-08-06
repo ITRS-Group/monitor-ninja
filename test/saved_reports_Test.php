@@ -3,6 +3,8 @@ use PHPUnit\TextUI\Configuration\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 {
+	private $length;
+	private $type;
 	function setUp() : void
 	{
 		// sweep up leftover crap from other runs
