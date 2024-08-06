@@ -16,7 +16,7 @@ class Database_Mysqli_Driver extends Database_Driver {
 	protected $db_config;
 	protected $statements = array();
 
-	private static $query_cache = array();
+	public $query_cache = array();
 
 	public $config;
 
