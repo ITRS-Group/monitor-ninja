@@ -2,6 +2,9 @@
 
 class Widget_State_Summary_Test extends \PHPUnit\Framework\TestCase {
 
+	private $widget;
+	private $mock_data_path;
+	
 	protected function setUp() : void {
 		$widget_model = new Ninja_Widget_Model();
 		$widget_model->set_name('state_summary');
