@@ -35,7 +35,7 @@ class ORMDriverNative implements ORMDriverInterface {
 	 * @throws ORMDriverNativeException when $storage is not good set of tables
 	 * @return void
 	 */
-	public function __construct($storage = array(), $mockfile = null, $mockdriver = null) {
+	public function __construct($storage = [], ?string $mockfile = null, $mockdriver = null) {
 		$existing_tables = Module_Manifest_Model::get('orm_structure');
 		$wrongly_defined_tables = array_keys(array_diff_key($storage, $existing_tables));
 		if($wrongly_defined_tables) {
