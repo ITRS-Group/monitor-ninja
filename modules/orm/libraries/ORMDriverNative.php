@@ -19,12 +19,12 @@ class ORMDriverNative implements ORMDriverInterface {
 	/**
 	 * The file the data is mocked into
 	 */
-	protected $mockfile = null;
+	protected $mockfile;
 
 	/**
 	 * The driver being mocked
 	 */
-	protected $mockdriver = null;
+	protected $mockdriver;
 
 	/**
 	 * Constructor for this class.
