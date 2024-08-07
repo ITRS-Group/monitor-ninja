@@ -11,6 +11,7 @@
  */
 class First_Login_Test extends \PHPUnit\Framework\TestCase {
 
+	private $mock_data_path = false;
 	protected function setUp () : void {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -22,10 +23,11 @@ class First_Login_Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	private function mock_data($tables) {
+		$this->mock_data_path = __DIR__ . '/' . $this->toString() . '.json';
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
 				$driver,
-				new ORMDriverNative($tables, 0, $driver)
+				new ORMDriverNative($tables, $this->mock_data_path, $driver)
 			);
 		}
 	}
