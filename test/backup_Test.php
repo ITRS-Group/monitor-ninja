@@ -55,19 +55,21 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 	public function test_backup() {
 		$controller = $this->controller;
 		$controller->backup();
-		$this->assertSame(true, $controller->template->success,
-			var_export($controller->template->message, true));
+		$export_message = var_export($controller->template->message, true);
+		$this->assertSame(true, $controller->template->success, $export_message);
 
 		$backups = glob($this->backup_location.'/*');
+		$backups_message = "Should have a single backup and nothing else, but we have this:\n".var_export($backups, true);
 		$this->assertCount(
 			1,
 			$backups,
-			"Should have a single backup and nothing else, but ".
-			"we have this:\n".var_export($backups, true)
+			$backups_message
 		);
+		$path_info = pathinfo(reset($backups), PATHINFO_BASENAME);
+		$template_result = $controller->template->value["result"];
 		$this->assertSame(
-			pathinfo(reset($backups), PATHINFO_BASENAME),
-			$controller->template->value["result"],
+			$path_info,
+			$template_result,
 			"The filename in the controller's response should ".
 			"match the one that was stored on disk"
 		);
