@@ -237,6 +237,7 @@ class ORMDriverNative implements ORMDriverInterface {
 			return;
 
 		$json_str = file_get_contents($this->mockfile);
+		$log = new MockLog(); 
 		if (!$json_str) {
 			$log->log("error", "Could not read mock data from '$this->mockfile'");
 			return;
