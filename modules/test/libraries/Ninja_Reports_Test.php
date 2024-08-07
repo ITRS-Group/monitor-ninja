@@ -32,6 +32,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	public $db_type; /**< Database type */
 	public $db_host; /**< Database hostname */
 	public $importer; /**< The command used to import logs into the database */
+	public $params;
 
 	private $details;
 
