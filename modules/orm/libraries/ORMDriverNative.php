@@ -26,6 +26,7 @@ class ORMDriverNative implements ORMDriverInterface {
 	 */
 	protected $mockdriver = null;
 
+	private $logger;
 	/**
 	 * Constructor for this class.
 	 *
@@ -48,6 +49,7 @@ class ORMDriverNative implements ORMDriverInterface {
 		$this->storage = $storage;
 		$this->mockfile = $mockfile;
 		$this->mockdriver = $mockdriver;
+		$this->logger = op5log::instance('ninja');
 	}
 
 	public function count($table, $structure, $filter) {
@@ -232,19 +234,20 @@ class ORMDriverNative implements ORMDriverInterface {
 	 * @param $table string
 	 */
 	protected function persist ($table) {
+		
 		/* If there is no mockfile, we shouldn't persist. Probably unit tests then */
 		if($this->mockfile === null)
 			return;
 
 		$json_str = file_get_contents($this->mockfile);
 		if (!$json_str) {
-			$log->log("error", "Could not read mock data from '$this->mockfile'");
+			$this->logger->log("error", "Could not read mock data from '$this->mockfile'");
 			return;
 		}
 		$json_conf = json_decode($json_str, true);
 		if ($json_conf === null) {
 
-			$log->log("error", "Could not decode mock data from '$this->mockfile'");
+			$this->logger->log("error", "Could not decode mock data from '$this->mockfile'");
 			return;
 		}
 
@@ -252,12 +255,12 @@ class ORMDriverNative implements ORMDriverInterface {
 		$json_str = json_encode($json_conf);
 
 		if ($json_str === false) {
-			$log->log("error", "Could not encode mock data for '$this->mockdriver $table'");
+			$this->logger->log("error", "Could not encode mock data for '$this->mockdriver $table'");
 			return;
 		}
 
 		if (!file_put_contents($this->mockfile, $json_str)) {
-			$log->log("error", "Could not persist mock data for '$this->mockdriver $table' into '$this->mockfile'");
+			$this->logger->log("error", "Could not persist mock data for '$this->mockdriver $table' into '$this->mockfile'");
 			return;
 		}
 
