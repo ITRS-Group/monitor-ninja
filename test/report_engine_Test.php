@@ -71,10 +71,9 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
 	#[DataProvider('report_test_files_provider')]
 	#[Group('nonlocal')]
-	public function test_report_engine(array $tests) {
+	public function test_report_engine(Ninja_Reports_Test $tests) {
 		ob_start();
-		$report_test = new Ninja_Reports_Test($tests);
-		$failed_tests = $report_test->run_test_series();
+		$failed_tests = $tests->run_test_series();
 		$test_result_output = ob_get_clean();
 		$this->assertNotEmpty($test_result_output, "Test result output is empty");
 		$this->assertEquals($failed_tests, $test_result_output);
