@@ -59,7 +59,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 				$test
 			];
 		}
-		return [[$tests]];
+		return $tests;
 	}
 
 	public function test_glob_path() {
@@ -71,9 +71,10 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
 	#[DataProvider('report_test_files_provider')]
 	#[Group('nonlocal')]
-	public function test_report_engine(Ninja_Reports_Test $tests) {
+	public function test_report_engine($tests) {
 		ob_start();
-		$failed_tests = $tests->run_test_series();
+		$report = new Ninja_Reports_Test();
+		$failed_tests = $report->$tests->run_test_series();
 		$test_result_output = ob_get_clean();
 		$this->assertNotEmpty($test_result_output, "Test result output is empty");
 		$this->assertEquals($failed_tests, $test_result_output);
