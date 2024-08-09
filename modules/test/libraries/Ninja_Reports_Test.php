@@ -10,16 +10,16 @@ class Ninja_Reports_Test extends Status_Reports_Model
 {
 	public $test_file = false; /**< The file name we're testing */
 	private $total = 0;
-	public $description = false; /**< A string describing the purpose of this test */
+	public $description; /**< A string describing the purpose of this test */
 	private $tests;
 	private $results = array();
-	private $config_files = false;
+	private $config_files;
 	private $passed; /**< Number of passed tests */
 	private $failed; /**< Number of failed tests */
-	private $logfiles = false;
-	private $logfile = false;
-	private $sqlfile = false;
-	private $table_name = false;
+	private $logfiles;
+	private $logfile;
+	private $sqlfile;
+	private $table_name;
 	private $test_globals = array();
 	private $interesting_prefixes = array();
 	public $sub_reports = 0; /**< The number of sub reports */
