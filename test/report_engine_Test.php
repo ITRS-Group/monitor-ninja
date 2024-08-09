@@ -44,7 +44,6 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 		$glob_path = __DIR__.'/reports/*.tst.php';
 		$test_dir_glob = glob($glob_path);
 
-		$tests = [];
 		foreach ($test_dir_glob as $tfile) {
 			$test = new Ninja_Reports_Test($tfile);
 			$test->importer = $importer;
@@ -53,13 +52,12 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			$test->db_pass = $db_pass;
 			$test->db_type = $db_type;
 			$test->db_host = $db_host;
-			$tests[] =[
-				$tfile,
-				$test->description,
-				$test
-			];
 		}
-		return $tests;
+		return [
+			[$tfile,
+			$test->description,
+			$test]
+		];
 	}
 
 	public function test_glob_path() {
@@ -71,10 +69,9 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
 	#[DataProvider('report_test_files_provider')]
 	#[Group('nonlocal')]
-	public function test_report_engine($tests) {
+	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
 		ob_start();
-		$report = new Ninja_Reports_Test($tests);
-		$failed_tests = $report->run_test_series();
+		$failed_tests = $test->run_test_series();
 		$test_result_output = ob_get_clean();
 		$this->assertNotEmpty($test_result_output, "Test result output is empty");
 		$this->assertEquals($failed_tests, $test_result_output);
