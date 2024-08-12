@@ -71,7 +71,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[Group('nonlocal')]
 	public function test_report_engine($test_file, $description, $test) {
 		ob_start();
-		$obj_test = Ninja_Reports_Test ($test);
+		$obj_test = new Ninja_Reports_Test($test);
 		$failed_tests = $obj_test->run_test_series();
 		$test_result_output = ob_get_clean();
 		$this->assertNotEmpty($test_result_output, "Test result output is empty");
