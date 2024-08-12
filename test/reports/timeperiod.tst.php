@@ -1,6 +1,6 @@
 <?php
 $testcase = array(
-	'description' => 'Reports using timeperiods',
+	'description' => 'timeperiod',
 	'logfile' => 'softstates.log',
 	'global_vars' => array(
 		'start_time' => strtotime("2008-02-11 00:00:00"),
