@@ -18,7 +18,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	private $failed; /**< Number of failed tests */
 	private $logfiles;
 	private $logfile;
-	private $sqlfile;
+	private $sqlfile = false;
 	private $table_name;
 	private $test_globals = array();
 	private $interesting_prefixes = array();
