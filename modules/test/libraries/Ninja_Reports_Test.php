@@ -19,7 +19,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	private $logfiles = false;
 	private $logfile = false;
 	private $sqlfile = false;
-	private $table_name = false;
+	private $table_name;
 	private $test_globals = [];
 	private $interesting_prefixes = [];
 	public $sub_reports = 0; /**< The number of sub reports */
