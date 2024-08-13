@@ -8,7 +8,7 @@
  */
 class Ninja_Reports_Test extends Status_Reports_Model
 {
-	public $test_file = false; /**< The file name we're testing */
+	public $test_file; /**< The file name we're testing */
 	private $total = 0;
 	public $description = false; /**< A string describing the purpose of this test */
 	private $tests;
@@ -16,8 +16,8 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	private $config_files = false;
 	private $passed = 0; /**< Number of passed tests */
 	private $failed = 0; /**< Number of failed tests */
-	private $logfiles = false;
-	private $logfile = false;
+	private $logfiles;
+	private $logfile;
 	private $sqlfile = false;
 	private $table_name;
 	private $test_globals = [];
