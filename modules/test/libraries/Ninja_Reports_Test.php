@@ -240,6 +240,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 				$this->logfiles[] = "test/reports/".$this->logfile;
 
 			$result = $this->import_logs();
+			print_r("result:".$result);
 			if ($result < 0)
 				return $result;
 		}
