@@ -233,6 +233,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		if ($this->sqlfile) {
 			exec('mysql -u'.$this->db_user.' -p'.$this->db_pass.' '.$this->db_name.' < '.'test/reports/'.$this->sqlfile);
 			$this->table_name = substr($this->sqlfile, 0, strpos($this->sqlfile, '.'));
+			print_r("tablename:".$this->table_name);
 		}
 		else {
 			if ($this->logfile)
