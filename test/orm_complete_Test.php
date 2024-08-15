@@ -1,8 +1,7 @@
 <?php
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-
-require_once ('op5/objstore.php');
+require_once 'op5/objstore.php';
 
 /**
  * These tests exist to enforce the structure of ORM objects, to validate that
@@ -29,7 +28,7 @@ class ORM_Complete_Test extends TestCase {
 	#[DataProvider('object_manifest_provider')]
 	public function test_object_manifest_provider($set_model, $pool_model) {
 		$models[] = [$set_model, $pool_model];
-		$this->assertGreaterThan(0, count($models), "No models found");
+		$this->assertGreaterThanOrEqual(1, count($models), "No models found");
 	}
 
 	#[DataProvider('object_manifest_provider')]
