@@ -78,13 +78,13 @@ class Reports_Model extends Model
 		parent::__construct();
 
 		if (self::DEBUG === true) {
-			assert_options(ASSERT_ACTIVE, 1);
-			assert_options(ASSERT_WARNING, 0);
+			ini_set('assert.active', 1);
+			ini_set('assert.warning', 0);
 			// assert_options(ASSERT_QUIET_EVAL, 0); // disable error_reporting during assertion expression evaluation. Removed as of PHP 8.0.0. 
-			assert_options(ASSERT_BAIL, 1);
+			ini_set('assert.bail', 1);
 
 			# use report helper callback
-			assert_options(ASSERT_CALLBACK, array('reports', 'lib_reports_assert_handler'));
+			ini_set('assert.callback', 'reports::lib_reports_assert_handler');
 		}
 
 		$this->options = $options;
