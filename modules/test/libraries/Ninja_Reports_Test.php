@@ -271,7 +271,10 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		}
 		$lfiles = join(" ", $this->logfiles);
 
-		$line = exec("cat $lfiles | md5sum", $output, $retcode);
+		$line = shell_exec("cat $lfiles | md5sum");
+		$output = [];
+		$retcode = 0;
+		exec("cat $lfiles | md5sum", $output, $retcode);
 		$ary = explode(" ", $line);
 		$checksum = $ary[0];
 		$table_name = substr($this->description, 0, 20) . substr($checksum, 0, 10);
@@ -281,11 +284,12 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		echo "Using db table '".$this->table_name."'\n";
 		$cached = true;
 		$db = Database::instance();
+		
 		try {
-                    $db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
+			$db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
 		}
 		catch (Kohana_Database_Exception $e) {
-                    $cached = false;
+			$cached = false;
 		}
 
 		if ($cached) {
@@ -305,7 +309,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 				" --db-host=".$this->db_host." " .
 				" --db-type=".$this->db_type." " .
 				join(" ", $this->logfiles).' 2>&1';
-			$out = array();
+			$out = [];
 			exec($cmd, $out, $retval);
 			echo "$cmd\n".implode("\n", $out);
 			if ($retval) {
