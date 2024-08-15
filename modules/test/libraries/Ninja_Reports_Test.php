@@ -274,7 +274,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		$line = shell_exec("cat $lfiles | md5sum");
 		$output = [];
 		$retcode = 0;
-		exec("cat $lfiles | md5sum", $output, $retcode);
+		// exec("cat $lfiles | md5sum", $output, $retcode);
 		$ary = explode(" ", $line);
 		$checksum = $ary[0];
 		$table_name = substr($this->description, 0, 20) . substr($checksum, 0, 10);
@@ -297,7 +297,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		} else {
 			$sql = "CREATE TABLE $table_name AS SELECT * FROM report_data LIMIT 0";
 			echo "Building table [$table_name]. This might take a moment or three...\n";
-			if( ! $db->query($sql)) {
+			if (!$db->query($sql)) {
 				$this->crash("Error creating table $table_name: ".$db->error_message());
 			}
 			echo "Importing $lfiles to '$table_name'\n";
