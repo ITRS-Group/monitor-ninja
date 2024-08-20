@@ -26,11 +26,11 @@ class ORM_Complete_Test extends TestCase {
 
 	#[DataProvider('object_manifest_provider')]
 	public function test_object_manifest_provider($manifest) {
-		if(empty($manifest)) {
-			$this->fail("No object manifest found");
-		} else {
+		if(isset($manifest['set']) && isset($manifest['pool'])) {
 			$models[] = [array($manifest['set']), array($manifest['pool'])];
 			$this->assertGreaterThanOrEqual(1, count($models), "No models found");
+		} else {
+			$this->fail("No models found");
 		}
 	}
 
