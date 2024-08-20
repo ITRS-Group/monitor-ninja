@@ -18,18 +18,15 @@ class ORM_Complete_Test extends TestCase {
 		//  * in addition it is not an object that we instantiate on its own.  */
 		unset($manifest['object']);
 
-		$set_model = $manifest['set'];
-		$pool_model = $manifest['pool'];
-
 		return [
-			[$set_model, $pool_model]
+			[$manifest]
 		];
 
 	}
 
 	#[DataProvider('object_manifest_provider')]
-	public function test_object_manifest_provider(array $set_model, array $pool_model) {
-		$models[] = [array($set_model), array($pool_model)];
+	public function test_object_manifest_provider($manifest) {
+		$models[] = [array($manifest['set']), array($manifest['pool'])];
 		$this->assertGreaterThanOrEqual(1, count($models), "No models found");
 	}
 
