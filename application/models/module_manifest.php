@@ -44,6 +44,7 @@ class Module_Manifest_Model {
 	 * Load manifest parameters from modules
 	 */
 	public static function get( string $name ) {
-		return self::instance()->load_manifest($name);
+		$instance = new self();
+        return $instance->load_manifest($name);
 	}
 }
