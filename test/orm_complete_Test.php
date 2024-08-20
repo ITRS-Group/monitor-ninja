@@ -22,12 +22,13 @@ class ORM_Complete_Test extends TestCase {
 		$pool_model = $manifest['pool'];
 
 		return [
-			[$set_model], [$pool_model]];
+			[$set_model, $pool_model]
+		];
 
 	}
 
 	#[DataProvider('object_manifest_provider')]
-	public function test_object_manifest_provider($set_model, $pool_model) {
+	public function test_object_manifest_provider(array $set_model, array $pool_model) {
 		$models[] = [array($set_model), array($pool_model)];
 		$this->assertGreaterThanOrEqual(1, count($models), "No models found");
 	}
