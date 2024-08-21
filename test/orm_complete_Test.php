@@ -25,7 +25,10 @@ class ORM_Complete_Test extends TestCase {
 			return [
 				[$set_model, $pool_model]
 			];
+		} else {
+			$this->fail("No models found.".var_dump($manifest));
 		}
+		
 	}
 
 	#[DataProvider('object_manifest_provider')]
