@@ -37,7 +37,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set($set_model, $pool_model) {
 		$set = StatusPool_Model::set_by_key('');
-		$this->assertInstanceOf($set_model, $set);
+		$this->assertInstanceOf(strval($set_model), $set);
 	}
 
 	/**
