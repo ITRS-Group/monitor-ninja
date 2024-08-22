@@ -1,13 +1,12 @@
 <?php
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 require_once 'op5/objstore.php';
 
 /**
  * These tests exist to enforce the structure of ORM objects, to validate that
  * they are complete and behave in a consistent manner.
  */
-class ORM_Complete_Test extends TestCase {
+class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 	public static function object_manifest_provider() {
 
@@ -37,7 +36,7 @@ class ORM_Complete_Test extends TestCase {
 
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set($set_model, $pool_model) {
-		$set = $pool_model::set_by_key('');
+		$set = StatusPool_Model::set_by_key('');
 		$this->assertInstanceOf($set_model, $set);
 	}
 
