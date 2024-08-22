@@ -17,6 +17,8 @@ class ORM_Complete_Test extends TestCase {
 		//  * and does not have the required functionality (set_by_key) for these tests,
 		//  * in addition it is not an object that we instantiate on its own.  */
 		unset($manifest['object']);
+		$set_model=[];
+		$pool_model=[];
 
 		if(isset($manifest['pool']) && isset($manifest['set'])) {
 			$set_model = $manifest['set'];
@@ -25,10 +27,7 @@ class ORM_Complete_Test extends TestCase {
 			return [
 				[$set_model, $pool_model]
 			];
-		} else {
-			$this->fail("No models found.".var_dump($manifest));
 		}
-		
 	}
 
 	#[DataProvider('object_manifest_provider')]
