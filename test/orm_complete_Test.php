@@ -74,7 +74,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		$acl_auth = new user_mayi_authorization();
 		op5MayI::instance()->act_upon($acl_auth, 10);
 
-		$set = $pool_model::all();
+		$set = SavedFilterPool_Model::all();
 		$resource = $set->mayi_resource();
 		$this->assertTrue(
 			op5MayI::instance()->run($resource . ":read"),
@@ -103,7 +103,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		$acl_auth = new user_mayi_authorization();
 		op5MayI::instance()->act_upon($acl_auth, 10);
 
-		$set = $pool_model::all();
+		$set = SavedFilterPool_Model::all();
 		$resource = $set->mayi_resource();
 		$this->assertFalse(
 			op5MayI::instance()->run($resource . ":read"),
