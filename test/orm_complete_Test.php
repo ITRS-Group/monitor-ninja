@@ -23,11 +23,10 @@ class ORM_Complete_Test extends TestCase {
 		if(isset($manifest['pool']) && isset($manifest['set'])) {
 			$set_model = $manifest['set'];
 			$pool_model = $manifest['pool'];
-
-			return [
-				[$set_model, $pool_model]
-			];
 		}
+		return [
+			[$set_model, $pool_model]
+		];
 	}
 
 	#[DataProvider('object_manifest_provider')]
