@@ -47,7 +47,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 */
 	#[DataProvider('object_manifest_provider')]
 	public function test_mayi_resource_available_for_all_sets($set_model, $pool_model) {
-		$set = $pool_model::all();
+		$set = SavedFilterPool_Model::all();
 		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
 		return true;
 	}
