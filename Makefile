@@ -36,6 +36,7 @@ test-ci-cleanup:
 	if [ -e /tmp/ninja-test/nagios.cmd ]; then /bin/echo "[$$(date +%s)] SHUTDOWN_PROGRAM" >> /tmp/ninja-test/nagios.cmd; /bin/sleep 5; rm /tmp/ninja-test/nagios.cmd; fi
 
 test-ci-prepare: test-ci-cleanup prepare-config
+	set -x
 	chmod -R 0777 /tmp/ninja-test/var
 	mkdir -m 0777 -p /tmp/ninja-test/var/spool/checkresults
 	chown -R monitor:apache /tmp/ninja-test/
@@ -44,7 +45,8 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	mysql -uroot -e "CREATE DATABASE IF NOT EXISTS $$db_name";\
 	mysql -uroot -e "GRANT ALL ON $$db_name.* TO $$db_user@localhost IDENTIFIED BY '$$db_pass'"; \
 	db_setup
-	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
+	export OP5LIBCFG="$(OP5LIBCFG)"; 
+	install_scripts/ninja_db_init.sh --db-name=merlin_test
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
 	/usr/bin/asmonitor /usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
 
