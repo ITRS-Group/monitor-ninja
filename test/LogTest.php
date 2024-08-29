@@ -117,6 +117,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		op5log::writeback();
 
 		$content = self::getOutputNS('lvl_debug');
+		var_dump($content);
 		$this->assertEquals( $content, array(
 				array('debug', 'lvl_debug', 'message')
 		), 'Output doesn\'t match' );
@@ -137,6 +138,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		foreach($levels as $loglvl) {
 			$logs[$loglvl] = self::getOutputNS('lvl_'.$loglvl);
 		}
+		var_dump($logs);
 		$this->assertEquals( $logs, array(
 				'error' => array(
 						array('error',   'lvl_error',   'Log: error x error')
@@ -186,6 +188,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		op5log::writeback();
 
 		$content = self::getOutputNS('lvl_warning');
+		var_dump($content);
 		$this->assertEquals( $content, array(
 				array('error', 'lvl_warning', 'a'),
 				array('error', 'lvl_warning', 'b'),
@@ -214,6 +217,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 		/* Read one of those, should include all */
 		$content = self::getOutputNS('same_file_a');
+		var_dump($content);
 		$this->assertEquals( $content, array(
 				array('error', 'same_file_a', 'a'),
 				array('error', 'same_file_a', 'b'),
@@ -229,6 +233,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		);
 		op5log::writeback();
 		$content = self::getOutputNS('lvl_error');
+		var_dump($content);
 		$this->assertEquals( $content[0], array('error', 'lvl_error', 'exception: dummy exception'), 'Invalid exception header logged');
 		$this->assertEquals( $content[1][0], 'error', 'Stack trace has incorrect error level');
 		$this->assertEquals( $content[1][1], 'lvl_error', 'Stack trace has incorrect log prefix');
@@ -247,6 +252,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		op5log::writeback();
 
 		$content = self::getOutputNS('lvl_debug');
+		var_dump($content);
 		$this->assertEquals( $content, array(
 				array('debug', 'lvl_debug', 'message')
 		), 'Output doesn\'t match' );
