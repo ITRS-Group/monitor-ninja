@@ -481,6 +481,8 @@ class RecurringDowntime extends Downtime {
 	public function match_week_interval($target_date) {
 		$diff = $this->get_days_delta($target_date);
 		$week_diff = (int)(round($diff / 7));
+		$w_int = $this->match_interval($week_diff);
+		var_dump($w_int);
 		return $this->match_interval($week_diff);
 	}
 
