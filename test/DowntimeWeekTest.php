@@ -25,12 +25,12 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 
 		// Check output
 		var_dump($schedule->match_week_interval($input1)); 
-		var_dump($schedule->match_week_interval($input2)); 
-		var_dump($schedule->match_week_interval($input3)); 
+		var_dump($schedule->match_week_interval($input2)); //false
+		var_dump($schedule->match_week_interval($input3)); //false
 
-		$this->assertTrue($schedule->match_week_interval($input1), 'Value does not match.');
-		$this->assertTrue($schedule->match_week_interval($input2), 'Value does not match.');
-		$this->assertTrue($schedule->match_week_interval($input3), 'Value does not match.');
+		$this->assertTrue($schedule->match_week_interval($input1));
+		$this->assertTrue($schedule->match_week_interval($input2));
+		$this->assertTrue($schedule->match_week_interval($input3));
 	}
 
 	/**
@@ -108,9 +108,13 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 		// Input days should equal output days
 		$this->assertEquals($dow_input, $dow_output);
 
+		// Check output
+		var_dump($schedule->match_week_interval($input1)); 
+		var_dump($schedule->match_week_interval($input2)); 
+
 		// Interval should match
-		$this->assertTrue($schedule->match_week_interval($input1), 'Value does not match.');
-		$this->assertTrue($schedule->match_week_interval($input2), 'Value does not match.');
+		$this->assertTrue($schedule->match_week_interval($input1));
+		$this->assertTrue($schedule->match_week_interval($input2));
 
 		// Day of week should match
 		$this->assertEquals($input1->get_day_of_week(), MONDAY);
