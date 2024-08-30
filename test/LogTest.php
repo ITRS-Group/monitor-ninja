@@ -69,6 +69,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 	static public function getOutputRawNS($namespace) {
 		$file = self::$config[$namespace]['file'];
+		var_dump($file);
 		$size = filesize($file);
 
 		$fp = fopen($file, 'r+');
