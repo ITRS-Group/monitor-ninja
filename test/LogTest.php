@@ -76,8 +76,11 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		$size = filesize($file);
 
 		$fp = fopen($file, 'r+');
+		if ($fp === false) {
+			echo ("Failed to open file: $file");
+		}
 		$content = $size == 0 ? '' : fread($fp, filesize($file));
-		ftruncate($fp,0);
+		ftruncate($fp,0);	
 		fclose($fp);
 
 		return $content;
