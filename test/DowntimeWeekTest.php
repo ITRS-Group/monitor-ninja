@@ -23,11 +23,6 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 		$input2 = mock_date('1980-05-10');
 		$input3 = mock_date('1980-06-14');
 
-		// Check output
-		var_dump($schedule->match_week_interval($input1)); 
-		var_dump($schedule->match_week_interval($input2)); //false
-		var_dump($schedule->match_week_interval($input3)); //false
-
 		$this->assertTrue($schedule->match_week_interval($input1));
 		$this->assertTrue($schedule->match_week_interval($input2));
 		$this->assertTrue($schedule->match_week_interval($input3));
@@ -103,7 +98,7 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 
 		// Create future dates that coincides with the repeat interval
 		$input1 = mock_date('1980-03-15');
-		$input2 = mock_date('1980-03-21');
+		$input2 = mock_date('1980-03-23');
 
 		// Input days should equal output days
 		$this->assertEquals($dow_input, $dow_output);
