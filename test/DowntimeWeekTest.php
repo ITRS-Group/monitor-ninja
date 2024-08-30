@@ -103,6 +103,10 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 		// Input days should equal output days
 		$this->assertEquals($dow_input, $dow_output);
 
+		// Check output
+		var_dump($schedule->match_week_interval($input1)); 
+		var_dump($schedule->match_week_interval($input2)); 
+
 		// Interval should match
 		$this->assertTrue($schedule->match_week_interval($input1));
 		$this->assertTrue($schedule->match_week_interval($input2));
