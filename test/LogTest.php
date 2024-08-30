@@ -45,6 +45,8 @@ class LogTest extends \PHPUnit\Framework\TestCase
 			}
 			$cfg['file'] = $filenames[$filetag];
 		}
+		echo "Cfg:";
+		var_dump($cfg);
 		unset($cfg); /* Drop the reference $cfg */
 
 		op5objstore::instance()->mock_add( 'op5config',
@@ -69,6 +71,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 	static public function getOutputRawNS($namespace) {
 		$file = self::$config[$namespace]['file'];
+		echo "file:";
 		var_dump($file);
 		$size = filesize($file);
 
@@ -82,6 +85,8 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 	static public function getOutputNS($namespace) {
 		$content_str = self::getOutputRawNS($namespace);
+		echo "Content_str:";
+		var_dump($content_str);
 		$content = array_filter(
 				array_map(
 						function($line) {
