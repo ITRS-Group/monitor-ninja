@@ -97,9 +97,9 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 		$dow_output = $schedule->pluck_recurrence(DAY);
 
 		// Create future dates that coincides with the repeat interval
-		$input1 = mock_date('1980-03-07');
+		$input1 = mock_date('1980-03-14');
 		$input2 = mock_date('1980-03-29');
-		
+
 		// Input days should equal output days
 		$this->assertEquals($dow_input, $dow_output);
 
