@@ -90,14 +90,14 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 	 */
 	#[Group('recurring_downtime')]
 	public function test_nested_interval() {
-		$dow_input = array(MONDAY, FRIDAY);
+		$dow_input = array(FRIDAY, SATURDAY);
 		$mock = get_week_mock(2, $dow_input);
 		$mock->set_start('1980-03-01');
 		$schedule = new RecurringDowntime($mock);
 		$dow_output = $schedule->pluck_recurrence(DAY);
 
 		// Create future dates that coincides with the repeat interval
-		$input1 = mock_date('1980-03-15');
+		$input1 = mock_date('1980-03-07');
 		$input2 = mock_date('1980-03-29');
 
 		// Input days should equal output days
@@ -112,8 +112,8 @@ class DowntimeWeekTest extends \PHPUnit\Framework\TestCase {
 		var_dump($input2->get_day_of_week()); 
 
 		// Day of week should match
-		$this->assertEquals($input1->get_day_of_week(), MONDAY);
-		$this->assertEquals($input2->get_day_of_week(), FRIDAY);
+		$this->assertEquals($input1->get_day_of_week(), FRIDAY);
+		$this->assertEquals($input2->get_day_of_week(), SATURDAY);
 
 		// Check output
 		var_dump($dow_output); 
