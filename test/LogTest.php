@@ -51,6 +51,9 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 		op5objstore::instance()->mock_add( 'op5config',
 		new MockConfig(array('log' => self::$config)) );
+
+		echo "New Config:";
+		var_dump(self::$config);
 	}
 
 	public static function tearDownAfterClass() : void {
@@ -70,6 +73,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 	}
 
 	static public function getOutputRawNS($namespace) {
+		echo "Namespace: $namespace";
 		$file = self::$config[$namespace]['file'];
 		echo "file:";
 		var_dump($file);
@@ -80,7 +84,6 @@ class LogTest extends \PHPUnit\Framework\TestCase
 			echo ("Failed to open file: $file");
 		}
 		echo "Size: $size";
-		echo "File: ". filesize($file);
 		$content = $size == 0 ? '' : fread($fp, filesize($file));
 		echo "Content:";
 		var_dump($content);
