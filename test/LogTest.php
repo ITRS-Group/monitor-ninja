@@ -86,6 +86,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		}
 		fclose($fp);
 
+		var_dump($content);
 		return $content;
 	}
 
