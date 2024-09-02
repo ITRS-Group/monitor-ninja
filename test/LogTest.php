@@ -79,14 +79,17 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		if ($fp === false) {
 			echo ("Failed to open file: $file");
 		}
+		echo "Size: $size";
+		echo "File: ". filesize($file);
 		$content = $size == 0 ? '' : fread($fp, filesize($file));
+		echo "Content:";
+		var_dump($content);
 		$file_trunc = ftruncate($fp,0);	
 		if ($file_trunc === false) {
 			echo ("Failed to truncate file: $file");
 		}
 		fclose($fp);
 
-		var_dump($content);
 		return $content;
 	}
 
