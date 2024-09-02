@@ -179,6 +179,7 @@ class op5Log {
 		 * Generate filename and message. Put filename through strftime, so log
 		 * files can be rotated automatically
 		 */
+		var_dump($config);
 		$filename = (new DateTime('now'))->format($config['file']);
 		echo "Filename: $filename\n";
 		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
