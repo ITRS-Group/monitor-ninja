@@ -47,6 +47,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		}
 		echo "Cfg:";
 		var_dump($cfg);
+
 		unset($cfg); /* Drop the reference $cfg */
 
 		op5objstore::instance()->mock_add( 'op5config',
@@ -73,24 +74,33 @@ class LogTest extends \PHPUnit\Framework\TestCase
 	}
 
 	static public function getOutputRawNS($namespace) {
-		echo "Namespace: $namespace";
 		$file = self::$config[$namespace]['file'];
-		echo "file:";
-		var_dump($file);
-		$size = filesize($file);
+		$fileStats = stat($file);
+		$size = $fileStats['size'];
+		
+		echo "Namespace: $namespace";
+		echo "File: $file";
+		echo "FileStats: $fileStats";
+		echo "Size: $size";
 
 		$fp = fopen($file, 'r+');
 		if ($fp === false) {
 			echo ("Failed to open file: $file");
 		}
-		echo "Size: $size";
+		
 		$content = $size == 0 ? '' : fread($fp, filesize($file));
-		echo "Content:";
-		var_dump($content);
+
+		if ($content === false) {
+			echo "Failed to read file: $file\n";
+			fclose($fp);
+			return null;
+		}
+
 		$file_trunc = ftruncate($fp,0);	
 		if ($file_trunc === false) {
 			echo ("Failed to truncate file: $file");
 		}
+
 		fclose($fp);
 
 		return $content;

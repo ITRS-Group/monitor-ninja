@@ -252,7 +252,6 @@ class op5Log {
 			if($res === false) {
 				error_log(implode("\n", $messages));
 				error_log('Could not write to log file: ' . $file);
-				echo "File: $file could not be written";
 			} elseif($new_file) {
 				/* Set read-writable by owner and group.
 				 * both the web server and the monitor user is a member of the web server (apache) group.
@@ -260,7 +259,6 @@ class op5Log {
 				 * access errors.
 				 * */
 				chmod($file, 0664);
-				echo "New File: $file created";
 			}
 			if ($user === 'root' && posix_getpwuid(fileowner($file)) === 'root') {
 				exec("id monitor -gn", $p_group, $status);
