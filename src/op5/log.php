@@ -179,9 +179,11 @@ class op5Log {
 		 * Generate filename and message. Put filename through strftime, so log
 		 * files can be rotated automatically
 		 */
-		$filename = (new DateTime())->format($config['file']);
+		$filename = (new DateTime('now'))->format($config['file']);
+		echo "Filename: $filename\n";
 		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
-		$line_prefix = (new DateTime())->format('Y-m-d H:i:s ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
+		$line_prefix = (new DateTime('now'))->format('Y-m-d H:i:s ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
+		echo "Line prefix: $line_prefix\n";
 		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 
 		/*
@@ -228,7 +230,7 @@ class op5Log {
 		}
 		$user = $processUser['name'];
 		foreach($this->messages as $file => $messages) {
-			var_dump($file);
+			echo "File: $file\n";
 			$dir = dirname($file);
 			if(!is_dir($dir)) {
 				mkdir($dir, 0775, true);
