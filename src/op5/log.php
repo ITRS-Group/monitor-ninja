@@ -228,6 +228,7 @@ class op5Log {
 		}
 		$user = $processUser['name'];
 		foreach($this->messages as $file => $messages) {
+			var_dump($file);
 			$dir = dirname($file);
 			if(!is_dir($dir)) {
 				mkdir($dir, 0775, true);
