@@ -78,10 +78,10 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		$fileStats = stat($file);
 		$size = $fileStats['size'];
 		
-		echo "Namespace: $namespace";
-		echo "File: $file";
-		echo "FileStats: $fileStats";
-		echo "Size: $size";
+		echo "Namespace: $namespace\n";
+		echo "File: $file\n";
+		echo "FileStats: $fileStats\n";
+		echo "Size: $size\n";
 
 		$fp = fopen($file, 'r+');
 		if ($fp === false) {
