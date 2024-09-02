@@ -180,7 +180,7 @@ class op5Log {
 		 * files can be rotated automatically
 		 */
 		var_dump($config);
-		$filename = (new DateTime('now'))->format($config['file']);
+		$filename = $config['file'];
 		echo "Filename: $filename\n";
 		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
 		$line_prefix = (new DateTime('now'))->format('Y-m-d H:i:s ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
