@@ -180,8 +180,10 @@ class op5Log {
 		 * files can be rotated automatically
 		 */
 		$filename = strftime($config['file']);
+		echo "Filename: $filename\n";
 		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
 		$line_prefix = strftime('%Y-%m-%d %H:%M:%S ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
+		echo "Line prefix: $line_prefix\n";
 		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 
 		/*
@@ -228,6 +230,7 @@ class op5Log {
 		}
 		$user = $processUser['name'];
 		foreach($this->messages as $file => $messages) {
+			echo "File: $file\n";
 			$dir = dirname($file);
 			if(!is_dir($dir)) {
 				mkdir($dir, 0775, true);
