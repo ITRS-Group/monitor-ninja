@@ -78,6 +78,10 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	 * @param string $expected The expected error message.
 	 */
 	public function test_factory_from_array_invalid_values ($value, $expected) {
+		echo "test_factory_from_array_invalid_values\n Value: ";
+		var_dump($value);
+		echo " Expected: ";
+		var_dump($expected);
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		$testclassA = new TestClassA_Model();
@@ -88,6 +92,10 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('invalid_data_provider')]
 	#[Group('ORMType')]
 	public function test_factory_from_setiterator_invalid_values ($value, $expected) {
+		echo "test_factory_from_setiterator_invalid_values\n Value: ";
+		var_dump($value);
+		echo " Expected: ";
+		var_dump($expected);
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		$serialized_value = serialize($value);
@@ -97,6 +105,10 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('invalid_data_provider')]
 	#[Group('ORMType')]
 	public function test_setter_invalid_values ($value, $expected) {
+		echo "test_setter_invalid_values\n Value: ";
+		var_dump($value);
+		echo " Expected: ";
+		var_dump($expected);
 		$this->expectException('InvalidArgumentException');
 		$this->expectExceptionMessage($expected);
 		$serialized_value = serialize($value);

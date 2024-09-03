@@ -45,16 +45,11 @@ class LogTest extends \PHPUnit\Framework\TestCase
 			}
 			$cfg['file'] = $filenames[$filetag];
 		}
-		echo "Cfg:";
-		var_dump($cfg);
 
 		unset($cfg); /* Drop the reference $cfg */
 
 		op5objstore::instance()->mock_add( 'op5config',
 		new MockConfig(array('log' => self::$config)) );
-
-		echo "New Config:";
-		var_dump(self::$config);
 	}
 
 	public static function tearDownAfterClass() : void {
@@ -77,11 +72,6 @@ class LogTest extends \PHPUnit\Framework\TestCase
 		$file = self::$config[$namespace]['file'];
 		$fileStats = stat($file);
 		$size = $fileStats['size'];
-		
-		echo "Namespace: $namespace\n";
-		echo "File: $file\n";
-		echo "FileStats: $fileStats\n";
-		echo "Size: $size\n";
 
 		$fp = fopen($file, 'r+');
 		if ($fp === false) {
@@ -108,8 +98,6 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 	static public function getOutputNS($namespace) {
 		$content_str = self::getOutputRawNS($namespace);
-		echo "Content_str:";
-		var_dump($content_str);
 		$content = array_filter(
 				array_map(
 						function($line) {

@@ -10,7 +10,7 @@ class Time_Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	public function test_to_string_seconds () {
-		$actual = (float) time::to_string(45);
+		$actual = time::to_string(45);
 		$this->assertEquals('45s', $actual);
 	}
 
