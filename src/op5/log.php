@@ -179,12 +179,9 @@ class op5Log {
 		 * Generate filename and message. Put filename through strftime, so log
 		 * files can be rotated automatically
 		 */
-		var_dump($config);
 		$filename = $config['file'];
-		echo "Filename: $filename\n";
 		$prefix = isset($config['prefix']) ? $config['prefix'] : $namespace;
 		$line_prefix = (new DateTime('now'))->format('Y-m-d H:i:s ') . sprintf('%-7s', $level) . ' ' . $prefix . $reference . ': ';
-		echo "Line prefix: $line_prefix\n";
 		$message = implode("\n", array_map(function($line) use($line_prefix) { return $line_prefix . $line; }, explode("\n",$message)));
 
 		/*
@@ -231,7 +228,6 @@ class op5Log {
 		}
 		$user = $processUser['name'];
 		foreach($this->messages as $file => $messages) {
-			echo "File: $file\n";
 			$dir = dirname($file);
 			if(!is_dir($dir)) {
 				mkdir($dir, 0775, true);
@@ -256,7 +252,6 @@ class op5Log {
 			if($res === false) {
 				error_log(implode("\n", $messages));
 				error_log('Could not write to log file: ' . $file);
-				echo "File: $file could not be written";
 			} elseif($new_file) {
 				/* Set read-writable by owner and group.
 				 * both the web server and the monitor user is a member of the web server (apache) group.
@@ -264,7 +259,6 @@ class op5Log {
 				 * access errors.
 				 * */
 				chmod($file, 0664);
-				echo "New File: $file\n";
 			}
 			if ($user === 'root' && posix_getpwuid(fileowner($file)) === 'root') {
 				exec("id monitor -gn", $p_group, $status);
