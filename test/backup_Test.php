@@ -88,11 +88,14 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		if(!is_executable('/opt/monitor/op5/backup/restore')) {
 			$this->markTestSkipped("Need access to the restoring ".
 				"script in order to test it");
+		} else {
+			echo "Restore script is executable.\n";
 		}
 
 		$controller = $this->controller;
 		$controller->backup();
 		$this_backup = $controller->template->value["result"];
+		echo "Backup result: " . $this_backup . "\n";
 		$this->assertFileExists(
 			$this->backup_location.'/'.$this_backup,
 			"The sanity check of the backup's existence failed"
@@ -101,7 +104,10 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		// make sure that we're not reusing the old view.. return
 		// variables are nice in that they do not rely on state..
 		$controller->template = null;
+		echo"Before Restore:";
+		var_dump($controller);
 		$controller->restore($this_backup);
+		echo"After Restore:";
 		var_dump($controller);
 		$this->assertSame(
 			true,
