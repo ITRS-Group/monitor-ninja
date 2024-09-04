@@ -46,7 +46,7 @@ class proc {
 
 		echo "Resource: ";
 		var_dump($resource);
-		
+
 		if(!is_resource($resource)) {
 			return false;
 		}
@@ -58,6 +58,11 @@ class proc {
 
 		fclose($pipes[1]);
 		fclose($pipes[2]);
+
+		echo "Resource Output: ";
+		var_dump($stdout);
+		echo "Resource Error: ";
+		var_dump($stderr);
 
 		$exit_code = proc_close($resource);
 		return true;
