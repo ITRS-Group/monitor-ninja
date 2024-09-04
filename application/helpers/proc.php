@@ -43,6 +43,10 @@ class proc {
 		);
 
 		$resource = proc_open($command, $descriptorspec, $pipes);
+
+		echo "Resource: ";
+		var_dump($resource);
+		
 		if(!is_resource($resource)) {
 			return false;
 		}
