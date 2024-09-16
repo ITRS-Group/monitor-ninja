@@ -26,7 +26,7 @@ post:
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
     #cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
-    cucumber -t @addedhappypath --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
+    cucumber -t @addedhappypath,@editedhappypath --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
 
 vm-config: |
     {"numCPUs": 4, "memoryMB": 8192}

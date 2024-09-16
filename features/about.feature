@@ -10,14 +10,18 @@ Feature: Menu About
 		Then I should see menuSee that the menu option displays properly on hover branding items:
 			| About |
 
+	@editedhappypath
 	Scenario: See that About page content rendered correct
-		When I am on address "/index.php/menu/about"
-		Then I should see "Version"
+		When I hover the branding
+		And I click "open-about-button"
 		And I should see "Release"
 		And I should see "License"
 
+	@editedhappypath
 	Scenario: See that Licensing Information page content rendered correct
-		When I am on address "/index.php/menu/license_info"
+		When I hover the branding
+		And I click "open-about-button"
+		And I click link "License Information"
 		Then I should see "Software Licensing Information"
 
 	@addedhappypath
