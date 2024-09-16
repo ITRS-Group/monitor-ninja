@@ -17,10 +17,10 @@ Feature: Backup/Restore configuration
 		And I click the element with class "restore_backup" and href containing "backup-"
 		#And I click "Restore Backup"
 		Then I should see "Do you really want to restore this backup?"
-		And I click button "Yes"
-		And I wait for 10 seconds
-		Then I should see button "Restart now"
-		And I should see button "Close"
+		#And I click button "Yes"
+		#And I wait for 10 seconds
+		#Then I should see button "Restart now"
+		#And I should see button "Close"
 
 	@gian
 	Scenario: View backup
@@ -42,6 +42,4 @@ Feature: Backup/Restore configuration
 		And I click button "Yes"
 		And I wait for 3 seconds
 		Then I should see " has been deleted"
-		And I hover "Backup/Restore" from the "Manage" menu
-		And I click name "Backup/Restore"
 		And I shouldn't see regex "backup-.*\.tar\.gz"

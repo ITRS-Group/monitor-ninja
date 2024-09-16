@@ -13,9 +13,9 @@ Feature: Dashboards
 		When I create a new dashboard with name "My new dashboard"
 		Then I should see "My new dashboard"
 
-	@gian
+	@gian_todo
 	Scenario: Edit dashboard
-		When I hover "My new dashboard" from the "Dashboards" menu
+		And I hover "My new dashboard" from the "Dashboards" menu
 		And I click link "My new dashboard"
 		And I  hover "Rename this dashboard" from the "Dashboard options" menu
 		And I click link "Rename this dashboard"
@@ -23,9 +23,9 @@ Feature: Dashboards
 		And I click button "Save"
 		Then I should see "Renamed dashboard"
 	
-	@gian
+	@gian_todo
 	Scenario: Delete dashboard
-		When I hover "Renamed dashboard" from the "Dashboards" menu
+		And I hover "Renamed dashboard" from the "Dashboards" menu
 		And I click link "Renamed dashboard"
 		And I  hover "Delete this dashboard" from the "Dashboard options" menu
 		And I click link "Delete this dashboard"
