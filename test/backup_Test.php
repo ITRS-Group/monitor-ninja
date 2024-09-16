@@ -99,6 +99,8 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		// variables are nice in that they do not rely on state..
 		$controller->template = null;
 		$controller->restore($this_backup);
+		echo "controller template:"
+		var_dump($controller->template);
 		$this->assertSame(
 			true,
 			$controller->template->success,
