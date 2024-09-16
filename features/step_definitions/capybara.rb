@@ -399,6 +399,15 @@ When /^I click name "([^"]*)"$/ do |name|
   find('a', text: name).click
 end
 
+#Find the element with class and href and click
+When /^I click the element with class "([^"]*)" and href containing "([^"]*)"$/ do |class_name, href_partial|
+  # Find the element with the specified class and href containing the partial text
+  element = find("a.#{class_name}[href*='#{href_partial}']")
+  
+  # Click the found element
+  element.click
+end
+
 #Find the last created filter and click delete
 When /^I delete the latest filter with class "([^"]*)"$/ do |class_name|
   # Find all elements with the class 'class_name'

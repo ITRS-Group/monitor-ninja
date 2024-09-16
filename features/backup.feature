@@ -34,12 +34,12 @@ Feature: Backup/Restore configuration
 	@gian
 	Scenario: Delete backup
 		When I hover "Backup/Restore" from the "Manage" menu
-		And I click link "Backup/Restore"
+		And I click name "Backup/Restore"
 		Then I should see "Save your current op5 Monitor configuration"
 		And I click link "Delete Backup"
 		And I click button "Yes"
 		And I wait for 3 seconds
 		Then I should see " has been deleted"
 		And I hover "Backup/Restore" from the "Manage" menu
-		And I click link "Backup/Restore"
+		And I click name "Backup/Restore"
 		And I shouldn't see regex "backup-.*\.tar\.gz"
