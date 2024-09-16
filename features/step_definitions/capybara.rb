@@ -393,3 +393,8 @@ end
 When /^I execute javascript "([^"]+)"$/ do |js|
   page.evaluate_script(js)
 end
+
+#Step definition to click text
+When /^I click name "([^"]*)"$/ do |name|
+  find('a', text: name).click
+end

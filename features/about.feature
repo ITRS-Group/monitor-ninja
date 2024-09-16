@@ -21,7 +21,7 @@ Feature: Menu About
 	Scenario: See that Licensing Information page content rendered correct
 		When I hover the branding
 		And I click "open-about-button"
-		And I click link "License Information"
+		And I click name "License Information"
 		Then I should see "Software Licensing Information"
 
 	@addedhappypath
