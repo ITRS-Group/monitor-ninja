@@ -230,3 +230,12 @@ Feature: Filters & list views
 		Then I should see "linux-server1"
 		When I go to the listview for [hosts] custom_variables ~~ "NOMONITORING"
 		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"
+
+	@gian
+	Scenario: Delete Filter
+		When I hover over the "Manage" menu
+		And I click "Manage filters"
+		Then I should see "Ernie"
+		When I delete the latest filter with class "link_ajax_refresh"
+		And I click "OK"
+		Then I shouldn't see "Ernie"
