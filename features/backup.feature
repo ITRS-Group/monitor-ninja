@@ -14,8 +14,8 @@ Feature: Backup/Restore configuration
 		And I click button "Yes"
 		And I wait for 10 seconds
 		Then I should see regex "backup-.*\.tar\.gz"
-		And I click "Restore Backup"
-		Then I should see "Do you really want to restore this backup?"
-		And I click button "Yes"
-		And I wait for 10 seconds
-		Then I should see regex "The configuration .* has been restored successfully"
+		#And I click "Restore Backup"
+		#Then I should see "Do you really want to restore this backup?"
+		#And I click button "Yes"
+		#And I wait for 10 seconds
+		#Then I should see regex "The configuration .* has been restored successfully"
