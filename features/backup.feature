@@ -17,7 +17,7 @@ Feature: Backup/Restore configuration
 		And I click "Restore Backup"
 		Then I should see "Do you really want to restore this backup?"
 		And I click button "Yes"
-		And I wait for 3 seconds
+		And I wait for 10 seconds
 		Then I should see button "Restart now"
 		And I should see button "Close"
 
@@ -26,7 +26,7 @@ Feature: Backup/Restore configuration
 		When I hover "Backup/Restore" from the "Manage" menu
 		And I click link "Backup/Restore"
 		Then I should see "Save your current op5 Monitor configuration"
-		And I click link "view_backup"
+		And I click link "View Backup"
 		Then I should see regex "backup-.*\.tar\.gz"
 		And I should see "This backup contains the following files:"
 	
@@ -35,7 +35,7 @@ Feature: Backup/Restore configuration
 		When I hover "Backup/Restore" from the "Manage" menu
 		And I click link "Backup/Restore"
 		Then I should see "Save your current op5 Monitor configuration"
-		And I click link "delete_backup"
+		And I click link "Delete Backup"
 		And I click button "Yes"
 		And I wait for 3 seconds
 		Then I should see " has been deleted"
