@@ -12,3 +12,22 @@ Feature: Dashboards
 	Scenario: Create new dashboard
 		When I create a new dashboard with name "My new dashboard"
 		Then I should see "My new dashboard"
+
+	@addedhappypath
+	Scenario: Edit dashbaord
+		When I hover "My new dashboard" from the "Dashboards" menu
+		And I click link "My new dashboard"
+		And I  hover "Rename this dashboard" from the "Dashboard options" menu
+		And I click link "Rename this dashboard"
+		And I enter "Renamed dashboard" into "name"
+		And I click button "Save"
+		Then I should see "Renamed dashboard"
+	
+	@addedhappypath
+	Scenario: Delete dashbaord
+		When I hover "Renamed dashboard" from the "Dashboards" menu
+		And I click link "Renamed dashboard"
+		And I  hover "Delete this dashboard" from the "Dashboard options" menu
+		And I click link "Delete this dashboard"
+		And I click button "Delete"
+		Then I shouldn't see "Renamed dashboard"
