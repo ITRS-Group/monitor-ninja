@@ -14,8 +14,28 @@ Feature: Backup/Restore configuration
 		And I click button "Yes"
 		And I wait for 10 seconds
 		Then I should see regex "backup-.*\.tar\.gz"
-		#And I click "Restore Backup"
-		#Then I should see "Do you really want to restore this backup?"
+		And I click "Restore Backup"
+		Then I should see "Do you really want to restore this backup?"
 		#And I click button "Yes"
 		#And I wait for 10 seconds
 		#Then I should see regex "The configuration .* has been restored successfully"
+
+	@gian
+	Scenario: View backup
+		When I hover "Backup/Restore" from the "Manage" menu
+		And I click link "Backup/Restore"
+		Then I should see "Save your current op5 Monitor configuration"
+		And I click "view_backup"
+		Then I should see regex "backup-.*\.tar\.gz"
+		And I should see "This backup contains the following files:"
+	
+	@gian
+	Scenario: Delete backup
+		When I hover "Backup/Restore" from the "Manage" menu
+		And I click link "Backup/Restore"
+		Then I should see "Save your current op5 Monitor configuration"
+		And I click "delete_backup"
+		And I click button "Yes"
+		And I wait for 10 seconds
+		Then I should see " has been deleted"
+		And I shouldn't see regex "backup-.*\.tar\.gz"
