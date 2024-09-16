@@ -398,3 +398,27 @@ end
 When /^I click name "([^"]*)"$/ do |name|
   find('a', text: name).click
 end
+
+#Find the last created filter and click delete
+When /^I delete the latest filter with class "([^"]*)"$/ do |class_name|
+  # Find all elements with the class 'class_name'
+  elements = all("a.#{class_name}")
+
+  # Extract the id values from the href attributes
+  ids = elements.map do |element|
+    href = element[:href]
+    # Extract the id value from the href using a regex
+    href.match(/id=(\d+)/)[1].to_i
+  end
+
+  # Find the maximum id value
+  max_id = ids.max
+
+  # Find the element with the maximum id value
+  element_to_click = elements.find do |element|
+    element[:href].include?("id=#{max_id}")
+  end
+
+  # Click the element with the highest id value
+  element_to_click.click
+end
