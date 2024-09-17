@@ -431,3 +431,21 @@ When /^I delete the latest filter with class "([^"]*)"$/ do |class_name|
   # Click the element with the highest id value
   element_to_click.click
 end
+
+Then /^I should see all buttons and display their locators$/ do
+  # Find all button elements
+  buttons = all('button, input[type="button"], input[type="submit"]')
+
+  # Iterate through each button and display its locator
+  buttons.each do |button|
+    if button[:id]
+      puts "Button with id: #{button[:id]}"
+    elsif button[:name]
+      puts "Button with name: #{button[:name]}"
+    elsif button[:value]
+      puts "Button with value: #{button[:value]}"
+    else
+      puts "Button with text: #{button.text}"
+    end
+  end
+end
