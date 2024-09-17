@@ -4,7 +4,7 @@ Feature: Backup/Restore configuration
 	Background:
 		Given I am logged in as administrator
 
-	@gian
+	@editedhappypath
 	Scenario: Create a config backup and then restore to it
 		When I hover "Backup/Restore" from the "Manage" menu
 		And I click link "Backup/Restore"
