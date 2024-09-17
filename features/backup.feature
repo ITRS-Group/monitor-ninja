@@ -14,10 +14,10 @@ Feature: Backup/Restore configuration
 		And I click button "Yes"
 		And I wait for 10 seconds
 		Then I should see regex "backup-.*\.tar\.gz"
+		And I wait for 10 seconds
 		And I click the element with class "restore_backup" and href containing "backup-"
-		And I should see all buttons and display their locators
 		#And I click "Restore Backup"
-		Then I should see "Do you really want to restore this backup?"
+		Then I should see "has been restored successfully"
 		#And I click button "Yes"
 		#And I wait for 10 seconds
 		#Then I should see button "Restart now"
