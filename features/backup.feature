@@ -15,6 +15,8 @@ Feature: Backup/Restore configuration
 		And I wait for 10 seconds
 		Then I should see regex "backup-.*\.tar\.gz"
 		And I click the element with class "restore_backup" and href containing "backup-"
+		And I wait for 10 seconds
+		And I should see all buttons and display their locators
 		#And I click "Restore Backup"
 		Then I should see "Do you really want to restore this backup?"
 		#And I click button "Yes"
@@ -42,4 +44,5 @@ Feature: Backup/Restore configuration
 		And I click button "Yes"
 		And I wait for 3 seconds
 		Then I should see " has been deleted"
+		And I wait for 10 seconds
 		And I shouldn't see regex "backup-.*\.tar\.gz"
