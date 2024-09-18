@@ -109,8 +109,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		$controller->restore($this_backup);
 		echo"After Restore:";
 		var_dump($controller);
-		$this->assertSame(
-			true,
+		$this->assertTrue(
 			$controller->template->success,
 			var_export($controller->template->message, true)
 		);
