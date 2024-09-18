@@ -16,19 +16,17 @@ Feature: Dashboards
 
 	@gian
 	Scenario: Edit dashboard
-		And I hover "My new dashboard" from the "Dashboards" menu
-		And I click link "My new dashboard"
-		And I  hover "Rename this dashboard" from the "Dashboard options" menu
-		And I click link "Rename this dashboard"
+		When I click the span with text "My new dashboard"
+		And I click the element with data-menu-id "rename_this_dashboard"
 		And I enter "Renamed dashboard" into "name"
-		And I click button "Save"
+		And I click "save"
 		Then I should see "Renamed dashboard"
 	
 	@gian
 	Scenario: Delete dashboard
-		And I hover "Renamed dashboard" from the "Dashboards" menu
-		And I click link "Renamed dashboard"
-		And I  hover "Delete this dashboard" from the "Dashboard options" menu
-		And I click link "Delete this dashboard"
-		And I click button "Delete"
+		When I click the span with text "Renamed dashboard"
+		And I click the element with data-menu-id "delete_this_dashboard"
+		And I click "yes"
 		Then I shouldn't see "Renamed dashboard"
+
+
