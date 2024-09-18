@@ -61,7 +61,7 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	 */
 	public static function invalid_data_provider () {
 		return [
-			// ["foobar", "'string' is not valid for list 'list'"],
+			["foobar", "'string' is not valid for list 'list'"],
 			[true, "'boolean' is not valid for list 'list'"],
 			[1, "'integer' is not valid for list 'list'"],
 			[1.1, "'double' is not valid for list 'list'"], # double because PHP gettype is stupid
