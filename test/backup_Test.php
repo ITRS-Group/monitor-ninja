@@ -95,7 +95,6 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		$controller = $this->controller;
 		$controller->backup();
 		$this_backup = $controller->template->value["result"];
-		echo "Backup result: " . $this_backup . "\n";
 		$this->assertFileExists(
 			$this->backup_location.'/'.$this_backup,
 			"The sanity check of the backup's existence failed"
@@ -105,10 +104,10 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		// variables are nice in that they do not rely on state..
 		$controller->template = null;
 		echo"Before Restore:";
-		var_dump($controller);
+		var_dump($controller->template);
 		$controller->restore($this_backup);
 		echo"After Restore:";
-		var_dump($controller);
+		var_dump($controller->template);
 		$this->assertTrue(
 			$controller->template->success,
 			var_export($controller->template->message, true)
