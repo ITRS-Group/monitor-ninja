@@ -53,6 +53,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			$test->db_type = $db_type;
 			$test->db_host = $db_host;
 		}
+		var_dump($test);
 		return [
 			[$tfile,
 			$test->description,
@@ -70,16 +71,10 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('report_test_files_provider')]
 	#[Group('nonlocal')]
 	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
-		echo "test:";
-		var_dump($test);
+		
 		ob_start();
 		$failed_tests = $test->run_test_series();
 		$test_result_output = ob_get_clean();
-
-		echo "failed_tests:";
-		var_dump($failed_tests);
-		echo "test_result_output:";
-		var_dump($test_result_output);
 		
 		$this->assertNotEmpty($test_result_output, "Test result output is empty");
 		$this->assertEquals($failed_tests, $test_result_output);
