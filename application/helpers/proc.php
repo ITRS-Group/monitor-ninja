@@ -48,9 +48,9 @@ class proc {
 		echo "Resource: ";
 		var_dump($resource);
 
-		if(!is_resource($resource)) {
-			return false;
-		}
+		// if(!is_resource($resource)) {
+		// 	return false;
+		// }
 
 		fclose($pipes[0]);
 
