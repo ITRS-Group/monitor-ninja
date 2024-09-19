@@ -27,11 +27,12 @@ Feature: Dashboards
 	
 	@gian
 	Scenario: Delete dashboard
-		When I hover over the "Dashboards" menu
-		#Then I should see all elements in the UI
-		#And I click the span with text "Renamed dashboard"
-		#And I click the element with data-menu-id "delete_this_dashboard"
-		#And I click "yes"
-		#Then I shouldn't see "Renamed dashboard"
+		When I create a new dashboard with name "My new dashboard"
+		And I hover over the "Dashboards" menu
+		And I click the span with text "My new dashboard"
+		And I hover over the element with data-menu-id "dashboard_options"
+		And I click the element with data-menu-id "delete_this_dashboard"
+		And I click "yes"
+		Then I shouldn't see "My new dashboard"
 
 
