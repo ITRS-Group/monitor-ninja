@@ -20,11 +20,10 @@ Feature: Dashboards
 		And I hover over the "Dashboards" menu
 		And I click the span with text "My new dashboard"
 		And I hover over the element with data-menu-id "dashboard_options"
-		Then I should see all elements in the UI
-		#And I click the element with data-menu-id "rename_this_dashboard"
-		#And I enter "Renamed dashboard" into "name"
-		#And I click "save"
-		#Then I should see "Renamed dashboard"
+		And I click the element with data-menu-id "rename_this_dashboard"
+		And I enter "Renamed dashboard" into "name"
+		And I click "save"
+		Then I should see "Renamed dashboard"
 	
 	@gian
 	Scenario: Delete dashboard
