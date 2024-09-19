@@ -445,6 +445,11 @@ When /^I click the element with data-menu-id "([^"]*)"$/ do |menu_id|
   find("[data-menu-id='#{menu_id}']").click
 end
 
+#Find data-menu-id and hover
+When /^I hover over the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  find("[data-menu-id='#{menu_id}']").hover
+end
+
 #FInd All
 Then /^I should see all elements in the UI$/ do
   # Find all elements in the UI
