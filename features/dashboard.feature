@@ -12,6 +12,7 @@ Feature: Dashboards
 	Scenario: Create new dashboard
 		When I create a new dashboard with name "My new dashboard"
 		Then I should see "My new dashboard"
+		And I should see all elements in the UI
 
 	@addedhappypath
 	Scenario: Edit dashboard
