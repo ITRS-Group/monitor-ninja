@@ -444,3 +444,21 @@ end
 When /^I click the element with data-menu-id "([^"]*)"$/ do |menu_id|
   find("[data-menu-id='#{menu_id}']").click
 end
+
+#FInd All
+Then /^I should see all elements in the UI$/ do
+  # Find all elements in the UI
+  elements = all('*')
+
+  # Iterate through each element and display its details
+  elements.each do |element|
+    puts "Tag: #{element.tag_name}"
+    puts "Text: #{element.text.strip}" unless element.text.strip.empty?
+    puts "ID: #{element[:id]}" if element[:id]
+    puts "Class: #{element[:class]}" if element[:class]
+    puts "Name: #{element[:name]}" if element[:name]
+    puts "Href: #{element[:href]}" if element[:href]
+    puts "Data-menu-id: #{element[:'data-menu-id']}" if element[:'data-menu-id']
+    puts "-----------------------------"
+  end
+end
