@@ -13,17 +13,17 @@ Feature: Dashboards
 	Scenario: Create new dashboard
 		When I create a new dashboard with name "My new dashboard"
 		Then I should see "My new dashboard"
-		And I should see all elements in the UI
 
 	@gian
 	Scenario: Edit dashboard
-		When I hover over the "Dashboards" menu
-		#And I click the span with text "My new dashboard"
+		When I create a new dashboard with name "My new dashboard"
+		And I hover over the "Dashboards" menu
 		Then I should see all elements in the UI
-		#And I click the element with data-menu-id "rename_this_dashboard"
-		#And I enter "Renamed dashboard" into "name"
-		#And I click "save"
-		#Then I should see "Renamed dashboard"
+		When I click the span with text "My new dashboard"
+		And I click the element with data-menu-id "rename_this_dashboard"
+		And I enter "Renamed dashboard" into "name"
+		And I click "save"
+		Then I should see "Renamed dashboard"
 	
 	@gian
 	Scenario: Delete dashboard
