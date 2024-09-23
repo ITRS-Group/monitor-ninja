@@ -247,3 +247,5 @@ Feature: Filters & list views
 		#And I click "OK"
 		#Then I shouldn't see "TestFilterForDelete"
 		#Then I should see all elements in the UI
+		And I click the button with name "OK"
+		Then I shouldn't see "TestFilterForDelete"
