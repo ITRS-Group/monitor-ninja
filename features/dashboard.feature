@@ -9,12 +9,11 @@ Feature: Dashboards
 			| id | dashboard_id | name      | position      | setting                       |
 			| 1  | 1            | tac_hosts | {"c":0,"p":0} | {"title":"A friendly widget"} |
 
-	@gian
 	Scenario: Create new dashboard
 		When I create a new dashboard with name "My new dashboard"
 		Then I should see "My new dashboard"
 
-	@gian
+	@addedhappypath
 	Scenario: Edit dashboard
 		When I create a new dashboard with name "My new dashboard"
 		And I hover over the "Dashboards" menu
@@ -25,7 +24,7 @@ Feature: Dashboards
 		And I click "save"
 		Then I should see "Renamed dashboard"
 	
-	@gian
+	@addedhappypath
 	Scenario: Delete dashboard
 		When I create a new dashboard with name "My new dashboard"
 		And I hover over the "Dashboards" menu
