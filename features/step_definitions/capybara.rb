@@ -468,11 +468,7 @@ Then /^I should see all elements in the UI$/ do
   end
 end
 
-When /^I click the button with name "([^"]*)"$/ do |button_name|
-  # Find the button with the specified name and click it
-  find_button(button_name).click
-end
-
-When /^I accept the alert$/ do
+#Accept modal alert from delete filter
+When /^I accept the alert from delete filter$/ do
   page.driver.browser.switch_to.alert.accept
 end
