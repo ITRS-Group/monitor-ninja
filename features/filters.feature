@@ -233,8 +233,8 @@ Feature: Filters & list views
 
 	@gian
 	Scenario: Delete Filter
-		When I hover over the "Manage" menu
-		And I click "Manage filters"
+		When I hover "Backup/Restore" from the "Manage" menu
+		And I click link "Manage filters"
 		And I click "Show/Edit Text Filter"
 		And I enter "TestFilterForDelete" into "lsfilter_save_filter_name"
 		And I click "Save Filter"
