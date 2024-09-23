@@ -233,6 +233,7 @@ Feature: Filters & list views
 
 	@gian
 	Scenario: Delete Filter
+		Given I am logged in as administrator
 		When I click the element with data-menu-id "manage"
 		And I click the element with data-menu-id "manage_filters"
 		And I click "Show/Edit Text Filter"
