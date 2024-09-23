@@ -231,11 +231,17 @@ Feature: Filters & list views
 		When I go to the listview for [hosts] custom_variables ~~ "NOMONITORING"
 		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"
 
-	@gian_todo
+	@gian
 	Scenario: Delete Filter
+		When I hover over the "Manage" menu
+		And I click "Manage filters"
+		And I click "Show/Edit Text Filter"
+		And I enter "TestFilterForDelete" into "lsfilter_save_filter_name"
+		And I click "Save Filter"
+		And I wait for 1 second
 		And I hover over the "Manage" menu
 		And I click "Manage filters"
-		Then I should see "Ernie"
+		Then I should see "TestFilterForDelete"
 		When I delete the latest filter with class "link_ajax_refresh"
 		And I click "OK"
-		Then I shouldn't see "Ernie"
+		Then I shouldn't see "TestFilterForDelete"
