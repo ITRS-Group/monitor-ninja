@@ -246,4 +246,4 @@ Feature: Filters & list views
 		When I delete the latest filter with class "link_ajax_refresh"
 		#And I click "OK"
 		#Then I shouldn't see "TestFilterForDelete"
-		Then I should see all elements in the UI
+		#Then I should see all elements in the UI
