@@ -472,3 +472,7 @@ When /^I click the button with name "([^"]*)"$/ do |button_name|
   # Find the button with the specified name and click it
   find_button(button_name).click
 end
+
+When /^I accept the alert$/ do
+  page.driver.browser.switch_to.alert.accept
+end
