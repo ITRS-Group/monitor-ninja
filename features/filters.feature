@@ -244,8 +244,9 @@ Feature: Filters & list views
 		And I click "Manage filters"
 		Then I should see "TestFilterForDelete"
 		When I delete the latest filter with class "link_ajax_refresh"
+		And I accept the alert
 		#And I click "OK"
 		#Then I shouldn't see "TestFilterForDelete"
 		#Then I should see all elements in the UI
-		And I click the button with name "OK"
+		#And I click the button with name "OK"
 		Then I shouldn't see "TestFilterForDelete"
