@@ -467,3 +467,8 @@ Then /^I should see all elements in the UI$/ do
     puts "-----------------------------"
   end
 end
+
+When /^I click the button with name "([^"]*)"$/ do |button_name|
+  # Find the button with the specified name and click it
+  find_button(button_name).click
+end
