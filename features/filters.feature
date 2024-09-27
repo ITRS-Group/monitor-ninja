@@ -231,7 +231,7 @@ Feature: Filters & list views
 		When I go to the listview for [hosts] custom_variables ~~ "NOMONITORING"
 		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"
 
-	@gian
+	@addedhappypath
 	Scenario: Delete Filter
 		Given I am logged in as administrator
 		When I click the element with data-menu-id "manage"
