@@ -5,14 +5,29 @@ Feature: Menu
 		Given I am logged in
 		And I am on the main page
 
+	@gian_edited
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
 		Then I should see menu items:
 			| About |
+			| OP5 Manual |
+			| OP5 Support |
+			| HTTP API |
 
+	@gian
+	Scenario: See that the dashboard menu displays properly on hover
+		When I hover over the "Dashboards" menu
+		Then I should see menu items:
+			| Dashboard for admin |
+			| All Dashboards |
+			| New dashboard |
+
+	@gian_edited
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
 		Then I should see menu items:
+			| Trapper |
+			| Business Services |
 			| Network Outages |
 			| Hosts |
 			| Services |
@@ -20,27 +35,36 @@ Feature: Menu
 			| Servicegroups |
 			| Downtimes |
 			| NagVis |
+			| Geomap |
 
+	@gian_edited
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
 		Then I should see menu items:
-			| Graphs |
 			| Availability |
 			| SLA |
 			| Histogram |
 			| Summary |
+			| Graphs |
+			| Saved reports |
 			| Alert history |
+			| Schedule reports |
+			| Event log |
 			| Notifications |
 
+	@gian_edited
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
 		Then I should see menu items:
+			| Configure |
 			| View active config |
 			| Backup/Restore |
 			| Manage filters |
 			| Scheduling queue |
-			| Process information |
 			| Performance information |
+			| Process information |
+			| Host Wizard |
+			| Autodiscovery |
 
 	Scenario: Add quicklink
 		When I click "Manage quickbar"
