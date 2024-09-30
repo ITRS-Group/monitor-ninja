@@ -277,6 +277,11 @@
 
 	Filterable.prototype.remove = function remove ( set ) {
 
+		var self = this;
+
+		this.memory.reset();
+		this.memory = set.union( this.memory );
+
 		var iterator = new SetIterator( set ),
 			index = null, i = null;
 
@@ -286,7 +291,19 @@
 			this.selected.find( 'option[value="' + index + '"]' ).remove();
 		}
 
-		this.search( this.filter.val() );
+		var batch = this.batcher( this.memory ),
+			completed = batch(),
+			interval = setInterval( function () {
+				completed = batch();
+				if ( completed ) {
+					clearInterval( interval );
+					self.filtered.attr( 'disabled', false );
+					self.form.find( 'input[type="submit"]' )
+						.attr( 'disabled', false );
+					self.box.removeClass( 'jq-filterable-working' );
+					self.search( self.filter.val() );
+				}
+			}, 10 );
 
 	};
 
