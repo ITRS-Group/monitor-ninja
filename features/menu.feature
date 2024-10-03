@@ -1,4 +1,3 @@
-@menu
 Feature: Menu
 
 	Background:
