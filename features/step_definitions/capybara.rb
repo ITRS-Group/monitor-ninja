@@ -393,3 +393,82 @@ end
 When /^I execute javascript "([^"]+)"$/ do |js|
   page.evaluate_script(js)
 end
+
+#Step definition to click text
+When /^I click name "([^"]*)"$/ do |name|
+  find('a', text: name).click
+end
+
+#Find the element with class and href and click
+When /^I click the element with class "([^"]*)" and href containing "([^"]*)"$/ do |class_name, href_partial|
+  # Find the element with the specified class and href containing the partial text
+  element = find("a.#{class_name}[href*='#{href_partial}']")
+  
+  # Click the found element
+  element.click
+end
+
+# Find the last created filter and click delete
+When /^I delete the latest filter with class "([^"]*)"$/ do |class_name|
+  # Find all elements with the class 'class_name'
+  elements = all("a.#{class_name}")
+
+  # Extract the id values from the href attributes
+  ids = elements.map do |element|
+    href = element[:href]
+    # Extract the id value from the href using a regex
+    href.match(/id=(\d+)/)[1].to_i
+  end
+
+  # Find the maximum id value
+  max_id = ids.max
+
+  # Find the element with the maximum id value
+  element_to_click = elements.find do |element|
+    element[:href].include?("id=#{max_id}")
+  end
+
+  # Dump the found element
+  puts "Found element with href: #{element_to_click[:href]}"
+
+  # Click the element with the highest id value
+  element_to_click.click
+end
+
+#Find element span and click
+When /^I click the span with text "([^"]*)"$/ do |text|
+  find('span', text: text).click
+end
+
+#Find data-menu-id and click
+When /^I click the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  find("[data-menu-id='#{menu_id}']").click
+end
+
+#Find data-menu-id and hover
+When /^I hover over the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  find("[data-menu-id='#{menu_id}']").hover
+end
+
+#FInd All
+Then /^I should see all elements in the UI$/ do
+  # Find all elements in the UI
+  elements = all('*')
+
+  # Iterate through each element and display its details
+  elements.each do |element|
+    puts "Tag: #{element.tag_name}"
+    puts "Text: #{element.text.strip}" unless element.text.strip.empty?
+    puts "ID: #{element[:id]}" if element[:id]
+    puts "Class: #{element[:class]}" if element[:class]
+    puts "Name: #{element[:name]}" if element[:name]
+    puts "Href: #{element[:href]}" if element[:href]
+    puts "Data-menu-id: #{element[:'data-menu-id']}" if element[:'data-menu-id']
+    puts "-----------------------------"
+  end
+end
+
+#Accept modal alert from delete filter
+When /^I accept the alert from delete filter$/ do
+  page.driver.browser.switch_to.alert.accept
+end
