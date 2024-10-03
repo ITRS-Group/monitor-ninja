@@ -37,7 +37,7 @@ Feature: Menu
 			| NagVis |
 			| Geomap |
 
-	@gian_edited
+	@gian
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
 		Then I should see menu items:
