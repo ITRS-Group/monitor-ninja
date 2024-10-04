@@ -450,6 +450,11 @@ When /^I hover over the element with data-menu-id "([^"]*)"$/ do |menu_id|
   find("[data-menu-id='#{menu_id}']").hover
 end
 
+#Find data-menu-id and check if it exists in the UI
+Then /^I should see the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  expect(page).to have_selector("[data-menu-id='#{menu_id}']")
+end
+
 #FInd All
 Then /^I should see all elements in the UI$/ do
   # Find all elements in the UI
