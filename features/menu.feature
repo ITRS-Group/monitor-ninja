@@ -13,7 +13,8 @@ Feature: Menu
 		#And I should see the element with data-menu-id "op5_support"
 		#And I should see the element with data-menu-id "http_api"
 
-	@gi	Scenario: See that the dashboard menu displays properly on hover
+	@gi	
+	Scenario: See that the dashboard menu displays properly on hover
 		When I hover over the "Dashboards" menu
 		Then I should see the element with data-menu-id "1"
 		And I should see the element with data-menu-id "all_dashboards"
