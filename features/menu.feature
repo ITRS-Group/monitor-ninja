@@ -8,10 +8,10 @@ Feature: Menu
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
 		Then I should see all elements in the UI
-		Then I should see the element with data-menu-id "about"
-		#And I should see the element with data-menu-id "op5_manual"
-		#And I should see the element with data-menu-id "op5_support"
-		#And I should see the element with data-menu-id "http_api"
+		Then I should see "about"
+		And I should see "op5_manual"
+		And I should see "op5_support"
+		And I should see "http_api"
 
 	@gi	
 	Scenario: See that the dashboard menu displays properly on hover
