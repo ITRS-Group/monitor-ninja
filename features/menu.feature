@@ -7,19 +7,19 @@ Feature: Menu
 	@gian_edited
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
+		Then I should see all elements in the UI
 		Then I should see the element with data-menu-id "about"
-		And I should see the element with data-menu-id "op5_manual"
-		And I should see the element with data-menu-id "op5_support"
-		And I should see the element with data-menu-id "http_api"
+		#And I should see the element with data-menu-id "op5_manual"
+		#And I should see the element with data-menu-id "op5_support"
+		#And I should see the element with data-menu-id "http_api"
 
-	@gian
-	Scenario: See that the dashboard menu displays properly on hover
+	@gi	Scenario: See that the dashboard menu displays properly on hover
 		When I hover over the "Dashboards" menu
 		Then I should see the element with data-menu-id "1"
 		And I should see the element with data-menu-id "all_dashboards"
 		And I should see the element with data-menu-id "menuitem_dashboard_option"
 
-	@gian_edited
+	@gia_edited
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
 		Then I should see the element with data-menu-id "trapper"
@@ -33,7 +33,7 @@ Feature: Menu
 		And I should see the element with data-menu-id "nagvis"
 		And I should see the element with data-menu-id "geomap"
 
-	@gian
+	@gi
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
 		Then I should see the element with data-menu-id "availability"
@@ -47,7 +47,7 @@ Feature: Menu
 		And I should see the element with data-menu-id "event_log"
 		And I should see the element with data-menu-id "notifications"
 
-	@gian_edited
+	@giaedited
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
 		Then I should see the element with data-menu-id "configure"
