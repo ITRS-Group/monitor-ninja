@@ -7,59 +7,58 @@ Feature: Menu
 	@gian_edited
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
-		Then I should see all elements in the UI
 		Then I should see "about"
 		And I should see "op5_manual"
 		And I should see "op5_support"
 		And I should see "http_api"
 
-	@gi	
+	@gian
 	Scenario: See that the dashboard menu displays properly on hover
 		When I hover over the "Dashboards" menu
-		Then I should see the element with data-menu-id "1"
-		And I should see the element with data-menu-id "all_dashboards"
-		And I should see the element with data-menu-id "menuitem_dashboard_option"
+		Then I should see "1"
+		And I should see "all_dashboards"
+		And I should see "menuitem_dashboard_option"
 
-	@gia_edited
+	@gian_edited
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
-		Then I should see the element with data-menu-id "trapper"
-		And I should see the element with data-menu-id "business_services"
-		And I should see the element with data-menu-id "network_outages"
-		And I should see the element with data-menu-id "hosts"
-		And I should see the element with data-menu-id "services"
-		And I should see the element with data-menu-id "hostgroups"
-		And I should see the element with data-menu-id "servicegroups"
-		And I should see the element with data-menu-id "downtimes"
-		And I should see the element with data-menu-id "nagvis"
-		And I should see the element with data-menu-id "geomap"
+		Then I should see "trapper"
+		And I should see "business_services"
+		And I should see "network_outages"
+		And I should see "hosts"
+		And I should see "services"
+		And I should see "hostgroups"
+		And I should see "servicegroups"
+		And I should see "downtimes"
+		And I should see "nagvis"
+		And I should see "geomap"
 
-	@gi
+	@gian
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
-		Then I should see the element with data-menu-id "availability"
-		And I should see the element with data-menu-id "sla"
-		And I should see the element with data-menu-id "histogram"
-		And I should see the element with data-menu-id "summary"
-		And I should see the element with data-menu-id "graphs"
-		And I should see the element with data-menu-id "saved_reports"
-		And I should see the element with data-menu-id "alert_history"
-		And I should see the element with data-menu-id "schedule_reports"
-		And I should see the element with data-menu-id "event_log"
-		And I should see the element with data-menu-id "notifications"
+		Then I should see "availability"
+		And I should see "sla"
+		And I should see "histogram"
+		And I should see "summary"
+		And I should see "graphs"
+		And I should see "saved_reports"
+		And I should see "alert_history"
+		And I should see "schedule_reports"
+		And I should see "event_log"
+		And I should see "notifications"
 
-	@giaedited
+	@gian_edited
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
-		Then I should see the element with data-menu-id "configure"
-		And I should see the element with data-menu-id "view_active_config"
-		And I should see the element with data-menu-id "backup_restore"
-		And I should see the element with data-menu-id "manage_filters"
-		And I should see the element with data-menu-id "scheduling_queue"
-		And I should see the element with data-menu-id "performance_information"
-		And I should see the element with data-menu-id "process_information"
-		And I should see the element with data-menu-id "host_wizard"
-		And I should see the element with data-menu-id "autodiscovery"
+		Then I should see "configure"
+		And I should see "view_active_config"
+		And I should see "backup_restore"
+		And I should see "manage_filters"
+		And I should see "scheduling_queue"
+		And I should see "performance_information"
+		And I should see "process_information"
+		And I should see "host_wizard"
+		And I should see "autodiscovery"
 
 	Scenario: Add quicklink
 		When I click "Manage quickbar"

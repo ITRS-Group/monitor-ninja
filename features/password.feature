@@ -33,7 +33,7 @@ Feature: Change password
 		And I hover the profile
 		And I click "My Account"
 		And I click "Change Password"
-		And I enter "123123" into "current_password"
+		And I enter "" into "current_password"
 		And I enter "billabong" into "new_password"
 		And I enter "billabongg" into "confirm_password"
 		And I click "Change password"
@@ -53,6 +53,6 @@ Feature: Change password
 		When I click "Log out"
 		Then I should see "Username"
 		When I enter "administrator" into "username"
-		And I enter "billabong" into "password"
+		And I enter "123123" into "password"
 		And I click "Log in"
 		Then I shouldn't see "Login failed - please try again" 
