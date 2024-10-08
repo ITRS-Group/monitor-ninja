@@ -52,7 +52,7 @@ if(count($perf_data)) {
 				var chart = c3.generate({
 					bindto: "#<?php echo $id; ?>",
 					data: {
-						columns: [['<?php echo $ds_name; ?>', <?php echo $ds['value']; ?>]],
+						columns: [['<?php echo $ds_name; ?>', <?php echo "" . (isset($ds['value']))? $ds['value']: 0; ?>]],
 						type: "gauge"
 					},
 					gauge: {
