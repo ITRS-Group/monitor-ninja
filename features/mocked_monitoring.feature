@@ -237,3 +237,12 @@ Feature: Mocked
 		And I should see "support-contact"
 		And I shouldn't see "Loading..."
 
+	@gian
+	Scenario: Host Actions > Check Now
+	Given I have these mocked hosts
+		|name         |
+		|Fermin Miller|
+	And I am on the Host details page
+	When I click "Fermin Miller"
+	And I select "Actions > Check now" from the "OPTIONS" menu
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
