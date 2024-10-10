@@ -26,7 +26,7 @@ Feature: Change password
 		And I click "Change password"
 		Then I should see "Password changed successfully"
 
-	@gian
+	@addedhappypath
 	Scenario: Password not equal
 		Given I am logged in as administrator
 		And I am on the main page
@@ -39,7 +39,7 @@ Feature: Change password
 		And I click "Change password"
 		Then I should see "You entered incorrect current password."
 
-	@gian
+	@addedhappypath
 	Scenario: Password is blank
 		Given I am logged in as administrator
 		And I am on the main page

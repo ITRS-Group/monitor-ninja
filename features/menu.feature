@@ -4,7 +4,7 @@ Feature: Menu
 		Given I am logged in
 		And I am on the main page
 
-	@gian_edited
+	@editedhappypath
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
 		Then I should see "about"
@@ -12,14 +12,14 @@ Feature: Menu
 		And I should see "op5_support"
 		And I should see "http_api"
 
-	@gian
+	@addedhappypath
 	Scenario: See that the dashboard menu displays properly on hover
 		When I hover over the "Dashboards" menu
 		Then I should see "1"
 		And I should see "all_dashboards"
 		And I should see "menuitem_dashboard_option"
 
-	@gian_edited
+	@editedhappypath
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
 		Then I should see "trapper"
@@ -33,7 +33,7 @@ Feature: Menu
 		And I should see "nagvis"
 		And I should see "geomap"
 
-	@gian
+	@addedhappypath
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
 		Then I should see "availability"
@@ -47,7 +47,7 @@ Feature: Menu
 		And I should see "event_log"
 		And I should see "notifications"
 
-	@gian_edited
+	@editedhappypath
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
 		Then I should see "configure"
