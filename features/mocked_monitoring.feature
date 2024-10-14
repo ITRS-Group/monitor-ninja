@@ -255,6 +255,7 @@ Feature: Mocked
 	And I am on the Host details page
 	When I click "Fermin Miller"
 	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
 	Then I should see all elements in the UI
 	#And I select "Actions > Add a new comment" from the "OPTIONS" menu
 	#Then I should see "Add a new comment:"
