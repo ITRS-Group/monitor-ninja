@@ -252,12 +252,28 @@ Feature: Mocked
 	Given I have these mocked hosts
 		|name         |
 		|Fermin Miller|
-		And I am on the Host details page
+	And I am on the Host details page
 	When I click "Fermin Miller"
 	And I select "Actions > Add a new comment" from the "OPTIONS" menu
 	Then I should see "Add a new comment:"
 	When I enter "This is a comment for host" into "field_comment"
 	And I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	When I click "Done"
+	When I click button "Done"
 	Then I should see "This is a comment for host"
+
+	@gian
+	Scenario: Host Actions > Submit passive check result
+	Given I have these mocked hosts
+		|name         |
+		|Fermin Miller|
+	And I am on the Host details page
+	When I click "Fermin Miller"
+	And I select "Actions > Submit passive check result" from the "OPTIONS" menu
+	Then I should see "Submit passive check result:"
+	When I enter "This is plugin output for host" into "field_plugin_output"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "This is plugin output for host"
+
