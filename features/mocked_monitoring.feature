@@ -256,9 +256,10 @@ Feature: Mocked
 	When I click "Fermin Miller"
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Actions" menu
-	Then I should see all elements in the UI
+	And I click name "Add a new comment"
+	#Then I should see all elements in the UI
 	#And I select "Actions > Add a new comment" from the "OPTIONS" menu
-	#Then I should see "Add a new comment:"
+	Then I should see "Add a new comment:"
 	#When I enter "This is a comment for host" into "field_comment"
 	#And I click "Submit"
 	#Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
