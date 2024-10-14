@@ -246,3 +246,18 @@ Feature: Mocked
 	When I click "Fermin Miller"
 	And I select "Actions > Check now" from the "OPTIONS" menu
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+
+	@gian
+	Scenario: Host Actions > Add comment
+	Given I have these mocked hosts
+		|name         |
+		|Fermin Miller|
+		And I am on the Host details page
+	When I click "Fermin Miller"
+	And I select "Actions > Add a new comment" from the "OPTIONS" menu
+	Then I should see "Add a new comment:"
+	When I enter "This is a comment for host" into "field_comment"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click "Done"
+	Then I should see "This is a comment for host"
