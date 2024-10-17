@@ -260,7 +260,8 @@ Feature: Mocked
 	Then I should see "Add a new comment:"
 	When I enter "This is a comment for host" into "field_comment"
 	Then I should see all elements in the UI
-	#And I click "Submit"
+	And I click "Submit"
+	Then I should see all elements in the UI
 	#Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	#When I click button "Done"
 	#Then I should see "This is a comment for host"
