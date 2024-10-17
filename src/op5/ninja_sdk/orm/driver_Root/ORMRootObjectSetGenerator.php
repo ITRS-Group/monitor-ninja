@@ -21,7 +21,7 @@ class ORMRootObjectSetGenerator extends ORMRootGenerator {
 		$this->variable('filter',null,'public');
 		$this->variable('default_sort',array(),'protected');
 		$this->variable('key_columns',array(),'protected');
-		$this->variable('it',,'private');
+		$this->variable('it',null,'private');
 		$this->generate_getter('class');
 		$this->generate_binary_operator('union', 'LivestatusFilterOr');
 		$this->generate_binary_operator('intersect', 'LivestatusFilterAnd');
