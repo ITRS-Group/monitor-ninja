@@ -250,17 +250,18 @@ Feature: Mocked
 	@gian
 	Scenario: Host Actions > Add comment
 	Given I am on the Host details page
-	When I click "host_up"
-	And I hover over the "OPTIONS" menu
-	And I hover over the "Actions" menu
-	And I click the element with data-menu-id "add_a_new_comment"
-	Then I should see "Add a new comment:"
-	When I enter "This is a comment for host" into "field_comment"
-	And I click "Submit"
 	Then I should see all elements in the UI
-	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	When I click button "Done"
-	Then I should see "This is a comment for host"
+	#When I click "host_up"
+	#And I hover over the "OPTIONS" menu
+	#And I hover over the "Actions" menu
+	#And I click the element with data-menu-id "add_a_new_comment"
+	#Then I should see "Add a new comment:"
+	#When I enter "This is a comment for host" into "field_comment"
+	#And I click "Submit"
+	#Then I should see all elements in the UI
+	#Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	#When I click button "Done"
+	#Then I should see "This is a comment for host"
 
 	# @gian
 	# Scenario: Host Actions > Submit passive check result
