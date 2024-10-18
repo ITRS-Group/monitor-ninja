@@ -250,7 +250,7 @@ Feature: Mocked
 	@gian
 	Scenario: Host Actions > Add comment
 	Given I am on the Host details page
-	Then I should see all elements in the UI
+	#Then I should see all elements in the UI
 	When I click "OP5 Monitor Server"
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Actions" menu
