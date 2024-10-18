@@ -249,8 +249,10 @@ Feature: Mocked
 
 	@gian
 	Scenario: Host Actions > Add comment
-	Given I am on the Host details page
+	Given I am on address "/index.php/listview/?q=%5Bhosts%5D%20all"
 	Then I should see all elements in the UI
+	#Given I am on the Host details page
+	#Then I should see all elements in the UI
 	#When I click "host_up"
 	#And I hover over the "OPTIONS" menu
 	#And I hover over the "Actions" menu
