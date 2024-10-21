@@ -250,7 +250,6 @@ Feature: Mocked
 	@gian
 	Scenario: Host Actions > Add comment
 	Given I am on the Host details page
-	#Then I should see all elements in the UI
 	When I click "monitor"
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Actions" menu
@@ -258,94 +257,78 @@ Feature: Mocked
 	Then I should see "Add a new comment:"
 	When I enter "This is a comment for host" into "field_comment"
 	And I click "Submit"
-	Then I should see all elements in the UI
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
 	Then I should see "This is a comment for host"
 
-	# @gian
-	# Scenario: Host Actions > Submit passive check result
-	# Given I have these mocked hosts
-	# 	|name         |
-	# 	|Fermin Miller|
-	# And I am on the Host details page
-	# When I click "Fermin Miller"
-	# And I hover over the "OPTIONS" menu
-	# And I hover over the "Actions" menu
-	# And I click the element with data-menu-id "submit_passive_check_result"
-	# Then I should see "Submit passive check result:"
-	# When I enter "This is plugin output for host" into "field_plugin_output"
-	# And I click "Submit"
-	# Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	# When I click button "Done"
-	# Then I should see "This is plugin output for host"
+	@gian
+	Scenario: Host Actions > Submit passive check result
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "submit_passive_check_result"
+	Then I should see "Submit passive check result:"
+	When I enter "This is plugin output for host" into "field_plugin_output"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "This is plugin output for host"
 
-	# @gian
-	# Scenario: Host Actions > Re-schedule next host check
-	# Given I have these mocked hosts
-	# 	|name         |
-	# 	|Fermin Miller|
-	# And I am on the Host details page
-	# When I click "Fermin Miller"
-	# And I hover over the "OPTIONS" menu
-	# And I hover over the "Actions" menu
-	# And I click the element with data-menu-id "re_schedule_next_host_check"
-	# Then I should see "Re-schedule next host check:"
-	# When I enter "2025-12-31 00:00:00" into "field_check_time"
-	# And I click "Submit"
-	# Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	# When I click button "Done"
-	# Then I should see "2025-12-31 00:00:00"
+	@gian
+	Scenario: Host Actions > Re-schedule next host check
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "re_schedule_next_host_check"
+	Then I should see "Re-schedule next host check:"
+	When I enter "2025-12-31 00:00:00" into "field_check_time"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "2025-12-31 00:00:00"
 
-	# @gian
-	# Scenario: Host Actions > Schedule downtime
-	# Given I have these mocked hosts
-	# 	|name         |
-	# 	|Fermin Miller|
-	# And I am on the Host details page
-	# When I click "Fermin Miller"
-	# And I hover over the "OPTIONS" menu
-	# And I hover over the "Actions" menu
-	# And I click the element with data-menu-id "schedule_downtime"
-	# Then I should see "Schedule downtime:"
-	# When I enter "2025-12-31 00:00:00" into "field_start_time"
-	# And I enter "2025-12-31 12:00:00" into "field_end_time"
-	# And I click "Submit"
-	# Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	# When I click button "Done"
-	# Then I should see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
+	@gian
+	Scenario: Host Actions > Schedule downtime
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "schedule_downtime"
+	Then I should see "Schedule downtime:"
+	When I enter "2025-12-31 00:00:00" into "field_start_time"
+	And I enter "2025-12-31 12:00:00" into "field_end_time"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
 
-	# @gian
-	# Scenario: Host Actions > Cancel all downtimes
-	# Given I have these mocked hosts
-	# 	|name         |
-	# 	|Fermin Miller|
-	# And I am on the Host details page
-	# When I click "Fermin Miller"
-	# And I hover over the "OPTIONS" menu
-	# And I hover over the "Actions" menu
-	# And I click the element with data-menu-id "cancel_all_downtimes"
-	# Then I should see "Cancel all downtimes:"
-	# And I click "Submit"
-	# Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	# When I click button "Done"
-	# Then I shouldn't see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
+	@gian
+	Scenario: Host Actions > Cancel all downtimes
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "cancel_all_downtimes"
+	Then I should see "Cancel all downtimes:"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I shouldn't see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
 
-	# @gian
-	# Scenario: Host Actions > Send custom notification
-	# Given I have these mocked hosts
-	# 	|name         |
-	# 	|Fermin Miller|
-	# And I am on the Host details page
-	# When I click "Fermin Miller"
-	# And I hover over the "OPTIONS" menu
-	# And I hover over the "Actions" menu
-	# And I click the element with data-menu-id "send_custom_notification"
-	# Then I should see "Send custom notification:"
-	# When I enter "This is a comment for send custom notification" into "field_comment"
-	# And I click "Submit"
-	# Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
-	# When I click button "Done"
+	@gian
+	Scenario: Host Actions > Send custom notification
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "send_custom_notification"
+	Then I should see "Send custom notification:"
+	When I enter "This is a comment for send custom notification" into "field_comment"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
 
 
 
