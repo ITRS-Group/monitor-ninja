@@ -251,7 +251,7 @@ Feature: Mocked
 	Scenario: Host Actions > Add comment
 	Given I am on the Host details page
 	#Then I should see all elements in the UI
-	When I click "OP5 Monitor Server"
+	When I click "monitor"
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Actions" menu
 	And I click the element with data-menu-id "add_a_new_comment"
