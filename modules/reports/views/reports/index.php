@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<div class="report-page">
+<div id="report-page" name="report-page" class="report-page">
 <?php
 	echo isset($error) ? $error : '';
 	if ($header instanceof View) {
