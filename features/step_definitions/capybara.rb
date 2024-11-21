@@ -477,3 +477,18 @@ end
 When /^I accept the alert from delete filter$/ do
   page.driver.browser.switch_to.alert.accept
 end
+
+#Click a string with title
+When /^I click an element with title "([^"]*)"$/ do |title|
+  find('a[title]', text: title).click
+end
+
+#Title should exist
+Then /^I should see an element with title "([^"]*)"$/ do |title|
+  expect(page).to have_css("a[title='#{title}']")
+end
+
+#Title should not exist
+Then /^I should not see an element with title "([^"]*)"$/ do |title|
+  expect(page).to have_no_css("a[title='#{title}']")
+end

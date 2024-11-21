@@ -237,7 +237,7 @@ Feature: Mocked
 		And I should see "support-contact"
 		And I shouldn't see "Loading..."
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Check Now
 	Given I have these mocked hosts
 		|name         |
@@ -247,7 +247,7 @@ Feature: Mocked
 	And I select "Actions > Check now" from the "OPTIONS" menu
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Add comment
 	Given I am on the Host details page
 	When I click "monitor"
@@ -261,7 +261,7 @@ Feature: Mocked
 	When I click button "Done"
 	Then I should see "This is a comment for host"
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Submit passive check result
 	Given I am on the Host details page
 	When I click "monitor"
@@ -275,7 +275,7 @@ Feature: Mocked
 	When I click button "Done"
 	Then I should see "This is plugin output for host"
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Re-schedule next host check
 	Given I am on the Host details page
 	When I click "monitor"
@@ -289,7 +289,7 @@ Feature: Mocked
 	When I click button "Done"
 	Then I should see "2025-12-31 00:00:00"
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Schedule downtime
 	Given I am on the Host details page
 	When I click "monitor"
@@ -304,7 +304,7 @@ Feature: Mocked
 	When I click button "Done"
 	Then I should see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Cancel all downtimes
 	Given I am on the Host details page
 	When I click "monitor"
@@ -317,7 +317,7 @@ Feature: Mocked
 	When I click button "Done"
 	Then I shouldn't see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
 
-	@gian
+	@addedhappypath
 	Scenario: Host Actions > Send custom notification
 	Given I am on the Host details page
 	When I click "monitor"
@@ -329,6 +329,20 @@ Feature: Mocked
 	And I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
+
+	@gian
+	Scenario: Host Service Operations > Enable notifications for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "enable_notifications_for_all_services"
+	Then I should see "Enable notifications for all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	And I click an element with title "Go to list of all services on this host"
+	Then I should not see an element with title "Notifications disabled"
 
 
 
