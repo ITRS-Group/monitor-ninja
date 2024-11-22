@@ -495,8 +495,6 @@ Then /^disabled notification icon should not exist$/ do
 end
 
 #Check toggle switch if it is ON or OFF
-Then /^toggle switch "([^"]*)" should be "([^"]*)"$/ do |element_selector, expected_state|
-  element = find(:css, element_selector)
-  actual_state = element[:'data-setting-toggle-state']
-  expect(actual_state).to eq(expected_state)
+Then /^the element with data-setting-toggle-command "([^"]*)" should exist$/ do |command|
+  expect(page).to have_selector("[data-setting-toggle-command='#{command}']")
 end

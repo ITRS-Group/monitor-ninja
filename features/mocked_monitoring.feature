@@ -371,7 +371,7 @@ Feature: Mocked
 	When I click button "Done"
 	And I click an element with title "Go to list of all services on this host"
 	When I click "SSH Server"
-	Then toggle switch "div[data-setting-toggle-command='enable_check']" should be "on"
+	Then the element with data-setting-toggle-command "disable_check"
 
 	@gian
 	Scenario: Host Service Operations > Disable checks for all services
@@ -385,7 +385,7 @@ Feature: Mocked
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click an element with title "Go to list of all services on this host"
 	When I click "SSH Server"
-	Then toggle switch "div[data-setting-toggle-command='enable_check']" should be "off"
+	Then the element with data-setting-toggle-command "enable_check"
 
 	@gian
 	Scenario: Host Service Operations > Schedule a check of all services
