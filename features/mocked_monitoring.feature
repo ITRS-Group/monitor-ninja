@@ -341,9 +341,9 @@ Feature: Mocked
 	When I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
-	Then I should see all elements in the UI
-	#And I click an element with title "Go to list of all services on this host"
-	#Then I should not see an element with title "Notifications disabled"
+	#Then I should see all elements in the UI
+	And I click an element with title "Go to list of all services on this host"
+	Then I should not see an element with title "Notifications disabled"
 
 
 

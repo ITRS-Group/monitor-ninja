@@ -479,8 +479,9 @@ When /^I accept the alert from delete filter$/ do
 end
 
 #Click a string with title
-When /^I click an element with title "([^"]*)"$/ do |title|
-  find('a[title]', text: title).click
+When /^I click an element with title "([^"]*)"$/ do |link_title|
+  link = find('a', title: link_title)
+  link.click
 end
 
 #Title should exist
