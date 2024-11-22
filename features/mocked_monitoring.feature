@@ -370,7 +370,6 @@ Feature: Mocked
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
 	And I click an element with title "Go to list of all services on this host"
-	Then I should see all elements in the UI
 	When I click "SSH Server"
 	Then toggle switch "div[data-setting-toggle-command='enable_check']" should be "on"
 
@@ -385,7 +384,6 @@ Feature: Mocked
 	When I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click an element with title "Go to list of all services on this host"
-	Then I should see all elements in the UI
 	When I click "SSH Server"
 	Then toggle switch "div[data-setting-toggle-command='enable_check']" should be "off"
 

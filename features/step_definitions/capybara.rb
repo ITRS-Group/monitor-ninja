@@ -484,14 +484,14 @@ When /^I click an element with title "([^"]*)"$/ do |title|
   element.click
 end
 
-#Check if disabled notification icon  exists
+#Check if disabled notification icon exists
 Then /^disabled notification icon should exist$/ do
-  expect(page).to have_selector('span.notification-icon.disabled')
+ expect(page).to have_selector('span.icon-16.x16-notify-disabled')
 end
 
 #Check if disabled notification icon does not exist
 Then /^disabled notification icon should not exist$/ do
-  expect(page).to have_no_selector('span.notification-icon.disabled')
+  expect(page).to have_no_selector('span.icon-16.x16-notify-disabled')
 end
 
 #Check toggle switch if it is ON or OFF
