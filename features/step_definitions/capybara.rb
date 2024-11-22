@@ -484,12 +484,19 @@ When /^I click an element with title "([^"]*)"$/ do |title|
   element.click
 end
 
-#Title should exist
-Then /^I should see an element with title "([^"]*)"$/ do |title|
-  expect(page).to have_css("a[title='#{title}']")
+#Check if disabled notification icon  exists
+Then /^disabled notification icon should exist$/ do
+  expect(page).to have_selector('span.notification-icon.disabled')
 end
 
-#Title should not exist
-Then /^I should not see an element with title "([^"]*)"$/ do |title|
-  expect(page).to have_no_css("a[title='#{title}']")
+#Check if disabled notification icon does not exist
+Then /^disabled notification icon should not exist$/ do
+  expect(page).to have_no_selector('span.notification-icon.disabled')
+end
+
+#Check toggle switch if it is ON or OFF
+Then /^toggle switch "([^"]*)" should be "([^"]*)"$/ do |element_selector, expected_state|
+  element = find(:css, element_selector)
+  actual_state = element[:'data-setting-toggle-state']
+  expect(actual_state).to eq(expected_state)
 end
