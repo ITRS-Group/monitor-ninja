@@ -341,10 +341,57 @@ Feature: Mocked
 	When I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
-	#Then I should see all elements in the UI
 	And I click an element with title "Go to list of all services on this host"
 	Then I should not see an element with title "Notifications disabled"
 
+	@gian
+	Scenario: Host Service Operations > Disable notifications for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "disable_notifications_for_all_services"
+	Then I should see "Disable notifications for all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	And I click an element with title "Go to list of all services on this host"
+	Then I should see an element with title "Notifications disabled"
+
+	@gian
+	Scenario: Host Service Operations > Enable checks for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "enable_checks_of_all_services"
+	Then I should see "Enable checks of all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+
+	@gian
+	Scenario: Host Service Operations > Disable checks for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "disable_checks_of_all_services"
+	Then I should see "Disable checks of all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+
+	@gian
+	Scenario: Host Service Operations > Schedule a check of all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "schedule_a_check_of_all_services"
+	Then I should see "Disable checks of all services:"
+	When I enter "2025-12-31 00:00:00" into "field_check_time"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
 
 
 
