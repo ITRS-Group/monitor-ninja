@@ -342,7 +342,7 @@ Feature: Mocked
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
 	And I click an element with title "Go to list of all services on this host"
-	Then I should not see an element with title "Notifications disabled"
+	Then disabled notification icon should not exist
 
 	@gian
 	Scenario: Host Service Operations > Disable notifications for all services
@@ -356,7 +356,7 @@ Feature: Mocked
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
 	And I click an element with title "Go to list of all services on this host"
-	Then I should see an element with title "Notifications disabled"
+	Then disabled notification icon should exist
 
 	@gian
 	Scenario: Host Service Operations > Enable checks for all services
@@ -368,6 +368,11 @@ Feature: Mocked
 	Then I should see "Enable checks of all services:"
 	When I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	And I click an element with title "Go to list of all services on this host"
+	Then I should see all elements in the UI
+	When I click "SSH Server"
+	Then toggle switch "div[data-setting-toggle-command='enable_check']" should be "on"
 
 	@gian
 	Scenario: Host Service Operations > Disable checks for all services
@@ -379,6 +384,10 @@ Feature: Mocked
 	Then I should see "Disable checks of all services:"
 	When I click "Submit"
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click an element with title "Go to list of all services on this host"
+	Then I should see all elements in the UI
+	When I click "SSH Server"
+	Then toggle switch "div[data-setting-toggle-command='enable_check']" should be "off"
 
 	@gian
 	Scenario: Host Service Operations > Schedule a check of all services
