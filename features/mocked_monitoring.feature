@@ -403,6 +403,14 @@ Feature: Mocked
 	When I click button "Done"
 	When I click an element with title "Go to list of all services on this host"
 	Then I should see the stored time in the UI
+	And I should see all elements in the UI
 
-
+	@gian_yeet
+	Scenario: Host Links > Locate Host on Map
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Links" menu
+	And I click the element with data-menu-id "locate_host_on_map"
+	Then I should see "Locate Host on Map"
 
