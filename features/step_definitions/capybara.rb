@@ -502,6 +502,7 @@ end
 #Get current time and add 30 seconds to it
 Given /^I store the current time plus 30 seconds$/ do
   @stored_time = (Time.now + 30).strftime("%Y-%m-%d %H:%M:%S")
+  puts "Stored time: #{@stored_time}"
 end
 
 #Store the stored_time to time variable
@@ -513,4 +514,9 @@ end
 Then /^I should see the stored time in the UI$/ do
   sleep 60
   expect(page).to have_xpath("//td[text()='#{@stored_time}']")
+end
+
+#Check alt text on an image
+Then /^the image should have the alt text "([^"]*)"$/ do |alt_text|
+  expect(page).to have_selector("img[alt='#{alt_text}']")
 end
