@@ -498,3 +498,19 @@ end
 Then /^the element with data-setting-toggle-command "([^"]*)" should exist$/ do |command|
   expect(page).to have_selector("[data-setting-toggle-command='#{command}']")
 end
+
+#Get current time and add 30 seconds to it
+Given /^I store the current time plus 30 seconds$/
+  @stored_time = (Time.now + 30).strftime("%Y-%m-%d %H:%M:%S")
+end
+
+#Store the stored_time to time variable
+When /^I enter the stored time into "([^"]*)"$/ do |sel|
+  fill_in(sel % @params, :with => @stored_time)
+end
+
+#Check stored time if it is existing in the UI
+Then /^I should see the stored time in the UI$/ do
+  sleep 30
+  expect(page).to have_xpath("//td[text()='#{@stored_time}']")
+end
