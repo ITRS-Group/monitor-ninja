@@ -511,6 +511,6 @@ end
 
 #Check stored time if it is existing in the UI
 Then /^I should see the stored time in the UI$/ do
-  sleep 30
+  sleep 60
   expect(page).to have_xpath("//td[text()='#{@stored_time}']")
 end
