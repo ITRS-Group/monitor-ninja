@@ -388,7 +388,7 @@ Feature: Mocked
 	When I click "SSH Server"
 	Then the element with data-setting-toggle-command "enable_check" should exist
 
-	@gian
+	@addedhappypath
 	Scenario: Host Service Operations > Schedule a check of all services
 	Given I am on the Host details page
 	And I store the current time plus 30 seconds
@@ -405,12 +405,30 @@ Feature: Mocked
 	Then I should see the stored time in the UI
 	And I should see all elements in the UI
 
-	@gian_yeet
+	@gian
 	Scenario: Host Links > Locate Host on Map
 	Given I am on the Host details page
 	When I click "monitor"
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Links" menu
 	And I click the element with data-menu-id "locate_host_on_map"
-	Then I should see "Locate Host on Map"
+	Then the image should have the alt text "NagVis"
+	And the image should have the alt text "monitor"
 
+	@gian
+	Scenario: Host Links > Notifications
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Links" menu
+	And I click the element with data-menu-id "notifications"
+	Then I should see "Notifications"
+
+	@gian
+	Scenario: Host Links > Locate Host on Map
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Links" menu
+	And I click the element with data-menu-id "graphs"
+	Then I should see "Service details monitor -> Host Perfdata"
