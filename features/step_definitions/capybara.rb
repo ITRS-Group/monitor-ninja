@@ -500,7 +500,7 @@ Then /^the element with data-setting-toggle-command "([^"]*)" should exist$/ do 
 end
 
 #Get current time and add 30 seconds to it
-Given /^I store the current time plus 30 seconds$/
+Given /^I store the current time plus 30 seconds$/ do
   @stored_time = (Time.now + 30).strftime("%Y-%m-%d %H:%M:%S")
 end
 
