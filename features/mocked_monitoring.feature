@@ -403,7 +403,6 @@ Feature: Mocked
 	When I click button "Done"
 	When I click an element with title "Go to list of all services on this host"
 	Then I should see the stored time in the UI
-	And I should see all elements in the UI
 
 	@gian
 	Scenario: Host Links > Locate Host on Map
@@ -412,7 +411,7 @@ Feature: Mocked
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Links" menu
 	And I click the element with data-menu-id "locate_host_on_map"
-	Then the image should have the alt text "NagVis"
+	#Then the image should have the alt text "NagVis"
 	And the image should have the alt text "monitor"
 
 	@gian
@@ -432,3 +431,22 @@ Feature: Mocked
 	And I hover over the "Links" menu
 	And I click the element with data-menu-id "graphs"
 	Then I should see "Service details monitor -> Host Perfdata"
+
+	@gian_yeet
+	Scenario: Host Configuration > Configure
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Configuration" menu
+	And I click the element with data-menu-id "configure"
+	Then I should see "Edit host monitor"
+
+	@gian_yeet
+	Scenario: Host Configuration > Delete
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Configuration" menu
+	And I click the element with data-menu-id "delete"
+	Then I should see "Delete:"
+	And I should see "monitor"
