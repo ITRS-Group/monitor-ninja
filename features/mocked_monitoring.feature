@@ -404,18 +404,19 @@ Feature: Mocked
 	When I click an element with title "Go to list of all services on this host"
 	Then I should see the stored time in the UI
 
-	@gian
+	@unreliable
+	#Disabled for the meantime since NagVis does not load correctly in buildbot
 	Scenario: Host Links > Locate Host on Map
 	Given I am on the Host details page
 	When I click "monitor"
 	And I hover over the "OPTIONS" menu
 	And I hover over the "Links" menu
 	And I click the element with data-menu-id "locate_host_on_map"
-	#Then the image should have the alt text "NagVis"
-	#And the image should have the alt text "monitor"
+	Then the image should have the alt text "NagVis"
+	And the image should have the alt text "monitor"
 	Then I should see all elements in the UI
 
-	@gian
+	@addedhappypath
 	Scenario: Host Links > Notifications
 	Given I am on the Host details page
 	When I click "monitor"
@@ -424,7 +425,7 @@ Feature: Mocked
 	And I click the element with data-menu-id "notifications"
 	Then I should see "Notifications"
 
-	@gian
+	@addedhappypath
 	Scenario: Host Links > Locate Host on Map
 	Given I am on the Host details page
 	When I click "monitor"
@@ -433,7 +434,7 @@ Feature: Mocked
 	And I click the element with data-menu-id "graphs"
 	Then I should see "Service details monitor -> Host Perfdata"
 
-	@gian_yeet
+	@gian
 	Scenario: Host Configuration > Configure
 	Given I am on the Host details page
 	When I click "monitor"
@@ -442,7 +443,7 @@ Feature: Mocked
 	And I click the element with data-menu-id "configure"
 	Then I should see "Edit host monitor"
 
-	@gian_yeet
+	@gian
 	Scenario: Host Configuration > Delete
 	Given I am on the Host details page
 	When I click "monitor"
