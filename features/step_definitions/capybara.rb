@@ -520,3 +520,9 @@ end
 Then /^the image should have the alt text "([^"]*)"$/ do |alt_text|
   expect(page).to have_selector("img[alt='#{alt_text}']")
 end
+
+Then /^I should see the following options:$/ do |table|
+  table.raw.flatten.each do |option|
+    expect(page).to have_content(option)
+  end
+end
