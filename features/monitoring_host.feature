@@ -137,14 +137,14 @@ Feature: Monitoring Host
 		When I click "monitor"
 		And I hover over the "OPTIONS" menu
 		And I hover over the "Report" menu
-		Then I should see these menu items:
-			| Cancel all downtimes |
-			| Add a new comment |
-			| Check now |
-			| Re-schedule next host check |
-			| Schedule downtime |
-			| Send custom notification |
-			| Submit passive check result |
+		Then I should see "Check now"
+		And I should see "Add an new comment"
+		And I should see "Submit passive check result"
+		And I should see "Re-schedule next host check"
+		And I should see "Schedule downtime"
+		And I should see "Cancel all downtimes"
+		And I should see "Send custom notification"
+
 
 	Scenario: Host object details displays scheduled downtime banner
 
