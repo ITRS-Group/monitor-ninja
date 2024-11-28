@@ -145,7 +145,8 @@ Feature: Monitoring Host
 			| Graphs |
 
 		When I hover "Actions" from the "OPTIONS" menu
-		Then I should see these menu items:
+		Then I should see all elements in the UI
+		And I should see these menu items:
 			| Cancel all downtimes |
 			| Add a new comment |
 			| Check now |
