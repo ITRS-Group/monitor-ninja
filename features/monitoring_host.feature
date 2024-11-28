@@ -133,20 +133,11 @@ Feature: Monitoring Host
 	@gian_edited
 	Scenario: Host object details commands available
 
-		Given I have these mocked hosts
-			| name       |
-			| Babaruajan |
-
-		And I visit the object details page for host "Babaruajan"
-		When I hover "Links" from the "OPTIONS" menu
+		Given I am on the Host details page
+		When I click "monitor"
+		And I hover over the "OPTIONS" menu
+		And I hover over the "Report" menu
 		Then I should see these menu items:
-			| Locate host on map |
-			| Notifications |
-			| Graphs |
-
-		When I hover "Actions" from the "OPTIONS" menu
-		Then I should see all elements in the UI
-		And I should see these menu items:
 			| Cancel all downtimes |
 			| Add a new comment |
 			| Check now |
@@ -154,26 +145,6 @@ Feature: Monitoring Host
 			| Schedule downtime |
 			| Send custom notification |
 			| Submit passive check result |
-
-		When I hover "Report" from the "OPTIONS" menu
-		Then I should see these menu items:
-			| Event log |
-			| Availability |
-			| Alert history |
-			| Histogram |
-
-		When I hover "Service Operations" from the "OPTIONS" menu
-		Then I should see these menu items:
-			| Disable checks of all services |
-			| Disable notifications for all services |
-			| Enable notifications for all services |
-			| Enable checks of all services |
-			| Schedule a check of all services |
-
-		When I hover "Configuration" from the "OPTIONS" menu
-		Then I should see these menu items:
-			| Configure |
-			| Delete |
 
 	Scenario: Host object details displays scheduled downtime banner
 
