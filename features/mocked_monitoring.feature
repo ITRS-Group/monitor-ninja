@@ -434,7 +434,7 @@ Feature: Mocked
 	And I click the element with data-menu-id "graphs"
 	Then I should see "Service details monitor -> Host Perfdata"
 
-	@gian
+	@addedhappypath
 	Scenario: Host Configuration > Configure
 	Given I am on the Host details page
 	When I click "monitor"
@@ -443,7 +443,7 @@ Feature: Mocked
 	And I click the element with data-menu-id "configure"
 	Then I should see "Edit host monitor"
 
-	@gian
+	@addedhappypath
 	Scenario: Host Configuration > Delete
 	Given I am on the Host details page
 	When I click "monitor"

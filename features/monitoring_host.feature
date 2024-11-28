@@ -130,6 +130,7 @@ Feature: Monitoring Host
 			|UNKNOWN 1|
 			|PENDING 1|
 
+	@gian_edited
 	Scenario: Host object details commands available
 
 		Given I have these mocked hosts
@@ -148,8 +149,10 @@ Feature: Monitoring Host
 			| Cancel all downtimes |
 			| Add a new comment |
 			| Check now |
+			| Re-schedule next host check |
 			| Schedule downtime |
 			| Send custom notification |
+			| Submit passive check result |
 
 		When I hover "Report" from the "OPTIONS" menu
 		Then I should see these menu items:
