@@ -130,7 +130,7 @@ Feature: Monitoring Host
 			|UNKNOWN 1|
 			|PENDING 1|
 
-	@gian_edited
+	@editedhappypath
 	Scenario: Host object details commands available
 		Given I am on the Host details page
 		When I click "monitor"
