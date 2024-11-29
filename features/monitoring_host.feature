@@ -132,12 +132,9 @@ Feature: Monitoring Host
 
 	@gian_edited
 	Scenario: Host object details commands available
-		Given I have these mocked hosts
-			| name       |
-			| Babaruajan |
-
-		And I visit the object details page for host "Babaruajan"
-		When I hover over the "OPTIONS" menu
+		Given I am on the Host details page
+		When I click "monitor"
+		And I hover over the "OPTIONS" menu
 		And I hover over the "Links" menu
 		Then I should see the following options:
 			| Locate host on map |
