@@ -94,7 +94,7 @@ class ORMRootObjectSetGenerator extends ORMRootGenerator {
 	}
 
 	public function generate_getIterator() {
-		$this->init_function('getIterator');
+		$this->init_function('getIterator', array(), array(), array(), 'Traversable');
 		$this->write('return $this->it(false,array());');
 		$this->finish_function();
 	}
