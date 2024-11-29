@@ -150,7 +150,7 @@ Feature: Monitoring Service
 
 		When I hover over the "OPTIONS" menu
 		And I hover over the "Report" menu
-		Then I should see these menu items:
+		Then I should see the following options:
 			| Event log |
 			| Availability |
 			| Alert history |
