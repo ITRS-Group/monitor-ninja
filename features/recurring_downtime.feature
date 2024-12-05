@@ -13,7 +13,7 @@ Feature: Recurring downtime
 		And I am on the main page
 
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a weekly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -33,7 +33,7 @@ Feature: Recurring downtime
 		And I should see "weekly recurring downtime"
 		And I should see "Repeat weekly on Thursday"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a weekly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -45,7 +45,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "weekly recurring downtime"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -65,7 +65,7 @@ Feature: Recurring downtime
 		And I should see "monthly recurring downtime"
 		And I should see "Repeat monthly on the 2nd Thursday"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -78,7 +78,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly recurring downtime"
 
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -98,7 +98,7 @@ Feature: Recurring downtime
 		And I should see "monthly last day recurring downtime"
 		And I should see "Repeat monthly on the last day"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -111,7 +111,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly last day recurring downtime"
 
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a custom daily recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -133,7 +133,7 @@ Feature: Recurring downtime
 		And I should see "custom daily recurring downtime"
 		And I should see "Repeat daily"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a custom daily recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -145,7 +145,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom daily recurring downtime"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a custom yearly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -167,7 +167,7 @@ Feature: Recurring downtime
 		And I should see "custom yearly recurring downtime"
 		And I should see "Repeat yearly on the 5th Thursday of May"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a custom yearly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -179,7 +179,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom yearly recurring downtime"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a custom monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -202,7 +202,7 @@ Feature: Recurring downtime
 		And I should see "custom monthly recurring downtime"
 		And I should see "Repeat every 5 months on the 5th Thursday"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a custom yearly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -214,7 +214,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom monthly recurring downtime"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a no recurrence recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -233,7 +233,7 @@ Feature: Recurring downtime
 		And I should see "no repeat recurrence recurring downtime"
 		And I should see "No recurrence"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a no recurrence recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -244,7 +244,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "no repeat recurrence recurring downtime"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Add a weekly recurring downtime for each monday starts at 2025-12-03
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -266,7 +266,7 @@ Feature: Recurring downtime
 		And "start_date" should contain "2025-12-03"
 		And "end_date" should contain "2025-12-03"
 
-	@edited_happy_path
+	@gian_edited
 	Scenario: Delete a weekly recurring downtime for each monday starts at 2025-12-03
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
