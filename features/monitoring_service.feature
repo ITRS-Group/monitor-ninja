@@ -1,4 +1,3 @@
-@monitoring
 Feature: Monitoring Service
 
 	Background:
