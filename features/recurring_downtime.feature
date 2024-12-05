@@ -19,7 +19,6 @@ Feature: Recurring downtime
 		And I clear and enter "2025-05-10" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-10" into "end_date"
-		#Then I should see all elements in the UI
 		And I select "Weekly on Saturday" from "recurrence_select"
 		And I clear and enter "weekly recurring downtime" into "comment"
 		And I click "Add Schedule"
@@ -27,7 +26,7 @@ Feature: Recurring downtime
 		And I should see "weekly recurring downtime"
 		And I should see "Repeat weekly on Saturday"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a weekly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -39,7 +38,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "weekly recurring downtime"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -47,19 +46,19 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-05-10" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-10" into "end_date"
-		And I select "Monthly on the 2nd Thursday" from "recurrence_select"
+		And I select "Monthly on the 2nd Saturday" from "recurrence_select"
 		And I clear and enter "monthly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "monthly recurring downtime"
-		And I should see "Repeat monthly on the 2nd Thursday"
+		And I should see "Repeat monthly on the 2nd Saturday"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -72,7 +71,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly recurring downtime"
 
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -80,19 +79,20 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly last day recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-05-31" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-31" into "end_date"
-		And I select "Monthly on the last day" from "recurrence_select"
+		And I select "Monthly on the 2nd Saturday" from "recurrence_select"
+		And I click "rec-on-last-day-month"
 		And I clear and enter "monthly last day recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "monthly last day recurring downtime"
 		And I should see "Repeat monthly on the last day"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
