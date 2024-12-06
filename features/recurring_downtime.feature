@@ -19,7 +19,7 @@ Feature: Recurring downtime
 		And I clear and enter "2025-05-10" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-10" into "end_date"
-		And I find the option with string "Weekly on Saturday" from "recurrence_select"
+		And I find the option with string "Weekly on" from "recurrence_select"
 		And I clear and enter "weekly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
