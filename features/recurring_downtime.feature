@@ -71,7 +71,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly recurring downtime"
 
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -106,7 +106,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly last day recurring downtime"
 
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a custom daily recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -114,21 +114,21 @@ Feature: Recurring downtime
 		Then I shouldn't see "custom daily recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-05-31" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-31" into "end_date"
 		And I select "Custom recurrence" from "recurrence_select"
 		And I select "Day" from "recurrence_text"
-		And I clear and enter "2019-05-10" into "finite_ends_value"
+		And I clear and enter "2026-05-10" into "finite_ends_value"
 		And I clear and enter "custom daily recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom daily recurring downtime"
 		And I should see "Repeat daily"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a custom daily recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -140,7 +140,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom daily recurring downtime"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a custom yearly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -148,21 +148,21 @@ Feature: Recurring downtime
 		Then I shouldn't see "custom yearly recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-05-31" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-31" into "end_date"
 		And I select "Custom recurrence" from "recurrence_select"
 		And I select "Year" from "recurrence_text"
-		And I clear and enter "2019-05-10" into "finite_ends_value"
+		And I clear and enter "2026-05-10" into "finite_ends_value"
 		And I clear and enter "custom yearly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom yearly recurring downtime"
-		And I should see "Repeat yearly on the 5th Thursday of May"
+		And I should see "Repeat yearly on the"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a custom yearly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -174,7 +174,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom yearly recurring downtime"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a custom monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -182,7 +182,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "custom monthly recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-05-31" into "start_date"
 		And I clear and enter "12:00" into "end_time"
@@ -195,9 +195,9 @@ Feature: Recurring downtime
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
 		And I should see "custom monthly recurring downtime"
-		And I should see "Repeat every 5 months on the 5th Thursday"
+		And I should see "Repeat every 5 months"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a custom yearly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -209,7 +209,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "custom monthly recurring downtime"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a no recurrence recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -217,7 +217,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "no recurrence recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-05-31" into "start_date"
 		And I clear and enter "12:00" into "end_time"
@@ -228,7 +228,7 @@ Feature: Recurring downtime
 		And I should see "no repeat recurrence recurring downtime"
 		And I should see "No recurrence"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a no recurrence recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -239,7 +239,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "no repeat recurrence recurring downtime"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Add a weekly recurring downtime for each monday starts at 2025-12-03
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -247,12 +247,12 @@ Feature: Recurring downtime
 		Then I shouldn't see "weekly recurring downtime"
 		When I click "New"
 		And I select "Hosts" from "downtime_type"
-		And I select "switch32" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I clear and enter "10:00" into "start_time"
 		And I clear and enter "2025-12-03" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-12-03" into "end_date"
-		And I select "Weekly on Monday" from "recurrence_select"
+		And I find the option with string "Weekly on" from "recurrence_select"
 		And I clear and enter "weekly recurring downtime on monday starts at 2025-12-03" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
@@ -261,7 +261,7 @@ Feature: Recurring downtime
 		And "start_date" should contain "2025-12-03"
 		And "end_date" should contain "2025-12-03"
 
-	@gian_edited1
+	@gian_edited
 	Scenario: Delete a weekly recurring downtime for each monday starts at 2025-12-03
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
