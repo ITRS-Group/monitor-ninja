@@ -527,7 +527,13 @@ Then /^I should see the following options:$/ do |table|
   end
 end
 
+#Find a part of a string in the selection
 When /^I find the option with string "(.*)" from "([^"]*)"$/ do |opt, sel|
   WaitForAjax.wait_for_ajax
   select(find(:option, text: /#{opt}/i).text, from: sel)
+end
+
+#Select radio button
+When /^I select radio button "([^"]*)"$/ do |id|
+  find(:radio_button, id).click
 end
