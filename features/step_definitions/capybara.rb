@@ -526,3 +526,8 @@ Then /^I should see the following options:$/ do |table|
     expect(page).to have_content(option)
   end
 end
+
+When /^I find the option with string "(.*)" from "([^"]*)"$/ do |opt, sel|
+  WaitForAjax.wait_for_ajax
+  select(find(:option, text: /#{opt}/i).text, from: sel)
+end
