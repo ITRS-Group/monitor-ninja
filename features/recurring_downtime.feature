@@ -19,7 +19,7 @@ Feature: Recurring downtime
 		And I clear and enter "2025-05-10" into "start_date"
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-10" into "end_date"
-		And I select "Weekly on Saturday" from "recurrence_select"
+		And I find the option with string "Weekly on Saturday" from "recurrence_select"
 		And I clear and enter "weekly recurring downtime" into "comment"
 		And I click "Add Schedule"
 		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
@@ -38,7 +38,7 @@ Feature: Recurring downtime
 		When I click "Delete schedule" and confirm popup
 		Then I shouldn't see "weekly recurring downtime"
 
-	@gian_edited
+	@gian_edited1
 	Scenario: Add a monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -58,7 +58,7 @@ Feature: Recurring downtime
 		And I should see "monthly recurring downtime"
 		And I should see "Repeat monthly on the 2nd Saturday"
 
-	@gian_edited
+	@gian_edited1
 	Scenario: Delete a monthly recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -71,7 +71,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly recurring downtime"
 
 
-	@gian_edited
+	@gian_edited1
 	Scenario: Add a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
@@ -85,13 +85,13 @@ Feature: Recurring downtime
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2025-05-31" into "end_date"
 		Then I should see all elements in the UI
-		#And I select "Monthly on the 2nd Saturday" from "recurrence_select"
-		#And I click "rec-on-last-day-month"
-		#And I clear and enter "monthly last day recurring downtime" into "comment"
-		#And I click "Add Schedule"
-		#Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
-		#And I should see "monthly last day recurring downtime"
-		#And I should see "Repeat monthly on the last day"
+		And I select "Monthly on the last Saturday" from "recurrence_select"
+		And I click "rec-on-last-day-month"
+		And I clear and enter "monthly last day recurring downtime" into "comment"
+		And I click "Add Schedule"
+		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
+		And I should see "monthly last day recurring downtime"
+		And I should see "Repeat monthly on the last day"
 
 	@gian_edited1
 	Scenario: Delete a monthly last day recurring downtime
