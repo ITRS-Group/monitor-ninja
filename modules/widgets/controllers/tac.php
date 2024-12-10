@@ -465,7 +465,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template = json::ok_view(sprintf("Unshared the dashboard '%s' from the %s %s.",
 			$dashboard->get_name(),
 			$table,
-			$object_key['value']
+			$object_key
 		));
 	}
 
