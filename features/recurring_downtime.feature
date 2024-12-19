@@ -261,10 +261,10 @@ Feature: Recurring downtime
 		And "end_date" should contain "2030-12-03"
 
 	@editedhappypath
-	Scenario: Delete a weekly recurring downtime for each monday starts at 2025-12-03
+	Scenario: Delete a weekly recurring downtime for each monday starts at 2030-12-03
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
 		And I click "Recurring Downtimes"
-		Then I should see "weekly recurring downtime on monday starts at 2025-12-03"
+		Then I should see "weekly recurring downtime on monday starts at 2030-12-03"
 		When I click "Delete schedule" and confirm popup
-		Then I shouldn't see "weekly recurring downtime on monday starts at 2025-12-03"
+		Then I shouldn't see "weekly recurring downtime on monday starts at 2030-12-03"

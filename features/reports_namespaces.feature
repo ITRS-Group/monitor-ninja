@@ -69,13 +69,24 @@ Feature: Report namespace are respected
 		When I click "As PDF"
 		Then I should see "Escaping? I don't think so!"
 
+	@gian
+	Scenario: PDF summary reports are not restricted
+		Given I am logged in as administrator
+		When I hover over the "Report" menu
+		And I hover over the "Summary" menu
+		And I click "Create Summary Report"
+		And I click "Show report"
+		When I click "As PDF"
+		Then a PDF link should be present
+
+	@gian_edited
 	Scenario: PDF histogram reports are not implemented
-		Given I have these mocked hosts
-			|name       |
-			|Slippy Toad|
+		Given I am logged in as administrator
 		When I hover over the "Report" menu
 		And I hover over the "Histogram" menu
 		And I click "Create Histogram Report"
+		And I select "Hosts" from "Report type"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I click "Show report"
 		# If this step fails, you've implemented PDF support for
 		# histogram reports, and should make sure to add a test
