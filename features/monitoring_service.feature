@@ -127,7 +127,7 @@ Feature: Monitoring Service
 		And I visit the object details page for service "Babaruajan" on host "Rosalind"
 		Then I should see "This is my awesome plugin output for my awesome check of awesomeness"
 
-	@gian_edited
+	@editedhappypath
 	Scenario: Service object details commands available
 
 		Given I am on the Service details page

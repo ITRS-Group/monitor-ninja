@@ -1,8 +1,9 @@
 Feature: Report namespace are respected
 
 	Background:
-		Given I have an admins user group with all rights
-		And I am logged in
+		Given I am logged in as administrator
+		#Given I have an admins user group with all rights
+		#And I am logged in
 		And I am on the main page
 
 	Scenario Outline: HTML reports are restricted
@@ -71,7 +72,6 @@ Feature: Report namespace are respected
 
 	@gian
 	Scenario: PDF summary reports are not restricted
-		Given I am logged in as administrator
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
 		And I click "Create Summary Report"
@@ -81,7 +81,6 @@ Feature: Report namespace are respected
 
 	@gian_edited
 	Scenario: PDF histogram reports are not implemented
-		Given I am logged in as administrator
 		When I hover over the "Report" menu
 		And I hover over the "Histogram" menu
 		And I click "Create Histogram Report"
