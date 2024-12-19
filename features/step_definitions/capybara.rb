@@ -537,3 +537,8 @@ end
 When /^I select radio button "([^"]*)"$/ do |id|
   find(:radio_button, id).click
 end
+
+#Check if pdf link is generated
+Then /^a PDF link should be present$/ do
+  expect(page).to have_selector("a[href$='.pdf']")
+end
