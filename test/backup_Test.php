@@ -11,7 +11,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 	private $controller;
 	private $backup_location;
 
-	public function setUp() : void {
+	public function setUp() {
 		exec("id monitor", $output, $exit_code);
 		if($exit_code != 0) {
 			$this->markTestSkipped("Could not find the ".
@@ -39,7 +39,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		$this->controller = new Backup_Controller($this->backup_location);
 	}
 
-	public function tearDown() : void {
+	public function tearDown() {
 		// php's rmdir() expects an empty directory, be convenient and
 		// use the good ol' rm -rf instead, after a small sanity check
 		// of the directory's path (yeah, I know, if-cases in tests are
@@ -108,15 +108,15 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		$controller->restore($this_backup);
 		echo"After Restore:";
 		var_dump($controller->template);
-		// $this->assertTrue(
-		// 	$controller->template->success,
-		// 	var_export($controller->template->message, true)
-		// );
-		// $this->assertSame(
-		// 	"The configuration '$this_backup' has been restored ".
-		// 	"successfully",
-		// 	$controller->template->value["result"]
-		// );
+		$this->assertTrue(
+			$controller->template->success,
+			var_export($controller->template->message, true)
+		);
+		$this->assertSame(
+			"The configuration '$this_backup' has been restored ".
+			"successfully",
+			$controller->template->value["result"]
+		);
 	}
 
 	#[Depends('test_backup')]
