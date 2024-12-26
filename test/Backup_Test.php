@@ -12,7 +12,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 	private $controller;
 	private $backup_location;
 
-	public function setUp() {
+	public function setUp(): void {
 		exec("id monitor", $output, $exit_code);
 		if($exit_code != 0) {
 			$this->markTestSkipped("Could not find the ".
@@ -40,7 +40,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		$this->controller = new Backup_Controller($this->backup_location);
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		// php's rmdir() expects an empty directory, be convenient and
 		// use the good ol' rm -rf instead, after a small sanity check
 		// of the directory's path (yeah, I know, if-cases in tests are
