@@ -1,5 +1,6 @@
 <?php
 use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\TextUI\Configuration\Group;
 /**
  * Test the backup functions that are reached through the GUI. There are other
  * types of backups being run too, you can read more about backups here:
