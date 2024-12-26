@@ -9,7 +9,7 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class First_Login_Test extends \PHPUnit\Framework\TestCase {
+class first_login_Test extends \PHPUnit\Framework\TestCase {
 
 	private $mock_data_path = false;
 	protected function setUp () : void {
