@@ -77,7 +77,7 @@ Feature: Report namespace are respected
 		And I click "Create Summary Report"
 		And I click "Show report"
 		When I click "As PDF"
-		Then a PDF link should be present
+		Then a PDF should be generated
 
 	@gian_edited
 	Scenario: PDF histogram reports are not implemented
