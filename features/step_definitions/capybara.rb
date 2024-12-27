@@ -539,6 +539,6 @@ When /^I select radio button "([^"]*)"$/ do |id|
 end
 
 #Check if pdf link is generated
-Then /^a PDF link should be present$/ do
+Then /^a PDF should be generated$/ do
   page.response_headers['Content-Type'].should include 'application/pdf'
 end
