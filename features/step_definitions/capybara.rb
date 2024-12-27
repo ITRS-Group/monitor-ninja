@@ -540,5 +540,5 @@ end
 
 #Check if pdf link is generated
 Then /^a PDF should be generated$/ do
-  page.response_headers['Content-Type'].should include 'application/pdf'
+  page.response_headers['Content-Type'].should == 'application/pdf'
 end
