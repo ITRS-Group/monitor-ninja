@@ -71,13 +71,34 @@ Feature: Report namespace are respected
 		Then I should see "Escaping? I don't think so!"
 
 	@gian
+	Scenario: PDF Availability reports are not restricted
+		When I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		And I click "Create Availability Report"
+		And I select "Hosts" from "Report type"
+		And I select "monitor" from the multiselect "objects_tmp"
+		And I click "Show report"
+		Then I should see "As PDF"
+
+	@gian
+	Scenario: PDF SLA reports are not restricted
+		When I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		And I click "Create SLA Report"
+		And I select "Hosts" from "Report type"
+		And I select "monitor" from the multiselect "objects_tmp"
+		And I enter "99" into "Jan"
+		And I click "Show report"
+		Then I should see "As PDF"
+
+	@gian
 	Scenario: PDF summary reports are not restricted
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
 		And I click "Create Summary Report"
 		And I click "Show report"
 		When I click "As PDF"
-		Then a PDF should be generated
+		Then I should see "As PDF"
 
 	@gian_edited
 	Scenario: PDF histogram reports are not implemented
