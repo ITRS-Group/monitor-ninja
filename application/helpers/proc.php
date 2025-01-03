@@ -45,12 +45,9 @@ class proc {
 
 		$resource = proc_open($command, $descriptorspec, $pipes);
 
-		// echo "Resource: ";
-		// var_dump($resource);
-
-		// if(!is_resource($resource)) {
-		// 	return false;
-		// }
+		if(!is_resource($resource)) {
+			return false;
+		}
 
 		fclose($pipes[0]);
 
@@ -59,11 +56,6 @@ class proc {
 
 		fclose($pipes[1]);
 		fclose($pipes[2]);
-
-		// echo "Resource Output: ";
-		// var_dump($stdout);
-		// echo "Resource Error: ";
-		// var_dump($stderr);
 
 		$exit_code = proc_close($resource);
 		return true;
