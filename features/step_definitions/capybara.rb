@@ -542,3 +542,8 @@ end
 Then /^a PDF should be generated$/ do
   page.response_headers['Content-Type'].should == 'application/pdf'
 end
+
+#Check helptext icon if it exist
+Then /^the helptext "([^"]*)" should exist$/ do |helptext|
+  expect(page).to have_selector("a.help-icon[data-popover='#{helptext}']")
+end
