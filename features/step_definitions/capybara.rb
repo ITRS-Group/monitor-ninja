@@ -537,6 +537,11 @@ end
 When /^I select radio button "([^"]*)"$/ do |id|
   find(:radio_button, id).click
 end
+ 
+#Select radio button
+When /^I select radio button "([^"]*)"$/ do |id|
+  find(:radio_button, id).click
+end
 
 #Check if pdf link is generated
 Then /^a PDF should be generated$/ do
@@ -546,4 +551,9 @@ end
 #Check helptext icon if it exist
 Then /^the helptext "([^"]*)" should exist$/ do |helptext|
   expect(page).to have_selector("a.help-icon[data-popover='#{helptext}']")
+end
+
+#Click a radio button without the id
+When /^I click on radio button without id "([^"]*)"$/ do |radio_button|
+  find(radio_button).click
 end
