@@ -29,14 +29,51 @@ Feature: Reports
 		And I click "Setup Histogram"
 		Then all helptexts should be defined
 
-	@calendar
-	Scenario: Toggle JS-calendars on custom report date
+	@gian_edited
+	Scenario: Toggle JS-calendars on custom report date for Availability Report
 		Given I am logged in
 		And I am on the main page
 		Then I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
+		And I select "Custom" from "Reporting period"
+		And I click css "#cal_start"
+		Then I should see css "#dp-popup"
+		When I click css ".jq-filterable-filter"
+		Then I shouldn't see css "#dp-popup"
+		When I click css "#cal_end"
+		Then I should see css "#dp-popup"
+		When I click css ".jq-filterable-filter"
+		Then I shouldn't see css "#dp-popup"
+
+	@gian
+	Scenario: Toggle JS-calendars on custom report date for Histogram Report
+		Given I am logged in
+		And I am on the main page
+		Then I am on the Host details page
+		When I hover over the "Report" menu
+		And I hover over the "Histogram" menu
+		And I click "Create Histogram Report"
+		And I select "Custom" from "Reporting period"
+		And I click css "#cal_start"
+		Then I should see css "#dp-popup"
+		When I click css ".jq-filterable-filter"
+		Then I shouldn't see css "#dp-popup"
+		When I click css "#cal_end"
+		Then I should see css "#dp-popup"
+		When I click css ".jq-filterable-filter"
+		Then I shouldn't see css "#dp-popup"
+
+	@gian
+	Scenario: Toggle JS-calendars on custom report date for Summary Report
+		Given I am logged in
+		And I am on the main page
+		Then I am on the Host details page
+		When I hover over the "Report" menu
+		And I hover over the "Summary" menu
+		And I click "Create Summary Report"
+		And I click on radio button without id "input[name='report_mode'][value='custom']"
 		And I select "Custom" from "Reporting period"
 		And I click css "#cal_start"
 		Then I should see css "#dp-popup"
@@ -77,7 +114,7 @@ Feature: Reports
 		And I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Histogram" menu
-		And I click "Setup Histogram"
+		And I click "Create Histogram Report"
 		Then the helptext "help:histogram.reporting_period" should exist
 		And the helptext "help:histogram.breakdown" should exist
 		And the helptext "help:histogram.state_types" should exist
