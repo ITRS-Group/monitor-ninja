@@ -70,7 +70,7 @@ Feature: Report namespace are respected
 		When I click "As PDF"
 		Then I should see "Escaping? I don't think so!"
 
-	@gian
+	@addedhappypath
 	Scenario: PDF Availability reports are not restricted
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
@@ -80,7 +80,7 @@ Feature: Report namespace are respected
 		And I click "Show report"
 		Then I should see "As PDF"
 
-	@gian
+	@addedhappypath
 	Scenario: PDF SLA reports are not restricted
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
@@ -91,7 +91,7 @@ Feature: Report namespace are respected
 		And I click "Show report"
 		Then I should see "As PDF"
 
-	@gian
+	@addedhappypath
 	Scenario: PDF summary reports are not restricted
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
@@ -100,7 +100,7 @@ Feature: Report namespace are respected
 		When I click "As PDF"
 		Then I should see "As PDF"
 
-	@gian_edited
+	@editedhappypath
 	Scenario: PDF histogram reports are not implemented
 		When I hover over the "Report" menu
 		And I hover over the "Histogram" menu
