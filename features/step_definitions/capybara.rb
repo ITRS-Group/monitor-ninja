@@ -461,6 +461,7 @@ Then /^I should see all elements in the UI$/ do
   elements = all('*')
 
   # Iterate through each element and display its details
+  sleep(20)
   elements.each do |element|
     puts "Tag: #{element.tag_name}"
     puts "Text: #{element.text.strip}" unless element.text.strip.empty?
