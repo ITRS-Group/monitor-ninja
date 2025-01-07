@@ -469,6 +469,7 @@ Then /^I should see all elements in the UI$/ do
     puts "Name: #{element[:name]}" if element[:name]
     puts "Href: #{element[:href]}" if element[:href]
     puts "Data-menu-id: #{element[:'data-menu-id']}" if element[:'data-menu-id']
+    puts "data-popover: #{element[:'data-popover']}" if element[:'data-popover']
     puts "-----------------------------"
   end
 end
