@@ -1,43 +1,42 @@
-@unreliable_el7
 Feature: Scheduled reports
 	Test that reports can be scheduled, that scheduled can be deleted, that
 	deleting schedules deletes reports...
 
-	Background:
-		Given I have these mocked hostgroups
-			| name           |
-			| LinuxServers   |
-			| WindowsServers |
-			| MixedGroup     |
-			| EmptyGroup     |
-		And I have these mocked hosts
-			| name           | groups                    |
-			| linux-server1  | LinuxServers,MixedGroup   |
-			| linux-server2  | LinuxServers              |
-			| win-server1    | WindowsServers            |
-			| win-server2    | WindowsServers,MixedGroup |
-		And I have these mocked servicegroups
-			| name  | alias                           |
-			| pings | ping services plus one non-ping |
-			| empty | nothing in here                 |
-		And I have these mocked services
-			| description | host          | check_command   | notifications_enabled | active_checks_enabled | groups |
-			| System Load | linux-server1 | check_nrpe!load | 1                     | 1                     |        |
-			| PING        | linux-server1 | check_ping      | 1                     | 0                     | pings  |
-			| System Load | linux-server2 | check_nrpe!load | 1                     | 1                     |        |
-			| PING        | win-server1   | check_ping      | 1                     | 0                     | pings  |
-			| Swap Usage  | win-server1   | check_swap      | 1                     | 0                     | pings  |
-			| PING        | win-server2   | check_ping      | 0                     | 1                     | pings  |
-		And I have these report data entries:
-			| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output                     |
-			| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                       |
-			| 2013-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - laa-laa               |
-			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander         |
-			| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - po                    |
-			| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky        |
-			| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
-			| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
-		And I am logged in
+	#Background:
+	#	Given I have these mocked hostgroups
+	#		| name           |
+	#		| LinuxServers   |
+	#		| WindowsServers |
+	#		| MixedGroup     |
+	#		| EmptyGroup     |
+	#	And I have these mocked hosts
+	#		| name           | groups                    |
+	#		| linux-server1  | LinuxServers,MixedGroup   |
+	#		| linux-server2  | LinuxServers              |
+	#		| win-server1    | WindowsServers            |
+	#		| win-server2    | WindowsServers,MixedGroup |
+	#	And I have these mocked servicegroups
+	#		| name  | alias                           |
+	#		| pings | ping services plus one non-ping |`
+	#		| empty | nothing in here                 |
+	#	And I have these mocked services
+	#		| description | host          | check_command   | notifications_enabled | active_checks_enabled | groups |
+	#		| System Load | linux-server1 | check_nrpe!load | 1                     | 1                     |        |
+	#		| PING        | linux-server1 | check_ping      | 1                     | 0                     | pings  |
+	#		| System Load | linux-server2 | check_nrpe!load | 1                     | 1                     |        |
+	#		| PING        | win-server1   | check_ping      | 1                     | 0                     | pings  |
+	#		| Swap Usage  | win-server1   | check_swap      | 1                     | 0                     | pings  |
+	#		| PING        | win-server2   | check_ping      | 0                     | 1                     | pings  |
+	#	And I have these report data entries:
+	#		| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output                     |
+	#		| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                       |
+	#		| 2013-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - laa-laa               |
+	#		| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander         |
+	#		| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - po                    |
+	#		| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky        |
+	#		| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
+	#		| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
+	#	And I am logged in
 
 	@reports
 	Scenario: Save avail report
@@ -321,6 +320,7 @@ Feature: Scheduled reports
 		And I hover over the "Availability" menu
 		When I click "Create Availability Report"
 		And I select "Hosts" from "report_type"
+		And I wait for 1 second
 		When I select "monitor" from the multiselect "objects_tmp"
 		Then "objects" should have option "monitor"
 		When I click "Show report"
