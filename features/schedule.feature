@@ -313,3 +313,22 @@ Feature: Scheduled reports
 		And I shouldn't see "saved_test_report"
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
+
+	@gian
+	Scenario: Save availability report
+		Given I am on the Host details page
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		And I select "Hosts" from "report_type"
+		When I select "monitor" from the multiselect "objects_tmp"
+		Then "objects" should have option "monitor"
+		When I click "Show report"
+		Then I should see "Host details for monitor"
+		And I should see "monitor"
+		And I should see "SSH server"
+		When I click "Save report"
+		And I enter "saved test report" into "report_name"
+		And I click "Save report" inside "#save_report_form"
+		And I wait for 1 second
+		Then I should see "Report was successfully saved"
