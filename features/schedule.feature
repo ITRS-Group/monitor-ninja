@@ -248,7 +248,7 @@ Feature: Scheduled reports
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "Custom" should be checked
-		And "objects" should have option "montior"
+		And "objects" should have option "monitor"
 		When I click "Delete" and confirm popup
 		Then "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "monitor"
