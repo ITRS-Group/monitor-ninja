@@ -2,65 +2,33 @@ Feature: Scheduled reports
 	Test that reports can be scheduled, that scheduled can be deleted, that
 	deleting schedules deletes reports...
 
-	#Background:
-	#	Given I have these mocked hostgroups
-	#		| name           |
-	#		| LinuxServers   |
-	#		| WindowsServers |
-	#		| MixedGroup     |
-	#		| EmptyGroup     |
-	#	And I have these mocked hosts
-	#		| name           | groups                    |
-	#		| linux-server1  | LinuxServers,MixedGroup   |
-	#		| linux-server2  | LinuxServers              |
-	#		| win-server1    | WindowsServers            |
-	#		| win-server2    | WindowsServers,MixedGroup |
-	#	And I have these mocked servicegroups
-	#		| name  | alias                           |
-	#		| pings | ping services plus one non-ping |`
-	#		| empty | nothing in here                 |
-	#	And I have these mocked services
-	#		| description | host          | check_command   | notifications_enabled | active_checks_enabled | groups |
-	#		| System Load | linux-server1 | check_nrpe!load | 1                     | 1                     |        |
-	#		| PING        | linux-server1 | check_ping      | 1                     | 0                     | pings  |
-	#		| System Load | linux-server2 | check_nrpe!load | 1                     | 1                     |        |
-	#		| PING        | win-server1   | check_ping      | 1                     | 0                     | pings  |
-	#		| Swap Usage  | win-server1   | check_swap      | 1                     | 0                     | pings  |
-	#		| PING        | win-server2   | check_ping      | 0                     | 1                     | pings  |
-	#	And I have these report data entries:
-	#		| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output                     |
-	#		| 2013-01-01 12:00:00 |        100 |  NULL |   NULL |               |                     |     0 |    0 |     0 |           NULL | NULL                       |
-	#		| 2013-01-01 12:00:01 |        801 |  NULL |   NULL | win-server1   |                     |     0 |    1 |     1 |           NULL | OK - laa-laa               |
-	#		| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander         |
-	#		| 2013-01-01 12:00:03 |        701 |  NULL |   NULL | win-server1   | PING                |     0 |    1 |     1 |           NULL | OK - po                    |
-	#		| 2013-01-01 12:00:04 |        701 |  NULL |   NULL | win-server1   | PING                |     1 |    0 |     1 |           NULL | ERROR - tinky-winky        |
-	#		| 2013-01-01 12:00:05 |        701 |  NULL |   NULL | win-server1   | Swap Usage          |     1 |    0 |     1 |           NULL | ERROR - out of teletubbies |
-	#		| 2013-01-01 12:00:02 |        801 |  NULL |   NULL | linux-server2 |                     |     0 |    1 |     1 |           NULL | PRETTY OK - Jon Skolmen    |
-	#	And I am logged in
+	Background:
+		Given I am logged in as administrator
+		And I am on the main page
 
-	@reports
-	Scenario: Save avail report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
+	@gian
+	Scenario: Save availability report
+		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
-		When I click "Create Availability Report"
-		When I select "LinuxServers" from the multiselect "objects_tmp"
-		Then "objects" should have option "LinuxServers"
+		And I click "Create Availability Report"
+		And I select "Hosts" from "report_type"
+		And I wait for 1 second
+		And I select "monitor" from the multiselect "objects_tmp"
+		Then "objects" should have option "monitor"
 		When I click "Show report"
-		Then I should see "Hostgroup breakdown"
-		And I should see "LinuxServers"
-		And I should see "linux-server1"
+		Then I should see "Host details for monitor"
+		And I should see "monitor"
+		And I should see "SSH server"
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
-
-	@reports
-	Scenario: Schedule avail report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+	
+	@gian
+	Scenario: Schedule availability report
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
 		When I select "Week" from "every_text"
@@ -74,25 +42,23 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports
-	Scenario: View scheduled avail report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+	@gian
+	Scenario: View scheduled availability report
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
 		And "Select report" should have option "saved test report"
 		And I should see "saved_test_report"
 		When I click "View report" on the row where "Report" is "saved test report"
-		Then I should see "Hostgroup breakdown"
-		And I should see "LinuxServers"
-		And I should see "linux-server1"
+		Then I should see "Host details for monitor"
+		And I should see "monitor"
+		And I should see "SSH server"
 
-	@reports
-	Scenario: Add second avail schedule
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+	@gian
+	Scenario: Add second availability schedule
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		And "Availability reports" should be selected from "Select report type"
 		And "Day" should be selected from "every_text"
@@ -111,57 +77,51 @@ Feature: Scheduled reports
 		And I click "OK" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		Then the "Description" column should be "A description" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 
-	@reports
-	Scenario: Delete previously created avail report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
+	@gian
+	Scenario: Delete previously created availability report
+		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
-		When I click "Create Availability Report"
+		And I click "Create Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
-		Then "objects" should have option "LinuxServers"
+		Then "objects" should have option "monitor"
 		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
-		Then "objects_tmp" should have option "LinuxServers"
+		Then "objects_tmp" should have option "monitor"
 		And "Saved reports" shouldn't have option "saved test report"
-		And "objects" shouldn't have option "LinuxServers"
+		And "objects" shouldn't have option "monitor"
 
-	@reports
-	Scenario: Ensure previously added avail schedule is gone
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+	@gian
+	Scenario: Ensure previously added availability schedule is gone
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		And I shouldn't see "saved_test_report"
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@reports
+	@gian
 	Scenario: Save SLA report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
+		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Create SLA Report"
-		When I select "LinuxServers" from the multiselect "objects_tmp"
-		Then "objects" should have option "LinuxServers"
+		And I click "Create SLA Report"
+		And I select "monitor" from the multiselect "objects_tmp"
+		Then "objects" should have option "monitor"
 		When I enter "9" into "Jan"
 		And I click "Show report"
-		Then I should see "SLA breakdown for: LinuxServers"
-		And I should see "Group members"
-		And I should see "linux-server1"
-		And I should see "linux-server2"
+		Then I should see "SLA breakdown for: monitor"
+		And I should see "SSH server"
 		When I click "Save report"
 		And I enter "saved test report" into "report_name"
 		And I click "Save report" inside "#save_report_form"
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 
-	@reports
+	@gian
 	Scenario: Schedule SLA report on first day of every second month
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
@@ -179,25 +139,22 @@ Feature: Scheduled reports
 		And I should see "dev@op5.com"
 		And I should see "Every 2 months on the first day of month at 12:00"
 
-	@reports
+	@gian
 	Scenario: View scheduled SLA report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 		And I should see "saved_test_report"
 		When I click "View report" on the row where "Report" is "saved test report"
-		Then I should see "SLA breakdown for: LinuxServers"
-		And I should see "Group members"
-		And I should see "linux-server1"
-
-	@reports
+		Then I should see "SLA breakdown for: monitor"
+		And I should see "SSH server"
+	
+	@gian
 	Scenario: Delete SLA schedule
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
@@ -212,42 +169,39 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 
-	@reports
+	@gian
 	Scenario: Delete previously created SLA report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
+		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
-		When I click "Create SLA Report"
+		And I click "Create SLA Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
-		When I select "saved test report"
-		Then "objects" should have option "LinuxServers"
+		And I select "saved test report"
+		Then "objects" should have option "monitor"
 		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
-		Then "objects_tmp" should have option "LinuxServers"
+		Then "objects_tmp" should have option "monitor"
 		And "Saved reports" shouldn't have option "saved test report"
-		And "objects" shouldn't have option "LinuxServers"
-
-	@reports
+		And "objects" shouldn't have option "monitor"
+	
+	@gian
 	Scenario: Ensure previously added sla schedule is gone
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		And I select "SLA report" from "Select report type"
 		Then I should see "New Schedule"
 		And I shouldn't see "saved_test_report"
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@reports
+	@gian
 	Scenario: Save summary report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
+		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
-		When I click "Create Summary Report"
+		And I click "Create Summary Report"
 		And I choose "Custom"
-		And I select "LinuxServers" from the multiselect "objects_tmp"
-		Then "objects" should have option "LinuxServers"
+		And I select "monitor" from the multiselect "objects_tmp"
+		Then "objects" should have option "monitor"
 		When I click "Show report"
 		Then I should see "Top alert producers"
 		When I click "Save report"
@@ -255,12 +209,11 @@ Feature: Scheduled reports
 		And I click "Save report" inside "#save_report_form"
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
-
-	@reports
+	
+	@gian
 	Scenario: Schedule summary report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report" waiting patiently
@@ -275,11 +228,10 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@reports
+	@gian
 	Scenario: View scheduled summary report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
-		When I click "Schedule reports"
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
 		Then I should see "New Schedule"
 		When I select "Alert Summary Report" from "Select report type"
 		Then "Select report" should have option "saved test report"
@@ -287,22 +239,21 @@ Feature: Scheduled reports
 		When I click "View report" on the row where "Report" is "saved test report"
 		Then I should see "Top alert producers"
 
-	@reports
+	@gian
 	Scenario: Delete previously created summary report
-		Given I am on the Host details page
-		And I hover over the "Report" menu
+		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
 		When I click "Create Summary Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "Custom" should be checked
-		And "objects" should have option "LinuxServers"
+		And "objects" should have option "montior"
 		When I click "Delete" and confirm popup
 		Then "Saved reports" shouldn't have option "saved test report"
-		And "objects" shouldn't have option "LinuxServers"
+		And "objects" shouldn't have option "monitor"
 
-	@reports
+	@gian
 	Scenario: Ensure previously added summary schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
@@ -312,25 +263,3 @@ Feature: Scheduled reports
 		And I shouldn't see "saved_test_report"
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
-
-	@gian
-	Scenario: Save availability report
-		Given I am logged in as administrator
-		And I am on the main page
-		#Given I am on the Host details page
-		And I hover over the "Report" menu
-		And I hover over the "Availability" menu
-		When I click "Create Availability Report"
-		And I select "Hosts" from "report_type"
-		And I wait for 1 second
-		When I select "monitor" from the multiselect "objects_tmp"
-		Then "objects" should have option "monitor"
-		When I click "Show report"
-		Then I should see "Host details for monitor"
-		And I should see "monitor"
-		And I should see "SSH server"
-		When I click "Save report"
-		And I enter "saved test report" into "report_name"
-		And I click "Save report" inside "#save_report_form"
-		And I wait for 1 second
-		Then I should see "Report was successfully saved"
