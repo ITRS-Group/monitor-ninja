@@ -40,9 +40,7 @@ Feature: Scheduled reports
 
 	@reports
 	Scenario: Save avail report
-		Given I am logged in as administrator
-		And I am on the main page
-		#Given I am on the Host details page
+		Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		When I click "Create Availability Report"
@@ -317,7 +315,9 @@ Feature: Scheduled reports
 
 	@gian
 	Scenario: Save availability report
-		Given I am on the Host details page
+		Given I am logged in as administrator
+		And I am on the main page
+		#Given I am on the Host details page
 		And I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		When I click "Create Availability Report"
