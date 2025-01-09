@@ -118,7 +118,7 @@ Feature: Reports
 		And I hover over the "Histogram" menu
 		And I click "Create Histogram Report"
 		Then I should see all elements in the UI
-	$	Then the helptext "help:histogram.reporting_period" should exist
+	#	Then the helptext "help:histogram.reporting_period" should exist
 	#	And the helptext "help:histogram.breakdown" should exist
 	#	And the helptext "help:histogram.state_types" should exist
 	#	And the helptext "help:histogram.newstatesonly" should exist
