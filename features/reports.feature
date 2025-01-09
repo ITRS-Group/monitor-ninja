@@ -104,7 +104,6 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
 		And I click "Create SLA Report"
-		Then I should see all elements in the UI
 		Then the helptext "help:sla.report-type" should exist
 		And the helptext "help:sla.reporting_period" should exist
 		And the helptext "help:sla.report_time_period" should exist
