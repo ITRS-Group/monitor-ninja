@@ -127,7 +127,7 @@ Feature: Reports
 		Given I am logged in
 		And I am on the Host details page
 		When I hover over the "Report" menu
-		And I click "Schedule Reports"
+		And I click "Schedule reports"
 		Then I should see all elements in the UI
 	#	Then the helptext "help:reports.report-type-save" should exist
 	#	And the helptext "help:reports.select-report" should exist
