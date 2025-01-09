@@ -120,8 +120,16 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "Histogram" menu
 		And I click "Create Histogram Report"
+		Then the helptext "help:histogram.report-type" should exist
+	
+	@gian
+	Scenario: Check helptexts in Scheduled Report
+		Given I am logged in
+		And I am on the Host details page
+		When I hover over the "Report" menu
+		And I click "Schedule Reports"
 		Then I should see all elements in the UI
-	#	Then the helptext "help:histogram.reporting_period" should exist
-	#	And the helptext "help:histogram.breakdown" should exist
-	#	And the helptext "help:histogram.state_types" should exist
-	#	And the helptext "help:histogram.newstatesonly" should exist
+	#	Then the helptext "help:reports.report-type-save" should exist
+	#	And the helptext "help:reports.select-report" should exist
+	#	And the helptext "help:reports.recipents" should exist
+	#	And the helptext "help:reports.filename" should exist
