@@ -133,3 +133,14 @@ Feature: Reports
 	#	And the helptext "help:reports.select-report" should exist
 	#	And the helptext "help:reports.recipents" should exist
 	#	And the helptext "help:reports.filename" should exist
+
+	@gian
+	Scenario: Check helptexts in Alert Summary Report
+		Given I am logged in
+		And I am on the Host details page
+		When I hover over the "Report" menu
+		And I hover over the "Summary" menu
+		And I click "Create Summary Report"
+		Then I should see all elements in the UI
+	#	Then the helptext "help:summary.standardreport" should exist
+	#	And the helptext "help:summary.summary_items" should exist
