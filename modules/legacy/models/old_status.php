@@ -17,7 +17,7 @@ class Old_Status_Model extends Model {
 		}
 		# Multi-parameter filter, use parentheses galore
 		else if (is_array($filter)) {
-			return '('.implode($filter, ') '.$type.' (').')';
+			return '('. implode(') ' .$type. ' (', $filter) .')';
 		}
 		# String, I guess? Just return it, I'm sure it's awesome
 		else {
