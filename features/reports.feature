@@ -91,8 +91,21 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
-		Then the helptext "help:op5avail.include_alerts" should exist
-		And the helptext "help:op5avail.include_trends" should exist
-		And the helptext "help:op5avail.synergy_events" should exist
-		And the helptext "help:op5avail.use_summary" should exist
-		And the helptext "help:op5avail.description" should exist
+		Then the helptext "help:avail.include_alerts" should exist
+		And the helptext "help:avail.include_trends" should exist
+		And the helptext "help:avail.synergy_events" should exist
+		And the helptext "help:avail.use_summary" should exist
+		And the helptext "help:avail.description" should exist
+		
+	@gian
+	Scenario: Check helptexts in SLA Report
+		Given I am logged in
+		And I am on the Host details page
+		When I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		And I click "Create SLA Report"
+		Then I should see all elements in the UI
+		#Then the helptext "help:op5sla.reporting_period" should exist
+		#And the helptext "help:op5sla.report_time_period" should exist
+		#And the helptext "help:op5sla.sla_mode" should exist
+		#And the helptext "help:op5sla.scheduled_downtime" should exist
