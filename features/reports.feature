@@ -129,10 +129,13 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
 		Then I should see all elements in the UI
-	#	Then the helptext "help:reports.report-type-save" should exist
-	#	And the helptext "help:reports.select-report" should exist
-	#	And the helptext "help:reports.recipents" should exist
-	#	And the helptext "help:reports.filename" should exist
+		Then the helptext "help:reports.filename" should exist
+		And the helptext "help:reports.description" should exist
+		And the helptext "help:reports.attach_description" should exist
+		And the helptext "help:reports.local_persistent_filepath" should exist
+		And the helptext "help:reports.recipents" should exist
+		And the helptext "help:reports.select-report" should exist
+		And the helptext "help:reports.report-type-save" should exist
 
 	@gian
 	Scenario: Check helptexts in Alert Summary Report
@@ -140,5 +143,6 @@ Feature: Reports
 		And I am on the Host details page
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
+		And I click "Create Summary Report"
 		Then the helptext "help:summary.standardreport" should exist
 		And the helptext "help:summary.summary_items" should exist
