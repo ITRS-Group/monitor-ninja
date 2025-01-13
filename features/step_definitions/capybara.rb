@@ -563,3 +563,7 @@ end
 When /^I click the span with text "([^"]*)"$/ do |text|
   find('span', text: text).click
 end
+
+When /^I click the span with text "Save" and changes count$/ do
+  find('span.toolbar-icon-label', text: 'Save').click
+end
