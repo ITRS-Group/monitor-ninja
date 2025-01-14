@@ -587,3 +587,8 @@ end
 When /^I click the span with text "Save" and changes count$/ do
   find('span.toolbar-icon-label', text: 'Save').click
 end
+
+Given /^I store the IP address$/ do
+  @ip_address = `hostname -I`.strip
+  puts "Stored IP address: #{@ip_address}"
+end
