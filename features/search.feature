@@ -87,6 +87,7 @@ Feature: Global search
 
 	@gian
 	Scenario: Create Hosts
+		Given I store the IP address
 		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Hosts"
