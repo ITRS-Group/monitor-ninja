@@ -1,9 +1,10 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once('op5/auth/Auth.php');
 require_once('op5/objstore.php');
 
-use PHPUnit\Framework\Attributes\DataProvider;
 class report_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
