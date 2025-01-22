@@ -53,7 +53,6 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			$test->db_type = $db_type;
 			$test->db_host = $db_host;
 		}
-		var_dump($test);
 		return [
 			[$tfile,
 			$test->description,
