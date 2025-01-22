@@ -36,7 +36,8 @@ class User_AlwaysAuth_Model extends User_Model {
 		if (!isset($auth_data[$type]))
 			throw new Exception(
 				"Unknown authorization type $type: are you sure everything was spelled correctly?");
-		$auth_data[$type] = $value;
+		// $auth_data[$type] = $value;
+		$auth_data = [$type => $value];
 		$this->set_auth_data($auth_data);
 	}
 
