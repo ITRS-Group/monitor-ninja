@@ -55,7 +55,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Move the cursor to the next object
 	 */
-	public function next(): int
+	public function next()
 	{
 		$this->data->next();
 	}
