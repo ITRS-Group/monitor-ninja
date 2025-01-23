@@ -86,7 +86,7 @@ class NoticeManager_Model implements ArrayAccess, IteratorAggregate, Countable {
 	/**
 	 * Implements IteratorAggregate
 	 */
-	public function getIterator() {
+	public function getIterator(): ArrayIterator {
 		return new ArrayIterator($this->notices);
 	}
 }

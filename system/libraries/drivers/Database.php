@@ -530,7 +530,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Countable: count
 	 */
-	public function count()
+	public function count(): int
 	{
 		return $this->total_rows;
 	}
@@ -538,7 +538,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetExists
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool
 	{
 		if ($this->total_rows > 0)
 		{
@@ -554,7 +554,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetGet
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		if ( ! $this->seek($offset))
 			return FALSE;
@@ -568,7 +568,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
-	final public function offsetSet($offset, $value)
+	final public function offsetSet($offset, $value): void
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
@@ -578,7 +578,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
-	final public function offsetUnset($offset)
+	final public function offsetUnset($offset): void
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
@@ -586,7 +586,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: current
 	 */
-	public function current()
+	public function current(): mixed
 	{
 		return $this->offsetGet($this->current_row);
 	}
@@ -594,7 +594,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: key
 	 */
-	public function key()
+	public function key(): mixed
 	{
 		return $this->current_row;
 	}
@@ -602,7 +602,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: next
 	 */
-	public function next()
+	public function next(): void
 	{
 		++$this->current_row;
 		return $this;
@@ -620,7 +620,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: rewind
 	 */
-	public function rewind()
+	public function rewind(): void
 	{
 		$this->current_row = 0;
 		return $this;
@@ -629,7 +629,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: valid
 	 */
-	public function valid()
+	public function valid(): bool
 	{
 		return $this->offsetExists($this->current_row);
 	}

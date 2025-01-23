@@ -27,7 +27,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Get the current object from the dataset
 	 */
-	public function current()
+	public function current(): mixed
 	{
 		if(!$this->valid()) {
 			return false;
@@ -47,7 +47,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Get the key of the element
 	 */
-	public function key()
+	public function key(): mixed
 	{
 		return $this->data->key();
 	}
@@ -55,7 +55,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Move the cursor to the next object
 	 */
-	public function next()
+	public function next(): void
 	{
 		$this->data->next();
 	}
@@ -63,7 +63,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Rewind the set
 	 */
-	public function rewind()
+	public function rewind(): void
 	{
 		$this->ptr = $this->data->rewind();
 	}
@@ -71,7 +71,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Return if the data is valid
 	 */
-	public function valid()
+	public function valid(): bool
 	{
 		return $this->data->valid();
 	}

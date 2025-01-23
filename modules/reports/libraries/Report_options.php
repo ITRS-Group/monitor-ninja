@@ -276,7 +276,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
-	public function offsetGet($str)
+	public function offsetGet($str): mixed
 	{
 		if (!isset($this->properties[$str]))
 			return NULL;
@@ -287,7 +287,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
-	public function offsetSet($key, $val)
+	public function offsetSet($key, $val): void
 	{
 		$this->set($key, $val);
 	}
@@ -295,7 +295,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
-	public function offsetExists($key)
+	public function offsetExists($key): bool
 	{
 		return isset($this->properties[$key]);
 	}
@@ -303,7 +303,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
-	public function offsetUnset($key)
+	public function offsetUnset($key): void
 	{
 		unset($this->options[$key]);
 	}
