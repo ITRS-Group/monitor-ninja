@@ -63,7 +63,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Rewind the set
 	 */
-	public function rewind(): void
+	public function rewind()
 	{
 		$this->ptr = $this->data->rewind();
 	}
