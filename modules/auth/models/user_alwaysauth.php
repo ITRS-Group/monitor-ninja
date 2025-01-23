@@ -24,15 +24,6 @@ class User_AlwaysAuth_Model extends User_Model {
 	}
 
 	/**
-	 * Get the authorization data
-	 *
-	 * @return array
-	 */
-	public function get_auth_data() {
-		return unserialize($this->auth_data);
-	}
-
-	/**
 	 * If you want to start out with an "auth me for everything" but
 	 * gradually deny some rights, this is the method you are looking for.
 	 *
