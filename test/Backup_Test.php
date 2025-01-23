@@ -53,7 +53,6 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		unset($this->controller);
 	}
 
-	#[\ReturnTypeWillChange]
 	public function test_backup(): void	 {
 		$controller = $this->controller;
 		$controller->backup();
@@ -105,11 +104,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		// make sure that we're not reusing the old view.. return
 		// variables are nice in that they do not rely on state..
 		$controller->template = null;
-		echo"Before Restore:";
-		var_dump($controller->template);
 		$controller->restore($this_backup);
-		echo"After Restore:";
-		var_dump($controller->template);
 		$this->assertTrue(
 			$controller->template->success,
 			var_export($controller->template->message, true)
