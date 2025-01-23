@@ -602,7 +602,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: next
 	 */
-	public function next(): int
+	public function next()
 	{
 		return ++$this->current_row;
 	}
