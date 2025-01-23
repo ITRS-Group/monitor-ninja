@@ -31,13 +31,12 @@ class User_AlwaysAuth_Model extends User_Model {
 	 * @param $type string
 	 * @param $value bool
 	 */
-	public function set_authorized_for ($type, $value) {
+	public function set_authorized_for ($type, $value=false) {
 		$auth_data = unserialize($this->get_auth_data());
 		if (!isset($auth_data[$type]))
 			throw new Exception(
 				"Unknown authorization type $type: are you sure everything was spelled correctly?");
-		// $auth_data[$type] = $value;
-		$auth_data = [$type => $value];
+		$auth_data[$type] = $value;
 		$this->set_auth_data($auth_data);
 	}
 

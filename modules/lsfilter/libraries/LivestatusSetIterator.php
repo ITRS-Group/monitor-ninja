@@ -55,7 +55,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Move the cursor to the next object
 	 */
-	public function next(): void
+	public function next(): int
 	{
 		$this->data->next();
 	}
@@ -63,7 +63,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Rewind the set
 	 */
-	public function rewind(): void
+	public function rewind(): int
 	{
 		$this->ptr = $this->data->rewind();
 	}
