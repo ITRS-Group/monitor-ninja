@@ -604,8 +604,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	public function next()
 	{
-		++$this->current_row;
-		return $this;
+		return ++$this->current_row;
 	}
 
 	/**
@@ -613,17 +612,15 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	public function prev()
 	{
-		--$this->current_row;
-		return $this;
+		return --$this->current_row;
 	}
 
 	/**
 	 * Iterator: rewind
 	 */
-	public function rewind(): void
+	public function rewind()
 	{
-		$this->current_row = 0;
-		return $this;
+		return $this->current_row = 0;
 	}
 
 	/**
