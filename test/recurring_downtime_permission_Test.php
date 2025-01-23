@@ -1,6 +1,9 @@
 <?php
 class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 {
+	private $auth;
+	private $created;
+	
 	public function createDowntime($data)
 	{
 		foreach (ScheduleDate_Model::$valid_fields as $field) {
