@@ -24,6 +24,15 @@ class User_AlwaysAuth_Model extends User_Model {
 	}
 
 	/**
+	 * Get the authorization data
+	 *
+	 * @return array
+	 */
+	public function get_auth_data() {
+		return unserialize($this->auth_data);
+	}
+
+	/**
 	 * If you want to start out with an "auth me for everything" but
 	 * gradually deny some rights, this is the method you are looking for.
 	 *
@@ -31,8 +40,8 @@ class User_AlwaysAuth_Model extends User_Model {
 	 * @param $type string
 	 * @param $value bool
 	 */
-	public function set_authorized_for ($type, $value=false) {
-		$auth_data = unserialize($this->get_auth_data());
+	public function set_authorized_for ($type, bool $value) {
+		$auth_data = $this->get_auth_data();
 		if (!isset($auth_data[$type]))
 			throw new Exception(
 				"Unknown authorization type $type: are you sure everything was spelled correctly?");
