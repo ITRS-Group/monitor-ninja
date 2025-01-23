@@ -620,7 +620,8 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	public function rewind(): int
 	{
-		return $this->current_row = 0;
+		$this->current_row = 0;
+		return 0; //test: since we are not returning anything, return 0
 	}
 
 	/**
