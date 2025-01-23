@@ -479,7 +479,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 				$ctrl->generate($option);
 				$out = $ctrl->template->render();
 
-				$this->assertEquals(count(explode("\n", trim($out))), $details['expected'], "Unexpected number of lines generated for $report_type $test_name, output was: $out");
+				$this->assertCount($details['expected'], explode("\n", trim($out)), "Unexpected number of lines generated for $report_type $test_name, output was: $out");
 				$this->assertSame(strpos($out, '""'), false, "Expected no empty parameters for $report_type $test_name, found in $out");
 				if ($report_type != 'Sla' || $option['report_type'] != 'services') # Because that case has comma-separated host-and-description names. Obviously.
 					$this->assertSame(strpos($out, ';'), false, "Expected no semi-colons in output for $report_type $test_name, found in $out");
