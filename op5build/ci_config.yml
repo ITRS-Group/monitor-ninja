@@ -26,7 +26,7 @@ post:
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
     IP_ADDRESS=$(hostname -I | awk '{print $1}')
-    echo "Server IP address: $IP_ADDRESS"
+    echo "Server IP address: $IP_ADDRESS" >> gian.txt
     #cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
     cucumber -t "@gian or @gian_edited" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
 
