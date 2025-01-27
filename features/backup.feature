@@ -11,7 +11,7 @@ Feature: Backup/Restore configuration
 		Then I should see "The current configuration is valid. Do you really want to backup your current configuration?"
 		And I click button "Yes"
 		And I wait for 3 seconds
-		Then I should see regex "backup-.*\.tar\.gz"
+		Then I should see regex "bam.*\.tar\.gz"
 		And I click "Restore Backup"
 		Then I should see "Do you really want to restore this backup?"
 		And I click button "Yes"
