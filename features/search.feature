@@ -90,7 +90,7 @@ Feature: Global search
 		Given I store the IP address
 		When I hover over the "Manage" menu
 		And I click "Configure"
-		And I click the span with text "Hosts"
+		And I click the span with description "Hosts are network connected devices you wish to monitor"
 		And I clear and enter "Google Google Google" into "new_host[-1][host_name]"
 		And I clear and enter "www.google.com" into "new_host[-1][address]"
 		And I click "scanBtn"
