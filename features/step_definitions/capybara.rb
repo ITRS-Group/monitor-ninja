@@ -560,15 +560,10 @@ When /^I click on radio button without id "([^"]*)"$/ do |radio_button|
   find(radio_button).click
 end
 
-When /^I click the span with text "([^"]*)"$/ do |text|
-  find('span', text: text).click
+When /^I click the span with description "([^"]*)"$/ do |description|
+  find('span.configuration-page-description', text: description).click
 end
 
 When /^I click the span with text "Save" and changes count$/ do
   find('span.toolbar-icon-label', text: 'Save').click
-end
-
-Given /^I store the IP address$/ do
-  @ip_address = `hostname -I`.strip
-  puts "Stored IP address: #{@ip_address}"
 end
