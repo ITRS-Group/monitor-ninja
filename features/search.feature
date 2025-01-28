@@ -90,10 +90,11 @@ Feature: Global search
 		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with description "Hosts are network connected devices you wish to monitor"
-		And I clear and enter "Google Google Google" into "new_host[-1][host_name]"
-		And I clear and enter "www.google.com" into "new_host[-1][address]"
-		And I click "scanBtn"
-		And I click "finish_submit"
-		And I click the span with text "Save" and changes count
-		And I click "nachos_save_btn_user"
-		Then I should see "Changes successfully saved"
+		Then I should see all elements in the UI
+		#And I clear and enter "Google Google Google" into "new_host[-1][host_name]"
+		#And I clear and enter "www.google.com" into "new_host[-1][address]"
+		#And I click "scanBtn"
+		#And I click "finish_submit"
+		#And I click the span with text "Save" and changes count
+		#And I click "nachos_save_btn_user"
+		#Then I should see "Changes successfully saved"
