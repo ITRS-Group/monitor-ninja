@@ -1,7 +1,7 @@
 Feature: Global search
-	Background:
-		Given I am logged in
-		And I am on the main page
+	#Background:
+	#	Given I am logged in
+	#	And I am on the main page
 
 	Scenario: Search for host with spaces
 		Given I have these mocked hosts
