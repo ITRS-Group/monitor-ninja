@@ -87,6 +87,7 @@ Feature: Global search
 
 	@gian
 	Scenario: Create Hosts
+		Given I am logged in as "monitor" with password "monitor"
 		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with description "Hosts are network connected devices you wish to monitor"
