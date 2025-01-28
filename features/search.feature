@@ -90,7 +90,7 @@ Feature: Global search
 		Given I am real logged in as "monitor" with password "monitor"
 		When I hover over the "Manage" menu
 		And I click "Configure"
-		#And I click the span with description "Hosts are network connected devices you wish to monitor"
+		And I click the span with text "Hosts"
 		Then I should see all elements in the UI
 		#And I clear and enter "Google Google Google" into "new_host[-1][host_name]"
 		#And I clear and enter "www.google.com" into "new_host[-1][address]"
