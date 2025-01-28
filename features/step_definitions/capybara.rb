@@ -581,8 +581,8 @@ When /^I click on radio button without id "([^"]*)"$/ do |radio_button|
   find(radio_button).click
 end
 
-When /^I click the span with description "([^"]*)"$/ do |description|
-  find('span.configuration-page-description', text: description).click
+When /^I click the span with text "([^"]*)"$/ do |text|
+  find('span', text: text).click
 end
 
 When /^I click the span with text "Save" and changes count$/ do
