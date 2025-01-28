@@ -1,11 +1,13 @@
-Given /^I am logged in as real admin$/ do
+Given /^I am logged in as "([^"]*)" with password "([^"]*)"$/ do |username, password|
 	steps %Q{
-		When I am at the login screen
-		And I enter "admin1" into "username"
-		And I enter "123123" into "password"
+		When I am on the main page
+		And I enter "#{username}" into "username"
+		And I enter "#{password}" into "password"
 		And I click "Log in"
-		Then I hover the profile
-		And I should see "Log out"
+		Then I should see "Log out"
 	}
-	step %Q|I enter nacoma|
 end
+
+When /^I enter "([^"]*)" into "([^"]*)"$/ do |val, sel|
+    fill_in(sel % @params, :with => val)
+  end
