@@ -1,4 +1,4 @@
-Given /^I am logged in as "([^"]*)" with password "([^"]*)"$/ do |username, password|
+Given /^I am real logged in as "([^"]*)" with password "([^"]*)"$/ do |username, password|
 	steps %Q{
 		When I am on the main page
 		And I enter "#{username}" into "username"
