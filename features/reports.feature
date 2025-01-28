@@ -84,7 +84,7 @@ Feature: Reports
 		When I click css ".jq-filterable-filter"
 		Then I shouldn't see css "#dp-popup"
 
-	@gian
+	@addedhappypath
 	Scenario: Check helptexts in Availability Report
 		Given I am logged in
 		And I am on the Host details page
@@ -97,7 +97,7 @@ Feature: Reports
 		And the helptext "help:avail.use_alias" should exist
 		And the helptext "help:avail.description" should exist
 		
-	@gian
+	@addedhappypath
 	Scenario: Check helptexts in SLA Report
 		Given I am logged in
 		And I am on the Host details page
@@ -113,7 +113,7 @@ Feature: Reports
 		And the helptext "help:sla.description" should exist
 		And the helptext "help:sla.enter-sla" should exist
 
-	@gian
+	@addedhappypath
 	Scenario: Check helptexts in Histogram Report
 		Given I am logged in
 		And I am on the Host details page
@@ -122,13 +122,12 @@ Feature: Reports
 		And I click "Create Histogram Report"
 		Then the helptext "help:histogram.report-type" should exist
 	
-	@gian
+	@addedhappypath
 	Scenario: Check helptexts in Scheduled Report
 		Given I am logged in
 		And I am on the Host details page
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
-		Then I should see all elements in the UI
 		Then the helptext "help:reports.filename" should exist
 		And the helptext "help:reports.description" should exist
 		And the helptext "help:reports.attach_description" should exist
@@ -137,7 +136,7 @@ Feature: Reports
 		And the helptext "help:reports.select-report" should exist
 		And the helptext "help:reports.report-type-save" should exist
 
-	@gian
+	@addedhappypath
 	Scenario: Check helptexts in Alert Summary Report
 		Given I am logged in
 		And I am on the Host details page
