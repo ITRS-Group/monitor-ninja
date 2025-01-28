@@ -581,10 +581,6 @@ When /^I click on radio button without id "([^"]*)"$/ do |radio_button|
   find(radio_button).click
 end
 
-When /^I click the span with text "([^"]*)"$/ do |text|
-  find('span', text: text).click
-end
-
 When /^I click the span with text "Save" and changes count$/ do
   find('span.toolbar-icon-label', text: 'Save').click
 end
