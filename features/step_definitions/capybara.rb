@@ -462,6 +462,7 @@ Then /^I should see all elements in the UI$/ do
 
   # Iterate through each element and display its details
   sleep(60)
+  puts "Displaying all elements:"
   elements.each do |element|
     puts "Tag: #{element.tag_name}"
     puts "Text: #{element.text.strip}" unless element.text.strip.empty?
@@ -475,18 +476,21 @@ Then /^I should see all elements in the UI$/ do
   end
 
   # Display all text fields
+  puts "Displaying all text fields:"
   text_fields = all('input[type="text"]')
   text_fields.each do |field|
     puts "Text Field - Name: #{field[:name]}, ID: #{field[:id]}, Value: #{field[:value]}"
   end
 
   # Display all buttons
+  puts "Displaying all buttons:"
   buttons = all('button, input[type="button"], input[type="submit"]')
   buttons.each do |button|
     puts "Button - Text: #{button.text.strip}, Name: #{button[:name]}, ID: #{button[:id]}"
   end
 
   # Display all dropdowns
+  puts "Displaying all dropdowns:"
   dropdowns = all('select')
   dropdowns.each do |dropdown|
     puts "Dropdown - Name: #{dropdown[:name]}, ID: #{dropdown[:id]}"
