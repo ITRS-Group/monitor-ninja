@@ -1,5 +1,5 @@
 #iFrame related step definitions
-When /^I fill in the text field, select dropdown, and click button within the iframe$/ do |hname, addr|
+When /^I create a host with hostname "([^"]*)" and host address "([^"]*)"$/ do |hname, addr|
     within_frame(find('iframe')) do
       # Fill in the hostname
       fill_in 'new_host[-1][host_name]', with: 'hname'
