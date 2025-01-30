@@ -276,7 +276,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
-	public function offsetGet($str): mixed
+	public function offsetGet($str)
 	{
 		if (!isset($this->properties[$str]))
 			return NULL;

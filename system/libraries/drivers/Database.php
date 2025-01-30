@@ -554,7 +554,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetGet
 	 */
-	public function offsetGet($offset): mixed
+	public function offsetGet($offset)
 	{
 		if ( ! $this->seek($offset))
 			return FALSE;
