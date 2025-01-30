@@ -91,6 +91,7 @@ Feature: Global search
 		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Hosts"
+		When I fill in the text field, select dropdown, and click button within the iframe
 		Then I should see all elements in the UI
 		#And I clear and enter "Google Google Google" into "new_host[-1][host_name]"
 		#And I clear and enter "www.google.com" into "new_host[-1][address]"
