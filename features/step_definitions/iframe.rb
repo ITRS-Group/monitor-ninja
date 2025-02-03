@@ -22,6 +22,6 @@ When /^I create a host with hostname "([^"]*)" and host address "([^"]*)"$/ do |
 When /^I save the changes in OP5$/ do
   find("a[href='/monitor/index.php/configuration/configure?page=export.php']").click
   within_frame(find('iframe')) do
-    find_button('submit').click
+    find('input[type="submit"][name="x"][value="Save"]').click
   end
 end
