@@ -538,7 +538,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetExists
 	 */
-	public function offsetExists($offset): bool
+	public function offsetExists($offset)
 	{
 		if ($this->total_rows > 0)
 		{
