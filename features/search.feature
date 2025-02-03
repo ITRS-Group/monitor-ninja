@@ -19,7 +19,7 @@ Feature: Global search
 		And I click "Configure"
 		And I click the span with text "Host groups"
 		Then I should see all elements in the UI
-		#And I create a host with hostgroup "Übergruppe"
+		And I create a host with hostgroup "Übergruppe"
 		#When I hover over the "Manage" menu
 		#And I click "Configure"
 		#And I click the span with text "Service groups"
