@@ -92,7 +92,5 @@ Feature: Global search
 		And I click "Configure"
 		And I click the span with text "Hosts"
 		When I create a host with hostname "google" and host address "www.google.com"
-		Then I should see all elements in the UI
-		When I click the span with text "Save" and changes count
-		And I click "nachos_save_btn_user"
-		Then I should see "Changes successfully saved"
+		When I save the changes in OP5
+		Then I should see "Monitor has successfully loaded the new configuration"
