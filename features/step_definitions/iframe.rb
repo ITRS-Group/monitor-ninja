@@ -17,3 +17,11 @@ When /^I create a host with hostname "([^"]*)" and host address "([^"]*)"$/ do |
       find_button('finish_submit').click
     end
   end
+
+#iframe saving configuration
+When /^I save the changes in OP5$/ do
+  find("a[href='/monitor/index.php/configuration/configure?page=export.php']").click
+  within_frame(find('iframe')) do
+    find_button('nachos_save_btn_user').click
+  end
+end
