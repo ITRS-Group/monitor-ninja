@@ -20,14 +20,14 @@ Feature: Global search
 		And I click the span with text "Host groups"
 		Then I should see all elements in the UI
 		And I create a host with hostgroup "Übergruppe"
-		#When I hover over the "Manage" menu
-		#And I click "Configure"
-		#And I click the span with text "Service groups"
-		#And I create a host with hostgroup "Übergruppe"
-		#When I save the changes in OP5
-		#Then I should see "Monitor has successfully loaded the new waaaa configuration"
+		When I hover over the "Manage" menu
+		And I click "Configure"
+		And I click the span with text "Service groups"
+		And I create a host with hostgroup "Übergruppe"
+		When I save the changes in OP5
+		Then I should see "Monitor has successfully loaded the new waaaa configuration"
 
-	@gian_edite
+	@gian_edited
 	Scenario: Search for host with spaces
 		Given I am real logged in as "monitor" with password "monitor"
 		And I search for "host   with"
@@ -39,7 +39,7 @@ Feature: Global search
 		When I click "A  host   with    spaces"
 		Then I should be on list view with filter '[services] host.name="A  host   with    spaces"'
 
-	@gian_edite
+	@gian_edited
 	Scenario: Search for non ascii characters
 		Given I am real logged in as "monitor" with password "monitor"
 		And I search for "smör"
@@ -57,7 +57,7 @@ Feature: Global search
 		When I click "Rozłączniki_TD_Kraków"
 		Then I should be on list view with filter '[services] host.name="Rozłączniki_TD_Kraków"'
 
-	@gian_edite
+	@gian_edited
 	Scenario: Search for service
 		Given I am real logged in as "monitor" with password "monitor"
 		When I search for "s:PI"
@@ -65,19 +65,21 @@ Feature: Global search
 			| Räksmörgås;PING |
 			| Rozłączniki_TD_Kraków;PING |
 
+	@gian_edited
 	Scenario: Search for hostgroup
 		Given I am real logged in as "monitor" with password "monitor"
 		And I search for "hg:Über"
 		Then I should see the search result:
 			| Übergruppe |
 
+	@gian_edited
 	Scenario: Search for servicegroup
 		Given I am real logged in as "monitor" with password "monitor"
 		When I search for "sg:Über"
 		Then I should see the search result:
 			| Übergruppe |
 
-	@gian_edite
+	@gian_edited
 	Scenario: Search with limit
 		Given I am real logged in as "monitor" with password "monitor"
 		When I search for "h:O limit=1"
