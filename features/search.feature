@@ -7,15 +7,19 @@ Feature: Global search
 		And I click "Configure"
 		And I click the span with text "Hosts"
 		When I create a host with hostname "A  host   with    spaces" and host address "127.0.0.1"
+		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Hosts"
 		When I create a host with hostname "Rozłączniki_TD_Kraków" and host address "127.0.0.1"
+		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Hosts"
 		When I create a host with hostname "Räksmörgås" and host address "127.0.0.1"
+		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Host groups"
 		And I create a host with hostgroup "Übergruppe"
+		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Service groups"
 		And I create a host with hostgroup "Übergruppe"
