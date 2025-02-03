@@ -18,11 +18,11 @@ Feature: Global search
 		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Host groups"
-		And I create a host with hostgroup "Übergruppe"
+		And I create a hostgroup "Übergruppe"
 		When I hover over the "Manage" menu
 		And I click "Configure"
 		And I click the span with text "Service groups"
-		And I create a host with hostgroup "Übergruppe"
+		And I create a servicegroup "Übergruppe"
 		When I save the changes in OP5
 		Then I should see "Monitor has successfully loaded the new waaaa configuration"
 

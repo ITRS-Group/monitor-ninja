@@ -21,7 +21,7 @@ When /^I create a host with hostname "([^"]*)" and host address "([^"]*)"$/ do |
 end
 
 #Hostgroup
-When /^I create a host with hostgroup "([^"]*)"$/ do |hgroup|
+When /^I create a hostgroup "([^"]*)"$/ do |hgroup|
   within_frame(find('iframe')) do
     # Fill in the hostgroup name
     fill_in 'hostgroup[new][hostgroup_name]', with: hgroup
@@ -31,7 +31,7 @@ When /^I create a host with hostgroup "([^"]*)"$/ do |hgroup|
 end
 
 #Servicegroup
-When /^I create a host with servicegroup "([^"]*)"$/ do |sgroup|
+When /^I create a servicegroup "([^"]*)"$/ do |sgroup|
   within_frame(find('iframe')) do
     # Fill in the servicegroup name
     fill_in 'servicegroup[new][servicegroup_name]', with: sgroup
