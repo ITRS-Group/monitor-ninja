@@ -26,7 +26,7 @@ When /^I create a host with hostgroup "([^"]*)"$/ do |hgroup|
       # Fill in the hostgroup name
       fill_in 'hostgroup[new][hostgroup_name]', with: hgroup
 
-      find('input[type="submit"][name="x"][value="Submit"]').click
+      find('input[type="submit"][name="action"][value="Submit"]').click
     end
   end
 
@@ -36,7 +36,7 @@ When /^I create a host with servicegroup "([^"]*)"$/ do |sgroup|
       # Fill in the servicegroup name
       fill_in 'servicegroup[new][servicegroup_name]', with: sgroup
 
-      find('input[type="submit"][name="x"][value="Submit"]').click
+      find('input[type="submit"][name="action"][value="Submit"]').click
     end
   end
 
