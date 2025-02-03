@@ -93,10 +93,6 @@ Feature: Global search
 		And I click the span with text "Hosts"
 		When I create a host with hostname "google" and host address "www.google.com"
 		Then I should see all elements in the UI
-		#And I clear and enter "Google Google Google" into "new_host[-1][host_name]"
-		#And I clear and enter "www.google.com" into "new_host[-1][address]"
-		#And I click "scanBtn"
-		#And I click "finish_submit"
-		#And I click the span with text "Save" and changes count
-		#And I click "nachos_save_btn_user"
-		#Then I should see "Changes successfully saved"
+		When I click the span with text "Save" and changes count
+		And I click "nachos_save_btn_user"
+		Then I should see "Changes successfully saved"
