@@ -1,7 +1,20 @@
 Feature: Global search
-	#Background:
-	#	Given I am logged in
-	#	And I am on the main page
+		
+	@gian
+	Scenario: Create Hosts with specific names for test data
+		Given I am real logged in as "monitor" with password "monitor"
+		When I hover over the "Manage" menu
+		And I click "Configure"
+		And I click the span with text "Hosts"
+		When I create a host with hostname "A  host   with    spaces" and host address "127.0.0.1"
+		And I click "Configure"
+		And I click the span with text "Hosts"
+		When I create a host with hostname "Rozłączniki_TD_Kraków" and host address "127.0.0.1"
+		And I click "Configure"
+		And I click the span with text "Hosts"
+		When I create a host with hostname "Räksmörgås" and host address "127.0.0.1"
+		When I save the changes in OP5
+		Then I should see "Monitor has successfully loaded the new waaaa configuration"
 
 	Scenario: Search for host with spaces
 		Given I have these mocked hosts
@@ -84,13 +97,3 @@ Feature: Global search
 		Then I should see "Orville"
 		And I should see "Load 1 more rows"
 		But I shouldn't see "Oscar"
-
-	@gian
-	Scenario: Create Hosts
-		Given I am real logged in as "monitor" with password "monitor"
-		When I hover over the "Manage" menu
-		And I click "Configure"
-		And I click the span with text "Hosts"
-		When I create a host with hostname "google" and host address "www.google.com"
-		When I save the changes in OP5
-		Then I should see "Monitor has successfully loaded the new configuration"
