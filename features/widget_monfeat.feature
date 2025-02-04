@@ -10,9 +10,9 @@ Feature: Monitoring features widget
 	Scenario: Monitoring features should display command links
 		When I am logged in
 		And I am on the main page
-		And I hover over the "Dashboard options" menu
-		And I hover over the "Add widget" menu
-		And I click "Monitoring features"
+		And I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "monitoring_features"
 		Then I should see "Monitoring features"
 		And I should see link "Flap detection enabled"
 		And I should see link "Notifications enabled"
