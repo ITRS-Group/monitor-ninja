@@ -8,8 +8,7 @@ Feature: Monitoring features widget
 
 	@gian_edited
 	Scenario: Monitoring features should display command links
-		When I am logged in
-		And I am on the main page
+		Given I am real logged in as "monitor" with password "monitor"
 		And I hover over the element with data-menu-id "dashboard_options"
 		And I hover over the element with data-menu-id "add_widget"
 		And I click the element with data-menu-id "monitoring_features"
