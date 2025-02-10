@@ -14,7 +14,7 @@
 class Tac_Controller extends Ninja_Controller {
 
 	public $input;
-
+	
 	/**
 	 * Iterate through all widgets one time, to add the widgets' assets.
 	 * If you call this method with the menu parameter, all of the widgets

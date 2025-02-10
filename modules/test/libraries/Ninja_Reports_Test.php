@@ -35,7 +35,6 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	public $params;
 
 	private $details;
-
 	private $cur_test;
 	/**
 	 * Run new test file. Will parse the file, but not run it
