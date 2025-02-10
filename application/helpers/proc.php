@@ -44,7 +44,6 @@ class proc {
 		);
 
 		$resource = proc_open($command, $descriptorspec, $pipes);
-
 		if(!is_resource($resource)) {
 			return false;
 		}
