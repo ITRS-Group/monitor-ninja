@@ -23,6 +23,6 @@ Feature: Tactical Overview, TAC
 		#And I am on the main page
 		When I hover over the "Dashboards" menu
 		And I click "New dashboard"
-		And I enter "New Dashboard with no Widgets" into "element_id_67ab09fe58413"
+		And I enter "New Dashboard with no Widgets" into "name"
 		And I click "save"
 		Then I should see "No widgets"
