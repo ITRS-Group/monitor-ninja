@@ -31,8 +31,8 @@ class Module_Manifest_Model {
 
 		foreach( $module_dirs as $moddir ) {
 			$filepath = $moddir . $suffixname;
-            if (is_readable($filepath)) {
-                require $filepath;
+			if (is_readable($filepath)) {
+				require $filepath;
             }
 		}
 
@@ -45,6 +45,6 @@ class Module_Manifest_Model {
 	 */
 	public static function get( string $name ) {
 		$instance = new self();
-        return $instance->load_manifest($name);
+		return $instance->load_manifest($name);
 	}
 }
