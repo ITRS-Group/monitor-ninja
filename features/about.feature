@@ -5,9 +5,9 @@ Feature: Menu About
 		Given I am logged in
 		And I am on the main page
 
-	Scenario: 
+	Scenario: See that the menu option displays properly on hover branding
 		When I hover the branding
-		Then I should see menuSee that the menu option displays properly on hover branding items:
+		Then I should see menu items:
 			| About |
 
 	@editedhappypath
