@@ -1,12 +1,6 @@
-# TODO: Fix this test when we have a new default TAC
-#@skip
 Feature: Monitoring features widget
-	#Background:
-	#	Given I have these mocked status
-	#		| enable_flap_detection | enable_notifications | enable_event_handlers | execute_service_checks | execute_host_checks | accept_passive_service_checks | accept_passive_host_checks |
-	#		| 1                     | 1                    | 1                     | 1                      | 1                   | 1                             | 1                          |
 
-	@gian_edited
+	@editedhappypath
 	Scenario: Monitoring features should display command links
 		Given I am real logged in as "monitor" with password "monitor"
 		And I hover over the element with data-menu-id "dashboard_options"
