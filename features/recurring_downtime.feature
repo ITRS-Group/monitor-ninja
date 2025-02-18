@@ -71,7 +71,7 @@ Feature: Recurring downtime
 		Then I shouldn't see "monthly recurring downtime"
 
 
-	@gian_edited
+	@editedhappypath
 	Scenario: Add a monthly last day recurring downtime
 		When I hover over the "Monitor" menu
 		And I hover over the "Downtimes" menu
