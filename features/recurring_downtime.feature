@@ -85,13 +85,12 @@ Feature: Recurring downtime
 		And I clear and enter "12:00" into "end_time"
 		And I clear and enter "2030-05-31" into "end_date"
 		And I find the option with string "Monthly on" from "recurrence_select"
-		Then I should see all elements in the UI
-		#And I select radio button "rec-on-last-day-month"
-		#And I clear and enter "monthly last day recurring downtime" into "comment"
-		#And I click "Add Schedule"
-		#Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
-		#And I should see "monthly last day recurring downtime"
-		#And I should see "Repeat monthly on the last day"
+		And I select radio button "rec-on-last-day-month"
+		And I clear and enter "monthly last day recurring downtime" into "comment"
+		And I click "Add Schedule"
+		Then I should be on url "/index.php/listview?q=%5Brecurring_downtimes%5D%20all"
+		And I should see "monthly last day recurring downtime"
+		And I should see "Repeat monthly on the last day"
 
 	@editedhappypath
 	Scenario: Delete a monthly last day recurring downtime
