@@ -1,46 +1,64 @@
-@menu
 Feature: Menu
 
 	Background:
 		Given I am logged in
 		And I am on the main page
 
+	@editedhappypath
 	Scenario: See that the about menu displays properly on hover
 		When I hover the branding
-		Then I should see menu items:
-			| About |
+		Then I should see "about"
+		And I should see "op5_manual"
+		And I should see "op5_support"
+		And I should see "http_api"
 
+	@addedhappypath
+	Scenario: See that the dashboard menu displays properly on hover
+		When I hover over the "Dashboards" menu
+		Then I should see "1"
+		And I should see "all_dashboards"
+		And I should see "menuitem_dashboard_option"
+
+	@editedhappypath
 	Scenario: See that the monitor menu displays properly on hover
 		When I hover over the "Monitor" menu
-		Then I should see menu items:
-			| Network Outages |
-			| Hosts |
-			| Services |
-			| Hostgroups |
-			| Servicegroups |
-			| Downtimes |
-			| NagVis |
+		Then I should see "trapper"
+		And I should see "business_services"
+		And I should see "network_outages"
+		And I should see "hosts"
+		And I should see "services"
+		And I should see "hostgroups"
+		And I should see "servicegroups"
+		And I should see "downtimes"
+		And I should see "nagvis"
+		And I should see "geomap"
 
+	@addedhappypath
 	Scenario: See that the graphs menu displays properly on hover
 		When I hover over the "Report" menu
-		Then I should see menu items:
-			| Graphs |
-			| Availability |
-			| SLA |
-			| Histogram |
-			| Summary |
-			| Alert history |
-			| Notifications |
+		Then I should see "availability"
+		And I should see "sla"
+		And I should see "histogram"
+		And I should see "summary"
+		And I should see "graphs"
+		And I should see "saved_reports"
+		And I should see "alert_history"
+		And I should see "schedule_reports"
+		And I should see "event_log"
+		And I should see "notifications"
 
+	@editedhappypath
 	Scenario: See that the config menu displays properly on hover
 		When I hover over the "Manage" menu
-		Then I should see menu items:
-			| View active config |
-			| Backup/Restore |
-			| Manage filters |
-			| Scheduling queue |
-			| Process information |
-			| Performance information |
+		Then I should see "configure"
+		And I should see "view_active_config"
+		And I should see "backup_restore"
+		And I should see "manage_filters"
+		And I should see "scheduling_queue"
+		And I should see "performance_information"
+		And I should see "process_information"
+		And I should see "host_wizard"
+		And I should see "autodiscovery"
 
 	Scenario: Add quicklink
 		When I click "Manage quickbar"
