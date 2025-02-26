@@ -91,6 +91,7 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
+		And I wait for 10 seconds
 		Then the helptext "help:avail.include_alerts" should exist
 		And the helptext "help:avail.include_trends" should exist
 		And the helptext "help:avail.piechart" should exist
@@ -104,6 +105,7 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
 		And I click "Create SLA Report"
+		And I wait for 10 seconds
 		Then the helptext "help:sla.report-type" should exist
 		And the helptext "help:sla.reporting_period" should exist
 		And the helptext "help:sla.report_time_period" should exist
