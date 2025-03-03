@@ -106,14 +106,14 @@ Feature: Reports
 		And I hover over the "SLA" menu
 		And I click "Create SLA Report"
 		And I wait for 10 seconds
-		Then the helptext "help:sla.report-type" should exist
-		And the helptext "help:sla.reporting_period" should exist
-		And the helptext "help:sla.report_time_period" should exist
-		And the helptext "help:sla.stated_during_downtime" should exist
-		And the helptext "help:sla.include_alerts" should exist
-		And the helptext "help:sla.use_alias" should exist
-		And the helptext "help:sla.description" should exist
-		And the helptext "help:sla.enter-sla" should exist
+		Then the helptext "help:op5sla.report-type" should exist
+		And the helptext "help:op5sla.reporting_period" should exist
+		And the helptext "help:op5sla.report_time_period" should exist
+		And the helptext "help:op5sla.stated_during_downtime" should exist
+		And the helptext "help:op5sla.include_alerts" should exist
+		And the helptext "help:op5sla.use_alias" should exist
+		And the helptext "help:op5sla.description" should exist
+		And the helptext "help:op5sla.enter-sla" should exist
 
 	@addedhappypath
 	Scenario: Check helptexts in Histogram Report
