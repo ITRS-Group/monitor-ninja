@@ -39,8 +39,8 @@ Capybara.register_driver :selenium_chrome_headless_billy do |app|
   options.add_argument("--proxy-server=http://#{Billy.proxy.host}:#{Billy.proxy.port}")
   options.add_argument("--proxy-bypass-list=<-loopback>")
 
-  options = Selenium::WebDriver::Chrome::Options.new
-  options.add_preference(:acceptInsecureCerts, true)
+  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome
+  capabilities['acceptInsecureCerts'] = true
   capabilities['goog:loggingPrefs'] = { browser: 'ALL' }
 
   Capybara::Selenium::Driver.new(
