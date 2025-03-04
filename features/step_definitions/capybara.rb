@@ -575,6 +575,7 @@ end
 
 #Check helptext icon if it exist
 Then /^the helptext "([^"]*)" should exist$/ do |helptext|
+  WaitForAjax.wait_for_ajax
   expect(page).to have_selector("a.help-icon[data-popover='#{helptext}']")
 end
 
