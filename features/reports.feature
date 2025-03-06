@@ -91,11 +91,11 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
-		Then the helptext "help:avail.include_alerts" should exist
-		And the helptext "help:avail.include_trends" should exist
-		And the helptext "help:avail.piechart" should exist
-		And the helptext "help:avail.use_alias" should exist
-		And the helptext "help:avail.description" should exist
+		Then the helptext "include_alerts" should exist
+		And the helptext "include_trends" should exist
+		And the helptext "piechart" should exist
+		And the helptext "use_alias" should exist
+		And the helptext "description" should exist
 		
 	@addedhappypath
 	Scenario: Check helptexts in SLA Report
