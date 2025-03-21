@@ -273,7 +273,7 @@ EOF;
 	 * @return multitype:string
 	 */
 	private function preprocess_row($rawrow) {
-		$splitted = preg_split('/\{([^{}]+)\}/', $rawrow, NULL, PREG_SPLIT_DELIM_CAPTURE);
+		$splitted = preg_split('/\{([^{}]+)\}/', $rawrow, -1, PREG_SPLIT_DELIM_CAPTURE);
 		$rows = array('');
 		while(count($splitted) > 0) {
 			$prefix = array_shift($splitted);

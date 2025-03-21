@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
 require_once ("op5/objstore.php");
 require_once ("op5/mayi.php");
 
@@ -314,7 +315,7 @@ class MayIConstraintsTest extends \PHPUnit\Framework\TestCase {
 	 *  - Priority
 	 *  - If message shold be visible
 	 */
-	public function ds_msg_priorities() {
+	public static function ds_msg_priorities() {
 		return array (
 			/*
 			 * Test that all messages is visible if allowed, independent of
@@ -409,8 +410,8 @@ class MayIConstraintsTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Verify that messages is returned given the correct priorities and result
-	 * @dataProvider ds_msg_priorities
 	 */
+	#[DataProvider('ds_msg_priorities')]
 	public function test_msg_priorities($result, $ca_conf, $cb_conf, $cc_conf) {
 		$mayi = op5MayI::instance();
 

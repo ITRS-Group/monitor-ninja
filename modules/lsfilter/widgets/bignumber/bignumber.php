@@ -317,6 +317,7 @@ class bignumber_Widget extends widget_Base {
 	 */
 	public function index() {
 		$form_model = $this->options();
+		$perf_data_class = new performance_data();
 
 		$perf_data = array();
 		$display_explanation = "";
@@ -408,9 +409,9 @@ class bignumber_Widget extends widget_Base {
 			}
 			$perf_data = $perf_data[$perf_data_src];
 			if($form_model->get_value('threshold_onoff') && isset($perf_data['warn'], $perf_data['crit'])) {
-				if(performance_data::match_threshold($perf_data['crit'], $perf_data['value'])) {
+				if($perf_data_class->match_threshold($perf_data['crit'], $perf_data['value'])) {
 					$state = 'critical';
-				} else if(performance_data::match_threshold($perf_data['warn'], $perf_data['value'])) {
+				} else if($perf_data_class->match_threshold($perf_data['warn'], $perf_data['value'])) {
 					$state = 'warning';
 				} else {
 					$state = 'ok';

@@ -7,6 +7,7 @@
 $linkprovider = LinkProvider::factory();
 $pnp_href = $object->graphs();
 $perf_data = $object->get_perf_data();
+$perf_data_class = new performance_data();
 if(count($perf_data)) {
 	$index = 0;
 	foreach($perf_data as $ds_name => $ds) {
@@ -28,10 +29,10 @@ if(count($perf_data)) {
 			// Note that 0 is handled as if the value is not set.
 			$class = 'no-threshold'; // No thresholds are set, show blue color.
 		} else if (isset($ds['crit']) &&
-			       performance_data::match_threshold($ds['crit'], $ds['value'])) {
+			       $perf_data_class->match_threshold($ds['crit'], $ds['value'])) {
 			$class = 'critical';
 		} else if (isset($ds['warn']) &&
-			       performance_data::match_threshold($ds['warn'], $ds['value'])) {
+			       $perf_data_class->match_threshold($ds['warn'], $ds['value'])) {
 			$class = 'warning';
 		} else {
 			$class = 'ok';
@@ -112,9 +113,9 @@ if(count($perf_data)) {
 		<tr>
 			<td>
 <?php
-			if (isset($ds['crit']) && performance_data::match_threshold($ds['crit'], $ds['value'])) {
+			if (isset($ds['crit']) && $perf_data_class->match_threshold($ds['crit'], $ds['value'])) {
 				echo '<span class="icon-state-critical critical"></span>';
-			} else if (isset($ds['warn']) && performance_data::match_threshold($ds['warn'], $ds['value'])) {
+			} else if (isset($ds['warn']) && $perf_data_class->match_threshold($ds['warn'], $ds['value'])) {
 				echo '<span class="icon-state-warning warning"></span>';
 			}
 ?>

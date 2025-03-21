@@ -20,7 +20,7 @@ class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	private function mock_orm_tables(array $tables) {
-		$this->mock_data_path = __DIR__ . '/' . $this->getName(false) . '.json';
+		$this->mock_data_path = __DIR__ . '/' . $this->toString() . '.json';
 		file_put_contents($this->mock_data_path, json_encode($tables));
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
@@ -47,9 +47,8 @@ class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * Verify that incorrect object keys throws an exception
-	 *
-	 * @group MON-9409
-	 */
+     */
+	#[Group('MON-9409')]
 	public function test_process_fail() {
 		$this->expectException('FormException');
 		$this->expectExceptionMessage('da_contact does not point at a valid object');
@@ -73,9 +72,8 @@ class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Verifies that receiving data given a key unpacks the object correctly,
 	 * and that it is put back as default value for the next form
-	 *
-	 * @group MON-9409
 	 */
+	#[Group('MON-9409')]
 	public function test_process() {
 		$tables = array(
 			'ORMDriverLS default' => array(
@@ -108,9 +106,7 @@ class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertStringNotContainsString('value="Tomtenisse"', $content);
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_perfdata_option_successful_validation_depending_on_orm_object() {
 		$tables = array(
 			'ORMDriverLS default' => array(
@@ -144,9 +140,7 @@ class Form_ORM_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame('pkt', $result['host_perfdata']);
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_perfdata_option_failing_validation_depending_on_orm_object() {
 		$this->expectException('FormException');
 		$this->expectExceptionMessage("The performance data source 'Munny Saelee' is not found on the given object");
