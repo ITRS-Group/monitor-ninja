@@ -133,7 +133,7 @@ class Reports_Controller extends Base_reports_Controller {
 			if (substr($this->options['skin'], -1, 1) != '/') {
 				$this->options['skin'] .= '/';
 			}
-			$this->template->current_skin = $this->options['skin'];
+			$this->template->current_skin = htmlspecialchars($this->options['skin']);
 		}
 
 		$this->template->css[] = $this->add_path('reports/css/tgraph.css');
