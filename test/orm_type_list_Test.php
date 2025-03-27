@@ -1,8 +1,11 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\TextUI\Configuration\Group;
+
 class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 
-	public function valid_values_provider () {
+	public static function valid_values_provider () {
 		return array(
 			array(array(), array()),
 			// must be able to handle PHP serialized data du to donwtime settings
@@ -10,55 +13,43 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_array ($value, $expect) {
 		$set = TestClassBPool_Model::all();
 		$from_array = TestClassA_Model::factory_from_array(array("list" => $value), array());
 		$this->assertSame($expect, $from_array->get_list());
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator ($value, $expect) {
 		$set = TestClassBPool_Model::all();
 		$from_iterator = TestClassA_Model::factory_from_setiterator(array("list" => $value), false, array());
 		$this->assertSame($expect, $from_iterator->get_list());
 	}
 
-	/**
-	 * @dataProvider valid_values_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('valid_values_provider')]
+	#[Group('ORMType')]
 	public function test_using_setter ($value, $expect) {
 		$set_instance = TestClassA_Model::factory_from_setiterator(array(), false, array());
 		$set_instance->set_list($value);
 		$this->assertSame($expect, $set_instance->get_list());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+    #[Group('ORMType')]
 	public function test_factory_from_array_set_not_existing () {
 		$from_array = TestClassA_Model::factory_from_array(array(), array());
 		$this->assertSame(array(), $from_array->get_list());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+    #[Group('ORMType')]
 	public function test_factory_from_setiterator_set_not_existing () {
 		$from_iterator = TestClassA_Model::factory_from_setiterator(array(), false, array());
 		$this->assertSame(array(), $from_iterator->get_list());
 	}
 
-	/**
-	 * @group ORMType
-	 */
+    #[Group('ORMType')]
 	public function test_factory_setter_set_not_existing () {
 		$set_instance = TestClassA_Model::factory_from_array(array(), array());
 		$set_instance->set_set(TestClassBPool_Model::none());
@@ -69,45 +60,49 @@ class ORM_Type_List_Test extends \PHPUnit\Framework\TestCase {
 	 * The factories for the ORMTypeSet accept queries (strings) that
 	 * resolve as the fields set ORM Model OR the set model.
 	 */
-	public function invalid_data_provider () {
-		return array(
-			array("foobar", "'string' is not valid for list 'list'"),
-			array(true, "'boolean' is not valid for list 'list'"),
-			array(1, "'integer' is not valid for list 'list'"),
-			array(1.1, "'double' is not valid for list 'list'"), # double because PHP gettype is stupid
-			array((object)array(), "'object' is not valid for list 'list'"),
-		);
+	public static function invalid_data_provider () {
+		return [
+			["foobar", "'string' is not valid for list 'list'"],
+			[true, "'boolean' is not valid for list 'list'"],
+			[1, "'integer' is not valid for list 'list'"],
+			[1.1, "'double' is not valid for list 'list'"], # double because PHP gettype is stupid
+			[(object)array(), "'object' is not valid for list 'list'"],
+		];
 	}
 
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
+	 * Test for factory from array with invalid values.
+	 *
+	 * @param mixed $value The value to test.
+	 * @param string $expected The expected error message.
 	 */
 	public function test_factory_from_array_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
-		$this->expectExceptionMessage($expected);
-		TestClassA_Model::factory_from_array(array("list" => $value), array());
+		$this->expectExceptionMessage($expected[0]);
+		$testclassA = new TestClassA_Model();
+		$serialized_value = serialize($value);
+		$testclassA->factory_from_array(array("list" => $serialized_value), array());
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_factory_from_setiterator_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
-		$this->expectExceptionMessage($expected);
-		TestClassA_Model::factory_from_setiterator(array("list" => $value), false, array());
+		$this->expectExceptionMessage($expected[0]);
+		$serialized_value = serialize($value);
+		TestClassA_Model::factory_from_setiterator(array("list" => $serialized_value), false, array());
 	}
 
-	/**
-	 * @dataProvider invalid_data_provider
-	 * @group ORMType
-	 */
+	#[DataProvider('invalid_data_provider')]
+	#[Group('ORMType')]
 	public function test_setter_invalid_values ($value, $expected) {
 		$this->expectException('InvalidArgumentException');
-		$this->expectExceptionMessage($expected);
+		$this->expectExceptionMessage($expected[0]);
+		$serialized_value = serialize($value);
 		$from_array = TestClassA_Model::factory_from_array(array(), array());
-		$from_array->set_list($value);
+		$from_array->set_list($serialized_value);
 	}
 
 	public function test_list_values_are_the_same_when_read_as_saved () {

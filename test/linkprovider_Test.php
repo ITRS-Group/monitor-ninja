@@ -17,6 +17,8 @@ class LinkProviderTestClass_Controller {
 
 class LinkProvider_Test extends \PHPUnit\Framework\TestCase {
 
+	protected $lp;
+
 	public function setUp () : void {
 		$this->lp = new LinkProvider('https', '192.168.0.1', 'ninja/index.php');
 	}

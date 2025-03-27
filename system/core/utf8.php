@@ -49,6 +49,7 @@ if ( ! extension_loaded('iconv'))
 	);
 }
 
+/* REMOVE FOR PHP8.0
 if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVERLOAD_STRING))
 {
 	trigger_error
@@ -59,6 +60,7 @@ if (extension_loaded('mbstring') AND (ini_get('mbstring.func_overload') & MB_OVE
 		E_USER_ERROR
 	);
 }
+*/
 
 // Check PCRE support for Unicode properties such as \p and \X.
 $ER = error_reporting(0);

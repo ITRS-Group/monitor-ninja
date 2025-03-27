@@ -14,11 +14,11 @@ class ORMTableManifestGenerator extends class_generator {
 		parent::generate($skip_generated_note);
 
 		foreach( $this->full_structure as $name => $structure ) {
-			$this->write('$manifest[%s] = %s;', $name, array(
+			$this->write('$manifest[%s] = %s;', $name, [
 				'object' => $structure['class'].self::$model_suffix,
 				'set' => $structure['class'].'Set'.self::$model_suffix,
 				'pool' => $structure['class'].'Pool'.self::$model_suffix,
-				));
+				]);
 		}
 	}
 }

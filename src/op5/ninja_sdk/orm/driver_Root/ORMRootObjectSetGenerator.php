@@ -21,6 +21,7 @@ class ORMRootObjectSetGenerator extends ORMRootGenerator {
 		$this->variable('filter',null,'public');
 		$this->variable('default_sort',array(),'protected');
 		$this->variable('key_columns',array(),'protected');
+		$this->variable('it',null,'private');
 		$this->generate_getter('class');
 		$this->generate_binary_operator('union', 'LivestatusFilterOr');
 		$this->generate_binary_operator('intersect', 'LivestatusFilterAnd');
@@ -93,7 +94,7 @@ class ORMRootObjectSetGenerator extends ORMRootGenerator {
 	}
 
 	public function generate_getIterator() {
-		$this->init_function('getIterator');
+		$this->init_function('getIterator', array(), array(), array(), 'Traversable');
 		$this->write('return $this->it(false,array());');
 		$this->finish_function();
 	}

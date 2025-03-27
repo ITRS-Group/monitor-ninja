@@ -180,7 +180,7 @@ abstract class class_generator {
 		$this->write();
 	}
 
-	public function init_function( $name, $args = array(), $modifiers = array(), $defaults = array() ) {
+	public function init_function( $name, $args = array(), $modifiers = array(), $defaults = array(), $attr = false ) {
 		if( !is_array( $modifiers ) ) {
 			$modifiers = array_filter( array_map( 'trim', explode(' ',$modifiers) ) );
 		}
@@ -203,7 +203,7 @@ abstract class class_generator {
 		if( !empty( $modifiers ) ) {
 			$modifiers = trim($modifiers)." ";
 		}
-		$this->write( "${modifiers}function $name($argstr) {" );
+		if($attr==false ? $this->write( "{$modifiers}function $name($argstr) {" ) : $this->write( "{$modifiers}function $name($argstr) : $attr {" ));
 	}
 
 	public function finish_function() {
