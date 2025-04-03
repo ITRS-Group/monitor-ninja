@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
 /**
  * Tests dashboard management.
  *
@@ -41,9 +42,7 @@ class Dashboard_Manage_Test extends \PHPUnit\Framework\TestCase {
 		}
 	}
 
-	/**
-	 * @group Tac_Controller::new_dashboard
-	 */
+	#[Group('Tac_Controller::new_dashboard')]
 	public function test_adding_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -108,9 +107,7 @@ class Dashboard_Manage_Test extends \PHPUnit\Framework\TestCase {
 			"We successfully changed the name of a dashboard");
 	}
 
-	/**
-	 * @group Tac_Controller::delete_dashboard
-	 */
+	#[Group('Tac_Controller::delete_dashboard')]
 	public function test_deleting_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -286,9 +283,7 @@ class Dashboard_Manage_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertFalse($dashboard->get_can_write());
 	}
 
-	/**
-	 * @group Tac_Controller::index
-	 */
+	#[Group('Tac_Controller::index')]
 	public function test_can_switch_between_saved_dashboards() {
 		$this->mock_data(array(
 			"ORMDriverMySQL default" => array(
@@ -324,9 +319,7 @@ class Dashboard_Manage_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group Tac_Controller::index
-	 */
+	#[Group('Tac_Controller::index')]
 	public function test_visiting_a_non_existing_dashboard_redirects_to_placeholder_view() {
 		$this->mock_data(array(
 			"ORMDriverMySQL default" => array(
@@ -357,9 +350,7 @@ class Dashboard_Manage_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_user_without_dashboard_share_auth_right_can_still_access_dashboards_shared_with_them() {
 		$this->mock_data(array(
 			"ORMDriverMySQL default" => array(

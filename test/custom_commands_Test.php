@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
 require_once ('op5/objstore.php');
 class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 
@@ -25,6 +26,8 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 			)
 		)
 	);
+
+	public $ls;
 
 	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
@@ -255,7 +258,7 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals( array (), $host->list_custom_commands() );
 	}
 
-	public function custom_variables_provider() {
+	public static function custom_variables_provider() {
 		return array(
 			// name of custom variable, publicly visible?
 			array("OP5H_", false),
@@ -268,14 +271,12 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider custom_variables_provider
-	 */
+	#[DataProvider('custom_variables_provider')]
 	public function test_visibility_of_custom_variable($custom_variable, $is_public) {
 		$this->assertSame($is_public, custom_variable::is_public($custom_variable));
 	}
 
-	public function objects_with_hidden_custom_varible_provider() {
+	public static function objects_with_hidden_custom_varible_provider() {
 		$actually_public_custom_variables = array(
 			"IS_AUSTRALIA_DANGEROUS" => "yes"
 		);
@@ -307,9 +308,7 @@ class custom_commands_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider objects_with_hidden_custom_varible_provider
-	 */
+	#[DataProvider('objects_with_hidden_custom_varible_provider')]
 	public function test_custom_variables_that_should_be_hidden_are_not_public(Object_Model $object, $expected) {
 		$this->assertSame(
 			$expected,

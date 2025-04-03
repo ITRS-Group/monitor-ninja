@@ -4,7 +4,7 @@
  * Handle manifest files from modules
  */
 class Module_Manifest_Model {
-	private $manifests = array();
+	private $manifests = [];
 	
 	/**
 	 * Make this internally a singleton, so we can clear the cache in tests.
@@ -16,23 +16,24 @@ class Module_Manifest_Model {
 	/**
 	 * Load manifest files from modules manifest directories
 	 */
-	private function load_manifest( $name ) {
+	private function load_manifest(string $name ) {
 		if( isset( $this->manifests[$name] ) ) {
 			return $this->manifests[$name];
 		}
 
-		$manifest = array();
+		$manifest = [];
 		if(!preg_match('/^[a-z_]+$/',$name)) {
-			return array();
+			return [];
 		}
 
 		$module_dirs = Kohana::include_paths();
 		$suffixname = "manifest/$name.php";
 
 		foreach( $module_dirs as $moddir ) {
-			if(is_readable($moddir . $suffixname)) {
-				require( $moddir . $suffixname );
-			}
+			$filepath = $moddir . $suffixname;
+			if (is_readable($filepath)) {
+				require $filepath;
+            }
 		}
 
 		$this->manifests[$name] = $manifest;
@@ -42,7 +43,8 @@ class Module_Manifest_Model {
 	/**
 	 * Load manifest parameters from modules
 	 */
-	public static function get( $name ) {
-		return self::instance()->load_manifest($name);
+	public static function get( string $name ) {
+		$instance = new self();
+		return $instance->load_manifest($name);
 	}
 }

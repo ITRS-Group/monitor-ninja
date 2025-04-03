@@ -1,6 +1,9 @@
 <?php
 class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 {
+	private $auth;
+	private $created;
+	
 	public function createDowntime($data)
 	{
 		foreach (ScheduleDate_Model::$valid_fields as $field) {
@@ -159,7 +162,7 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		$this->auth->set_authorized_for('hostgroup_edit_contact', false);
 		$this->auth->set_authorized_for('servicegroup_edit_contact', false);
 		$stats = RecurringDowntimePool_Model::all();
-		$this->assertCount(4, $stats);
+		$this->assertCount(4, $stats, "Expected 4 recurring downtimes");
 
 		$one = $stats->it(false)->current()->export();
 		$one['author'] = 'you';
@@ -227,9 +230,7 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		$this->assertCount(0, $stats);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function testLimitedHost()
 	{
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_Model(array('username' => 'limited')));

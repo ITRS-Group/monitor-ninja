@@ -3,6 +3,8 @@ require_once('op5/objstore.php');
 
 /** Record incoming commands instead of executing them */
 class mock_queryhandler_response extends op5queryhandler {
+	private $history;
+	private $outputs;
     /** Reset history */
     function __construct() {
         parent::__construct();
@@ -23,7 +25,7 @@ class mock_queryhandler_response extends op5queryhandler {
         // also: compare naemon commands, not queryhandler input, since
         // it makes the test more verbose and less focused on the real
 		// meaning of the test
-		$command = preg_replace("/^@command run /", null, $command);
+		$command = preg_replace("/^@command run /", '', $command);
 		$cmdlist = explode(';', $command);
 		$command_name = array_shift($cmdlist);
 		$cmdwords = explode(' ', $command_name);
@@ -51,7 +53,9 @@ class mock_queryhandler_response extends op5queryhandler {
  * @package    Unit_Test
  * @author     op5
  */
-class Command_Test extends \PHPUnit\Framework\TestCase {
+class commands_Test extends \PHPUnit\Framework\TestCase {
+
+	private $query_handler;
 
 	protected function setUp () : void {
 		$this->query_handler = new mock_queryhandler_response();

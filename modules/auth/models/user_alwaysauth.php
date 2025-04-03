@@ -19,7 +19,8 @@ class User_AlwaysAuth_Model extends User_Model {
 			foreach($levels as $auth_point => $value)
 				$rights[$auth_point] = true;
 		}
-		$this->set_auth_data($rights);
+		$serialize_rights = serialize($rights);
+		$this->set_auth_data($serialize_rights);
 	}
 
 	/**
@@ -30,7 +31,7 @@ class User_AlwaysAuth_Model extends User_Model {
 	 * @param $type string
 	 * @param $value bool
 	 */
-	public function set_authorized_for ($type, $value) {
+	public function set_authorized_for ($type, bool $value) {
 		$auth_data = $this->get_auth_data();
 		if (!isset($auth_data[$type]))
 			throw new Exception(

@@ -154,7 +154,7 @@ abstract class Database_Driver {
 	 * @param   int      number of likes
 	 * @return  string
 	 */
-	public function like($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes)
+	public function like($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes = 0)
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
@@ -178,7 +178,7 @@ abstract class Database_Driver {
 	 * @param   int     number of likes
 	 * @return  string
 	 */
-	public function notlike($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes)
+	public function notlike($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes = 0)
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
@@ -530,7 +530,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Countable: count
 	 */
-	public function count()
+	public function count(): int
 	{
 		return $this->total_rows;
 	}
@@ -568,7 +568,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
-	final public function offsetSet($offset, $value)
+	final public function offsetSet($offset, $value): void
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
@@ -578,7 +578,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
-	final public function offsetUnset($offset)
+	final public function offsetUnset($offset): void
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
@@ -586,7 +586,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: current
 	 */
-	public function current()
+	public function current(): mixed
 	{
 		return $this->offsetGet($this->current_row);
 	}
@@ -594,7 +594,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: key
 	 */
-	public function key()
+	public function key(): mixed
 	{
 		return $this->current_row;
 	}
@@ -604,17 +604,15 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	public function next()
 	{
-		++$this->current_row;
-		return $this;
+		return ++$this->current_row;
 	}
 
 	/**
 	 * Iterator: prev
 	 */
-	public function prev()
+	public function prev(): int
 	{
-		--$this->current_row;
-		return $this;
+		return --$this->current_row;
 	}
 
 	/**
@@ -622,14 +620,13 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 */
 	public function rewind()
 	{
-		$this->current_row = 0;
-		return $this;
+		return $this->current_row = 0;
 	}
 
 	/**
 	 * Iterator: valid
 	 */
-	public function valid()
+	public function valid(): bool
 	{
 		return $this->offsetExists($this->current_row);
 	}

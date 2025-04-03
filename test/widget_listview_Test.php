@@ -2,6 +2,8 @@
 
 class Widget_Listview_Test extends \PHPUnit\Framework\TestCase {
 
+	private $widget;
+
 	protected function setUp() : void {
 
 		$widget_model = new Ninja_Widget_Model();
@@ -23,9 +25,7 @@ class Widget_Listview_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertContainsOnlyInstancesOf('option', $options);
 	}
 
-	/**
-	 * @group MON-9365
-	 */
+	#[Group('MON-9365')]
 	public function test_options_available () {
 
 		$options = $this->widget->options();
@@ -45,9 +45,7 @@ class Widget_Listview_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @group MON-9365
-	 */
+	#[Group('MON-9365')]
 	public function test_suggested_title_for_default_filter () {
 
 		$title = $this->widget->get_title();
@@ -55,9 +53,7 @@ class Widget_Listview_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @group MON-9365
-	 */
+	#[Group('MON-9365')]
 	public function test_suggested_title_for_set_filter () {
 
 		$settings = $this->widget->model->get_setting();

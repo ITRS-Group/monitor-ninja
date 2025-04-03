@@ -18,7 +18,7 @@ class NoticeManager_Model implements ArrayAccess, IteratorAggregate, Countable {
 	/**
 	 * Enables count($model);
 	 */
-	public function count() {
+	public function count(): int {
 		return count($this->notices);
 	}
 
@@ -52,7 +52,7 @@ class NoticeManager_Model implements ArrayAccess, IteratorAggregate, Countable {
 	 * @param $offset Ignored, don't rely on this
 	 * @param $value Notice_Model
 	 */
-	public function offsetSet($offset, $value) {
+	public function offsetSet($offset, $value): void {
 		if(!$value instanceof Notice_Model) {
 			$type = gettype($value);
 			if($type == 'object') {
@@ -79,14 +79,14 @@ class NoticeManager_Model implements ArrayAccess, IteratorAggregate, Countable {
 	/**
 	 * Implements ArrayAccess
 	 */
-	public function offsetUnset($offset) {
+	public function offsetUnset($offset): void {
 		unset($this->notices[$offset]);
 	}
 
 	/**
 	 * Implements IteratorAggregate
 	 */
-	public function getIterator() {
+	public function getIterator(): ArrayIterator {
 		return new ArrayIterator($this->notices);
 	}
 }
