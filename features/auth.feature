@@ -76,3 +76,17 @@ Feature: Auth
 		And I hover "Hosts" from the "Monitor" menu
 		And I hover "Availability" from the "Report" menu
 		And I hover "Configure" from the "Manage" menu
+
+	@addedhappypath
+	Scenario: I can't login through GET variables with missing username
+		When I am on address "/index.php/extinfo/show_process_info"
+		Then I shouldn't see "Notifications enabled?"
+		When I am on address "/index.php/extinfo/show_process_info?password=123123"
+		Then I shouldn't see "Notifications enabled?"
+	
+	@addedhappypath
+	Scenario: I can't login through GET variables with missing password
+		When I am on address "/index.php/extinfo/show_process_info"
+		Then I shouldn't see "Notifications enabled?"
+		When I am on address "/index.php/extinfo/show_process_info?username=administrator"
+		Then I shouldn't see "Notifications enabled?"
