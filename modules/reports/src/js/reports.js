@@ -92,6 +92,9 @@ $(document).ready(function() {
 			dataType: 'json'
 		});
 	});
+
+	$("#generate_pdf_file").click(run_generation_pdf);
+
 });
 
 // Propagate sla values
