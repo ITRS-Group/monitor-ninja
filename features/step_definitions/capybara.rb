@@ -575,7 +575,7 @@ end
 
 #Check helptext icon if it exist
 Then /^the helptext "([^"]*)" should exist$/ do |helptext|
-  expect(page).to have_selector("a.help-icon[data-popover='#{helptext}']")
+  expect(page).to have_selector("a.help-icon[data-popover*='#{helptext}']")
 end
 
 #Click a radio button without the id

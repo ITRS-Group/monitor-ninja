@@ -91,11 +91,11 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
 		And I click "Create Availability Report"
-		Then the helptext "help:avail.include_alerts" should exist
-		And the helptext "help:avail.include_trends" should exist
-		And the helptext "help:avail.piechart" should exist
-		And the helptext "help:avail.use_alias" should exist
-		And the helptext "help:avail.description" should exist
+		Then the helptext "include_alerts" should exist
+		And the helptext "include_trends" should exist
+		And the helptext "piechart" should exist
+		And the helptext "use_alias" should exist
+		And the helptext "description" should exist
 		
 	@addedhappypath
 	Scenario: Check helptexts in SLA Report
@@ -104,14 +104,14 @@ Feature: Reports
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
 		And I click "Create SLA Report"
-		Then the helptext "help:sla.report-type" should exist
-		And the helptext "help:sla.reporting_period" should exist
-		And the helptext "help:sla.report_time_period" should exist
-		And the helptext "help:sla.stated_during_downtime" should exist
-		And the helptext "help:sla.include_alerts" should exist
-		And the helptext "help:sla.use_alias" should exist
-		And the helptext "help:sla.description" should exist
-		And the helptext "help:sla.enter-sla" should exist
+		Then the helptext "report-type" should exist
+		And the helptext "reporting_period" should exist
+		And the helptext "report_time_period" should exist
+		And the helptext "stated_during_downtime" should exist
+		And the helptext "include_alerts" should exist
+		And the helptext "use_alias" should exist
+		And the helptext "description" should exist
+		And the helptext "enter-sla" should exist
 
 	@addedhappypath
 	Scenario: Check helptexts in Histogram Report
