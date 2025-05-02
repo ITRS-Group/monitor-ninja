@@ -1,7 +1,6 @@
 Feature: Recurring downtime
 
 	Background:
-	Background:
 		Given I am logged in as administrator
 		And I am on the main page
 
