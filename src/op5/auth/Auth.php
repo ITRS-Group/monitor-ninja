@@ -61,6 +61,9 @@ class op5auth implements op5MayI_Actor {
 	 * @param $config array
 	 * @return void
 	 */
+
+	public $log;
+	
 	static public function instance(array $config = array()) {
 		return op5objstore::instance()->obj_instance_callback(
 			__CLASS__,
@@ -92,7 +95,8 @@ class op5auth implements op5MayI_Actor {
 	public function __construct(array $config = array()) {
 
 		$this->log = op5Log::instance('auth');
-		$authconf = op5objstore::instance()->obj_instance('op5config')->getConfig('auth');
+		$obj_store = op5objstore::instance()->obj_instance('op5config');
+		$authconf = $obj_store->getConfig('auth');
 
 		if (!isset($authconf['common'])) {
 			throw new Exception('section "common" not found in auth.yml');

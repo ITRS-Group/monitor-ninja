@@ -4,6 +4,7 @@
  */
 class MockMayI extends op5MayI
 {
+	private $denied_actions;
 	/**
 	 * Create and return a new MockMayI instance.
 	 *

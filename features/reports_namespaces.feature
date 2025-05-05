@@ -1,8 +1,9 @@
 Feature: Report namespace are respected
 
 	Background:
-		Given I have an admins user group with all rights
-		And I am logged in
+		Given I am logged in as administrator
+		#Given I have an admins user group with all rights
+		#And I am logged in
 		And I am on the main page
 
 	Scenario Outline: HTML reports are restricted
@@ -69,13 +70,43 @@ Feature: Report namespace are respected
 		When I click "As PDF"
 		Then I should see "Escaping? I don't think so!"
 
+	@addedhappypath
+	Scenario: PDF Availability reports are not restricted
+		When I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		And I click "Create Availability Report"
+		And I select "Hosts" from "Report type"
+		And I select "monitor" from the multiselect "objects_tmp"
+		And I click "Show report"
+		Then I should see "As PDF"
+
+	@addedhappypath
+	Scenario: PDF SLA reports are not restricted
+		When I hover over the "Report" menu
+		And I hover over the "SLA" menu
+		And I click "Create SLA Report"
+		And I select "Hosts" from "Report type"
+		And I select "monitor" from the multiselect "objects_tmp"
+		And I enter "99" into "Jan"
+		And I click "Show report"
+		Then I should see "As PDF"
+
+	@addedhappypath
+	Scenario: PDF summary reports are not restricted
+		When I hover over the "Report" menu
+		And I hover over the "Summary" menu
+		And I click "Create Summary Report"
+		And I click "Show report"
+		When I click "As PDF"
+		Then I should see "As PDF"
+
+	@editedhappypath
 	Scenario: PDF histogram reports are not implemented
-		Given I have these mocked hosts
-			|name       |
-			|Slippy Toad|
 		When I hover over the "Report" menu
 		And I hover over the "Histogram" menu
 		And I click "Create Histogram Report"
+		And I select "Hosts" from "Report type"
+		And I select "monitor" from the multiselect "objects_tmp"
 		And I click "Show report"
 		# If this step fails, you've implemented PDF support for
 		# histogram reports, and should make sure to add a test

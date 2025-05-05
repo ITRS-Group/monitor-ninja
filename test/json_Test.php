@@ -1,13 +1,13 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
 class json_Test extends \PHPUnit\Framework\TestCase {
-	/**
-	 * @dataProvider data_structures
-	 */
+	
+	#[DataProvider('data_structures')]
 	public function testJson($value) {
 		$this->assertEquals($value, json_decode(json::pretty($value), true));
 	}
 
-	public function data_structures() {
+	public static function data_structures() {
 		return array(
 			array(1),
 			array("foo"),

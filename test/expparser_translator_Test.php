@@ -6,6 +6,8 @@
  */
 class ExpParser_Translator_Test extends \PHPUnit\Framework\TestCase {
 	protected $controller = false; /* Controller to test */
+	protected $parser = false; /* Parser to test */
+	protected $translator = false; /* Translator to test */
 
 	public function setUp() : void {
 		global $_SESSION;

@@ -67,7 +67,8 @@ class op5Authorization {
 			}
 		}
 
-		$user->set_auth_data($auth_data);
+		$serialize_auth_data = serialize($auth_data);
+		$user->set_auth_data($serialize_auth_data);
 		return $authorized;
 	}
 

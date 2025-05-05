@@ -230,3 +230,19 @@ Feature: Filters & list views
 		Then I should see "linux-server1"
 		When I go to the listview for [hosts] custom_variables ~~ "NOMONITORING"
 		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"
+
+	@addedhappypath
+	Scenario: Delete Filter
+		Given I am logged in as administrator
+		When I click the element with data-menu-id "manage"
+		And I click the element with data-menu-id "manage_filters"
+		And I click "Show/Edit Text Filter"
+		And I enter "TestFilterForDelete" into "lsfilter_save_filter_name"
+		And I click "Save Filter"
+		And I wait for 1 second
+		And I hover over the "Manage" menu
+		And I click "Manage filters"
+		Then I should see "TestFilterForDelete"
+		When I delete the latest filter with class "link_ajax_refresh"
+		And I accept the alert from delete filter
+		Then I shouldn't see "TestFilterForDelete"

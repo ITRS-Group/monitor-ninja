@@ -475,7 +475,7 @@ class ScheduleDate_Model extends Model {
 	 * @param $id ID of the downtime to delete
 	 * @returns true on success, false otherwise
 	 */
-	public function delete_schedule($id)
+	public static function delete_schedule($id)
 	{
 		$set = RecurringDowntimePool_Model::get_by_query('[recurring_downtimes] id = '.(int)$id);
 		if (!count($set))

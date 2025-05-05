@@ -29,7 +29,7 @@ class persist_pdf
 
 		$local_persistent_filepath = pathinfo($save_here, PATHINFO_DIRNAME);
 		$stripped_name = pathinfo($save_here, PATHINFO_BASENAME);
-		$local_persistent_filepath .= '/'.preg_replace('/\.'.$file_extension.'$/', null, $stripped_name).'-'.date('Y-m-d').'.'.$file_extension;
+		$local_persistent_filepath .= '/'.preg_replace('/\.'.$file_extension.'$/', '', $stripped_name).'-'.date('Y-m-d').'.'.$file_extension;
 		$safety_limit = 1000;
 		$current_try = 1;
 		while(file_exists($local_persistent_filepath)) {

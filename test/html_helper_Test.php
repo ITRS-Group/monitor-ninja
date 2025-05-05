@@ -5,7 +5,7 @@
  * @package    Unit_Test
  * @author     op5
  */
-class HTMLHelper_Test extends \PHPUnit\Framework\TestCase {
+class html_helper_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_get_delimited_string_no_item () {
 		$this->assertEquals("", html::get_delimited_string(array()));
