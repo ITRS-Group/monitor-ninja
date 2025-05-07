@@ -393,3 +393,196 @@ end
 When /^I execute javascript "([^"]+)"$/ do |js|
   page.evaluate_script(js)
 end
+
+#Step definition to click text
+When /^I click name "([^"]*)"$/ do |name|
+  find('a', text: name).click
+end
+
+#Find the element with class and href and click
+When /^I click the element with class "([^"]*)" and href containing "([^"]*)"$/ do |class_name, href_partial|
+  # Find the element with the specified class and href containing the partial text
+  element = find("a.#{class_name}[href*='#{href_partial}']")
+  
+  # Click the found element
+  element.click
+end
+
+# Find the last created filter and click delete
+When /^I delete the latest filter with class "([^"]*)"$/ do |class_name|
+  # Find all elements with the class 'class_name'
+  elements = all("a.#{class_name}")
+
+  # Extract the id values from the href attributes
+  ids = elements.map do |element|
+    href = element[:href]
+    # Extract the id value from the href using a regex
+    href.match(/id=(\d+)/)[1].to_i
+  end
+
+  # Find the maximum id value
+  max_id = ids.max
+
+  # Find the element with the maximum id value
+  element_to_click = elements.find do |element|
+    element[:href].include?("id=#{max_id}")
+  end
+
+  # Dump the found element
+  puts "Found element with href: #{element_to_click[:href]}"
+
+  # Click the element with the highest id value
+  element_to_click.click
+end
+
+#Find element span and click
+When /^I click the span with text "([^"]*)"$/ do |text|
+  find('span', text: text).click
+end
+
+#Find data-menu-id and click
+When /^I click the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  find("[data-menu-id='#{menu_id}']").click
+end
+
+#Find data-menu-id and hover
+When /^I hover over the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  find("[data-menu-id='#{menu_id}']").hover
+end
+
+#Find data-menu-id and check if it exists in the UI
+Then /^I should see the element with data-menu-id "([^"]*)"$/ do |menu_id|
+  expect(page).to have_selector("[data-menu-id='#{menu_id}']")
+end
+
+#FInd All
+Then /^I should see all elements in the UI$/ do
+  # Find all elements in the UI
+  elements = all('*')
+
+  # Iterate through each element and display its details
+  sleep(60)
+  puts "Displaying all elements:"
+  elements.each do |element|
+    puts "Tag: #{element.tag_name}"
+    puts "Text: #{element.text.strip}" unless element.text.strip.empty?
+    puts "ID: #{element[:id]}" if element[:id]
+    puts "Class: #{element[:class]}" if element[:class]
+    puts "Name: #{element[:name]}" if element[:name]
+    puts "Href: #{element[:href]}" if element[:href]
+    puts "Data-menu-id: #{element[:'data-menu-id']}" if element[:'data-menu-id']
+    puts "data-popover: #{element[:'data-popover']}" if element[:'data-popover']
+    puts "-----------------------------"
+  end
+
+  # Switch to the iframe context
+  within_frame(find('iframe')) do
+    # Display all text fields
+    puts "Displaying all text fields:"
+    text_fields = all('input[type="text"]')
+    text_fields.each do |field|
+      puts "Text Field - Name: #{field[:name]}, ID: #{field[:id]}, Value: #{field[:value]}"
+    end
+
+    # Display all buttons
+    puts "Displaying all buttons:"
+    buttons = all('button, input[type="button"], input[type="submit"]')
+    buttons.each do |button|
+      puts "Button - Text: #{button.text.strip}, Name: #{button[:name]}, ID: #{button[:id]}"
+    end
+
+    # Display all dropdowns
+    puts "Displaying all dropdowns:"
+    dropdowns = all('select')
+    dropdowns.each do |dropdown|
+      puts "Dropdown - Name: #{dropdown[:name]}, ID: #{dropdown[:id]}"
+      dropdown.all('option').each do |option|
+        puts "  Option - Text: #{option.text.strip}, Value: #{option[:value]}"
+      end
+    end
+  end
+end
+
+#Accept modal alert from delete filter
+When /^I accept the alert from delete filter$/ do
+  page.driver.browser.switch_to.alert.accept
+end
+
+#Click a string with title
+When /^I click an element with title "([^"]*)"$/ do |title|
+  element = find(:css, "a[title='#{title}']")
+  element.click
+end
+
+#Check if disabled notification icon exists
+Then /^disabled notification icon should exist$/ do
+ expect(page).to have_selector('span.icon-16.x16-notify-disabled')
+end
+
+#Check if disabled notification icon does not exist
+Then /^disabled notification icon should not exist$/ do
+  expect(page).to have_no_selector('span.icon-16.x16-notify-disabled')
+end
+
+#Check toggle switch if it is ON or OFF
+Then /^the element with data-setting-toggle-command "([^"]*)" should exist$/ do |command|
+  expect(page).to have_selector("[data-setting-toggle-command='#{command}']")
+end
+
+#Get current time and add 30 seconds to it
+Given /^I store the current time plus 30 seconds$/ do
+  @stored_time = (Time.now + 30).strftime("%Y-%m-%d %H:%M:%S")
+  puts "Stored time: #{@stored_time}"
+end
+
+#Store the stored_time to time variable
+When /^I enter the stored time into "([^"]*)"$/ do |sel|
+  fill_in(sel % @params, :with => @stored_time)
+end
+
+#Check stored time if it is existing in the UI
+Then /^I should see the stored time in the UI$/ do
+  sleep 60
+  expect(page).to have_xpath("//td[text()='#{@stored_time}']")
+end
+
+#Check alt text on an image
+Then /^the image should have the alt text "([^"]*)"$/ do |alt_text|
+  expect(page).to have_selector("img[alt='#{alt_text}']")
+end
+
+Then /^I should see the following options:$/ do |table|
+  table.raw.flatten.each do |option|
+    expect(page).to have_content(option)
+  end
+end
+
+#Find a part of a string in the selection
+When /^I find the option with string "(.*)" from "([^"]*)"$/ do |opt, sel|
+  WaitForAjax.wait_for_ajax
+  select(find(:option, text: /#{opt}/i).text, from: sel)
+end
+
+#Select radio button
+When /^I select radio button "([^"]*)"$/ do |id|
+  find(:radio_button, id).click
+end
+
+#Check if pdf link is generated
+Then /^a PDF should be generated$/ do
+  page.response_headers['Content-Type'].should == 'application/pdf'
+end
+
+#Check helptext icon if it exist
+Then /^the helptext "([^"]*)" should exist$/ do |helptext|
+  expect(page).to have_selector("a.help-icon[data-popover='#{helptext}']")
+end
+
+#Click a radio button without the id
+When /^I click on radio button without id "([^"]*)"$/ do |radio_button|
+  find(radio_button).click
+end
+
+When /^I click the span with text "Save" and changes count$/ do
+  find('span.toolbar-icon-label', text: 'Save').click
+end
