@@ -111,15 +111,13 @@ Feature: Reports
 		And the helptext "include_alerts" should exist
 		And the helptext "use_alias" should exist
 		And the helptext "description" should exist
-		And the helptext "enter-sla" should exist
-
-	@addedhappypath
-	Scenario: Check helptexts in Histogram Report
-		Given I am logged in
-		And I am on the Host details page
-		When I hover over the "Report" menu
-		And I hover over the "Histogram" menu
-		And I click "Create Histogram Report"
+		Then the helptext "help:sla.report-type" should exist
+		And the helptext "help:sla.reporting_period" should exist
+		And the helptext "help:sla.report_time_period" should exist
+		And the helptext "help:sla.stated_during_downtime" should exist
+		And the helptext "help:sla.include_alerts" should exist
+		And the helptext "help:sla.use_alias" should exist
+		And the helptext "help:sla.description" should exist
 		Then the helptext "help:histogram.report-type" should exist
 	
 	@addedhappypath
