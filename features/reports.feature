@@ -111,14 +111,14 @@ Feature: Reports
 		And the helptext "include_alerts" should exist
 		And the helptext "use_alias" should exist
 		And the helptext "description" should exist
-		Then the helptext "help:sla.report-type" should exist
-		And the helptext "help:sla.reporting_period" should exist
-		And the helptext "help:sla.report_time_period" should exist
-		And the helptext "help:sla.stated_during_downtime" should exist
-		And the helptext "help:sla.include_alerts" should exist
-		And the helptext "help:sla.use_alias" should exist
-		And the helptext "help:sla.description" should exist
-		Then the helptext "help:histogram.report-type" should exist
+		Then the helptext "report-type" should exist
+		And the helptext "reporting_period" should exist
+		And the helptext "report_time_period" should exist
+		And the helptext "stated_during_downtime" should exist
+		And the helptext "include_alerts" should exist
+		And the helptext "use_alias" should exist
+		And the helptext "description" should exist
+		Then the helptext "report-type" should exist
 	
 	@addedhappypath
 	Scenario: Check helptexts in Scheduled Report
