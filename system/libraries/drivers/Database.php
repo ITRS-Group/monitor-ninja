@@ -538,7 +538,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetExists
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool	
 	{
 		if ($this->total_rows > 0)
 		{
@@ -554,7 +554,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetGet
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		if ( ! $this->seek($offset))
 			return FALSE;
@@ -602,9 +602,17 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: next
 	 */
-	public function next()
+	// public function next()
+	// {
+	// 	return ++$this->current_row;
+	// }
+	public function next(): void
 	{
-		return ++$this->current_row;
+		if ($this->current_row >= $this->total_rows)
+			return;
+
+		// Move to the next row
+		$this->seek($this->current_row + 1);
 	}
 
 	/**
@@ -618,10 +626,17 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: rewind
 	 */
-	public function rewind()
+	public function rewind(): void
 	{
-		return $this->current_row = 0;
-	}
+		if ($this->total_rows > 0)
+		{
+			// Move to the first row
+			$this->seek(0);
+		}
+	}	
+	// {
+	// 	$this->current_row = 0;
+	// }
 
 	/**
 	 * Iterator: valid
