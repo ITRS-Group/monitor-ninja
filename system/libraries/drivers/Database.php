@@ -154,7 +154,7 @@ abstract class Database_Driver {
 	 * @param   int      number of likes
 	 * @return  string
 	 */
-	public function like($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes)
+	public function like($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes = 0)
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
@@ -178,7 +178,7 @@ abstract class Database_Driver {
 	 * @param   int     number of likes
 	 * @return  string
 	 */
-	public function notlike($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes)
+	public function notlike($field, $match = '', $auto = TRUE, $type = 'AND ', $num_likes = 0)
 	{
 		$prefix = ($num_likes == 0) ? '' : $type;
 
@@ -530,7 +530,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Countable: count
 	 */
-	public function count()
+	public function count(): int
 	{
 		return $this->total_rows;
 	}
@@ -538,7 +538,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetExists
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool	
 	{
 		if ($this->total_rows > 0)
 		{
@@ -554,7 +554,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetGet
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		if ( ! $this->seek($offset))
 			return FALSE;
@@ -568,7 +568,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
-	final public function offsetSet($offset, $value)
+	final public function offsetSet($offset, $value): void
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
@@ -578,7 +578,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
-	final public function offsetUnset($offset)
+	final public function offsetUnset($offset): void
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
 	}
@@ -586,7 +586,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: current
 	 */
-	public function current()
+	public function current(): mixed
 	{
 		return $this->offsetGet($this->current_row);
 	}
@@ -594,7 +594,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: key
 	 */
-	public function key()
+	public function key(): mixed
 	{
 		return $this->current_row;
 	}
@@ -602,34 +602,46 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: next
 	 */
-	public function next()
+	// public function next()
+	// {
+	// 	return ++$this->current_row;
+	// }
+	public function next(): void
 	{
-		++$this->current_row;
-		return $this;
+		if ($this->current_row >= $this->total_rows)
+			return;
+
+		// Move to the next row
+		$this->seek($this->current_row + 1);
 	}
 
 	/**
 	 * Iterator: prev
 	 */
-	public function prev()
+	public function prev(): int
 	{
-		--$this->current_row;
-		return $this;
+		return --$this->current_row;
 	}
 
 	/**
 	 * Iterator: rewind
 	 */
-	public function rewind()
+	public function rewind(): void
 	{
-		$this->current_row = 0;
-		return $this;
-	}
+		if ($this->total_rows > 0)
+		{
+			// Move to the first row
+			$this->seek(0);
+		}
+	}	
+	// {
+	// 	$this->current_row = 0;
+	// }
 
 	/**
 	 * Iterator: valid
 	 */
-	public function valid()
+	public function valid(): bool
 	{
 		return $this->offsetExists($this->current_row);
 	}

@@ -121,9 +121,7 @@ class Orm_Command_Rights_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @group MON-9413
-	 */
+	#[Group('MON-9413')]
 	public function test_user_allowed_to_cancel_downtime_if_allowed_to_edit_hosts () {
 		$user = new User_Model(array(
 			'username' => 'a_forced_user',
@@ -145,9 +143,7 @@ class Orm_Command_Rights_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertArrayHasKey('delete', $commands);
 	}
 
-	/**
-	 * @group MON-9413
-	 */
+	#[Group('MON-9413')]
 	public function test_user_allowed_to_delete_comment_if_allowed_to_edit_hosts () {
 		$user = new User_Model(array(
 			'username' => 'a_forced_user',

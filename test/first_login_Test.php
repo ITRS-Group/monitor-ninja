@@ -9,8 +9,9 @@
  * @copyright  (c) 2007-2008 Kohana Team
  * @license    http://kohanaphp.com/license.html
  */
-class First_Login_Test extends \PHPUnit\Framework\TestCase {
+class first_login_Test extends \PHPUnit\Framework\TestCase {
 
+	private $mock_data_path = false;
 	protected function setUp () : void {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(
@@ -22,10 +23,11 @@ class First_Login_Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	private function mock_data($tables) {
+		$this->mock_data_path = __DIR__ . '/' . $this->toString() . '.json';
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
 				$driver,
-				new ORMDriverNative($tables, null, $driver)
+				new ORMDriverNative($tables, $this->mock_data_path, $driver)
 			);
 		}
 	}

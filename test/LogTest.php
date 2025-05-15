@@ -45,6 +45,7 @@ class LogTest extends \PHPUnit\Framework\TestCase
 			}
 			$cfg['file'] = $filenames[$filetag];
 		}
+
 		unset($cfg); /* Drop the reference $cfg */
 
 		op5objstore::instance()->mock_add( 'op5config',
@@ -69,11 +70,21 @@ class LogTest extends \PHPUnit\Framework\TestCase
 
 	static public function getOutputRawNS($namespace) {
 		$file = self::$config[$namespace]['file'];
-		$size = filesize($file);
+		$fileStats = stat($file);
+		$size = $fileStats['size'];
 
 		$fp = fopen($file, 'r+');
+		if ($fp === false) {
+			echo ("Failed to open file: $file");
+		}
+		
 		$content = $size == 0 ? '' : fread($fp, filesize($file));
-		ftruncate($fp,0);
+
+		$file_trunc = ftruncate($fp,0);	
+		if ($file_trunc === false) {
+			echo ("Failed to truncate file: $file");
+		}
+
 		fclose($fp);
 
 		return $content;
@@ -115,7 +126,6 @@ class LogTest extends \PHPUnit\Framework\TestCase
 	{
 		op5log::instance('lvl_debug')->log('debug','message');
 		op5log::writeback();
-
 		$content = self::getOutputNS('lvl_debug');
 		$this->assertEquals( $content, array(
 				array('debug', 'lvl_debug', 'message')

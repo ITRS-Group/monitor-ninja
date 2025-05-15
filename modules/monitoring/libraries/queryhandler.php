@@ -79,7 +79,7 @@ class op5queryhandler {
 		if($node !== false) {
 			return $this->raw_remote_call($command, $node);
 		}
-		$sock = @fsockopen('unix://'.$this->path, NULL, $errno, $errstr, $this->timeout);
+		$sock = @fsockopen('unix://'.$this->path, -1, $errno, $errstr, $this->timeout);
 		if ($sock === false) {
 			$path_data = var_export($this->path, true);
 			throw new op5queryhandler_Exception("Failed to open socket at $path_data: $errstr");

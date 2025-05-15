@@ -109,7 +109,11 @@ foreach ($res->result(false) as $result) {
 
 $res = $db->query('SELECT * FROM summary_config');
 foreach ($res->result(false) as $result) {
-	$setting = @unserialize($result['setting']);
+	try{
+		$setting = @unserialize($result['setting']);
+	} catch (Exception $e) {
+		echo 'Error: ',  $e->getMessage(), "\n";
+	}
 	if (!$setting)
 		continue;
 	unset($setting['report_id']);

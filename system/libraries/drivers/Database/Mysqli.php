@@ -16,6 +16,10 @@ class Database_Mysqli_Driver extends Database_Driver {
 	protected $db_config;
 	protected $statements = array();
 
+	public static $query_cache = array();
+
+	public $config;
+
 	/**
 	 * Sets the config for the class.
 	 *
@@ -323,7 +327,7 @@ class Kohana_Mysqli_Result extends Database_Result {
 	 * @param  boolean   return objects or arrays
 	 * @param  string    SQL query that was run
 	 */
-	public function __construct($link, $object = TRUE, $sql)
+	public function __construct($link, $object = TRUE, $sql = '')
 	{
 		$this->link = $link;
 
@@ -488,7 +492,7 @@ class Kohana_Mysqli_Result extends Database_Result {
 		return TRUE;
 	}
 
-	public function offsetGet($offset)
+	public function offsetGet($offset): mixed
 	{
 		if ( ! $this->seek($offset))
 			return FALSE;

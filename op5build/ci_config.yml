@@ -25,6 +25,11 @@ post:
     mkdir -p /mnt/logs
     echo "core ulimit: \$(ulimit -c)"
     export CUKE_SCREEN_DIR=/mnt/logs/screenshots
+    #Create Test Data
+    IP_ADDRESS=$(hostname -I | awk '{print $1}')
+    echo "Server IP address: $IP_ADDRESS"
+    /usr/bin/op5-manage-users --update --username=monitor --password=monitor --realname=monitor --module=Default --group=admins
+    
     cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
 
 vm-config: |
