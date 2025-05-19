@@ -119,6 +119,9 @@ fi
 echo "sched_db_ver :$sched_db_ver"
 
 sched_db_ver=$(echo $sched_db_ver | cut -d '.' -f1)
+
+echo "new sched_db_ver :$sched_db_ver"
+
 while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	case "$sched_db_ver" in
 	[1-5])
@@ -249,7 +252,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	18)
 		all_versions 18
 		# Upgrade widgets to Dashboard_Model / Dashboard_Widget_Model
-		php "$SCRIPT_DIR/migrate_widgets.php"
+		# php "$SCRIPT_DIR/migrate_widgets.php"
 		;;
 	*)
 		all_versions "$db_ver"
