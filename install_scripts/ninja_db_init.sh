@@ -77,6 +77,9 @@ run_sql_file () # (db_login_opts, sql_script_path)
 	mysql $db_login_opts < $sql_script_path >/dev/null 2>/dev/null
 }
 
+echo "db pass:" $db_pass
+echo "db ver:" $db_ver
+
 if [ "$db_pass" != "" ]
 then
 	db_login_opts="-u$db_user -p$db_pass $db_name"
