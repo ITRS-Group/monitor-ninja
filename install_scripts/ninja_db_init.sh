@@ -78,7 +78,6 @@ run_sql_file () # (db_login_opts, sql_script_path)
 }
 
 echo "db pass:" $db_pass
-echo "db ver:" $db_ver
 
 if [ "$db_pass" != "" ]
 then
@@ -88,6 +87,8 @@ else
 fi
 
 db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" 2>/dev/null | sed -n \$p)
+
+echo "db ver:" $db_ver
 
 if [ "$db_ver" = '' ]
 then
