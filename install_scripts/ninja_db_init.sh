@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Starting ninja_db_init.sh"
 # setup the db tables required for Ninja
 
 target_db_version=26
@@ -97,6 +97,7 @@ then
 	run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/ninja.sql"
 	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" 2>/dev/null | sed -n \$p)
 fi
+echo "db ver after run file:" $db_ver
 
 if [[ "$db_ver" = '' ]]
 then
