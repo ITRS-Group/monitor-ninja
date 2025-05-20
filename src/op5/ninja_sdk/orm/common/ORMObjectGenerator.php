@@ -150,7 +150,7 @@ abstract class ORMObjectGenerator extends ORMGenerator {
 		$this->write(         '$subobj_export[$parts[0]][] = $parts[1];');
 		$this->write(         '$obj->export[] = $parts[0];');
 		$this->write(     '} else {');
-		$this->write(         'if(isset($parts[0]) $obj->export[] = $parts[0];');
+		$this->write(         'if(isset($parts[0])) $obj->export[] = $parts[0];');
 		$this->write(     '}');
 		$this->write( '}');
 		$this->comment('If object fields exists, make sure the object only exists in the export array once');
