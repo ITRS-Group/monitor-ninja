@@ -499,7 +499,9 @@ class Kohana_Mysqli_Result extends Database_Result {
 
 		// Return the row
 		$fetch = $this->fetch_type;
-		return $this->result->$fetch($this->return_type);
+		$return_type = $this->return_type;
+		$fetch_result = $this->result->$fetch($return_type);
+		return $fetch_result;
 	}
 
 } // End Mysqli_Result Class
