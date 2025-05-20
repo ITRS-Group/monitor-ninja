@@ -494,13 +494,13 @@ class Kohana_Mysqli_Result extends Database_Result {
 
 	public function offsetGet($offset): mixed
 	{
-		if ( ! $this->seek($offset))
+		if ( !$this->seek($offset))
 			return FALSE;
 
 		// Return the row
-		$fetch = $this->fetch_type;
+		// $fetch = $this->fetch_type;
 		$return_type = $this->return_type;
-		$fetch_result = $this->result->$fetch($return_type);
+		$fetch_result = $this->result->fetch_array($return_type);
 		return $fetch_result;
 	}
 
