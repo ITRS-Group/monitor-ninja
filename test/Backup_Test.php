@@ -53,7 +53,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		unset($this->controller);
 	}
 
-	public function test_backup(): void	 {
+	public function test_backup()	 {
 		$controller = $this->controller;
 		$controller->backup();
 		$export_message = var_export($controller->template->message, true);
