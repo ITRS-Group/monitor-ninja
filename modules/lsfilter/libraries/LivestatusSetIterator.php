@@ -33,7 +33,7 @@ class LivestatusSetIterator implements Iterator {
 			return false;
 		}
 		$cur_arr = $this->data->current();
-		if( empty($cur_arr) ) {
+		if(empty($cur_arr)) {
 			return false;
 		}
 		$varmap = array_combine(
@@ -43,7 +43,9 @@ class LivestatusSetIterator implements Iterator {
 		$classname = $this->class;
 		$exp_columns = array();
 		foreach( $this->columns as $col ) {
-			$exp_columns[$col] = $col;
+			if(is_string($col)) {
+				array_push($exp_columns, $col);
+			}
 		}
 		return $classname::factory_from_setiterator($varmap, '', $exp_columns);
 	}
