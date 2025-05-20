@@ -522,7 +522,7 @@ class Kohana_Mysqli_Statement {
 
 		$this->stmt = $this->link->prepare($sql);
 
-		return $this;
+		// return $this;
 	}
 
 	public function __destruct()
@@ -535,7 +535,7 @@ class Kohana_Mysqli_Statement {
 	{
 		$this->var_names = array_keys($params);
 		$this->var_values = array_values($params);
-		call_user_func_array(array($this->stmt, 'bind_param'), array_merge($param_types, $var_names));
+		call_user_func_array(array($this->stmt, 'bind_param'), array_merge($param_types, $this->var_names));
 
 		return $this;
 	}
