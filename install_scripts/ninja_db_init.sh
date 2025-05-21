@@ -77,8 +77,6 @@ run_sql_file () # (db_login_opts, sql_script_path)
 	mysql $db_login_opts < $sql_script_path >/dev/null 2>/dev/null
 }
 
-echo "db pass:" $db_pass
-
 if [ "$db_pass" != "" ]
 then
 	db_login_opts="-u$db_user -p$db_pass $db_name"
@@ -97,7 +95,6 @@ then
 	run_sql_file "$db_login_opts" "$PREFIX_DIR/sql/mysql/ninja.sql"
 	db_ver=$(mysql $db_login_opts -Be "SELECT version FROM ninja_db_version" 2>/dev/null | sed -n \$p)
 fi
-echo "db ver after run file:" $db_ver
 
 if [[ "$db_ver" = '' ]]
 then
@@ -119,8 +116,6 @@ fi
 echo "sched_db_ver :$sched_db_ver"
 
 sched_db_ver=$(echo $sched_db_ver | cut -d '.' -f1)
-
-echo "new sched_db_ver :$sched_db_ver"
 
 while [ "$sched_db_ver" -lt "$target_sched_version" ]; do
 	case "$sched_db_ver" in
