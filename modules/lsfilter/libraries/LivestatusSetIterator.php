@@ -41,13 +41,7 @@ class LivestatusSetIterator implements Iterator {
 				$cur_arr
 				);
 		$classname = $this->class;
-		$exp_columns = array();
-		foreach( $this->columns as $col ) {
-			if(is_string($col)) {
-				array_push($exp_columns, $col);
-			}
-		}
-		return $classname::factory_from_setiterator($varmap, '', $exp_columns);
+		return $classname::factory_from_setiterator( $varmap, '', $this->export_columns );
 	}
 
 	/**
