@@ -5,6 +5,8 @@
  * @license    GPL
  */
 class Livestatus_Test extends \PHPUnit\Framework\TestCase {
+    private $ls;
+    private $lsb;
     public function setUp() : void {
 		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
         $this->ls = Livestatus::instance();

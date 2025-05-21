@@ -1,7 +1,10 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class Form_Test extends \PHPUnit\Framework\TestCase {
-	public function get_form_provider() {
+
+	public $form;
+	public static function get_form_provider() {
 		// phpunit wants to be able to iterate through the dataset
 		return array(array(new Form_Model('my_action_url', 'POST', array(
 			new Form_Field_Text_Model('name', "your name?"),
@@ -17,10 +20,8 @@ class Form_Test extends \PHPUnit\Framework\TestCase {
 		))));
 	}
 
-	/**
-	 * @group MON-9409
-	 * @dataProvider get_form_provider
-	 */
+	#[DataProvider('get_form_provider')]
+	#[Group('MON-9409')]
 	public function test_render($form) {
 		/* Set some defaults */
 		$form->set_values(array(
@@ -47,10 +48,8 @@ class Form_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertStringContainsString('value="because"', $content);
 	}
 
-	/**
-	 * @group MON-9409
-	 * @dataProvider get_form_provider
-	 */
+	#[DataProvider('get_form_provider')]
+	#[Group('MON-9409')]
 	public function test_process($form) {
 		$this->assertSame(array(
 			'name' => 'Someone',
@@ -74,24 +73,20 @@ class Form_Test extends \PHPUnit\Framework\TestCase {
 		)));
 	}
 
-	/**
-	 * @group MON-9409
-	 * @dataProvider get_form_provider
-	 */
+	#[DataProvider('get_form_provider')]
+	#[Group('MON-9409')]
 	public function test_process_fail($form) {
 		$this->expectException('FormException');
 		$this->expectExceptionMessage('trouble has not a valid option value');
-		$form->process_data(array(
+		$form->process_data([
 			'unknown_field' => 12,
 			'trouble' => 'boll',
 			'name' => 'Someone',
 			'why' => ''
-		));
+		]);
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_missing_mandatory_field_throws_exception() {
 		$this->expectException('MissingValueException');
 		$this->expectExceptionMessage("Missing a value for the field 'title'");
@@ -134,9 +129,7 @@ class Form_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @group MON-9409
-	 */
+	#[Group('MON-9409')]
 	public function test_form_field_that_is_member_of_a_group_can_be_optional() {
 		$group_field = new Form_Field_Group_Model('All your personal information', array(
 			new Form_Field_Text_Model('something_personal', 'Something personal'),

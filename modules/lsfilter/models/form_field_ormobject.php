@@ -9,6 +9,8 @@
  */
 class Form_Field_ORMObject_Model extends Form_Field_Model {
 
+	public $tables;
+	
 	/**
 	 * @param $name string
 	 * @param $pretty_name string

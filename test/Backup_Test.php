@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\TextUI\Configuration\Group;
 /**
  * Test the backup functions that are reached through the GUI. There are other
  * types of backups being run too, you can read more about backups here:
@@ -8,8 +10,9 @@
 class Backup_Test extends \PHPUnit\Framework\TestCase {
 
 	private $controller;
+	private $backup_location;
 
-	public function setUp() : void {
+	public function setUp(): void {
 		exec("id monitor", $output, $exit_code);
 		if($exit_code != 0) {
 			$this->markTestSkipped("Could not find the ".
@@ -37,7 +40,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		$this->controller = new Backup_Controller($this->backup_location);
 	}
 
-	public function tearDown() : void {
+	public function tearDown(): void {
 		// php's rmdir() expects an empty directory, be convenient and
 		// use the good ol' rm -rf instead, after a small sanity check
 		// of the directory's path (yeah, I know, if-cases in tests are
@@ -50,22 +53,24 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		unset($this->controller);
 	}
 
-	public function test_backup() {
+	public function test_backup(): void {
 		$controller = $this->controller;
 		$controller->backup();
-		$this->assertSame(true, $controller->template->success,
-			var_export($controller->template->message, true));
+		$export_message = var_export($controller->template->message, true);
+		$this->assertSame(true, $controller->template->success, $export_message);
 
 		$backups = glob($this->backup_location.'/*');
+		$backups_message = "Should have a single backup and nothing else, but we have this:\n".var_export($backups, true);
 		$this->assertCount(
 			1,
 			$backups,
-			"Should have a single backup and nothing else, but ".
-			"we have this:\n".var_export($backups, true)
+			$backups_message
 		);
+		$path_info = pathinfo(reset($backups), PATHINFO_BASENAME);
+		$template_result = $controller->template->value["result"];
 		$this->assertSame(
-			pathinfo(reset($backups), PATHINFO_BASENAME),
-			$controller->template->value["result"],
+			$path_info,
+			$template_result,
 			"The filename in the controller's response should ".
 			"match the one that was stored on disk"
 		);
@@ -77,14 +82,15 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 	 * will be replaced with itself though, if everything goes alright.
 	 * If you got a better idea on how to mock these things, but still
 	 * test the core, feel free to push some commits :)
-	 *
-	 * @group nonlocal
-	 * @depends test_backup
 	 */
+	#[Group('nonlocal')]
+	#[Depends('test_backup')]
 	public function test_backup_restore() {
 		if(!is_executable('/opt/monitor/op5/backup/restore')) {
 			$this->markTestSkipped("Need access to the restoring ".
 				"script in order to test it");
+		} else {
+			echo "Restore script is executable.\n";
 		}
 
 		$controller = $this->controller;
@@ -99,8 +105,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		// variables are nice in that they do not rely on state..
 		$controller->template = null;
 		$controller->restore($this_backup);
-		$this->assertSame(
-			true,
+		$this->assertTrue(
 			$controller->template->success,
 			var_export($controller->template->message, true)
 		);
@@ -111,9 +116,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @depends test_backup
-	 */
+	#[Depends('test_backup')]
 	public function test_backup_delete() {
 		$controller = $this->controller;
 		$controller->backup();
@@ -126,7 +129,7 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 			"The sanity check of the backup's existence failed"
 		);
 		$controller->delete($this_backup);
-		$this->assertFileNotExists(
+		$this->assertFileDoesNotExist(
 			$complete_filename,
 			"The file should no longer exist"
 		);

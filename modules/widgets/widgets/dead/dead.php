@@ -7,6 +7,7 @@ class Dead_Widget extends widget_Base {
 	/**
 	 * Builds a new Dead_Widget
 	 **/
+	private $exc;
 	public function __construct($model, Exception $exc = null) {
 		$this->exc = $exc;
 		parent::__construct($model);

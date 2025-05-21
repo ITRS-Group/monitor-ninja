@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
 class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 	private function mock_data($tables) {
 		foreach ( $tables as $driver => $tables ) {
@@ -69,7 +70,7 @@ class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	public function provider_read_users() {
+	public static function provider_read_users() {
 		return array(
 			array('me', array( 'admins' ), array( 'For me', 'My no read', 'For us', 'For admins' )),
 			array('you', array( 'admins' ), array( 'For you', 'For us', 'For admins' )),
@@ -77,9 +78,7 @@ class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider provider_read_users
-	 */
+	#[DataProvider('provider_read_users')]
 	public function test_read_permissions($username, $groups, $dashboards) {
 		$user = new User_Model ();
 		$user->set_username ( $username );
@@ -104,7 +103,7 @@ class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 	/**
 	 * Users, for which dashboards the user owns. The groups are irrelevant.
 	 */
-	public function provider_write_users() {
+	public static function provider_write_users() {
 		return array(
 			array( 'me', array( 'admins' ), array( 'For me', 'My no read', 'For us' ) ),
 			array( 'you', array( 'admins' ), array( 'For you' ) ),
@@ -112,9 +111,7 @@ class Dashboard_Permission_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider provider_write_users
-	 */
+	#[DataProvider('provider_write_users')]
 	public function test_write_permissions($username, $groups, $dashboards) {
 		$user = new User_Model();
 		$user->set_username( $username );

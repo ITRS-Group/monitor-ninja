@@ -1,6 +1,10 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 {
+	private $length;
+	private $type;
 	function setUp() : void
 	{
 		// sweep up leftover crap from other runs
@@ -190,11 +194,9 @@ class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 		$this->assertSame(false, $opts->save($msg));
 	}
 
-	/**
-	 * @dataProvider fill_sla
-	 * @group MON-6154
-	 * @group time::get_limits
-	 */
+	#[DataProvider('fill_sla')]
+	#[Group('MON-6154')]
+	#[Group('time::get_limits')]
 	function test_sla_create_special($input, $expected, $time)
 	{
 		Report_options::$now = $time;
@@ -213,7 +215,7 @@ class Saved_reports_Test extends \PHPUnit\Framework\TestCase
 		$this->assertTrue($opts->delete());
 	}
 
-	function fill_sla()
+	static function fill_sla()
 	{
 		$input_partial = array(8 => 8);
 		$expected_partial = array(1 => 0.0, 2 => 0, 3 => 0,
