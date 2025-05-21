@@ -247,7 +247,7 @@ while [ "$db_ver" -lt "$target_db_version" ]; do
 	18)
 		all_versions 18
 		# Upgrade widgets to Dashboard_Model / Dashboard_Widget_Model
-		# php "$SCRIPT_DIR/migrate_widgets.php"
+		php "$SCRIPT_DIR/migrate_widgets.php"
 		;;
 	*)
 		all_versions "$db_ver"
