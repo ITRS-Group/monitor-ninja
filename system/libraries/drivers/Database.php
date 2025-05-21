@@ -538,6 +538,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetExists
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists($offset)	
 	{
 		if ($this->total_rows > 0)
@@ -554,6 +555,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * ArrayAccess: offsetGet
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		if ( ! $this->seek($offset))
@@ -568,6 +570,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	 *
 	 * @throws  Kohana_Database_Exception
 	 */
+	#[\ReturnTypeWillChange]
 	final public function offsetSet($offset, $value)
 	{
 		throw new Kohana_Database_Exception('database.result_read_only');
@@ -602,6 +605,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: next
 	 */
+	#[\ReturnTypeWillChange]
 	public function next()
 	{
 		return ++$this->current_row;
@@ -618,6 +622,7 @@ abstract class Database_Result implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Iterator: rewind
 	 */
+	#[\ReturnTypeWillChange]
 	public function rewind()
 	{
 		return $this->current_row = 0;
