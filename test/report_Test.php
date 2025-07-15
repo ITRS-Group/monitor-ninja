@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once('op5/auth/Auth.php');
 require_once('op5/objstore.php');
@@ -32,9 +34,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * Warning, Critical etc.) for all slots (time slots, and max, min etc.).
 	 *
 	 * I.e the event data is not checked.
-	 *
-	 * @group MON-6031
 	 */
+	#[Group('MON-6031')]
 	public function test_summary_report_histogram() {
 		// Hourly time slots.
 		$time_slots = array(
@@ -127,9 +128,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertSame($visible_states, array_keys($result_array[$key]));
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_restricted_access() {
 		/* Store old user, so we can reset afterward */
 		$authmod = op5auth::instance();
@@ -193,9 +192,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		$authmod->force_user($stasheduser, false);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_overlapping_timeperiods() {
 		$db = Database::instance();
 		$opts = array(
@@ -237,7 +234,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 						$rpt = new Report_query_builder_Model('report_data', $opts);
 						$query = $rpt->build_alert_summary_query();
 						$this->assertIsString($query, "No query returned when $msg for host_state:$host_state;service_state:$service_state;state_type:$state_types;alert_types:$alert_types");
-						$this->assertObjectHasAttribute('select_type', $db->query("EXPLAIN " . $query)->current());
+						$this->assertObjectHasProperty('select_type', $db->query("EXPLAIN " . $query)->current());
 					}
 				}
 			}
@@ -288,8 +285,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * Test bug #8602
 	 *
 	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
-	 * @group nonlocal
 	 */
+	#[Group('nonlocal')]
 	function test_saved_filter_hostgroup_collission() {
 
 		try {
@@ -326,9 +323,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * Test bug #8602
 	 *
 	 * Store a filter, with same name as an hostgroup. The hostgroup should be used, and shouldn't be affected by the filter
-	 *
-	 * @group nonlocal
 	 */
+	#[Group('nonlocal')]
 	function test_saved_filter_servicegroup_collission() {
 
 		try {
@@ -382,9 +378,8 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 *
 	 * We don't care about output, but almost anything that can go wrong will
 	 * print errors on lines, which we implicitly catch here, so we should be OK
-	 *
-	 * @group nonlocal
 	 */
+	#[Group('nonlocal')]
 	function test_csv()
 	{
 		$month = date('n') - 1;
@@ -484,7 +479,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 				$ctrl->generate($option);
 				$out = $ctrl->template->render();
 
-				$this->assertEquals(count(explode("\n", trim($out))), $details['expected'], "Unexpected number of lines generated for $report_type $test_name, output was: $out");
+				$this->assertCount($details['expected'], explode("\n", trim($out)), "Unexpected number of lines generated for $report_type $test_name, output was: $out");
 				$this->assertSame(strpos($out, '""'), false, "Expected no empty parameters for $report_type $test_name, found in $out");
 				if ($report_type != 'Sla' || $option['report_type'] != 'services') # Because that case has comma-separated host-and-description names. Obviously.
 					$this->assertSame(strpos($out, ';'), false, "Expected no semi-colons in output for $report_type $test_name, found in $out");
@@ -566,9 +561,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertEquals(array(0 => -2, 1 => -2, 2 => -2, 3 => -2), $obj->options['service_filter_status']);
 	}
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	function test_timeperiod_import()
 	{
 			/*
@@ -1075,7 +1068,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 * options, but we really, really, do not want phpunit to stop testing
 	 * after the first failure.
 	 */
-	public function time_input_for_report_options() {
+	public static function time_input_for_report_options() {
 		return array(
 			array(
 				'lastweek',
@@ -1212,11 +1205,9 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @dataProvider time_input_for_report_options
-	 * @group MON-7264
-	 * @group time::get_limits
-	 */
+	#[DataProvider('time_input_for_report_options')]
+	#[Group('MON-7264')]
+	#[Group('time::get_limits')]
 	public function test_relative_timeperiods_for_report_options($report_period, $now, $expected_start, $expected_end) {
 		$now = strtotime($now);
 
@@ -1243,9 +1234,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 			$friendly($expected, $actual));
 	}
 
-	/**
-	 * @group time::get_limits
-	 */
+	#[Group('time::get_limits')]
 	public function test_relative_timeperiod_throws_exception_on_invalid_report_type() {
 		$this->expectException('InvalidTimePeriod_Exception');
 		$this->expectExceptionMessage("'non-existing' is not a valid value for \$time_period");

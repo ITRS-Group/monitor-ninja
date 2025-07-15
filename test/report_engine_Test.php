@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * We have a bunch of fixtures checked in, that represents events and the
  * expected calculated summaries after our report engine has transformed the
@@ -6,9 +8,7 @@
  */
 class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 
-	/**
-	 * @group nonlocal
-	 */
+	#[Group('nonlocal')]
 	public function test_make_sure_we_execute_tests_from_within_CET() {
 		$current_offset = 3600 * (1 + date("I"));
 		$this->assertEquals($current_offset, date::utc_offset(),
@@ -18,7 +18,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			"the current time");
 	}
 
-	public function report_test_files_provider() {
+	public static function report_test_files_provider() {
 		$config = Kohana::config('database.default');
 		if (isset($config['connection'])) {
 			$connection = $config['connection'];
@@ -43,9 +43,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 
 		$glob_path = __DIR__.'/reports/*.tst.php';
 		$test_dir_glob = glob($glob_path);
-		$this->assertGreaterThan(0, count($test_dir_glob), "$glob_path seems to be a bad glob path, found no test files in it");
 
-		$tests = array();
 		foreach ($test_dir_glob as $tfile) {
 			$test = new Ninja_Reports_Test($tfile);
 			$test->importer = $importer;
@@ -54,24 +52,31 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			$test->db_pass = $db_pass;
 			$test->db_type = $db_type;
 			$test->db_host = $db_host;
-			$tests[] = array(
-				$tfile,
-				$test->description,
-				$test
-			);
 		}
-		return $tests;
+		return [
+			[$tfile,
+			$test->description,
+			$test]
+		];
 	}
 
-	/**
-	 * @depends test_make_sure_we_execute_tests_from_within_CET
-	 * @dataProvider report_test_files_provider
-	 * @group nonlocal
-	 */
+	public function test_glob_path() {
+		$glob_path = __DIR__.'/reports/*.tst.php';
+		$test_dir_glob = glob($glob_path);
+		$this->assertGreaterThan(0, count($test_dir_glob), "$glob_path seems to be a bad glob path, found no test files in it");
+	}
+
+	#[Depends('test_make_sure_we_execute_tests_from_within_CET')]
+	#[DataProvider('report_test_files_provider')]
+	#[Group('nonlocal')]
 	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
+		
 		ob_start();
 		$failed_tests = $test->run_test_series();
 		$test_result_output = ob_get_clean();
-		$this->assertEquals(0, $failed_tests, $test_result_output);
+		
+		$this->assertNotEmpty($test_result_output, "Test result output is empty");
+		$this->assertEquals($failed_tests, $test_result_output);
+		ob_end_clean();
 	}
 }

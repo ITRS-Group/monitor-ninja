@@ -126,6 +126,7 @@ class Debug_Helper_Test extends \PHPUnit\Framework\TestCase {
 			'secret = ***** ) </pre> </li> </ul>';
 
 		$this->assertSame($expected, $html);
+		ob_end_clean();
 	}
 
 	public function test_get_backtrace_as_string() {

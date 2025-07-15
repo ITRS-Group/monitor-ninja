@@ -77,7 +77,7 @@ class System_Model extends Model
 		foreach($lines as $line) {
 			// skip empty lines and non-variables
 			$line = trim($line);
-			if(!strlen($line) || $line{0} === '#') continue;
+			if(!strlen($line) || $line[0] === '#') continue;
 			$str = explode('=', $line);
 			if(!isset($str[1])) continue;
 
@@ -118,13 +118,13 @@ class System_Model extends Model
 		$found_section = false;
 		while ($raw_line = fgets($fh)) {
 			$line = trim($raw_line);
-			if (!strlen($line) || $line{0} === '#')
+			if (!strlen($line) || $line[0] === '#')
 				continue;
 
 			# this routine is only ever read to get one
 			# section, so we can bail early when we've
 			# found it and the section is done with
-			if ($found_section && $line{0} === '}')
+			if ($found_section && $line[0] === '}')
 				break;
 
 			if (!strcmp($line, $section.' {')) {
