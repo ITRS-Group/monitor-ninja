@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\Depends;
 class Dashboard_Share_Test extends \PHPUnit\Framework\TestCase {
 
 	public function setUp() : void {
@@ -19,9 +20,7 @@ class Dashboard_Share_Test extends \PHPUnit\Framework\TestCase {
 		op5objstore::instance()->mock_clear();
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_dashboard_set_read_perm_shares_dashboard() {
 		$my_dashboard = new Dashboard_Model();
 		$read_perm = $my_dashboard->get_read_perm();
@@ -42,10 +41,8 @@ class Dashboard_Share_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9539
-	 * @depends test_dashboard_set_read_perm_shares_dashboard
-	 */
+	#[Group('MON-9539')]
+	#[Depends('test_dashboard_set_read_perm_shares_dashboard')]
 	public function test_dashboard_set_read_perm_overwrites_existing() {
 		$my_dashboard = new Dashboard_Model();
 		$read_perm = $my_dashboard->get_read_perm();
@@ -87,9 +84,7 @@ class Dashboard_Share_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_dashboard_add_read_perm_does_not_create_duplicates() {
 		$my_dashboard = new Dashboard_Model();
 		$read_perm = $my_dashboard->get_read_perm();
@@ -124,9 +119,7 @@ class Dashboard_Share_Test extends \PHPUnit\Framework\TestCase {
 		);
 	}
 
-	/**
-	 * @group MON-9539
-	 */
+	#[Group('MON-9539')]
 	public function test_dashboard_remove_read_perm_unshares_dashboard() {
 		$my_dashboard = new Dashboard_Model();
 		$this->assertEquals(

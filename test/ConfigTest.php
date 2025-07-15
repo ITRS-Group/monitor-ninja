@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\Framework\Attributes\DataProvider;
 
 require_once "op5/config.php";
 require_once "op5/objstore.php";
@@ -6,12 +7,13 @@ require_once "op5/objstore.php";
 class ConfigTest extends \PHPUnit\Framework\TestCase
 {
 	const TEST_ENV_VAR = 'OP5_TURTLES_PURPLE_NAME';
+    protected $config;
 
 	protected function setUp() : void
 	{
-		$this->config = new op5config(array(
+		$this->config = new op5config([
 			"basepath" => __DIR__."/fixtures"
-		));
+		]);
 		// unset the test env var
 		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
 	}
@@ -58,9 +60,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 		$this->assertSame(array("__version" => 3), $this->config->getConfig("something_new", true), "Prefixed values should be returned when we ask for them");
 	}
 
-	/**
-	 * @group MON-9199
-	 */
+	#[Group('MON-9199')]
 	public function test_env_takes_precedence_over_files()
 	{
 		$this->assertSame(true, putenv(self::TEST_ENV_VAR));
@@ -81,20 +81,20 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
 		);
 	}
 
-	public function config_file_permission_data_provider() {
+	public static function config_file_permission_data_provider() {
         /*
         * Specifications of files which should be checked, and the permissions expected. And yes, I created this
         * key-value array which then is converted into a standard phpunit test array due to the phpunit standard being
         * rather unclear when it comes to readability
         */
-        $configPermissionPairs = array(
-            array(
+        $configPermissionPairs = [
+            [
                 'filename' => APPPATH . '/config/database.php',
                 'expectedPermission' => 440,
                 'expectedOwner' => 'monitor',
                 'expectedGroup' => 'apache'
-            )
-        );
+            ]
+        ];
 
         $returnArray = array();
         foreach ($configPermissionPairs as $permissionPair) {
@@ -109,14 +109,14 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         return $returnArray;
     }
 
+    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the permissions of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
-     * @dataProvider config_file_permission_data_provider
-     * @param $filename String The name and path of the file tested
-     * @param $expectedPermission Int Expected permission mask
-     * @param $expectedUser String The expected username of the owner of the file
-     * @param $expectedGroup String The expected group name of the owner of the file
+     * @param string $filename String The name and path of the file tested
+     * @param int $expectedPermission Int Expected permission mask
+     * @param string $expectedUser String The expected username of the owner of the file
+     * @param string $expectedGroup String The expected group name of the owner of the file
      * @internal param Int $actual Actual permission mask returned from fileparms()
      */
 	public function test_config_file_permissions($filename, $expectedPermission, $expectedUser, $expectedGroup) {
@@ -128,10 +128,10 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the owner of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
-     * @dataProvider config_file_permission_data_provider
      * @param $filename String The name and path of the file tested
      * @param $expectedPermission Int Expected permission mask
      * @param $expectedUser String The expected username of the owner of the file
@@ -148,10 +148,10 @@ class ConfigTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    #[DataProvider('config_file_permission_data_provider')]
     /**
      * Verify the group of various config files; making sure they are accessible, but not too accessible.
      * Originally implemented due to: MON-9723
-     * @dataProvider config_file_permission_data_provider
      * @param $filename String The name and path of the file tested
      * @param $expectedPermission Int Expected permission mask
      * @param $expectedUser String The expected username of the owner of the file

@@ -8,20 +8,20 @@
  */
 class Ninja_Reports_Test extends Status_Reports_Model
 {
-	public $test_file = false; /**< The file name we're testing */
+	public $test_file; /**< The file name we're testing */
 	private $total = 0;
 	public $description = false; /**< A string describing the purpose of this test */
 	private $tests;
-	private $results = array();
+	private $results = [];
 	private $config_files = false;
-	private $passed; /**< Number of passed tests */
-	private $failed; /**< Number of failed tests */
-	private $logfiles = false;
-	private $logfile = false;
+	private $passed = 0; /**< Number of passed tests */
+	private $failed = 0; /**< Number of failed tests */
+	private $logfiles;
+	private $logfile;
 	private $sqlfile = false;
-	private $table_name = false;
-	private $test_globals = array();
-	private $interesting_prefixes = array();
+	private $table_name;
+	private $test_globals = [];
+	private $interesting_prefixes = [];
 	public $sub_reports = 0; /**< The number of sub reports */
 	private $color_red   = '';
 	private $color_green = '';
@@ -32,7 +32,10 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	public $db_type; /**< Database type */
 	public $db_host; /**< Database hostname */
 	public $importer; /**< The command used to import logs into the database */
+	public $params;
 
+	private $details;
+	private $cur_test;
 	/**
 	 * Run new test file. Will parse the file, but not run it
 	 */
@@ -277,11 +280,12 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		echo "Using db table '".$this->table_name."'\n";
 		$cached = true;
 		$db = Database::instance();
+		
 		try {
-                    $db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
+			$db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
 		}
 		catch (Kohana_Database_Exception $e) {
-                    $cached = false;
+			$cached = false;
 		}
 
 		if ($cached) {
@@ -301,14 +305,14 @@ class Ninja_Reports_Test extends Status_Reports_Model
 				" --db-host=".$this->db_host." " .
 				" --db-type=".$this->db_type." " .
 				join(" ", $this->logfiles).' 2>&1';
-			$out = array();
+			$out = [];
 			exec($cmd, $out, $retval);
 			echo "$cmd\n".implode("\n", $out);
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
 				echo $cmd."\n";
 				$db->query("DROP TABLE ".$this->table_name);
-				return -1;
+				$this->crash("Import failed");
 			}
 		}
 
