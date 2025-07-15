@@ -16,6 +16,10 @@ class Database_Mysqli_Driver extends Database_Driver {
 	protected $db_config;
 	protected $statements = array();
 
+	public static $query_cache = array();
+
+	public $config;
+
 	/**
 	 * Sets the config for the class.
 	 *
@@ -323,7 +327,7 @@ class Kohana_Mysqli_Result extends Database_Result {
 	 * @param  boolean   return objects or arrays
 	 * @param  string    SQL query that was run
 	 */
-	public function __construct($link, $object = TRUE, $sql)
+	public function __construct($link, $object = TRUE, $sql = '')
 	{
 		$this->link = $link;
 
@@ -490,12 +494,14 @@ class Kohana_Mysqli_Result extends Database_Result {
 
 	public function offsetGet($offset)
 	{
-		if ( ! $this->seek($offset))
+		if ( !$this->seek($offset))
 			return FALSE;
 
 		// Return the row
 		$fetch = $this->fetch_type;
-		return $this->result->$fetch($this->return_type);
+		$return_type = $this->return_type;
+		$fetch_result = $this->result->$fetch($return_type);
+		return $fetch_result;
 	}
 
 } // End Mysqli_Result Class
@@ -516,7 +522,7 @@ class Kohana_Mysqli_Statement {
 
 		$this->stmt = $this->link->prepare($sql);
 
-		return $this;
+		// return $this;
 	}
 
 	public function __destruct()
@@ -529,7 +535,7 @@ class Kohana_Mysqli_Statement {
 	{
 		$this->var_names = array_keys($params);
 		$this->var_values = array_values($params);
-		call_user_func_array(array($this->stmt, 'bind_param'), array_merge($param_types, $var_names));
+		call_user_func_array(array($this->stmt, 'bind_param'), array_merge($param_types, $this->var_names));
 
 		return $this;
 	}

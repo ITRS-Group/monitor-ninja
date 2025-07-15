@@ -1,4 +1,6 @@
 <?php
+use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\DataProvider;
 class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	public function test_preprocess_orm_object () {
@@ -47,7 +49,7 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	public function host_macro_provider () {
+	public static function host_macro_provider () {
 
 		$host_props = array(
 			'name' => 'Jabbaraj',
@@ -77,16 +79,14 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @depends test_preprocess_orm_object
-	 * @dataProvider host_macro_provider
-	 */
+	#[Depends('test_preprocess_orm_object')]
+	#[DataProvider('host_macro_provider')]
 	public function test_host_macro_expansion (Host_Model $host, $macro, $expect) {
 		$properties = nagstat::preprocess_orm_object($host);
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'host'));
 	}
 
-	public function service_macro_provider () {
+	public static function service_macro_provider () {
 
 		$service_props = array(
 			'host' => array(
@@ -131,16 +131,14 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @depends test_preprocess_orm_object
-	 * @dataProvider service_macro_provider
-	 */
+	#[Depends('test_preprocess_orm_object')]
+	#[DataProvider('service_macro_provider')]
 	public function test_service_macro_expansion (Service_Model $service, $macro, $expect) {
 		$properties = nagstat::preprocess_orm_object($service);
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'service'));
 	}
 
-	public function hostgroup_macro_provider () {
+	public static function hostgroup_macro_provider () {
 
 		$hostgroup_props = array(
 			'name' => 'Awesomesauce',
@@ -156,16 +154,14 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @depends test_preprocess_orm_object
-	 * @dataProvider hostgroup_macro_provider
-	 */
+	#[Depends('test_preprocess_orm_object')]
+	#[DataProvider('hostgroup_macro_provider')]
 	public function test_hostgroup_macro_expansion (Hostgroup_Model $hostgroup, $macro, $expect) {
 		$properties = nagstat::preprocess_orm_object($hostgroup);
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'hostgroup'));
 	}
 
-	public function servicegroup_macro_provider () {
+	public static function servicegroup_macro_provider () {
 
 		$servicegroup_props = array(
 			'name' => 'Awesomesauce',
@@ -181,16 +177,14 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @depends test_preprocess_orm_object
-	 * @dataProvider servicegroup_macro_provider
-	 */
+	#[Depends('test_preprocess_orm_object')]
+	#[DataProvider('servicegroup_macro_provider')]
 	public function test_servicegroup_macro_expansion (Servicegroup_Model $servicegroup, $macro, $expect) {
 		$properties = nagstat::preprocess_orm_object($servicegroup);
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties, 'servicegroup'));
 	}
 
-	public function generic_group_macro_provider () {
+	public static function generic_group_macro_provider () {
 
 		$servicegroup_props = array(
 			'name' => 'AwesomesauceSG',
@@ -215,10 +209,8 @@ class macro_Test extends \PHPUnit\Framework\TestCase {
 
 	}
 
-	/**
-	 * @depends test_preprocess_orm_object
-	 * @dataProvider generic_group_macro_provider
-	 */
+	#[Depends('test_preprocess_orm_object')]
+	#[DataProvider('generic_group_macro_provider')]
 	public function test_generic_group_macro_expansion (Object_Model $servicegroup, $macro, $expect) {
 		$properties = nagstat::preprocess_orm_object($servicegroup);
 		$this->assertEquals($expect, nagstat::process_macros($macro, $properties));

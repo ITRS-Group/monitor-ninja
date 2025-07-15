@@ -2,6 +2,8 @@
 
 class Widget_NagVis_Test extends \PHPUnit\Framework\TestCase {
 
+	private $widget;
+
 	protected function setUp() : void {
 
 		$widget_model = new Ninja_Widget_Model();
@@ -23,9 +25,7 @@ class Widget_NagVis_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertContainsOnlyInstancesOf('option', $options);
 	}
 
-	/**
-	 * @group MON-9365
-	 */
+	#[Group('MON-9365')]
 	public function test_options_available () {
 
 		$options = $this->widget->options();

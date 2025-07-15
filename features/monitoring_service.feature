@@ -127,37 +127,37 @@ Feature: Monitoring Service
 		And I visit the object details page for service "Babaruajan" on host "Rosalind"
 		Then I should see "This is my awesome plugin output for my awesome check of awesomeness"
 
+	@editedhappypath
 	Scenario: Service object details commands available
 
-		Given I have these mocked hosts
-			| name     |
-			| Rosalind |
-		Given I have these mocked services
-			| description | host     |
-			| Babaruajan  | Rosalind |
-
-		And I visit the object details page for service "Babaruajan" on host "Rosalind"
-		When I hover "Links" from the "OPTIONS" menu
+		Given I am on the Service details page
+		When I click "SSH Server"
+		And I hover over the "OPTIONS" menu
+		And I hover over the "Links" menu
 		Then I should see these menu items:
 			| Notifications |
 			| Graphs |
 
-		When I hover "Actions" from the "OPTIONS" menu
+		When I hover over the "OPTIONS" menu
+		And I hover over the "Actions" menu
 		Then I should see these menu items:
 			| Cancel all downtimes |
 			| Add a new comment |
 			| Check now |
 			| Schedule downtime |
 			| Send custom notification |
+			| Submit passive check result |
 
-		When I hover "Report" from the "OPTIONS" menu
-		Then I should see these menu items:
+		When I hover over the "OPTIONS" menu
+		And I hover over the "Report" menu
+		Then I should see the following options:
 			| Event log |
 			| Availability |
 			| Alert history |
 			| Histogram |
 
-		When I hover "Configuration" from the "OPTIONS" menu
+		When I hover over the "OPTIONS" menu
+		And I hover over the "Configuration" menu
 		Then I should see these menu items:
 			| Configure |
 			| Delete |

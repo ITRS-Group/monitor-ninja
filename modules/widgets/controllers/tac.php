@@ -13,6 +13,8 @@
  */
 class Tac_Controller extends Ninja_Controller {
 
+	public $input;
+	
 	/**
 	 * Iterate through all widgets one time, to add the widgets' assets.
 	 * If you call this method with the menu parameter, all of the widgets
@@ -463,7 +465,7 @@ class Tac_Controller extends Ninja_Controller {
 		$this->template = json::ok_view(sprintf("Unshared the dashboard '%s' from the %s %s.",
 			$dashboard->get_name(),
 			$table,
-			$object_key['value']
+			$object_key
 		));
 	}
 

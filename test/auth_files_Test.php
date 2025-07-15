@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 require_once "op5/objstore.php";
 require_once "op5/config.php";
 require_once "op5/auth/Authorization.php";
@@ -8,7 +10,7 @@ require_once "op5/auth/Authorization.php";
  * Ensures the validity of the etc/auth* files, and that they are up to date,
  * through cross referencing with the auth code in Ninja.
  */
-class AuthFilesTest extends \PHPUnit\Framework\TestCase {
+class auth_files_Test extends \PHPUnit\Framework\TestCase {
 	private $tmp_auth_groups_file;
 	private $tmp_auth_file;
 	private $preexisting_rights = array();
@@ -272,13 +274,13 @@ class AuthFilesTest extends \PHPUnit\Framework\TestCase {
 		$this->check_traps_view_all_rights('limited_view');
 	}
 
-	public function migrate_auth_yml_files_provider() {
+	public static function migrate_auth_yml_files_provider() {
 		return array(
-			array("auth.yml"),
-			array("auth_groups.yml"),
+			array("auth.yml","auth_groups.yml")
 		);
 	}
 
+	#[DataProvider('migrate_auth_yml_files_provider')]
 	/**
 	 * When we add new auth rights, they are added to the auth_groups.yml,
 	 * other tests in this test suite guarantees that. Now, we should kill
@@ -286,9 +288,8 @@ class AuthFilesTest extends \PHPUnit\Framework\TestCase {
 	 * and make sure that we have run migrate_auth.php so that
 	 * etc/auth_groups.yml always is checked into git in its newest form.
 	 *
-	 * @dataProvider migrate_auth_yml_files_provider
 	 */
-	public function test_auth_files_are_checked_in_after_auth_migrate($auth_file) {
+	public function test_auth_files_are_checked_in_after_auth_migrate($auth_file, $auth_group) {
 		// op5config is in need of proper designing (since it assumes
 		// that it must work with files, what an untestable assumption).
 		// Until then, we must work around its desire and get the real

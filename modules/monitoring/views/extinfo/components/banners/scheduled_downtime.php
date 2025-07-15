@@ -44,7 +44,7 @@ if ($downtimes) {
 ?>
 	<h2>
 		<?php echo icon::get('clock'); ?>
-		<a href="<?php echo $href; ?>" title="Schedule downtime for this <?php echo $type; ?>">Schedule downtime</a>
+		<a href="<?php echo $href; ?>" id="schedule_downtime" title="Schedule downtime for this <?php echo $type; ?>">Schedule downtime</a>
 	</h2>
 <?php
 }

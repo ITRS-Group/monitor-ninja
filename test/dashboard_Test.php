@@ -1,4 +1,5 @@
 <?php
+use PHPUnit\TextUI\Configuration\Group;
 /**
  * Tests dashboard.
  *
@@ -93,7 +94,7 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 		);
 
 		$dashboard = DashboardPool_Model::fetch_by_key(1);
-		$this->assertNull($dashboard);
+		$this->assertNull($dashboard, 'The dashboard should be null.');
 
 		// But as superuser we should.
 		Auth::instance(array('session_key' => false))->force_user(
@@ -263,31 +264,33 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 	 * Upgrade from ninja db version 18 to 19
 	 */
 	public function test_upgrade_v18() {
-		$mock = array(
-			'ORMDriverMySQL default' => array(
+		$test_settings = serialize('a:1:{s:8:`something`;s:2:`17`;}');
+		$mock = [
+			'ORMDriverMySQL default' => [
 				'dashboards' => array(),
 				'dashboard_widgets' => array(),
-				'ninja_widgets' => array(
-					array(
+				'ninja_widgets' => [
+					[
 						'username' => 'superuser',
 						'page' => 'tac/index',
 						'name' => 'netw_health',
 						'friendly_name' => 'My little widget',
-						'setting' => 'a:1:{s:8:"something";s:2:"17";}',
+						'setting' => $test_settings,
 						'instance_id' => 13
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 		$this->mock_data($mock, __FUNCTION__);
+		$auth_model = new User_AlwaysAuth_Model();
 
 		Auth::instance(array('session_key' => false))->force_user(
-			new User_AlwaysAuth_Model()
+			$auth_model
 		);
 
 		$dashboard = DashboardPool_Model::all()->reduce_by('username', 'superuser', '=')->one();
 		/* Empty dashboard table, none exists prior to migration */
-		$this->assertNull($dashboard);
+		$this->assertNull($dashboard, 'The dashboard should be null.');
 
 		ob_start(); /* Don't output hashbang line */
 		require(__DIR__.'/../install_scripts/migrate_widgets.php');
@@ -304,9 +307,8 @@ class Dashboard_Test extends \PHPUnit\Framework\TestCase {
 	 * After an upgrade of Ninja, some users got a missing value for
 	 * "position". Let's mimick that faulty state and see if we can self
 	 * heal.
-	 *
-	 * @group MON-9491
 	 */
+	#[Group('MON-9491')]
 	public function test_widgets_with_missing_position_gets_placed_last_in_dashboard() {
 		$this->mock_data(array(
 			'ORMDriverMySQL default' => array(

@@ -10,6 +10,8 @@ class SingleStateCalculator extends StateCalculator
 	protected $st_dt_objects = array(); /**< objects in downtime */
 	public $st_log = false; /**< The log array, only used for treds, should use summary reports for this */
 
+	public $timeperiod;
+
 	public function initialize($initial_state, $initial_depth, $is_running)
 	{
 		parent::initialize($initial_state, $initial_depth, $is_running);
