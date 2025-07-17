@@ -28,6 +28,7 @@ test-local: generate-php
 test: generate-php
 	make test-ci-prepare
 	export OP5LIBCFG="$(OP5LIBCFG)"; 
+	phpunit --version
 	$(PHPUNIT) test/; 
 	res=$$?; 
 	make test-ci-cleanup; 
