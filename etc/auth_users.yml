@@ -1,1 +1,9 @@
 ---
+administrator:
+  username: admin
+  realname: Admin User
+  password: admin
+  modules:
+    - Default
+  groups:
+    - admins
