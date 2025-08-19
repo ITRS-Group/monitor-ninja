@@ -455,6 +455,11 @@ Then /^I should see the element with data-menu-id "([^"]*)"$/ do |menu_id|
   expect(page).to have_selector("[data-menu-id='#{menu_id}']")
 end
 
+#Check if span with class and text exists
+Then /^I should see the span with class "([^"]*)" and text "([^"]*)"$/ do |class_name, text|
+  expect(page).to have_selector("span.#{class_name}", text: text)
+end
+
 #FInd All
 Then /^I should see all elements in the UI$/ do
   # Find all elements in the UI

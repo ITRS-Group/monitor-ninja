@@ -157,8 +157,8 @@ Feature: Widgets
 	Scenario: Add widget - Acknowledged Problems
 		Given I am logged in as administrator
 		And I am on the main page
-		Then I should see all elements in the UI
-		#When I hover over the "Dashboard options" menu
-		#And I hover over the "Add Widgets" menu
-		#And I click "acknowledged_problems"
-		#Then I should see "Acknowledged Problems"
+		#Then I should see all elements in the UI
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "Add Widgets"
+		And I click the element with data-menu-id "acknowledged_problems"
+		Then I should see the span with class "widget-title" and text "Acknowledged Problems"
