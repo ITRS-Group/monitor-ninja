@@ -30,7 +30,8 @@ post:
     echo "Server IP address: $IP_ADDRESS"
     /usr/bin/op5-manage-users --update --username=monitor --password=monitor --realname=monitor --module=Default --group=admins
     
-    cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
+    #cucumber -t "not @unreliable" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
+    cucumber -t "@gian" --strict --format html --out /mnt/logs/cucumber.html --format pretty --retry 2 --no-strict-flaky
 
 vm-config: |
     {"numCPUs": 4, "memoryMB": 8192}

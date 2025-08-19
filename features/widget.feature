@@ -152,3 +152,12 @@ Feature: Widgets
 		Then I should see "0 / 0"
 		And I should see css ".critical"
 		And I should see css ".ok"
+
+	@gian
+	Scenario: Add widget - Acknowledged Problems
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the "Dashboard options" menu
+		And I hover over the "Add Widgets" menu
+		And I click "acknowledged_problems"
+		Then I should see "Acknowledged Problems"
