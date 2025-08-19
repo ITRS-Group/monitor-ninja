@@ -475,6 +475,17 @@ Then /^I should see all elements in the UI$/ do
     puts "-----------------------------"
   end
 
+  # Display all <span> elements specifically
+  span_elements = all('span')
+  puts "Displaying all <span> elements:"
+  span_elements.each do |span|
+    puts "Tag: #{span.tag_name}"
+    puts "Text: #{span.text.strip}" unless span.text.strip.empty?
+    puts "ID: #{span[:id]}" if span[:id]
+    puts "Class: #{span[:class]}" if span[:class]
+    puts "-----------------------------"
+  end
+
   # Switch to the iframe context
   within_frame(find('iframe')) do
     # Display all text fields
