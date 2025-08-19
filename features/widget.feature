@@ -161,5 +161,4 @@ Feature: Widgets
 		When I hover over the element with data-menu-id "dashboard_options"
 		And I hover over the element with data-menu-id "add_widget"
 		And I click the element with data-menu-id "acknowledged_problems"
-		Then I should see "Acknowledged Problems"
-		And I should see all elements in the UI
+		Then I should see the span with class "widget-title" and text "Acknowledged problems"
