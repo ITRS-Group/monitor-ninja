@@ -154,11 +154,199 @@ Feature: Widgets
 		And I should see css ".ok"
 
 	@gian
-	Scenario: Add widget - Acknowledged Problems
+	Scenario: Add widget - Acknowledged problems
 		Given I am logged in as administrator
 		And I am on the main page
-		#Then I should see all elements in the UI
 		When I hover over the element with data-menu-id "dashboard_options"
 		And I hover over the element with data-menu-id "add_widget"
-		#And I click the element with data-menu-id "acknowledged_problems"
+		And I click the element with data-menu-id "acknowledged_problems"
 		Then I should see the span with class "widget-title" and text "Acknowledged problems"
+	
+	@gian
+	Scenario: Add widget - Acknowledged service problems
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "acknowledged_service_problems"
+		Then I should see the span with class "widget-title" and text "Acknowledged service problems"
+	
+	@gian
+	Scenario: Add widget - Big numbers
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "big_numbers"
+		Then I should see the span with class "widget-title" and text "All hosts: OK hosts"
+
+	@gian
+	Scenario: Add widget - Big numbers
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "business_services"
+		Then I should see the span with class "widget-title" and text "Business Services"
+	
+	@gian
+	Scenario: Add widget - Disabled checks
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "disabled_checks"
+		Then I should see the span with class "widget-title" and text "Disabled checks"
+	
+	@gian
+	Scenario: Add widget - Geomap
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "geomap"
+		Then I should see the span with class "widget-title" and text "Geomap"
+	
+	@gian
+	Scenario: Add widget - Geomap
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "getting_started_with_op5_monitor"
+		Then I should see the span with class "widget-title" and text "Getting started with OP5 Monitor"
+	
+	@gian
+	Scenario: Add widget - Host performance
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "host_performance"
+		Then I should see the span with class "widget-title" and text "Host performance"
+	
+	@gian
+	Scenario: Add widget - Hosts
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "hosts"
+		Then I should see the span with class "widget-title" and text "Hosts"
+
+	@gian
+	Scenario: Add widget - List View
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "list_view"
+		Then I should see the span with class "widget-title" and text "List of hosts"
+	
+	@gian
+	Scenario: Add widget - Merlin Node Status
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "merlin_node_status"
+		Then I should see the span with class "widget-title" and text "Merlin node status"
+
+	@gian
+	Scenario: Add widget - Monitoring features
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "monitoring_features"
+		Then I should see the span with class "widget-title" and text "Monitoring features"
+
+	@gian
+	Scenario: Add widget - Monitoring performance
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "monitoring_performance"
+		Then I should see the span with class "widget-title" and text "Monitoring performance"
+	
+	@gian
+	Scenario: Add widget - NagVis
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "nagvis"
+		Then I should see the span with class "widget-title" and text "automap"
+
+	@gian
+	Scenario: Add widget - Network health
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "network_health"
+		Then I should see the span with class "widget-title" and text "Network health"
+
+	@gian
+	Scenario: Add widget - Network outages
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "network_outages"
+		Then I should see the span with class "widget-title" and text "Network outages"
+
+	@gian
+	Scenario: Add widget - Network outages
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "scheduled_downtime"
+		Then I should see the span with class "widget-title" and text "Scheduled downtime"
+
+	@gian
+	Scenario: Add widget - Services
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "services"
+		Then I should see the span with class "widget-title" and text "Services"
+
+	@gian
+	Scenario: Add widget - State summary
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "state_summary"
+		Then I should see the span with class "widget-title" and text "State Summary of "All hosts""
+
+	@gian
+	Scenario: Add widget - Table Stat
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "table_stat"
+		Then I should see the span with class "widget-title" and text "Table Stat"
+
+	@gian
+	Scenario: Add widget - Unacknowledged service problems
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "unacknowledged_service_problems"
+		Then I should see the span with class "widget-title" and text "Unacknowledged service problems"
+	
+	@gian
+	Scenario: Add widget - Unacknowledged service problems
+		Given I am logged in as administrator
+		And I am on the main page
+		When I hover over the element with data-menu-id "dashboard_options"
+		And I hover over the element with data-menu-id "add_widget"
+		And I click the element with data-menu-id "unhandled_problems"
+		Then I should see the span with class "widget-title" and text "Unhandled problems"
