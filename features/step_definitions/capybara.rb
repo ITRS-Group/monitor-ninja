@@ -456,7 +456,7 @@ Then /^I should see the element with data-menu-id "([^"]*)"$/ do |menu_id|
 end
 
 #Check if span with class and text exists
-Then /^I should see the span with class "([^"]*)" and text "([^"]*)"$/ do |class_name, text|
+Then /^I should see the span with class ['"]([^'"]+)['"] and text ['"]([^'"]+)['"]$/ do |class_name, text|
   expect(page).to have_selector("span.#{class_name}", text: text)
 end
 
