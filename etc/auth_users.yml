@@ -1,10 +1,10 @@
 ---
-common:
-  session_key: "auth_user"
-  default_auth: "Default"
-  apc_enabled: false
-  apc_ttl: 60
-  apc_store_prefix: "op5_login_"
-  version: 13
-Default:
-  driver: "Default"
+administrator:
+  username: admin1
+  realname: Admin User
+  password: $1$lrF9ydB5$G1EfpAnNTlzsrHF5My6Eg.
+  modules:
+    - Default
+  groups:
+    - admins
+  password_algo: crypt

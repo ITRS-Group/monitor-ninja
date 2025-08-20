@@ -181,7 +181,7 @@ Feature: Widgets
 		Then I should see the span with class "widget-title" and text "All hosts: OK hosts"
 
 	@gian
-	Scenario: Add widget - Big numbers
+	Scenario: Add widget - Business Services
 		Given I am logged in as administrator
 		And I am on the main page
 		When I hover over the element with data-menu-id "dashboard_options"
@@ -208,7 +208,7 @@ Feature: Widgets
 		Then I should see the span with class "widget-title" and text "Geomap"
 	
 	@gian
-	Scenario: Add widget - Geomap
+	Scenario: Add widget - Getting started with OP5 Monitor
 		Given I am logged in as administrator
 		And I am on the main page
 		When I hover over the element with data-menu-id "dashboard_options"
@@ -322,7 +322,7 @@ Feature: Widgets
 		When I hover over the element with data-menu-id "dashboard_options"
 		And I hover over the element with data-menu-id "add_widget"
 		And I click the element with data-menu-id "state_summary"
-		Then I should see the span with class "widget-title" and text "State Summary of "All hosts""
+		Then I should see the span with class "widget-title" and text "State Summary of \"All hosts\""
 
 	@gian
 	Scenario: Add widget - Table Stat
@@ -343,7 +343,7 @@ Feature: Widgets
 		Then I should see the span with class "widget-title" and text "Unacknowledged service problems"
 	
 	@gian
-	Scenario: Add widget - Unacknowledged service problems
+	Scenario: Add widget - Unhandled problems
 		Given I am logged in as administrator
 		And I am on the main page
 		When I hover over the element with data-menu-id "dashboard_options"
