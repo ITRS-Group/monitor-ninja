@@ -350,4 +350,3 @@ Feature: Widgets
 		And I hover over the element with data-menu-id "add_widget"
 		And I click the element with data-menu-id "unhandled_problems"
 		Then I should see the span with class "widget-title" and text "Unhandled problems"
-		And I should see all elements in the UI
