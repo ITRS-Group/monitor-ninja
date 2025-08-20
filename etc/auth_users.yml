@@ -1,1 +1,10 @@
 ---
+common:
+  session_key: "auth_user"
+  default_auth: "Default"
+  apc_enabled: false
+  apc_ttl: 60
+  apc_store_prefix: "op5_login_"
+  version: 13
+Default:
+  driver: "Default"
