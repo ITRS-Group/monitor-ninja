@@ -1,1 +1,10 @@
 ---
+administrator:
+  username: admin1
+  realname: Admin User
+  password: $1$lrF9ydB5$G1EfpAnNTlzsrHF5My6Eg.
+  modules:
+    - Default
+  groups:
+    - admins
+  password_algo: crypt
