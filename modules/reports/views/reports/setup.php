@@ -11,7 +11,7 @@
 		</div>
 
 		<?php echo form::open($type.'/generate', array('class' => 'report_form')); ?>
-			<?php echo $report_options; ?>
+			<?php echo htmlspecialchars($report_options); ?>
 		</form>
 	</div>
 </div>
