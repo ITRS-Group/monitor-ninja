@@ -6,7 +6,7 @@
 	if ($report_options instanceof View) {
 		$report_options->render(true);
 	} else {
-		echo htmlspecialchars($report_options);
+		echo $report_options;
 	}
 	?>
 	</form>
