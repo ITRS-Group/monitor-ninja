@@ -41,7 +41,7 @@
 <?php
 $i = 0;
 foreach ($options->get_report_members() as $object) {
-	echo '<tr class="'.($i++ % 2 ? 'even' : 'odd').'"><td>'.$object.'</td></tr>';
+	echo '<tr class="'.($i++ % 2 ? 'even' : 'odd').'"><td>'.htmlspecialchars($object).'</td></tr>';
 } ?>
 </table>
 </div>
