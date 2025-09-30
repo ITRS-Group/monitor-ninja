@@ -60,8 +60,8 @@ class NaemonObject_Model extends Object_Model {
 		}
 		# because there are two command modules, with different output:
 		$result = ($output === "200: OK" || substr($output, 0, strlen("OK:")) === "OK:");
-		if ($output >= 100 && $output < 1000) #yes, implicit cast to int - am I PHPing right?
-			$output = substr($output, 5); # remove pseudo-HTTP code
+		if (preg_match('/\d{3}/', $output)) // if output has a three digit code
+			$output = substr($output, 5); // remove pseudo-HTTP code
 		if(!$result) {
 			op5log::instance("ninja")->log("error", "external command failed. Output: " . trim($output));
 		}
