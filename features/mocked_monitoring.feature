@@ -237,3 +237,218 @@ Feature: Mocked
 		And I should see "support-contact"
 		And I shouldn't see "Loading..."
 
+	@addedhappypath
+	Scenario: Host Actions > Check Now
+	Given I have these mocked hosts
+		|name         |
+		|Fermin Miller|
+	And I am on the Host details page
+	When I click "Fermin Miller"
+	And I select "Actions > Check now" from the "OPTIONS" menu
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+
+	@addedhappypath
+	Scenario: Host Actions > Add comment
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "add_a_new_comment"
+	Then I should see "Add a new comment:"
+	When I enter "This is a comment for host" into "field_comment"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "This is a comment for host"
+
+	@addedhappypath
+	Scenario: Host Actions > Submit passive check result
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "submit_passive_check_result"
+	Then I should see "Submit passive check result:"
+	When I enter "This is plugin output for host" into "field_plugin_output"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "This is plugin output for host"
+
+	@addedhappypath
+	Scenario: Host Actions > Re-schedule next host check
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "re_schedule_next_host_check"
+	Then I should see "Re-schedule next host check:"
+	When I enter "2025-12-31 00:00:00" into "field_check_time"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "2025-12-31 00:00:00"
+
+	@addedhappypath
+	Scenario: Host Actions > Schedule downtime
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "schedule_downtime"
+	Then I should see "Schedule downtime:"
+	When I enter "2025-12-31 00:00:00" into "field_start_time"
+	And I enter "2025-12-31 12:00:00" into "field_end_time"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I should see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
+
+	@addedhappypath
+	Scenario: Host Actions > Cancel all downtimes
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "cancel_all_downtimes"
+	Then I should see "Cancel all downtimes:"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	Then I shouldn't see "This host has been scheduled for fixed downtime from 2025-12-31 00:00:00 to 2025-12-31 12:00:00. Notifications for the host will not be sent out during that time period."
+
+	@addedhappypath
+	Scenario: Host Actions > Send custom notification
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Actions" menu
+	And I click the element with data-menu-id "send_custom_notification"
+	Then I should see "Send custom notification:"
+	When I enter "This is a comment for send custom notification" into "field_comment"
+	And I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+
+	@addedhappypath
+	Scenario: Host Service Operations > Enable notifications for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "enable_notifications_for_all_services"
+	Then I should see "Enable notifications for all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	And I click an element with title "Go to list of all services on this host"
+	Then disabled notification icon should not exist
+
+	@addedhappypath
+	Scenario: Host Service Operations > Disable notifications for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "disable_notifications_for_all_services"
+	Then I should see "Disable notifications for all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	And I click an element with title "Go to list of all services on this host"
+	Then disabled notification icon should exist
+
+	@addedhappypath
+	Scenario: Host Service Operations > Enable checks for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "enable_checks_of_all_services"
+	Then I should see "Enable checks of all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	And I click an element with title "Go to list of all services on this host"
+	When I click "SSH Server"
+	Then the element with data-setting-toggle-command "disable_check" should exist
+
+	@addedhappypath
+	Scenario: Host Service Operations > Disable checks for all services
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "disable_checks_of_all_services"
+	Then I should see "Disable checks of all services:"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	When I click an element with title "Go to list of all services on this host"
+	When I click "SSH Server"
+	Then the element with data-setting-toggle-command "enable_check" should exist
+
+	@addedhappypath
+	Scenario: Host Service Operations > Schedule a check of all services
+	Given I am on the Host details page
+	And I store the current time plus 30 seconds
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Service Operations" menu
+	And I click the element with data-menu-id "schedule_a_check_of_all_services"
+	Then I should see "Schedule a check of all services:"
+	When I enter the stored time into "field_check_time"
+	When I click "Submit"
+	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
+	When I click button "Done"
+	When I click an element with title "Go to list of all services on this host"
+	Then I should see the stored time in the UI
+
+	@unreliable
+	#Disabled for the meantime since NagVis does not load correctly in buildbot
+	Scenario: Host Links > Locate Host on Map
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Links" menu
+	And I click the element with data-menu-id "locate_host_on_map"
+	Then the image should have the alt text "NagVis"
+	And the image should have the alt text "monitor"
+	Then I should see all elements in the UI
+
+	@addedhappypath
+	Scenario: Host Links > Notifications
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Links" menu
+	And I click the element with data-menu-id "notifications"
+	Then I should see "Notifications"
+
+	@addedhappypath
+	Scenario: Host Links > Locate Host on Map
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Links" menu
+	And I click the element with data-menu-id "graphs"
+	Then I should see "Service details monitor -> Host Perfdata"
+
+	@addedhappypath
+	Scenario: Host Configuration > Configure
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Configuration" menu
+	And I click the element with data-menu-id "configure"
+	Then I should see "Edit host monitor"
+
+	@addedhappypath
+	Scenario: Host Configuration > Delete
+	Given I am on the Host details page
+	When I click "monitor"
+	And I hover over the "OPTIONS" menu
+	And I hover over the "Configuration" menu
+	And I click the element with data-menu-id "delete"
+	Then I should see "Delete:"
+	And I should see "monitor"
