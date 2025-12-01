@@ -18,5 +18,6 @@ function _strlen($str)
 		return strlen($str);
 
 	$string_enc = mb_detect_encoding($str, mb_detect_order(), true);
-	return strlen(mb_convert_encoding($str, $string_enc, 'UTF-8'));
+	$string_length = strlen(mb_convert_encoding($str, $string_enc, 'UTF-8'));
+	return $string_length;
 }
