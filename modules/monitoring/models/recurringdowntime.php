@@ -218,7 +218,7 @@ class RecurringDowntime_Model extends BaseRecurringDowntime_Model {
 							if($rec->no == 1){
 								$repeat_text = "weekly on ".$all_days;
 							}else{
-								$repeat_text =  "every ".$rec->no." week on ".$all_days;
+								$repeat_text = "every ".$rec->no." week on ".$all_days;
 							}
 							$ret = 'Repeat '.$repeat_text.''.$end_text;
 						}elseif($rec->text == 'month'){

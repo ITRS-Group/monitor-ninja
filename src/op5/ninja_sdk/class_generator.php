@@ -203,7 +203,11 @@ abstract class class_generator {
 		if( !empty( $modifiers ) ) {
 			$modifiers = trim($modifiers)." ";
 		}
-		if($attr==false ? $this->write( "{$modifiers}function $name($argstr) {" ) : $this->write( "{$modifiers}function $name($argstr) : $attr {" ));
+		if (!$attr) {
+			$this->write( "{$modifiers}function $name($argstr) {" );
+		} else {
+			$this->write( "{$modifiers}function $name($argstr) : $attr {" );
+		}
 	}
 
 	public function finish_function() {
