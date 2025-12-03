@@ -34,6 +34,11 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		$this->assertGreaterThanOrEqual(1, count($models), "No models found");
 	}
 
+	/**
+	 * As to not move the validation of the return value to the call-site the
+	 * set_by_key function for all Pools should return an iterable Set even if
+	 * that Set may be empty.
+	 */
 	#[DataProvider('object_manifest_provider')]
 	public function test_set_by_key_always_returns_set($set_model, $pool_model) {
 		$set = StatusPool_Model::set_by_key('');
