@@ -12,9 +12,9 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 
 		$manifest = ObjectPool_Model::load_table_classes();
 
-		// /* Object_Model is the only one built from the ORM Root generator
-		//  * and does not have the required functionality (set_by_key) for these tests,
-		//  * in addition it is not an object that we instantiate on its own.  */
+		/* Object_Model is the only one built from the ORM Root generator
+		 * and does not have the required functionality (set_by_key) for these tests,
+		 * in addition it is not an object that we instantiate on its own.  */
 		unset($manifest['object']);
 		$set_model=[];
 		$pool_model=[];
