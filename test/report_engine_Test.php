@@ -43,6 +43,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 
 		$glob_path = __DIR__.'/reports/*.tst.php';
 		$test_dir_glob = glob($glob_path);
+		$tests = [];
 
 		foreach ($test_dir_glob as $tfile) {
 			$test = new Ninja_Reports_Test($tfile);
@@ -52,12 +53,11 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			$test->db_pass = $db_pass;
 			$test->db_type = $db_type;
 			$test->db_host = $db_host;
+			
+			$tests[] = [$tfile, $test->description, $test];
 		}
-		return [
-			[$tfile,
-			$test->description,
-			$test]
-		];
+		
+		return $tests;
 	}
 
 	public function test_glob_path() {
