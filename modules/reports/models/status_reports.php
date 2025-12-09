@@ -29,6 +29,7 @@
  */
 class Status_Reports_Model extends Reports_Model
 {
+	protected $options;
 	/**
 	 * Constructor
 	 * @param $options An instance of Report_options

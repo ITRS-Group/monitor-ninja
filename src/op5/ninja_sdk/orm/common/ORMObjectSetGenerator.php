@@ -116,7 +116,7 @@ abstract class ORMObjectSetGenerator extends ORMGenerator {
 	}
 
 	public function generate_count() {
-		$this->init_function('count', array());
+		$this->init_function('count', [], [], [], 'int');
 		$this->write('return ' . $this->pool_class . '::pool()->count($this->get_auth_filter());');
 		$this->finish_function();
 	}

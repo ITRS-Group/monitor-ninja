@@ -12,6 +12,7 @@
  */
 class Extinfo_Controller extends Ninja_Controller {
 
+	public $input;
 	/**
 	 * Default controller method
 	 * Redirects to show_process_info() which

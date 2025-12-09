@@ -15,7 +15,8 @@ class proc {
 	 */
 	static function open(array $command, &$stdout = NULL, &$stderr = NULL, &$exit_code = NULL) {
 		$cmd_string = implode(' ', array_map('escapeshellarg', $command));
-		return proc::raw($cmd_string, $stdout, $stderr, $exit_code);
+		$raw_output = proc::raw($cmd_string, $stdout, $stderr, $exit_code);
+		return $raw_output;
 	}
 
 	/**
