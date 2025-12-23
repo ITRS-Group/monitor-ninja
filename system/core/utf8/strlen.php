@@ -17,5 +17,7 @@ function _strlen($str)
 	if (utf8::is_ascii($str))
 		return strlen($str);
 
-	return strlen(utf8_decode($str));
+	$string_enc = mb_detect_encoding($str, mb_detect_order(), true);
+	$string_length = strlen(mb_convert_encoding($str, $string_enc, 'UTF-8'));
+	return $string_length;
 }

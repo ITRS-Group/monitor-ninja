@@ -12,6 +12,8 @@
  */
 abstract class Controller {
 
+	public $uri;
+	public $input;
 	/**
 	 * Loads URI, and Input into this controller.
 	 *

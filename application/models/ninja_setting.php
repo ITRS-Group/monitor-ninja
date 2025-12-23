@@ -119,7 +119,7 @@ class Ninja_setting_Model extends Model {
 	 * @param $page string: The page we're looking at.
 	 * @param $username string: User to fetch setting for
 	 */
-	public function fetch_user_page_setting($type, $page=false, $username=false)
+	public static function fetch_user_page_setting($type, $page=false, $username=false)
 	{
 		$type = trim($type);
 		$page = trim($page);
