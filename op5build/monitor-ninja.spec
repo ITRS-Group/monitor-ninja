@@ -5,6 +5,7 @@
 %define daemon_group apache
 %define base_prefix /opt/monitor
 %define nacoma_hooks_path %{base_prefix}/op5/nacoma/hooks/save
+%define python_ver 3.12
 
 Name: monitor-ninja
 Version: %{op5version}
@@ -35,7 +36,7 @@ Requires: merlin
 Requires: monitor-ninja-monitoring
 BuildRequires: doxygen
 BuildRequires: graphviz
-BuildRequires: python39-devel
+BuildRequires: python%{python_ver}-devel
 Requires: php
 Requires: php-cli
 Requires: php-json
@@ -80,7 +81,7 @@ Requires: monitor-pnp
 
 Requires: gcc
 Requires: chromedriver
-Requires: python3
+Requires: python%{python_ver}
 Requires: ruby
 Requires: ruby-devel
 
