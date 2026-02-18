@@ -385,6 +385,7 @@ Feature: Mocked
 	Then I should see "Your commands were successfully submitted to ITRS OP5 Monitor."
 	When I click button "Done"
 	When I click an element with title "Go to list of all services on this host"
+	And I wait for 10 seconds
 	When I click "SSH Server"
 	Then the element with data-setting-toggle-command "enable_check" should exist
 
