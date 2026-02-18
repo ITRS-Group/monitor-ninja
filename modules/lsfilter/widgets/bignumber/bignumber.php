@@ -337,7 +337,7 @@ class bignumber_Widget extends widget_Base {
 				);
 				return $this->error($msg);
 			}
-			$query = $main_set->intersect($selection_set)->get_query_unsimplified();
+			$query = $main_set->intersect($selection_set)->get_query();
 			$link = listview::querylink($query);
 			$pool = $main_set->class_pool();
 			$all_set = $pool::all();
