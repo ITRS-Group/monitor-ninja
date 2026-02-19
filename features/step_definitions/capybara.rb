@@ -399,6 +399,11 @@ When /^I click name "([^"]*)"$/ do |name|
   find('a', text: name).click
 end
 
+#Find the element with class and click
+When /^I click the element with class "([^"]*)"$/ do |class_name|
+  find(".#{class_name}").click
+end
+
 #Find the element with class and href and click
 When /^I click the element with class "([^"]*)" and href containing "([^"]*)"$/ do |class_name, href_partial|
   # Find the element with the specified class and href containing the partial text
