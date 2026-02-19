@@ -232,6 +232,28 @@ Feature: Filters & list views
 		Then I should see "Error: Invalid query, custom variables format will be 'name value', Ex: 'NOMONITORING value'"
 
 	@addedhappypath
+	@MON-13479
+	Scenario: Bignumber widget query link generation
+		Given I am logged in as administrator
+		And I go to the listview for [hosts] all
+		Then I should see "linux-server1"
+		And I click "Show/Edit Text Filter"
+		And I enter "Contains Negate" into "lsfilter_save_filter_name"
+		And I click "Add and group"
+		And I click "Add rule"
+		And I select "custom_variable_names" from "lsfilter_visual_field_select"
+		And I select "contains" from "lsfilter_visual_operator_select"
+		And I enter "DEVTEST" into "lsfilter_visual_value_field"
+		And I click "Negate"
+		And I click "Save Filter"
+		And I wait for 1 second
+		And I hover over the "Manage" menu
+		And I click "Manage filters"
+		Then I should see "Contains Negate"
+		And I click "Contains Negate"
+		Then I should see "linux-server1"
+
+	@addedhappypath
 	Scenario: Delete Filter
 		Given I am logged in as administrator
 		When I click the element with data-menu-id "manage"

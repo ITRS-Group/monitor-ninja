@@ -153,3 +153,19 @@ Feature: Widgets
 		Then I should see "0 / 0"
 		And I should see css ".critical"
 		And I should see css ".ok"
+
+	Scenario: Bignumber widget query link generation
+		Given I have these mocked dashboards
+			| id | name       | username   | layout |
+			| 1  | Dashboard1 | mockeduser | 1,2,3  |
+		Given I have these mocked dashboard_widgets
+			|id|dashboard_id | name         | position      | setting |
+			|1 |1            | bignumber    | {"c":0,"p":0} | {"title":"My test widget"} |
+
+		And I edit widget "My test widget"
+		Then I select "Contains Negate" from "selection_filter_id"
+		And I click "Save"
+		And I wait for 1 second
+		Then I should see "My test widget"
+		And I click "widget-content"
+		Then I should see "linux-server1"
