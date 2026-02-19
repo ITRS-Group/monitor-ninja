@@ -4,7 +4,6 @@ Feature: Global search
 	Scenario: Create Hosts with specific names for test data
 		Given I am real logged in as "monitor" with password "monitor"
 		When I hover over the "Manage" menu
-		Then I wait for 10 seconds
 		And I click "Configure"
 		And I click the span with text "Hosts"
 		When I create a host with hostname "A  host   with    spaces" and host address "127.0.0.1"

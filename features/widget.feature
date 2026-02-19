@@ -130,6 +130,7 @@ Feature: Widgets
 
 		And I am logged in
 		When I am on the main page
+		And I wait for 10 seconds
 		Then I should see "My widget name"
 		When I edit widget "My widget name"
 		Then I select "Host" from "content_from"

@@ -27,6 +27,10 @@ abstract class ObjectSet_Model extends BaseObjectSet_Model {
 		return '['.$this->table.'] '.$this->filter->simplify()->visit(new LSFilterQueryBuilderVisitor(), 0);
 	}
 
+	public function get_query_unsimplified() {
+		return '['.$this->table.'] '.$this->filter->visit(new LSFilterQueryBuilderVisitor(), 0);
+	}
+
 	/**
 	 * Get the first matching object in the set
 	 */
