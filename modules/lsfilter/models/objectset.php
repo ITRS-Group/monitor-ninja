@@ -28,6 +28,15 @@ abstract class ObjectSet_Model extends BaseObjectSet_Model {
 	}
 
 	/**
+	 * Get the query representing the set without simplifying the filter
+	 * This is only used in the bignumber widget to avoid bug encoutered
+	 * in the query link generation that uses 'negate' and 'contains' operators.
+	 */
+	public function get_query_unsimplified() {
+		return '['.$this->table.'] '.$this->filter->visit(new LSFilterQueryBuilderVisitor(), 0);
+	}	
+
+	/**
 	 * Get the first matching object in the set
 	 */
 	public function one($columns = false) {
