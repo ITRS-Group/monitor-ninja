@@ -126,6 +126,10 @@ When /^I select "(.*)" from "([^"]*)"$/ do |opt, sel|
   select(opt, :from => sel)
 end
 
+When /^I select "(.*)" from the options$/ do |opt|
+  find('*', :text => opt).click
+end
+
 When /^I click xpath "([^"]*)"$/ do |xp|
   find(:xpath, xp).click
 end

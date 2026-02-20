@@ -242,9 +242,9 @@ Feature: Filters & list views
 		And I click the element with class "lsfilter_visual_node_addgroup"
 		And I click the element with class "lsfilter_visual_node_addrule"
 		And I click the element with class "lsfilter_visual_field_select"
-		And I click "parents"
+		And I select "parents" from the options
 		And I click the element with class "lsfilter_visual_operator_select"
-		And I click "contains"
+		And I select "contains" from the options
 		And I enter "DEVTEST" into "lsfilter_visual_value_field"
 		And I click the element with class "lsfilter_visual_node_negate"
 		And I click "Save Filter"
