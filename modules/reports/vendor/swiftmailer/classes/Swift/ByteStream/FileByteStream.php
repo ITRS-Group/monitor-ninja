@@ -51,7 +51,7 @@ class Swift_ByteStream_FileByteStream
   {
     $this->_path = $path;
     $this->_mode = $writable ? 'w+b' : 'rb';
-    $this->_quotes = get_magic_quotes_runtime();
+    $this->_quotes = function_exists('get_magic_quotes_runtime') ? get_magic_quotes_runtime() : false;
   }
   
   /**
@@ -77,12 +77,12 @@ class Swift_ByteStream_FileByteStream
     $fp = $this->_getReadHandle();
     if (!feof($fp))
     {
-      if ($this->_quotes)
+      if ($this->_quotes && function_exists('set_magic_quotes_runtime'))
       {
         set_magic_quotes_runtime(0);
       }
       $bytes = fread($fp, $length);
-      if ($this->_quotes)
+      if ($this->_quotes && function_exists('set_magic_quotes_runtime'))
       {
         set_magic_quotes_runtime(1);
       }

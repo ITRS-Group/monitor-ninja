@@ -43,6 +43,17 @@ Feature: Scheduled reports
 		And I should see "dev@op5.com"
 
 	@editedhappypath
+	Scenario: Send availability report now
+		When I hover over the "Report" menu
+		And I click "Schedule reports"
+		Then I should see "New Schedule"
+		And "Availability reports" should be selected from "Select report type"
+		And "Select report" should have option "saved test report"
+		When I click "Send this report now" on the row where "Report" is "saved test report"
+		And I wait for 10 seconds
+		Then I should see "Report was emailed"
+
+	@editedhappypath
 	Scenario: View scheduled availability report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
