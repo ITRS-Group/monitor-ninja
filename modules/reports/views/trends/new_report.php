@@ -1,6 +1,5 @@
 <div id="trends_graphs" style="margin: 20px auto 0 auto;">
 	<div id='tgraph'>Trend graphs loading...</div>
-	<script type="text/javascript" src="<?php echo url::base() . 'modules/reports/src/js/tgraph.js'; ?>"></script>
 	<script>
 		<?php
 
