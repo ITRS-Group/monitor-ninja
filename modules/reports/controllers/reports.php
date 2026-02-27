@@ -136,7 +136,7 @@ class Reports_Controller extends Base_reports_Controller {
 			$this->template->current_skin = htmlspecialchars($this->options['skin']);
 		}
 
-		$this->template->css[] = $this->add_path('reports/css/tgraph.css');
+		$this->template->css[] = $this->add_path('reports/css/trendgraph.css');
 		$this->template->css[] = $this->add_path('reports/css/datePicker.css');
 
 		$this->template->content = $this->add_view('reports/index'); # base template with placeholders for all parts
@@ -346,7 +346,7 @@ class Reports_Controller extends Base_reports_Controller {
 				}
 			}
 
-			$template->trends_graph = $this->add_view('trends/new_report');
+			$template->trends_graph = $this->add_view('trends/tgraph_report');
 
 			/* New JS trend graph */
 
