@@ -2,6 +2,6 @@
 
 <p>
 	<div class='errorMessage'>
-		<?php echo $error_message ?>
+		<?php echo html::specialchars($error_message) ?>
 	</div>
 </p>

@@ -28,7 +28,7 @@ if($command_info['name'] == 'Check now'){
 }
 
 if(!($command_info['name'] == 'Check now')) {
-	echo "<h2>" . $command_info['name'] . ":</h2>";
+	echo "<h2>" . html::specialchars($command_info['name']) . ":</h2>";
 }
 
 echo form::open( 'cmd/obj', array (

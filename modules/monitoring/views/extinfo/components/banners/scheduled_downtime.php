@@ -24,14 +24,14 @@ if ($object->get_table() === 'services') {
 		->reduce_by('host.name', $object->get_name(), '=');
 }
 ?>
-<li title="<?php echo $title; ?>">
+<li title="<?php echo html::specialchars($title); ?>">
 <?php
 if ($downtimes) {
 	$href = listview::querylink($downtimes->get_query());
 ?>
 	<h2>
 		<?php echo icon::get('clock'); ?>
-		<a href="<?php echo $href; ?>">in scheduled downtime</a>
+		<a href="<?php echo html::specialchars($href); ?>">in scheduled downtime</a>
 	</h2>
 <?php
 } else {
@@ -44,7 +44,7 @@ if ($downtimes) {
 ?>
 	<h2>
 		<?php echo icon::get('clock'); ?>
-		<a href="<?php echo $href; ?>" id="schedule_downtime" title="Schedule downtime for this <?php echo $type; ?>">Schedule downtime</a>
+		<a href="<?php echo html::specialchars($href); ?>" id="schedule_downtime" title="Schedule downtime for this <?php echo html::specialchars($type); ?>">Schedule downtime</a>
 	</h2>
 <?php
 }
