@@ -303,9 +303,10 @@ class Reports_Controller extends Base_reports_Controller {
 				# links - only for HTML reports
 				if ($this->options['report_type'] == 'hosts') {
 					$host = $this->options['objects'][0];
+					$host_encoded = html::specialchars($host);
 					$template->header->title = sprintf(_('Host details for %s'), $host);
 					$links[$this->histogram_link . "?" . $this->options->as_keyval_string()] = _('Alert histogram');
-					$links[$this->status_link.$host] = _('Status detail');
+					$links[$this->status_link.$host_encoded] = _('Status detail');
 					$links[$this->history_link . '?' . $this->options->as_keyval_string()] = _('Alert history');
 					$links[listview::link('notifications', array('host_name' => $host))] = _('Notifications');
 				} else if ($this->options['report_type'] == 'services') {
