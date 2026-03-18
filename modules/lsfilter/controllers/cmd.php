@@ -153,7 +153,8 @@ class Cmd_Controller extends Ninja_Controller {
 			$commands = $obj_class::list_commands_static(true);
 
 			if(!array_key_exists($command, $commands)) {
-				$this->template->value['message'] = "Tried to submit command '".html::specialchars($command)."' but that command does not exist for that kind of objects. Aborting without any commands applied";
+				$command_esc = htmlspecialchars($command, ENT_QUOTES, 'UTF-8');
+				$this->template->value['message'] = "Tried to submit command '$command_esc' but that command does not exist for that kind of objects. Aborting without any commands applied";
 				return;
 			}
 
