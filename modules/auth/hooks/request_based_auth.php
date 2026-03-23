@@ -51,12 +51,8 @@ class request_based_auth_hooks {
 			$auth_method = $input->get('auth_method', false);
 			$username = $input->get('username', false);
 			$password = $input->get('password', false);
-			$login_route = Kohana::config('routes.log_in_form');
-			$login_parts = $login_route ? explode('/', $login_route, 2) : array('auth', 'login');
-			$is_login_page = (strtolower(Router::$controller) === strtolower($login_parts[0]))
-				&& (Router::$method === (isset($login_parts[1]) ? $login_parts[1] : 'index'));
 			if (Kohana::config('auth.use_get_auth') === true &&
-				 $username !== false && $password !== false && $is_login_page) {
+				 $username !== false && $password !== false) {
 				$res = $auth->login($username, $password, $auth_method);
 				if ($res !== true)
 					die('The provided authentication is invalid');
