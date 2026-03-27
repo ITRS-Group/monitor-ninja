@@ -45,7 +45,7 @@ if(count($perf_data)) {
 	<a title="Go to PNP graphs for this object" href="<?php echo $pnp_href; ?>"
 	   class="information-gauge">
 		<span id="<?php echo $id; ?>" class="<?php echo $class; ?>"></span>
-		<span><?php echo html::specialchars(json_encode($ds_name)); ?></span>
+		<span><?php echo html::specialchars($ds_name); ?></span>
 	</a>
 		<script>
 		(function () {

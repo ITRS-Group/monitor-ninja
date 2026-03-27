@@ -327,7 +327,7 @@ $(document).ready(function() {
 		for (var i = 0; i < global_quicklinks.length; i += 1) {
 			var l = global_quicklinks[i];
 			var vid = l.title + ':' + l.href;
-			var quicklink = $('<li><label></label> (<a rel="noopener noreferrer"target="_blank" class="external"></a>)</li>');
+			var quicklink = $('<li><label></label> (<a rel="noopener noreferrer" target="_blank" class="external"></a>)</li>');
 			quicklink
 				.find('label')
 				.text(l.title)
