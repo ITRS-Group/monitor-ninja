@@ -49,7 +49,7 @@ if(count($perf_data)) {
 	</a>
 		<script>
 		(function () {
-				var unit = "<?php echo json_encode($unit); ?>";
+				var unit = <?php echo json_encode($unit); ?>;
 				var chart = c3.generate({
 					bindto: "#<?php echo $id; ?>",
 					data: {
