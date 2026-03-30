@@ -23,7 +23,7 @@
 				<a class="restore_backup" href="<?php echo $baseurl . 'backup/restore/' . $file; ?>" style="border: 0px" title="Restore Backup"><span class="icon-16 x16-backup-restore"></span></a>
 				<a class="delete_backup" href="<?php echo $baseurl . 'backup/delete/' . $file; ?>" style="border: 0px" title="Delete Backup"><span class="icon-16 x16-backup-delete"></span></a>
 			</td>
-			<td><a class="download_backup" href="<?php echo $baseurl . 'backup/download/' . $file; ?>" target="_blank" title="Download backup"><?php echo $file; ?></a></td>
+			<td><a class="download_backup" href="<?php echo $baseurl . 'backup/download/' . $file; ?>" rel="noopener noreferrer" target="_blank" title="Download backup"><?php echo $file; ?></a></td>
 		</tr>
 	<?php } ?>
 	</tbody>

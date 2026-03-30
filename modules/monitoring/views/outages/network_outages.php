@@ -26,7 +26,7 @@
 				<td class="icon <?php echo $current_status; ?>">
 					<span class="icon-16 x16-shield-<?php echo $current_status; ?>" title="<?php echo $current_status; ?>"></span>
 				</td>
-				<td><?php echo html::anchor('extinfo/details/host/'.$details['name'], $details['name']) ?></td>
+				<td><?php echo html::anchor('extinfo/details/host/'.$details['name'], html::specialchars($details['name'])) ?></td>
 				<td class="icon">
 					<?php echo $details['comments'] == 0 ? '' : html::anchor('extinfo/details/host/'.$details['name'], '<span class="icon-16 x16-add-comment" title="View comments for this host"></span>', array('style' => 'border: 0px')); ?>
 					<?php echo $details['acknowledged'] == 0 ? '' : '<span class="icon-16 x16-acknowledged" title="Host problem is acknowledged"></span>'; ?>

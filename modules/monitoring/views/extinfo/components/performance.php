@@ -45,15 +45,18 @@ if(count($perf_data)) {
 	<a title="Go to PNP graphs for this object" href="<?php echo $pnp_href; ?>"
 	   class="information-gauge">
 		<span id="<?php echo $id; ?>" class="<?php echo $class; ?>"></span>
-		<span><?php echo $ds_name; ?></span>
+		<span><?php echo html::specialchars($ds_name); ?></span>
 	</a>
 		<script>
 		(function () {
-				var unit = "<?php echo $unit; ?>";
+				var unit = <?php echo json_encode($unit); ?>;
 				var chart = c3.generate({
 					bindto: "#<?php echo $id; ?>",
 					data: {
-						columns: [['<?php echo $ds_name; ?>', <?php echo "" . (isset($ds['value']))? $ds['value']: 0; ?>]],
+						columns: [[
+							<?php echo json_encode($ds_name); ?>, 
+							<?php echo isset($ds['value']) ? $ds['value'] : 0; ?>
+						]],
 						type: "gauge"
 					},
 					gauge: {
