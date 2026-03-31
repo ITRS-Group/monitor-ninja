@@ -51,6 +51,7 @@ BuildRequires: php-process
 # For stack trace info
 Requires: psmisc
 Requires: pciutils
+BuildRequires: make
 %{?systemd_requires}
 
 Source: %name-%version.tar.gz
