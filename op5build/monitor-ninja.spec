@@ -52,6 +52,7 @@ BuildRequires: php-process
 Requires: psmisc
 Requires: pciutils
 BuildRequires: make
+BuildRequires: gcc
 %{?systemd_requires}
 
 Source: %name-%version.tar.gz
