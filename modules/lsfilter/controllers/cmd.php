@@ -38,8 +38,9 @@ class Cmd_Controller extends Ninja_Controller {
 		}
 
 		if (count($set) === 0) {
+			$command_esc = htmlspecialchars($command, ENT_QUOTES, 'UTF-8');
 			$this->template->content->error_level = 'info';
-			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . $command . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
+			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . $command_esc . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
 
 			return;
 		}
@@ -91,10 +92,12 @@ class Cmd_Controller extends Ninja_Controller {
 			//
 			// We want to optimize for the path that is the most common
 			// and useful for users, which is the last one.
+			$command_esc = htmlspecialchars($command, ENT_QUOTES, 'UTF-8');
+			$table_esc = htmlspecialchars($table, ENT_QUOTES, 'UTF-8');
 			$error_message = "You have insufficient rights to ".
-				"submit the command '$command' on table ".
-				"'$table'. Please verify your user's rights ".
-				"for '$table' commands. Aborting without any ".
+				"submit the command '$command_esc' on table ".
+				"'$table_esc'. Please verify your user's rights ".
+				"for '$table_esc' commands. Aborting without any ".
 				"commands applied.";
 			op5log::instance('ninja')->log('warning', $error_message);
 			$this->template->content->error = $error_message;
@@ -175,7 +178,8 @@ class Cmd_Controller extends Ninja_Controller {
 					if(isset($result['output'])) {
 						$output = " Output: ".$result['output'];
 					}
-					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+					$command_esc = htmlspecialchars($command, ENT_QUOTES, 'UTF-8');
+					op5log::instance('ninja')->log('warning', "Failed to submit command '$command_esc' on (".$object->get_table().") object '".$object->get_key()."'".$output);
 				}
 
 				$results[] = array(
@@ -221,7 +225,8 @@ class Cmd_Controller extends Ninja_Controller {
 			$commands = $obj_class::list_commands_static(true);
 
 			if(!array_key_exists($command, $commands))
-				throw new ORMException("Tried to submit command '$command' but that command does not exist for '" . $set->get_table() . "'. Aborting without any commands applied");
+				$command_esc = htmlspecialchars($command, ENT_QUOTES, 'UTF-8');
+				throw new ORMException("Tried to submit command '$command_esc' but that command does not exist for '" . $set->get_table() . "'. Aborting without any commands applied");
 
 			// Unpack params
 			$params = array();
@@ -243,7 +248,8 @@ class Cmd_Controller extends Ninja_Controller {
 					if(isset($result['output'])) {
 						$output = " Output: ".$result['output'];
 					}
-					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+					$command_esc = htmlspecialchars($command, ENT_QUOTES, 'UTF-8');
+					op5log::instance('ninja')->log('warning', "Failed to submit command '$command_esc' on (".$object->get_table().") object '".$object->get_key()."'".$output);
 				}
 				$command_template->result = $result;
 				$command_template->object = $object;
