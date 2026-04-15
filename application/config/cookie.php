@@ -30,9 +30,3 @@ $config['secure'] = true;
  * secure protocol. This option is only available in PHP 5.2 and above.
  */
 $config['httponly'] = true;
-
-/**
- * SameSite on the session cookie (CSRF defense in depth; OWASP CSRF cheat sheet).
- * Use false to omit the attribute.
- */
-$config['samesite'] = 'Lax';
