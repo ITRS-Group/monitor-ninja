@@ -42,14 +42,18 @@ class Session {
 		session_name(Kohana::config('session.name'));
 
 		// Set the session cookie parameters
-		session_set_cookie_params
-		(
-			Kohana::config('cookie.expire'),
-			Kohana::config('cookie.path'),
-			Kohana::config('cookie.domain'),
-			Kohana::config('cookie.secure'),
-			Kohana::config('cookie.httponly')
+		$params = array(
+			'lifetime' => Kohana::config('cookie.expire'),
+			'path' => Kohana::config('cookie.path'),
+			'domain' => Kohana::config('cookie.domain'),
+			'secure' => Kohana::config('cookie.secure'),
+			'httponly' => Kohana::config('cookie.httponly'),
 		);
+		$samesite = Kohana::config('cookie.samesite');
+		if ($samesite) {
+			$params['samesite'] = $samesite;
+		}
+		session_set_cookie_params($params);
 
 		// Start the session!
 		session_start();
