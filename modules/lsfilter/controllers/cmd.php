@@ -39,7 +39,7 @@ class Cmd_Controller extends Ninja_Controller {
 
 		if (count($set) === 0) {
 			$this->template->content->error_level = 'info';
-			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . html::specialchars($command, ENT_QUOTES, 'UTF-8') . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string(html::specialchars($object_keys, ENT_QUOTES, 'UTF-8'));
+			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . htmlspecialchars($command, ENT_QUOTES, 'UTF-8') . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
 
 			return;
 		}
