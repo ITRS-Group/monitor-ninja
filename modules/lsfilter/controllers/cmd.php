@@ -39,7 +39,7 @@ class Cmd_Controller extends Ninja_Controller {
 
 		if (count($set) === 0) {
 			$this->template->content->error_level = 'info';
-			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . $command . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
+			$this->template->content->error = "The " . $pool->get_table() . " you were trying to execute '" . htmlspecialchars($command, ENT_QUOTES, 'UTF-8') . "' on were not found. Attempted to find " . $pool->get_table() . " with the names: " . html::get_delimited_string($object_keys);
 
 			return;
 		}
@@ -96,7 +96,8 @@ class Cmd_Controller extends Ninja_Controller {
 				"'$table'. Please verify your user's rights ".
 				"for '$table' commands. Aborting without any ".
 				"commands applied.";
-			op5log::instance('ninja')->log('warning', $error_message);
+			op5log::instance('ninja')->log('warning',
+				htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'));
 			$this->template->content->error = $error_message;
 			$this->template->content->error_level = 'notice';
 			return;
@@ -175,7 +176,13 @@ class Cmd_Controller extends Ninja_Controller {
 					if(isset($result['output'])) {
 						$output = " Output: ".$result['output'];
 					}
-					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+					$log_msg = "Failed to submit command '"
+						.htmlspecialchars($command, ENT_QUOTES, 'UTF-8')."' on ("
+						.htmlspecialchars($object->get_table(), ENT_QUOTES, 'UTF-8')
+						.") object '"
+						.htmlspecialchars($object->get_key(), ENT_QUOTES, 'UTF-8')
+						."'".$output;
+					op5log::instance('ninja')->log('warning', $log_msg);
 				}
 
 				$results[] = array(
@@ -243,7 +250,13 @@ class Cmd_Controller extends Ninja_Controller {
 					if(isset($result['output'])) {
 						$output = " Output: ".$result['output'];
 					}
-					op5log::instance('ninja')->log('warning', "Failed to submit command '$command' on (".$object->get_table().") object '".$object->get_key()."'".$output);
+					$log_msg = "Failed to submit command '"
+						.htmlspecialchars($command, ENT_QUOTES, 'UTF-8')."' on ("
+						.htmlspecialchars($object->get_table(), ENT_QUOTES, 'UTF-8')
+						.") object '"
+						.htmlspecialchars($object->get_key(), ENT_QUOTES, 'UTF-8')
+						."'".$output;
+					op5log::instance('ninja')->log('warning', $log_msg);
 				}
 				$command_template->result = $result;
 				$command_template->object = $object;
@@ -255,11 +268,14 @@ class Cmd_Controller extends Ninja_Controller {
 		} catch(ORMException $e) {
 			request::send_header(400);
 			$error_message = $e->getMessage();
-			op5log::instance('ninja')->log('warning', $error_message);
+			op5log::instance('ninja')->log('warning',
+				htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'));
 			if(request::is_ajax()) {
 				$this->template = new View('json');
 				$this->template->success = false;
-				$this->template->value = array('error' => $error_message);
+				$this->template->value = array(
+					'error' => htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8'),
+				);
 				return;
 			}
 			$template->result = false;
