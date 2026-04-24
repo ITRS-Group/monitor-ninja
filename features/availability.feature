@@ -604,6 +604,40 @@ Feature: Availability reports
 		Then I should see "workhours"
 		And I should see "2013-03-04"
 		And I should see "2013-03-10"
-		And I should see trend graph have background color "rgb(161, 158, 149)"
-		And I should see trend graph have background color "transparent"
-		And I should see trend graph have background color "rgb(170, 222, 83)"
+		And I should see trend graph have background color "#a19e95"
+		And I should see trend graph have background color "#aade53"
+
+	Scenario: Create availability report with re-scalling
+		Given I am on the Host details page
+		And I have these report data entries:
+		| timestamp           | event_type | flags | attrib | host_name     | service_description | state | hard | retry | downtime_depth | output |
+		| 2013-03-01 00:01:00 |        801 |  NULL |   NULL | linux-server2 |          			  |     0 |    1 |     1 |              0 | OK - linux-server2  |
+		| 2013-03-01 12:00:00 |        801 |  NULL |   NULL | linux-server1 |                     |     0 |    1 |     1 |           NULL | OK - Sven Melander |
+		| 2013-03-03 00:01:00 |        801 |  NULL |   NULL | linux-server2 |         			  |     0 |    1 |     1 |              0 | OK - linux-server2  |
+		| 2013-03-05 00:03:00 |        801 |  NULL |   NULL | linux-server2 |        			  |     0 |    1 |     1 |           NULL | ERROR - cannot find linux-server2  |
+		| 2013-03-05 10:20:00 |        801 |  NULL |   NULL | linux-server2 |       		      |     0 |    1 |     1 |              0 | OK - linux-server2  |	
+		And I hover over the "Report" menu
+		And I hover over the "Availability" menu
+		When I click "Create Availability Report"
+		And I select "Hosts" from "Report type"
+		And I select "linux-server1" from the multiselect "objects_tmp"
+		And I select "linux-server2" from the multiselect "objects_tmp"
+		Then "objects" should have option "linux-server1"
+		Then "objects" should have option "linux-server2"
+		When I select "Custom" from "Reporting period"
+		And I enter "2013-03-01" into "Start date"
+		And I enter "23:31" into "time_start"
+		And I enter "2013-04-01" into "End date"
+		And I enter "22:32" into "time_end"
+		And I check "Include trends graph"
+		Then I check "Show trends re-scaling"
+		And I click "Show report"
+		And I should see "linux-server1"
+		And I should see "linux-server2"
+		And I should see "2013-03-01"
+		And I should see "2013-03-11"
+		And I should see "2013-03-21"
+		And I should see trend graph have background color "#aade53"
+		And I should see trend graph have background color "#333"
+		When I hover over "bar"
+		Then I should see css "#tooltip"
