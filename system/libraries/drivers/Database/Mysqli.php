@@ -53,6 +53,17 @@ class Database_Mysqli_Driver extends Database_Driver {
 		$this->link = null;
 	}
 
+	protected function mysqli_cache_key($sql)
+	{
+		$sid = '0';
+		if (is_object($this->link)) {
+			$sid = function_exists('spl_object_id')
+				? (string) spl_object_id($this->link)
+				: spl_object_hash($this->link);
+		}
+		return $this->query_hash($sql)."\0".$sid;
+	}
+
 	public function connect()
 	{
 		if ($this->link_is_live()) {
@@ -70,6 +81,7 @@ class Database_Mysqli_Driver extends Database_Driver {
 		// Make the connection and select the database
 		$this->link = new mysqli($host, $user, $pass, $database, $port);
 		if ($this->link->connect_errno) {
+			$this->invalidate_link();
 			return false;
 		}
 
@@ -90,16 +102,16 @@ class Database_Mysqli_Driver extends Database_Driver {
 		// Only cache if it's turned on, and only cache if it's not a write statement
 		if ($this->db_config['cache'] AND ! preg_match('#\b(?:INSERT|UPDATE|REPLACE|SET)\b#i', $sql))
 		{
-			$hash = $this->query_hash($sql);
+			$cache_key = $this->mysqli_cache_key($sql);
 
-			if ( ! isset(self::$query_cache[$hash]))
+			if ( ! isset(self::$query_cache[$cache_key]))
 			{
 				// Set the cached object
-				self::$query_cache[$hash] = new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
+				self::$query_cache[$cache_key] = new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
 			}
 
 			// Return the cached query
-			return self::$query_cache[$hash];
+			return self::$query_cache[$cache_key];
 		}
 
 		return new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
@@ -176,8 +188,20 @@ class Database_Mysqli_Driver extends Database_Driver {
 
 	public function stmt_prepare($sql = '')
 	{
-		$this->connect();
-		return new Kohana_Mysqli_Statement($sql, $this->link);
+		$last = null;
+		for ($attempt = 1; $attempt <= 2; $attempt++) {
+			$this->connect();
+			if ( ! is_object($this->link)) {
+				throw new Kohana_Database_Exception('database.connection', $this->show_error());
+			}
+			try {
+				return new Kohana_Mysqli_Statement($sql, $this->link);
+			} catch (\Throwable $e) {
+				$last = $e;
+				$this->invalidate_link();
+			}
+		}
+		throw $last;
 	}
 
 	public function escape_str($str)
@@ -185,9 +209,21 @@ class Database_Mysqli_Driver extends Database_Driver {
 		if (!$this->db_config['escape'])
 			return $str;
 
-		$this->connect();
 
-		return $this->link->real_escape_string($str);
+		$last = null;
+		for ($attempt = 1; $attempt <= 2; $attempt++) {
+			$this->connect();
+			if ( ! is_object($this->link)) {
+				throw new Kohana_Database_Exception('database.connection', $this->show_error());
+			}
+			try {
+				return $this->link->real_escape_string((string) $str);
+			} catch (\Throwable $e) {
+				$last = $e;
+				$this->invalidate_link();
+			}
+		}
+		throw $last;
 	}
 
 
