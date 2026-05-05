@@ -28,7 +28,7 @@ Provides: php-op5lib = %version
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
-# Requires: op5-lmd
+Requires: op5-lmd
 # Requires: monitor-backup
 Requires: op5-bootstrap
 # Merlin creates our database
@@ -66,7 +66,7 @@ Requires: monitor-ninja = %version
 Requires: op5-naemon
 Requires: op5-monitor-user
 Requires: monitor-livestatus
-# Requires: op5-lmd
+Requires: op5-lmd
 # Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: monitor-plugin-check_dummyv2
@@ -97,7 +97,7 @@ Requires: op5-monitor-user
 Requires: op5-naemon
 # Requires: monitor-merlin
 Requires: monitor-livestatus
-# Requires: op5-lmd
+Requires: op5-lmd
 
 %description monitoring
 Provides ORM, bindings and interfaces for Livestatus, Naemon and queryhandler.
