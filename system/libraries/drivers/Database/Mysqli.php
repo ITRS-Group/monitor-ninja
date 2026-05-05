@@ -13,8 +13,6 @@ class Database_Mysqli_Driver extends Database_Driver {
 
 	// Database connection link
 	protected $link;
-	/** @var bool Whether the current {@see $link} has passed a successful liveness check this request. */
-	protected $_mysqli_ok = false;
 	protected $db_config;
 	protected $statements = array();
 
@@ -35,30 +33,23 @@ class Database_Mysqli_Driver extends Database_Driver {
 	}
 
 	/**
-	 * PHP 8+ keeps a mysqli object after close(); the only portable liveness check is ping().
+	 * PHP 8+ keeps a mysqli object after close(); ping() is the portable check.
 	 */
 	protected function link_is_live()
 	{
 		if ( ! is_object($this->link)) {
 			return false;
 		}
-		if ($this->_mysqli_ok) {
-			return true;
-		}
 		try {
-			if ($this->link->ping()) {
-				$this->_mysqli_ok = true;
-				return true;
-			}
+			return $this->link->ping();
 		} catch (\Throwable $e) {
+			return false;
 		}
-		return false;
 	}
 
 	protected function invalidate_link()
 	{
 		self::$query_cache = array();
-		$this->_mysqli_ok = false;
 		$this->link = null;
 	}
 
@@ -81,8 +72,6 @@ class Database_Mysqli_Driver extends Database_Driver {
 		if ($this->link->connect_errno) {
 			return false;
 		}
-
-		$this->_mysqli_ok = true;
 
 		if ($charset = $this->db_config['character_set']) {
 			$this->set_charset($charset);
