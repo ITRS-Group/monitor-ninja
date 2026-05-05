@@ -24,12 +24,12 @@ Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
 Provides: op5-nagios-gui-core = %version
 Provides: php-op5lib = %version
-Requires: wkhtmltopdf
+# Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
-Requires: op5-lmd
-Requires: monitor-backup
+# Requires: op5-lmd
+# Requires: monitor-backup
 Requires: op5-bootstrap
 # Merlin creates our database
 Requires: merlin
@@ -67,7 +67,7 @@ Requires: op5-naemon
 Requires: op5-monitor-user
 Requires: monitor-livestatus
 Requires: op5-lmd
-Requires: monitor-nagvis
+# Requires: monitor-nagvis
 Requires: monitor-nacoma
 Requires: monitor-plugin-check_dummyv2
 Requires: php-phpunit-PHPUnit
@@ -95,7 +95,7 @@ Summary: Naemon and Livestatus module for ninja
 Group: op5/monitor
 Requires: op5-monitor-user
 Requires: op5-naemon
-Requires: monitor-merlin
+# Requires: monitor-merlin
 Requires: monitor-livestatus
 Requires: op5-lmd
 
