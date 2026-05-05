@@ -13,6 +13,7 @@ class Database_Mysqli_Driver extends Database_Driver {
 
 	// Database connection link
 	protected $link;
+	protected $last_connect_error = '';
 	protected $db_config;
 	protected $statements = array();
 
@@ -81,9 +82,12 @@ class Database_Mysqli_Driver extends Database_Driver {
 		// Make the connection and select the database
 		$this->link = new mysqli($host, $user, $pass, $database, $port);
 		if ($this->link->connect_errno) {
+			$this->last_connect_error = '['.$this->link->connect_errno.'] '.$this->link->connect_error;
 			$this->invalidate_link();
 			return false;
 		}
+
+		$this->last_connect_error = '';
 
 		if ($charset = $this->db_config['character_set']) {
 			$this->set_charset($charset);
@@ -309,12 +313,12 @@ class Database_Mysqli_Driver extends Database_Driver {
 	public function show_error()
 	{
 		if ( ! is_object($this->link)) {
-			return '';
+			return $this->last_connect_error;
 		}
 		try {
 			return $this->link->error;
 		} catch (\Throwable $e) {
-			return '';
+			return $this->last_connect_error !== '' ? $this->last_connect_error : '';
 		}
 	}
 
