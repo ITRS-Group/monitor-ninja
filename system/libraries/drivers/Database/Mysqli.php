@@ -13,7 +13,6 @@ class Database_Mysqli_Driver extends Database_Driver {
 
 	// Database connection link
 	protected $link;
-	protected $last_connect_error = '';
 	protected $db_config;
 	protected $statements = array();
 
@@ -34,44 +33,18 @@ class Database_Mysqli_Driver extends Database_Driver {
 	}
 
 	/**
-	 * PHP 8+ keeps a mysqli object after close(); ping() is the portable check.
+	 * Closes the database connection.
 	 */
-	protected function link_is_live()
+	public function __destruct()
 	{
-		if ( ! is_object($this->link)) {
-			return false;
-		}
-		try {
-			return $this->link->ping();
-		} catch (\Throwable $e) {
-			return false;
-		}
-	}
-
-	protected function invalidate_link()
-	{
-		self::$query_cache = array();
-		$this->link = null;
-	}
-
-	protected function mysqli_cache_key($sql)
-	{
-		$sid = '0';
-		if (is_object($this->link)) {
-			$sid = function_exists('spl_object_id')
-				? (string) spl_object_id($this->link)
-				: spl_object_hash($this->link);
-		}
-		return $this->query_hash($sql)."\0".$sid;
+		is_object($this->link) and $this->link->close();
 	}
 
 	public function connect()
 	{
-		if ($this->link_is_live()) {
+		// Check if link already exists
+		if (is_object($this->link))
 			return $this->link;
-		}
-
-		$this->invalidate_link();
 
 		// Import the connect variables
 		extract($this->db_config['connection']);
@@ -80,42 +53,37 @@ class Database_Mysqli_Driver extends Database_Driver {
 		$host = isset($host) ? $host : $socket;
 
 		// Make the connection and select the database
-		$this->link = new mysqli($host, $user, $pass, $database, $port);
-		if ($this->link->connect_errno) {
-			$this->last_connect_error = '['.$this->link->connect_errno.'] '.$this->link->connect_error;
-			$this->invalidate_link();
-			return false;
+		if ($this->link = new mysqli($host, $user, $pass, $database, $port))
+		{
+			if ($charset = $this->db_config['character_set'])
+			{
+				$this->set_charset($charset);
+			}
+
+			// Clear password after successful connect
+			$this->config['connection']['pass'] = NULL;
+
+			return $this->link;
 		}
 
-		$this->last_connect_error = '';
-
-		if ($charset = $this->db_config['character_set']) {
-			$this->set_charset($charset);
-		}
-
-		// Clear password after successful connect
-		$this->config['connection']['pass'] = null;
-
-		return $this->link;
+		return FALSE;
 	}
 
 	public function query($sql)
 	{
-		$this->connect();
-
 		// Only cache if it's turned on, and only cache if it's not a write statement
 		if ($this->db_config['cache'] AND ! preg_match('#\b(?:INSERT|UPDATE|REPLACE|SET)\b#i', $sql))
 		{
-			$cache_key = $this->mysqli_cache_key($sql);
+			$hash = $this->query_hash($sql);
 
-			if ( ! isset(self::$query_cache[$cache_key]))
+			if ( ! isset(self::$query_cache[$hash]))
 			{
 				// Set the cached object
-				self::$query_cache[$cache_key] = new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
+				self::$query_cache[$hash] = new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
 			}
 
 			// Return the cached query
-			return self::$query_cache[$cache_key];
+			return self::$query_cache[$hash];
 		}
 
 		return new Kohana_Mysqli_Result($this->link, $this->db_config['object'], $sql);
@@ -192,20 +160,8 @@ class Database_Mysqli_Driver extends Database_Driver {
 
 	public function stmt_prepare($sql = '')
 	{
-		$last = null;
-		for ($attempt = 1; $attempt <= 2; $attempt++) {
-			$this->connect();
-			if ( ! is_object($this->link)) {
-				throw new Kohana_Database_Exception('database.connection', $this->show_error());
-			}
-			try {
-				return new Kohana_Mysqli_Statement($sql, $this->link);
-			} catch (\Throwable $e) {
-				$last = $e;
-				$this->invalidate_link();
-			}
-		}
-		throw $last;
+		is_object($this->link) or $this->connect();
+		return new Kohana_Mysqli_Statement($sql, $this->link);
 	}
 
 	public function escape_str($str)
@@ -213,21 +169,9 @@ class Database_Mysqli_Driver extends Database_Driver {
 		if (!$this->db_config['escape'])
 			return $str;
 
+		is_object($this->link) or $this->connect();
 
-		$last = null;
-		for ($attempt = 1; $attempt <= 2; $attempt++) {
-			$this->connect();
-			if ( ! is_object($this->link)) {
-				throw new Kohana_Database_Exception('database.connection', $this->show_error());
-			}
-			try {
-				return $this->link->real_escape_string((string) $str);
-			} catch (\Throwable $e) {
-				$last = $e;
-				$this->invalidate_link();
-			}
-		}
-		throw $last;
+		return $this->link->real_escape_string($str);
 	}
 
 
@@ -312,14 +256,7 @@ class Database_Mysqli_Driver extends Database_Driver {
 
 	public function show_error()
 	{
-		if ( ! is_object($this->link)) {
-			return $this->last_connect_error;
-		}
-		try {
-			return $this->link->error;
-		} catch (\Throwable $e) {
-			return $this->last_connect_error !== '' ? $this->last_connect_error : '';
-		}
+		return $this->link->error;
 	}
 
 	public function list_fields($table)
@@ -355,7 +292,6 @@ class Database_Mysqli_Driver extends Database_Driver {
 	
 	public function field_data($table)
 	{
-		$this->connect();
 		$columns = array();
 		$query = $this->link->query('SHOW COLUMNS FROM '.$this->escape_table($table));
 
@@ -443,20 +379,15 @@ class Kohana_Mysqli_Result extends Database_Result {
 			// this is kinda useless, but needs to be done to avoid the "Commands out of sync; you
 			// can't run this command now" error. Basically, we get all results after the first one
 			// (the one we actually need) and free them.
-			// mysqli is an object in PHP 8+, not a resource.
-			try {
-				if (is_object($this->link) AND $this->link->more_results())
+			if (is_resource($this->link) AND $this->link->more_results())
+			{
+				do
 				{
-					do
+					if ($result = $this->link->store_result())
 					{
-						if ($result = $this->link->store_result())
-						{
-							$result->free_result();
-						}
-					} while ($this->link->next_result());
-				}
-			} catch (\Throwable $e) {
-				// Link may already be closed during shutdown / refcount teardown (PHP 8+).
+						$result->free_result();
+					}
+				} while ($this->link->next_result());
 			}
 		}
 	}

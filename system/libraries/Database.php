@@ -213,13 +213,16 @@ class Database {
 	 */
 	public function connect()
 	{
-		// Always refresh from the driver.
-		$this->link = $this->driver->connect();
+		// A link can be a resource or an object
 		if ( ! is_resource($this->link) AND ! is_object($this->link))
-			throw new Kohana_Database_Exception('database.connection', $this->driver->show_error());
+		{
+			$this->link = $this->driver->connect();
+			if ( ! is_resource($this->link) AND ! is_object($this->link))
+				throw new Kohana_Database_Exception('database.connection', $this->driver->show_error());
 
-		// Clear password after successful connect
-		$this->config['connection']['pass'] = NULL;
+			// Clear password after successful connect
+			$this->config['connection']['pass'] = NULL;
+		}
 	}
 
         /**
@@ -247,7 +250,8 @@ class Database {
 	{
 		if ($sql == '') return FALSE;
 
-		$this->connect();
+		// No link? Connect!
+		$this->link or $this->connect();
 
 		// Start the benchmark
 		$start = microtime(TRUE);
@@ -1119,7 +1123,7 @@ class Database {
 	 */
 	public function list_tables()
 	{
-		$this->connect();
+		$this->link or $this->connect();
 
 		return $this->driver->list_tables($this);
 	}
@@ -1172,7 +1176,7 @@ class Database {
 	 */
 	public function field_data($table = '')
 	{
-		$this->connect();
+		$this->link or $this->connect();
 
 		return $this->driver->field_data($this->config['table_prefix'].$table);
 	}
@@ -1185,7 +1189,7 @@ class Database {
 	 */
 	public function list_fields($table = '')
 	{
-		$this->connect();
+		$this->link or $this->connect();
 
 		return $this->driver->list_fields($this->config['table_prefix'].$table);
 	}
