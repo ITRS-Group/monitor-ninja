@@ -32,14 +32,6 @@ class Database_Mysqli_Driver extends Database_Driver {
 		Kohana::log('debug', 'MySQLi Database Driver Initialized');
 	}
 
-	/**
-	 * Closes the database connection.
-	 */
-	public function __destruct()
-	{
-		is_object($this->link) and $this->link->close();
-	}
-
 	public function connect()
 	{
 		// Check if link already exists
@@ -379,7 +371,8 @@ class Kohana_Mysqli_Result extends Database_Result {
 			// this is kinda useless, but needs to be done to avoid the "Commands out of sync; you
 			// can't run this command now" error. Basically, we get all results after the first one
 			// (the one we actually need) and free them.
-			if (is_resource($this->link) AND $this->link->more_results())
+			// mysqli is an object in PHP 8+, not a resource.
+			if (is_object($this->link) AND $this->link->more_results())
 			{
 				do
 				{
