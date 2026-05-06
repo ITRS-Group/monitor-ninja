@@ -32,7 +32,7 @@ Requires: op5-lmd
 # Requires: monitor-backup
 Requires: op5-bootstrap
 # Merlin creates our database
-# Requires: merlin
+Requires: merlin
 Requires: monitor-ninja-monitoring
 BuildRequires: doxygen
 BuildRequires: graphviz
@@ -96,7 +96,7 @@ Summary: Naemon and Livestatus module for ninja
 Group: op5/monitor
 Requires: op5-monitor-user
 Requires: op5-naemon
-# Requires: monitor-merlin
+Requires: monitor-merlin
 Requires: monitor-livestatus
 Requires: op5-lmd
 
