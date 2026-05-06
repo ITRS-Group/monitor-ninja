@@ -37,7 +37,7 @@ Requires: monitor-ninja-monitoring
 BuildRequires: doxygen
 BuildRequires: graphviz
 BuildRequires: python%{python_ver}-devel
-Requires: php = 8.2
+Requires: php >= 8.2 < 8.3
 Requires: php-cli
 Requires: php-json
 Requires: php-ldap
