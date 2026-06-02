@@ -57,7 +57,13 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 			array('host_name' => 'monitor', 'description' => 'syslogd process'),
 		);
 		$ls = new MockLivestatus(
-			array('hosts' => $hosts, 'services' => $services),
+			array(
+				'hosts' => $hosts,
+				'services' => $services,
+				'hostgroups' => array(),
+				'servicegroups' => array(),
+				'timeperiods' => array(),
+			),
 			array('allow_undefined_columns' => true)
 		);
 		op5objstore::instance()->mock_add('op5Livestatus', $ls);
@@ -381,6 +387,9 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 			array(
 				'hosts' => array(array('name' => 'monitor', 'groups' => array('hostgroup_all'))),
 				'services' => $services,
+				'hostgroups' => array(),
+				'servicegroups' => array(array('name' => 'servicegroup_all', 'members' => array('monitor;Disk usage /'))),
+				'timeperiods' => array(),
 			),
 			array('allow_undefined_columns' => true)
 		);

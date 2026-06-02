@@ -241,6 +241,10 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 			'services' => array(
 				array('host_name' => 'host_down_acknowledged', 'description' => 'service ok'),
 			),
+			'hostgroups' => array(
+				array('name' => 'hostgroup_up', 'members' => array('monitor')),
+			),
+			'servicegroups' => array(),
 		), array('allow_undefined_columns' => true));
 		op5objstore::instance()->mock_add('op5Livestatus', $ls);
 
