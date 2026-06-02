@@ -261,7 +261,7 @@ class Report_query_builder_Model extends Model
 						);
 			}
 			else {
-				$extra_sql[] = "service_description != ''";
+				$extra_sql[] = "1 = 0";
 				$implode_str = ') AND (';
 			}
 		}
@@ -278,7 +278,7 @@ class Report_query_builder_Model extends Model
 						implode(", ",array_map($objtosql,$services[1])).")";
 			}
 			else {
-				$extra_sql[] = "service_description = ''";
+				$extra_sql[] = "1 = 0";
 				$implode_str = ') AND (';
 			}
 		}

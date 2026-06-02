@@ -27,10 +27,10 @@ test-local: generate-php
 
 test: generate-php
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; 
-	$(PHPUNIT) test/; 
-	res=$$?; 
-	make test-ci-cleanup; 
+	export OP5LIBCFG="$(OP5LIBCFG)"; \
+	$(PHPUNIT) test/; \
+	res=$$?; \
+	make test-ci-cleanup; \
 	exit $$res
 
 test-ci-cleanup:
@@ -51,6 +51,11 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
 	/usr/bin/asmonitor /usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
+	$$(rpm --eval %{_libdir})/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg
+	export OP5LIBCFG="$(OP5LIBCFG)"; \
+	if command -v /usr/bin/op5-manage-users >/dev/null 2>&1; then \
+		/usr/bin/op5-manage-users --update --username=limited --password=limited --realname=limited --module=Default --group=limited_view; \
+	fi
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done

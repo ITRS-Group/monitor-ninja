@@ -2,6 +2,11 @@
 # URL stuff
 #
 
+def escape_uri_component(str)
+	unsafe = Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")
+	URI::DEFAULT_PARSER.escape(str, unsafe)
+end
+
 # url should be "https://...."
 Given /^I am on "(.*)"$/ do |url|
 	visit url
@@ -43,18 +48,18 @@ Given /^I visit the process information page$/ do
 end
 
 Given /^I visit the object details page for (host|hostgroup|servicegroup) "(.*)"$/ do |type, object|
-	object = URI.escape(object, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+	object = escape_uri_component(object)
 	visit NavigationHelpers::url_for("/index.php/extinfo/details?#{type}=#{object}")
 end
 
 Given /^I visit the object details page for service "(.*)" on host "(.*)"$/ do |object, parent|
-	object = URI.escape(object, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
-	parent = URI.escape(parent, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+	object = escape_uri_component(object)
+	parent = escape_uri_component(parent)
 	visit NavigationHelpers::url_for("/index.php/extinfo/details?host=#{parent}&service=#{object}")
 end
 
 Given /^I visit the alert history page for (host|service|hostgroup|servicegroup) "(.*)"$/ do |type, host|
-	host = URI.escape(host, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+	host = escape_uri_component(host)
 	visit NavigationHelpers::url_for("/index.php/alert_history/generate?report_type=#{type}s&objects[0]=#{host}")
 end
 
@@ -66,7 +71,7 @@ end
 
 #use to include querystrings in the match
 Then /^I should be on list view with filter '([^']*)'$/ do |filter|
-	query = URI.escape(filter, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))
+	query = escape_uri_component(filter)
 	current_url.should ==  NavigationHelpers::path_to("list view") + '?q=' + query
 end
 
