@@ -24,7 +24,7 @@ Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
 Provides: op5-nagios-gui-core = %version
 Provides: php-op5lib = %version
-# Requires: wkhtmltopdf
+Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
 Requires: monitor-livestatus
