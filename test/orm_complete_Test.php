@@ -16,22 +16,21 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		 * and does not have the required functionality (set_by_key) for these tests,
 		 * in addition it is not an object that we instantiate on its own.  */
 		unset($manifest['object']);
-		$set_model=[];
-		$pool_model=[];
 
-		if(isset($manifest['pool']) && isset($manifest['set'])) {
-			$set_model = $manifest['set'];
-			$pool_model = $manifest['pool'];
+		$cases = array();
+		foreach ($manifest as $table => $classes) {
+			if (!is_array($classes) || !isset($classes['set'], $classes['pool'])) {
+				continue;
+			}
+			$cases[] = array($classes['set'], $classes['pool'], $table);
 		}
-		return [
-			[$set_model, $pool_model]
-		];
+		return $cases;
 	}
 
 	#[DataProvider('object_manifest_provider')]
-	public function test_object_manifest_provider($set_model, $pool_model) {
-		$models[] = [array($set_model), array($pool_model)];
-		$this->assertGreaterThanOrEqual(1, count($models), "No models found");
+	public function test_object_manifest_provider($set_model, $pool_model, $table) {
+		$this->assertNotEmpty($set_model, "No set model for table '$table'");
+		$this->assertNotEmpty($pool_model, "No pool model for table '$table'");
 	}
 
 	/**
@@ -40,12 +39,9 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * that Set may be empty.
 	 */
 	#[DataProvider('object_manifest_provider')]
-	public function test_set_by_key_always_returns_set($set_model, $pool_model) {
-		$set = StatusPool_Model::set_by_key('');
-		if(isset($set_model) && !empty($set_model)) {
-			$string_model = (string) $set_model;
-			$this->assertInstanceOf($string_model, $set);
-		}
+	public function test_set_by_key_always_returns_set($set_model, $pool_model, $table) {
+		$set = call_user_func(array($pool_model, 'set_by_key'), '');
+		$this->assertInstanceOf($set_model, $set, "set_by_key for table '$table'");
 	}
 
 	/**
@@ -54,10 +50,12 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 * test enforces this to supply a more consistent ORM.
 	 */
 	#[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_available_for_all_sets($set_model, $pool_model) {
-		$set = SavedFilterPool_Model::all();
-		$this->assertIsString($set->mayi_resource(), "mayi_resource for '$set_model' does not supply a string namespace");
-		return true;
+	public function test_mayi_resource_available_for_all_sets($set_model, $pool_model, $table) {
+		$set = call_user_func(array($pool_model, 'all'));
+		$this->assertIsString(
+			$set->mayi_resource(),
+			"mayi_resource for '$set_model' (table '$table') does not supply a string namespace"
+		);
 	}
 
 	/**
@@ -70,9 +68,8 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 *
 	 * Enforcing this supplies a more consistent ORM.
 	 */
-	
-	 #[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_with_acl_using_alwaysauth($set_model, $pool_model) {
+	#[DataProvider('object_manifest_provider')]
+	public function test_mayi_resource_with_acl_using_alwaysauth($set_model, $pool_model, $table) {
 
 		$user = new User_AlwaysAuth_Model();
 
@@ -82,14 +79,14 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		$acl_auth = new user_mayi_authorization();
 		op5MayI::instance()->act_upon($acl_auth, 10);
 
-		$set = SavedFilterPool_Model::all();
+		$set = call_user_func(array($pool_model, 'all'));
 		$resource = $set->mayi_resource();
 		$this->assertTrue(
 			op5MayI::instance()->run($resource . ":read"),
 			"A fully authenticated/authorized user should be able to read " .
 			"'$resource', you should probably check the ACL (in " .
 			"auth/hooks/user_mayi_authorization.php) or supplied " .
-			"mayi_resource in '$set_model' for this resource"
+			"mayi_resource in '$set_model' (table '$table') for this resource"
 		);
 	}
 
@@ -101,7 +98,7 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 	 */
 	
 	#[DataProvider('object_manifest_provider')]
-	public function test_mayi_resource_with_acl_using_noauth($set_model, $pool_model) {
+	public function test_mayi_resource_with_acl_using_noauth($set_model, $pool_model, $table) {
 
 		$user = new User_NoAuth_Model();
 
@@ -111,14 +108,14 @@ class ORM_Complete_Test extends \PHPUnit\Framework\TestCase {
 		$acl_auth = new user_mayi_authorization();
 		op5MayI::instance()->act_upon($acl_auth, 10);
 
-		$set = SavedFilterPool_Model::all();
+		$set = call_user_func(array($pool_model, 'all'));
 		$resource = $set->mayi_resource();
 		$this->assertFalse(
 			op5MayI::instance()->run($resource . ":read"),
 			"An unauthenticated/unauthorized user should not be able to read " .
 			"'$resource', you should probably check the ACL (in " .
 			"auth/hooks/user_mayi_authorization.php) or supplied " .
-			"mayi_resource in '$set_model' for this resource"
+			"mayi_resource in '$set_model' (table '$table') for this resource"
 		);
 	}
 

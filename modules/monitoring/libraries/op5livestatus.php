@@ -139,9 +139,11 @@ class op5Livestatus {
 		}
 
 		if(is_array($filter)) {
-			$filter = implode("\n", array_map('trim', $filter));
+			$filter = implode("\n", array_map(function ($line) {
+				return trim((string) $line);
+			}, $filter));
 		}
-		$filter = trim($filter);
+		$filter = trim((string) ($filter ?? ''));
 		if($filter) {
 			$query .= $filter."\n";
 		}
