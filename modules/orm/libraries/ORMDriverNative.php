@@ -236,7 +236,7 @@ class ORMDriverNative implements ORMDriverInterface {
 	protected function persist ($table) {
 		
 		/* If there is no mockfile, we shouldn't persist. Probably unit tests then */
-		if($this->mockfile === null)
+		if (!is_string($this->mockfile) || $this->mockfile === '')
 			return;
 
 		$json_str = file_get_contents($this->mockfile);
