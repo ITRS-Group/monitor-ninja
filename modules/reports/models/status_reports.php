@@ -94,6 +94,7 @@ class Status_Reports_Model extends Reports_Model
 				$hostname = array_pop($hostname);
 				$objsel = "host_name = $hostname AND service_description IN (".join(", ", $servicename) . ")";
 			} else {
+				$objsel = array();
 				foreach ($hostname as $i => $host) {
 					$svc = $servicename[$i];
 					$objsel[] = "host_name = $host AND service_description = $svc";
