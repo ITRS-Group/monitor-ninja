@@ -436,8 +436,8 @@ class Old_Timeperiod_Model extends Model
 				# This day might be totally uninteresting, in which case
 				# we just ignore it
 				if($x['skip_interval'] > 1) {
-					$days_since_start = ($day_time - $exp_start) / 86400;
-					$check_exception = !($days_since_start % $x['skip_interval']);
+					$days_since_start = (int) (($day_time - $exp_start) / 86400);
+					$check_exception = !($days_since_start % (int) $x['skip_interval']);
 				}
 
 				# day shift is "midnight, today", $exp_start and $exp_end are always whole days

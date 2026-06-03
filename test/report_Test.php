@@ -203,7 +203,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 
 		$substr = "AND "
 				."("
-					."((host_name IN ('monitor')) and (service_description = ''))"
+					."((host_name IN ('monitor', 'host_down_acknowledged', 'host_down_notifications_disabled')) and (service_description = ''))"
 					." OR "
 					."((host_name, service_description) IN ("
 							."('host_down_acknowledged', 'service critical'), "
