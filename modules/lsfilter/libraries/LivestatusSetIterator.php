@@ -55,6 +55,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Move the cursor to the next object
 	 */
+	#[\ReturnTypeWillChange]
 	public function next()
 	{
 		$this->data->next();
@@ -63,6 +64,7 @@ class LivestatusSetIterator implements Iterator {
 	/**
 	 * Rewind the set
 	 */
+	#[\ReturnTypeWillChange]
 	public function rewind()
 	{
 		$this->ptr = $this->data->rewind();

@@ -25,6 +25,7 @@ class NoticeManager_Model implements ArrayAccess, IteratorAggregate, Countable {
 	/**
 	 * Implements ArrayAccess
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists($offset)
 	{
 		return isset($this->notices[$offset]);
@@ -33,6 +34,7 @@ class NoticeManager_Model implements ArrayAccess, IteratorAggregate, Countable {
 	/**
 	 * Implements ArrayAccess
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet($offset)
 	{
 		if(!$this->offsetExists($offset)) {
