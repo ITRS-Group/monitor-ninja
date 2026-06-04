@@ -5,6 +5,9 @@
  */
 class Notice_Test extends \PHPUnit\Framework\TestCase {
 
+	/** @var NoticeManager_Model */
+	protected $nm;
+
 	public function setUp() : void {
 		$this->nm = new NoticeManager_Model();
 	}

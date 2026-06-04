@@ -239,16 +239,19 @@ class ORMDriverNative implements ORMDriverInterface {
 		if (!is_string($this->mockfile) || $this->mockfile === '')
 			return;
 
-		$json_str = file_get_contents($this->mockfile);
-		if (!$json_str) {
-			$this->logger->log("error", "Could not read mock data from '$this->mockfile'");
-			return;
-		}
-		$json_conf = json_decode($json_str, true);
-		if ($json_conf === null) {
-
-			$this->logger->log("error", "Could not decode mock data from '$this->mockfile'");
-			return;
+		if (file_exists($this->mockfile)) {
+			$json_str = file_get_contents($this->mockfile);
+			if ($json_str === false) {
+				$this->logger->log("error", "Could not read mock data from '$this->mockfile'");
+				return;
+			}
+			$json_conf = json_decode($json_str, true);
+			if (!is_array($json_conf)) {
+				$this->logger->log("error", "Could not decode mock data from '$this->mockfile'");
+				return;
+			}
+		} else {
+			$json_conf = array();
 		}
 
 		$json_conf[$this->mockdriver][$table] = $this->storage[$table];

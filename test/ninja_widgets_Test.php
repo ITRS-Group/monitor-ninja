@@ -13,6 +13,9 @@ class Ninja_widgets_Test extends \PHPUnit\Framework\TestCase {
 	const DUMMY_WIDGET = 'netw_health';
 	const DUMMY_WIDGET_CLASS = 'Netw_health_Widget';
 
+	/** @var array */
+	protected $orig_widgets;
+
 	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());

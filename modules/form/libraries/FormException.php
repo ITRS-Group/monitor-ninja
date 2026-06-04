@@ -13,7 +13,7 @@ class FormException extends Exception {
 	 * @param $previous Exception = null
 	 */
 	public function __construct($message, $field, Exception $previous = null) {
-		parent::__construct($message, null, $previous);
+		parent::__construct($message, 0, $previous);
 		$this->field = $field;
 	}
 
