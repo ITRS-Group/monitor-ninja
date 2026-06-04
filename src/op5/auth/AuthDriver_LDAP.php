@@ -578,7 +578,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		$config = $this->module->get_properties();
 		if ($dn === false) {
 			$this->log->log('debug', 'Bindning anonymously');
-			$result = @ldap_bind($this->conn); /*
+			$result = $this->ldap_bind_call(); /*
 			                                    * FIXME: Allow non-anonymous bind
 			                                    */
 		} else {
@@ -588,7 +588,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				if (empty($password)) {
 					$result = false;
                 } else {
-                	$result = @ldap_bind($this->conn, $dn, $password);
+                	$result = $this->ldap_bind_call($dn, $password);
                 }
 		}
 		if ($result === false) {
@@ -601,6 +601,24 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 			}
 		}
 		return $result;
+	}
+
+	/**
+	 * Call ldap_bind without raising PHP warnings on expected failures
+	 * (invalid credentials, etc.). LDAP status is read via ldap_errno().
+	 */
+	private function ldap_bind_call($dn = null, $password = null) {
+		set_error_handler(static function () {
+			return true;
+		}, E_WARNING);
+		try {
+			if ($dn === null) {
+				return ldap_bind($this->conn);
+			}
+			return ldap_bind($this->conn, $dn, $password);
+		} finally {
+			restore_error_handler();
+		}
 	}
 
 	/**
@@ -699,10 +717,17 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 		}
 		$this->log->log('debug', "LDAP: Searching for $filter at $base_dn");
 
+		if (!$this->ldap_filter_is_valid($filter)) {
+			throw new op5AuthException(
+				'op5AuthDriver_LDAP / ' . $this->module->get_modulename() . ': ' .
+				'Error during LDAP search using query "' . $filter . '" at "' .
+				$base_dn . '" (-7: Bad search filter)');
+		}
+
 		if ($attributes == null) {
-			$result = @ldap_search($this->conn, $base_dn, $filter);
+			$result = ldap_search($this->conn, $base_dn, $filter);
 		} else {
-			$result = @ldap_search($this->conn, $base_dn, $filter, $attributes);
+			$result = ldap_search($this->conn, $base_dn, $filter, $attributes);
 		}
 
 		if ($result === false) {
@@ -711,6 +736,36 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 					 $base_dn . '"');
 		}
 		return $result;
+	}
+
+	/**
+	 * Reject syntactically invalid filters before ldap_search() to avoid PHP
+	 * warnings and to return the same error shape as a failed LDAP search.
+	 */
+	private function ldap_filter_is_valid($filter) {
+		if ($filter === '') {
+			return true;
+		}
+		$depth = 0;
+		$len = strlen($filter);
+		for ($i = 0; $i < $len; $i++) {
+			if ($filter[$i] === '(') {
+				$depth++;
+			} elseif ($filter[$i] === ')') {
+				$depth--;
+				if ($depth < 0) {
+					return false;
+				}
+			}
+		}
+		if ($depth !== 0) {
+			return false;
+		}
+		/* Filters must not concatenate clauses as ")attr(" without & | ! */
+		if (preg_match('/\)[a-zA-Z]/', $filter)) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
