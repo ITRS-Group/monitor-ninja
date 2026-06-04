@@ -32,11 +32,11 @@ class time
 			$t = 0 - $t;
 		}
 
-		$days = $t / 86400;
-		$days = floor($days);
-		$hrs = ($t / 3600) % 24;
-		$mins = ($t / 60) % 60;
-		$secs = $t % 60;
+		$secs = (int) floor($t);
+		$days = intdiv($secs, 86400);
+		$hrs = intdiv($secs % 86400, 3600);
+		$mins = intdiv($secs % 3600, 60);
+		$secs = $secs % 60;
 
 		$timestring = "";
 		if ($neg) $timestring .= $negative;
