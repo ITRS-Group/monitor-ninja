@@ -309,7 +309,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		try {
 			$db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
 		}
-		catch (Kohana_Database_Exception $e) {
+		catch (Exception $e) {
 			$cached = false;
 		}
 

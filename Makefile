@@ -5,7 +5,7 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
+PHPUNIT := /usr/bin/phpunit --debug --bootstrap test/bootstrap.php
 
 all: generate-php compile-python3
 
