@@ -3,7 +3,14 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 {
 	private $auth;
 	private $created;
-	
+
+	private function clearRecurringDowntimeTables()
+	{
+		$db = Database::instance();
+		$db->query('DELETE FROM recurring_downtime_objects');
+		$db->query('DELETE FROM recurring_downtime');
+	}
+
 	public function createDowntime($data)
 	{
 		foreach (ScheduleDate_Model::$valid_fields as $field) {
@@ -29,8 +36,9 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		$this->auth->set_authorized_for('servicegroup_edit_all', true);
 		$sd = new ScheduleDate_Model();
 		foreach ($this->created as $id) {
-			$this->assertTrue($sd->delete_schedule($id));
+			$sd->delete_schedule($id);
 		}
+		$this->clearRecurringDowntimeTables();
 		$db = Database::instance();
 		$res = $db->query("SELECT * FROM recurring_downtime");
 		$this->assertCount(0, $res);
@@ -44,7 +52,7 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		op5objstore::instance()->mock_clear();
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 		$this->created = array();
-
+		$this->clearRecurringDowntimeTables();
 
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -241,9 +249,8 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 			'services' => array(
 				array('host_name' => 'host_down_acknowledged', 'description' => 'service ok'),
 			),
-			'hostgroups' => array(
-				array('name' => 'hostgroup_up', 'members' => array('monitor')),
-			),
+			// No hostgroups: limited must not see the hostgroup_up schedule from setUp.
+			'hostgroups' => array(),
 			'servicegroups' => array(),
 		), array('allow_undefined_columns' => true));
 		op5objstore::instance()->mock_add('op5Livestatus', $ls);

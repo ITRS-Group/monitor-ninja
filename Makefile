@@ -49,6 +49,7 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	mysql -uroot -e "GRANT ALL ON $$db_name.* TO $$db_user@localhost IDENTIFIED BY '$$db_pass'"; \
 	db_setup
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
+	mysql -uroot merlin_test -e "DELETE FROM recurring_downtime_objects; DELETE FROM recurring_downtime;" 2>/dev/null || true
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
 	/usr/bin/asmonitor /usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
 	$$(rpm --eval %{_libdir})/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg
