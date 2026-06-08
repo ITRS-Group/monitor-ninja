@@ -72,8 +72,12 @@ After do |scenario|
     Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
     screenshot = File.join(screen_dir, "FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
     screenshot_embed_filename = "./screenshots/FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
-    page.save_screenshot(screenshot, full: true)
-    embed screenshot_embed_filename, 'image/png'
+    begin
+      page.save_screenshot(screenshot, full: false)
+    rescue Selenium::WebDriver::Error::UnsupportedOperationError
+      page.save_screenshot(screenshot)
+    end
+    embed(screenshot_embed_filename, 'image/png') if File.file?(screenshot)
     puts 'Browser console output:'
     puts '---'
     for logitem in page.driver.browser.manage.logs.get(:browser)
@@ -86,6 +90,12 @@ end
 
 Before do |scenario|
   @params = {}
+end
+
+World do
+  def interpolate_params(str)
+    str % (@params || {})
+  end
 end
 
 Before ('@configuration') do

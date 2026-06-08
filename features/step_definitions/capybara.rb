@@ -135,17 +135,18 @@ When /^I click css "([^"]*)"$/ do |xp|
 end
 
 When /^I save (?:the )value of "([^"]*)" as "([^"]*)"$/ do |sel, var|
+  @params ||= {}
   @params[var.to_sym] = find("input[name=#{sel}]", :visible => false).value
 end
 
 When /^I enter "([^"]*)" into "([^"]*)"$/ do |val, sel|
-  fill_in(sel % @params, :with => val)
+  fill_in(interpolate_params(sel), :with => val)
 end
 
 When /^I clear and enter "([^"]*)" into "([^"]*)"$/ do |val, sel|
   # OK so this shouldn't be necessary, but whatever works.
-  fill_in(sel % @params, :with => '')
-  fill_in(sel % @params, :with => val)
+  fill_in(interpolate_params(sel), :with => '')
+  fill_in(interpolate_params(sel), :with => val)
   find(:css, 'body').click
 end
 
@@ -185,7 +186,11 @@ Then /^I should see the "(.*)" table$/ do |tablename|
 end
 
 Then /^I should see (?:([\d]+) )?"([^"]*)"$/ do |n, string|
-  page.should have_content(string, :count => n)
+  if n
+    page.should have_content(string, count: n.to_i)
+  else
+    page.should have_content(string)
+  end
 end
 
 Then /^I should see "([^"]*)", compensating for DST$/ do |string|
@@ -249,7 +254,7 @@ Then /^Link "([^"]*)" should contain "(.*)"$/ do |linkel, value|
 end
 
 Then /^"([^"]*)" should contain "(.*)"$/ do |element, value|
-  find_field(element % @params).value.strip.should == value
+  find_field(interpolate_params(element)).value.strip.should == value
 end
 
 Then /^css "([^"]*)" should contain "(.*)"$/ do |element, value|
@@ -437,7 +442,11 @@ end
 
 #Find element span and click
 When /^I click the span with text "([^"]*)"$/ do |text|
-  find('span', text: text).click
+  begin
+    find('span', text: text, exact: true).click
+  rescue Capybara::ElementNotFound
+    click_link(text)
+  end
 end
 
 #Find data-menu-id and click
@@ -537,7 +546,7 @@ end
 
 #Store the stored_time to time variable
 When /^I enter the stored time into "([^"]*)"$/ do |sel|
-  fill_in(sel % @params, :with => @stored_time)
+  fill_in(interpolate_params(sel), :with => @stored_time)
 end
 
 #Check stored time if it is existing in the UI

@@ -9,5 +9,5 @@ Given /^I am real logged in as "([^"]*)" with password "([^"]*)"$/ do |username,
 end
 
 When /^I enter real "([^"]*)" into "([^"]*)"$/ do |val, sel|
-    fill_in(sel % @params, :with => val)
+    fill_in(interpolate_params(sel), :with => val)
   end
