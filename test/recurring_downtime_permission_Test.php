@@ -246,10 +246,10 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 				array('name' => 'monitor', 'contacts' => array('limited')),
 				array('name' => 'host_down_acknowledged', 'contacts' => array('admin')),
 			),
-			// MockLivestatus does not apply AuthUser filtering, so omit
-			// hostgroups/services/servicegroups that the limited user must
-			// not see via contact-based auth in recurringdowntimeset.php.
-			'services' => array(),
+			'services' => array(
+				array('host_name' => 'host_down_acknowledged', 'description' => 'service ok'),
+			),
+			// No hostgroups: limited must not see the hostgroup_up schedule from setUp.
 			'hostgroups' => array(),
 			'servicegroups' => array(),
 		), array('allow_undefined_columns' => true));
