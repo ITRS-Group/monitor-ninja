@@ -64,37 +64,26 @@ Syslog.open("cucumber", 0, Syslog::LOG_DAEMON)
 # Screenshot any failed scenario
 After do |scenario|
   if scenario.failed?
-    begin
-      screen_dir = ENV['CUKE_SCREEN_DIR'] || './screenshots'
-      Dir::mkdir(screen_dir) unless File.directory?(screen_dir)
-      screenshot = File.join(screen_dir, "FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
-      begin
-        page.save_screenshot(screenshot, full: false)
-      rescue Selenium::WebDriver::Error::UnsupportedOperationError
-        page.save_screenshot(screenshot)
-      rescue StandardError => e
-        puts "Screenshot failed: #{e.message}"
-      end
-      if File.file?(screenshot)
-        begin
-          embed(screenshot, 'image/png')
-        rescue StandardError => e
-          puts "Screenshot embed failed: #{e.message}"
-        end
-      end
-      begin
-        puts 'Browser console output:'
-        puts '---'
-        page.driver.browser.manage.logs.get(:browser).each do |logitem|
-          puts logitem
-        end
-        puts '---'
-      rescue StandardError => e
-        puts "Browser log collection failed: #{e.message}"
-      end
-    rescue StandardError => e
-      puts "After hook failed: #{e.message}"
+    if ENV['CUKE_SCREEN_DIR']
+      screen_dir = ENV['CUKE_SCREEN_DIR']
+    else
+      screen_dir = './screenshots'
     end
+    Dir::mkdir(screen_dir) if not File.directory?(screen_dir)
+    screenshot = File.join(screen_dir, "FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png")
+    screenshot_embed_filename = "./screenshots/FAILED_#{scenario.name.gsub(' ','_').gsub(/[^0-9A-Za-z_]/, '')}.png"
+    begin
+      page.save_screenshot(screenshot, full: false)
+    rescue Selenium::WebDriver::Error::UnsupportedOperationError
+      page.save_screenshot(screenshot)
+    end
+    embed(screenshot_embed_filename, 'image/png') if File.file?(screenshot)
+    puts 'Browser console output:'
+    puts '---'
+    for logitem in page.driver.browser.manage.logs.get(:browser)
+      puts logitem
+    end
+    puts '---'
   end
   Capybara.reset_sessions!
 end
