@@ -80,6 +80,8 @@ class sql
 		}
 		if (!empty($res))
 			$res = '(' . implode(') '.$function.' (', $res) . ')';
+		else
+			$res = false;
 		return $res;
 	}
 }
