@@ -724,11 +724,7 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 				$base_dn . '" (-7: Bad search filter)');
 		}
 
-		if ($attributes == null) {
-			$result = ldap_search($this->conn, $base_dn, $filter);
-		} else {
-			$result = ldap_search($this->conn, $base_dn, $filter, $attributes);
-		}
+		$result = $this->ldap_search_call($base_dn, $filter, $attributes);
 
 		if ($result === false) {
 			$this->throw_error(
@@ -736,6 +732,24 @@ class op5AuthDriver_LDAP extends op5AuthDriver {
 					 $base_dn . '"');
 		}
 		return $result;
+	}
+
+	/**
+	 * Call ldap_search without raising PHP warnings on expected failures
+	 * (invalid base DN, server errors, etc.). LDAP status is read via ldap_errno().
+	 */
+	private function ldap_search_call($base_dn, $filter, $attributes) {
+		set_error_handler(static function () {
+			return true;
+		}, E_WARNING);
+		try {
+			if ($attributes == null) {
+				return ldap_search($this->conn, $base_dn, $filter);
+			}
+			return ldap_search($this->conn, $base_dn, $filter, $attributes);
+		} finally {
+			restore_error_handler();
+		}
 	}
 
 	/**
