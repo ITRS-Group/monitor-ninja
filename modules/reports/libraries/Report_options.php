@@ -276,6 +276,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet($str)
 	{
 		if (!isset($this->properties[$str]))
@@ -295,6 +296,7 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	/**
 	 * Required by ArrayAccess
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetExists($key)
 	{
 		return isset($this->properties[$key]);
@@ -753,20 +755,26 @@ class Report_options implements ArrayAccess, Iterator, Countable {
 	}
 
 	/** Required by Iterator */
+	#[\ReturnTypeWillChange]
 	function rewind() { reset($this->options); }
 	/** Required by Iterator */
+	#[\ReturnTypeWillChange]
 	function current() { return current($this->options); }
 	/** Required by Iterator */
+	#[\ReturnTypeWillChange]
 	function key() { return key($this->options); }
 	/** Required by Iterator */
+	#[\ReturnTypeWillChange]
 	function next() {
 		do {
 			$x = next($this->options);
 		} while ($x !== false && isset($this->properties[key($this->options)]['generated']));
 	}
 	/** Required by Iterator */
+	#[\ReturnTypeWillChange]
 	function valid() { return array_key_exists(key($this->options), $this->options); }
 	/** Required by Countable */
+	#[\ReturnTypeWillChange]
 	function count() { return count($this->options); }
 
 	/** Print the options themselves when printing the object */

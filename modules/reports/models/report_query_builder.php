@@ -93,6 +93,7 @@ class Report_query_builder_Model extends Model
 			if($this->options['objects'] === Report_options::ALL_AUTHORIZED) {
 				$services = Report_options::ALL_AUTHORIZED;
 			} else {
+				$services = array();
 				foreach ($this->options['objects'] as $srv) {
 					$services[$srv] = $srv;
 				}
@@ -102,6 +103,7 @@ class Report_query_builder_Model extends Model
 			if($this->options['objects'] === Report_options::ALL_AUTHORIZED) {
 				$hosts = Report_options::ALL_AUTHORIZED;
 			} else {
+				$hosts = array();
 				if (is_array($this->options['objects'])) {
 					foreach ($this->options['objects'] as $hn)
 						$hosts[$hn] = $hn;
@@ -115,7 +117,7 @@ class Report_query_builder_Model extends Model
 			return "SELECT $fields FROM $this->db_table LIMIT 0";
 		}
 
-		$object_selection = false;
+		$object_selection = '';
 		if(($hosts === Report_options::ALL_AUTHORIZED) || ($services === Report_options::ALL_AUTHORIZED)) {
 			// screw filters, we're almighty
 		} elseif ($services) {
@@ -261,7 +263,7 @@ class Report_query_builder_Model extends Model
 						);
 			}
 			else {
-				$extra_sql[] = "service_description != ''";
+				$extra_sql[] = "1 = 0";
 				$implode_str = ') AND (';
 			}
 		}
@@ -278,7 +280,7 @@ class Report_query_builder_Model extends Model
 						implode(", ",array_map($objtosql,$services[1])).")";
 			}
 			else {
-				$extra_sql[] = "service_description = ''";
+				$extra_sql[] = "1 = 0";
 				$implode_str = ') AND (';
 			}
 		}

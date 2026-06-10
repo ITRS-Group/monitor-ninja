@@ -11,7 +11,7 @@ class TestActor implements op5MayI_Actor {
 	}
 }
 
-class MayI_monitoring_environemnt_Test extends \PHPUnit\Framework\TestCase {
+class mayi_monitoring_environment_Test extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * The virtual user configuration

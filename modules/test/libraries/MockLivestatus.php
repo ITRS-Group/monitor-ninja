@@ -428,7 +428,7 @@ class MockLivestatus {
 		}
 
 		/* Fetch the data in storage */
-		$table_data = $this->data[$table];
+		$table_data = isset($this->data[$table]) ? $this->data[$table] : array();
 
 		$this->last_columns = $columns;
 		if (is_array( $this->last_columns )) {
@@ -436,7 +436,7 @@ class MockLivestatus {
 		}
 
 		if (empty( $columns )) {
-			$columns = array_keys( $table_data[0] );
+			$columns = empty($table_data) ? array() : array_keys( $table_data[0] );
 		}
 		if (! is_array( $columns )) {
 			throw new MockLivestatus_Exception('Unknown column definition: ' . var_export($columns, true));

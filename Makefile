@@ -5,7 +5,7 @@ SYSCONFDIR := /etc
 ETC_USER := apache
 ETC_GROUP := apache
 
-PHPUNIT := phpunit --debug --bootstrap test/bootstrap.php
+PHPUNIT := /usr/bin/phpunit --debug --bootstrap test/bootstrap.php
 
 all: generate-php compile-python3
 
@@ -27,10 +27,10 @@ test-local: generate-php
 
 test: generate-php
 	make test-ci-prepare
-	export OP5LIBCFG="$(OP5LIBCFG)"; 
-	$(PHPUNIT) test/; 
-	res=$$?; 
-	make test-ci-cleanup; 
+	export OP5LIBCFG="$(OP5LIBCFG)"; \
+	$(PHPUNIT) test/; \
+	res=$$?; \
+	make test-ci-cleanup; \
 	exit $$res
 
 test-ci-cleanup:
@@ -49,8 +49,14 @@ test-ci-prepare: test-ci-cleanup prepare-config
 	mysql -uroot -e "GRANT ALL ON $$db_name.* TO $$db_user@localhost IDENTIFIED BY '$$db_pass'"; \
 	db_setup
 	export OP5LIBCFG="$(OP5LIBCFG)"; install_scripts/ninja_db_init.sh --db-name=merlin_test
+	mysql -uroot merlin_test -e "DELETE FROM recurring_downtime_objects; DELETE FROM recurring_downtime;" 2>/dev/null || true
 	/usr/bin/merlind -c /tmp/ninja-test/merlin.conf
 	/usr/bin/asmonitor /usr/bin/naemon -d /tmp/ninja-test/nagios.cfg
+	$$(rpm --eval %{_libdir})/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg
+	export OP5LIBCFG="$(OP5LIBCFG)"; \
+	if command -v /usr/bin/op5-manage-users >/dev/null 2>&1; then \
+		/usr/bin/op5-manage-users --update --username=limited --password=limited --realname=limited --module=Default --group=limited_view; \
+	fi
 
 test-php-lint:
 	 for i in `find . -name "*.php"`; do php -l $$i > /dev/null || exit "Syntax error in $$i"; done

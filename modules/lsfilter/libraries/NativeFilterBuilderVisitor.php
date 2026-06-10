@@ -59,13 +59,13 @@ class NativeFilterBuilderVisitor implements LivestatusFilterVisitor {
 
 		switch( $op ) {
 		case '!~~':
-			return !preg_match("/" . $value . "/i", $lhs);
+			return !preg_match("/" . $value . "/i", (string) $lhs);
 		case '!~':
-			return !preg_match("/" . $value . "/", $lhs);
+			return !preg_match("/" . $value . "/", (string) $lhs);
 		case '~~':
-			return preg_match("/" . $value . "/i", $lhs);
+			return preg_match("/" . $value . "/i", (string) $lhs);
 		case '~':
-			return preg_match("/" . $value . "/", $lhs);
+			return preg_match("/" . $value . "/", (string) $lhs);
 		case '!=~':
 			return strtolower($lhs) != strtolower($value);
 		case '=~':

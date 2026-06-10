@@ -263,7 +263,7 @@ class Menu_Model {
 	 * @return [type]       [description]
 	 */
 	private function standardize ($name) {
-		return strtolower(preg_replace('/[^\w]+/', '_', $name));
+		return strtolower(preg_replace('/[^\w]+/', '_', (string) $name));
 	}
 
 	/**

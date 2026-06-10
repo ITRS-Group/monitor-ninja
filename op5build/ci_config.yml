@@ -10,7 +10,7 @@ post:
     if [ -f /usr/lib/systemd/system/httpd.service ]; then systemctl restart httpd; fi
     if [ -f /usr/lib/systemd/system/mariadb.service ]; then systemctl restart mariadb; fi
 
-    mon restart
+    if command -v mon >/dev/null 2>&1; then mon restart; else echo "Skipping mon restart (mon not installed)"; fi
 
     # make sure deprecated code paths throw errors in our CI environment, MON-9199:
     echo 'deprecation_should_exit: 1' > /etc/op5/ninja.yml

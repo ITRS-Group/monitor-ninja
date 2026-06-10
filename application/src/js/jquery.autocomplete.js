@@ -69,7 +69,7 @@
 				}
 			}));
 			this.killerFn = function(e) {
-				if ($(e.target).parents(".autocomplete").size() === 0) {
+				if ($(e.target).parents(".autocomplete").length === 0) {
 					me.killSuggestions();
 					me.disableKillerFn();
 				}

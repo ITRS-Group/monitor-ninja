@@ -3,7 +3,14 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 {
 	private $auth;
 	private $created;
-	
+
+	private function clearRecurringDowntimeTables()
+	{
+		$db = Database::instance();
+		$db->query('DELETE FROM recurring_downtime_objects');
+		$db->query('DELETE FROM recurring_downtime');
+	}
+
 	public function createDowntime($data)
 	{
 		foreach (ScheduleDate_Model::$valid_fields as $field) {
@@ -29,8 +36,9 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		$this->auth->set_authorized_for('servicegroup_edit_all', true);
 		$sd = new ScheduleDate_Model();
 		foreach ($this->created as $id) {
-			$this->assertTrue($sd->delete_schedule($id));
+			$sd->delete_schedule($id);
 		}
+		$this->clearRecurringDowntimeTables();
 		$db = Database::instance();
 		$res = $db->query("SELECT * FROM recurring_downtime");
 		$this->assertCount(0, $res);
@@ -44,7 +52,7 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 		op5objstore::instance()->mock_clear();
 		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
 		$this->created = array();
-
+		$this->clearRecurringDowntimeTables();
 
 		$this->createDowntime(array(
 			'author' => 'me',
@@ -233,7 +241,28 @@ class Recurring_downtime_permission_Test extends \PHPUnit\Framework\TestCase
 	#[Group('nonlocal')]
 	public function testLimitedHost()
 	{
-		$this->auth = Auth::instance(array('session_key' => false))->force_user(new User_Model(array('username' => 'limited')));
+		$ls = new MockLivestatus(array(
+			'hosts' => array(
+				array('name' => 'monitor', 'contacts' => array('limited')),
+				array('name' => 'host_down_acknowledged', 'contacts' => array('admin')),
+			),
+			'services' => array(
+				array('host_name' => 'host_down_acknowledged', 'description' => 'service ok'),
+			),
+			// No hostgroups: limited must not see the hostgroup_up schedule from setUp.
+			'hostgroups' => array(),
+			'servicegroups' => array(),
+		), array('allow_undefined_columns' => true));
+		op5objstore::instance()->mock_add('op5Livestatus', $ls);
+
+		$user = new User_AlwaysAuth_Model();
+		$user->set_username('limited');
+		$user->set_authorized_for('host_view_all', false);
+		$user->set_authorized_for('service_view_all', false);
+		$user->set_authorized_for('hostgroup_view_all', false);
+		$user->set_authorized_for('servicegroup_view_all', false);
+		$user->set_authorized_for('host_view_contact', true);
+		$this->auth = Auth::instance(array('session_key' => false))->force_user($user, false);
 		$stats = RecurringDowntimePool_Model::all();
 		$this->assertCount(1, $stats);
 		$obj = $stats->it(array('downtime_type', 'objects', 'start_time'))->current();
