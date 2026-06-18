@@ -68,8 +68,8 @@ Requires: op5-naemon
 Requires: op5-monitor-user
 Requires: monitor-livestatus
 Requires: op5-lmd
-# Requires: monitor-nagvis
-# Requires: monitor-nacoma
+Requires: monitor-nagvis
+Requires: monitor-nacoma
 Requires: monitor-plugin-check_dummyv2
 Requires: php-phpunit-PHPUnit
 Requires: op5int_webtest
@@ -80,7 +80,7 @@ Requires: op5int_webtest
 Requires: openldap-servers
 
 # For performance graph links on extinfo
-# Requires: monitor-pnp
+Requires: monitor-pnp
 
 Requires: gcc
 Requires: chromedriver
