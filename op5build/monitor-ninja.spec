@@ -142,7 +142,6 @@ for d in op5build monitor-ninja.spec ninja.doxy \
 do
 	rm -rf %buildroot%prefix/$d
 done
-rm -f %buildroot%prefix/install_scripts/nacoma_hooks.py
 
 sed -i "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
 	%buildroot%prefix/index.php
@@ -171,6 +170,14 @@ done
 
 install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
 install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libexec/op5_scheduled_reports.py
+%py_byte_compile %{__python3} %{buildroot}%{nacoma_hooks_path}/
+%py_byte_compile %{__python3} %{buildroot}%{base_prefix}/libexec/
+
+# brp-mangle-shebangs still runs after install; rewrites env python3 to 3.9.
+# Set shebangs to Python 3.12 before that step.
+%py3_shebang_fix -pni "%{__python3} %{py3_shbang_opts}" \
+	%{buildroot}%{nacoma_hooks_path}/ninja_hooks.py \
+	%{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py
 
 install -d %buildroot%_unitdir
 install -D -m 644 -t %buildroot%_unitdir op5build/systemd/*.{service,timer}
@@ -181,23 +188,6 @@ install -D -m 644 op5build/php-ninja-tests.ini %buildroot%_sysconfdir/php.d/52-n
 
 install -D test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
-
-# brp-mangle-shebangs still runs after install;
-# Set shebangs to Python 3.12, normalize, then byte-compile final sources.
-%py3_shebang_fix \
-	%{buildroot}%{nacoma_hooks_path}/ninja_hooks.py \
-	%{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py \
-	%{buildroot}%prefix/test/tools
-# pathfix writes "#! /path" (space after #!); normalize to "#!/path"
-sed -i '1s/^#! \//#!\//' \
-	%{buildroot}%{nacoma_hooks_path}/ninja_hooks.py \
-	%{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py
-find %{buildroot}%prefix/test/tools \
-	-name '*.py' -exec grep -Il '^#! ' {} + 2>/dev/null \
-	| while read -r f; do sed -i '1s/^#! \//#!\//' "$f"; done
-%py_byte_compile %{__python3} %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
-%py_byte_compile %{__python3} %{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py
-%py_byte_compile %{__python3} %{buildroot}%prefix/test/tools/
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
@@ -240,7 +230,6 @@ fi
 
 %files
 %license ASL2.txt
-%pycached %{nacoma_hooks_path}/ninja_hooks.py
 %base_prefix/*
 %_unitdir/*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
