@@ -170,14 +170,6 @@ done
 
 install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
 install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libexec/op5_scheduled_reports.py
-%py_byte_compile %{__python3} %{buildroot}%{nacoma_hooks_path}/
-%py_byte_compile %{__python3} %{buildroot}%{base_prefix}/libexec/
-
-# brp-mangle-shebangs still runs after install; rewrites env python3 to 3.9.
-# Set shebangs to Python 3.12 before that step.
-%py3_shebang_fix -pni "%{__python3} %{py3_shbang_opts}" \
-	%{buildroot}%{nacoma_hooks_path}/ninja_hooks.py \
-	%{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py
 
 install -d %buildroot%_unitdir
 install -D -m 644 -t %buildroot%_unitdir op5build/systemd/*.{service,timer}
@@ -188,6 +180,19 @@ install -D -m 644 op5build/php-ninja-tests.ini %buildroot%_sysconfdir/php.d/52-n
 
 install -D test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
+
+%py_byte_compile %{__python3} %{buildroot}%{nacoma_hooks_path}/
+%py_byte_compile %{__python3} %{buildroot}%{base_prefix}/libexec/
+%py_byte_compile %{__python3} %{buildroot}%prefix/install_scripts/
+%py_byte_compile %{__python3} %{buildroot}%prefix/test/tools/
+
+# brp-mangle-shebangs still runs after install; rewrites env python3 to 3.9.
+# Set shebangs to Python 3.12 before that step.
+%py3_shebang_fix -pni "%{__python3} %{py3_shbang_opts}" \
+	%{buildroot}%{nacoma_hooks_path} \
+	%{buildroot}%{base_prefix}/libexec \
+	%{buildroot}%prefix/install_scripts \
+	%{buildroot}%prefix/test/tools
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
