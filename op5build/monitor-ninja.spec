@@ -1,3 +1,5 @@
+# Drop automatic brp-python-bytecompile; we compile manually in install.
+%global __os_install_post %(echo '%{__os_install_post}' | sed -e 's!/usr/lib[^[:space:]]*/brp-python-bytecompile[[:space:]].*$!!g')
 %define daemon_user monitor
 %define htmlroot /var/www/html
 %define httpconfdir httpd/conf.d
@@ -5,7 +7,7 @@
 %define daemon_group apache
 %define base_prefix /opt/monitor
 %define nacoma_hooks_path %{base_prefix}/op5/nacoma/hooks/save
-%define python_ver 3.12
+%global python3_pkgversion 3.12
 
 Name: monitor-ninja
 Version: %{op5version}
@@ -36,7 +38,7 @@ Requires: merlin
 Requires: monitor-ninja-monitoring
 BuildRequires: doxygen
 BuildRequires: graphviz
-BuildRequires: python%{python_ver}-devel
+BuildRequires: python%{python3_pkgversion}-devel
 Requires: php >= 8.2
 Requires: php < 8.3
 Requires: php-cli
@@ -84,7 +86,7 @@ Requires: monitor-pnp
 
 Requires: gcc
 Requires: chromedriver
-Requires: python%{python_ver}
+Requires: python%{python3_pkgversion}
 Requires: ruby
 Requires: ruby-devel
 
@@ -140,6 +142,7 @@ for d in op5build monitor-ninja.spec ninja.doxy \
 do
 	rm -rf %buildroot%prefix/$d
 done
+rm -f %buildroot%prefix/install_scripts/nacoma_hooks.py
 
 sed -i "s/\(IN_PRODUCTION', \)FALSE/\1TRUE/" \
 	%buildroot%prefix/index.php
@@ -167,12 +170,10 @@ for f in cli-helpers/apr_md5_validate \
 done
 
 install -D -m 755 install_scripts/nacoma_hooks.py %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
-install -d %buildroot%{nacoma_hooks_path}/__pycache__
-for i in $( ls install_scripts/__pycache__); do cp "install_scripts/__pycache__/$i" "%buildroot%{nacoma_hooks_path}/__pycache__/ninja_hooks.${i#*.}"; done
+install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libexec/op5_scheduled_reports.py
 
 install -d %buildroot%_unitdir
 install -D -m 644 -t %buildroot%_unitdir op5build/systemd/*.{service,timer}
-install -D op5build/libexec/op5_scheduled_reports.py %buildroot%base_prefix/libexec/op5_scheduled_reports.py
 
 install -D -m 640 op5build/ninja-httpd.conf %buildroot%_sysconfdir/%{httpconfdir}/monitor-ninja.conf
 install -D -m 644 op5build/php-ninja.ini %buildroot%_sysconfdir/php.d/50-op5-ninja.ini
@@ -180,6 +181,23 @@ install -D -m 644 op5build/php-ninja-tests.ini %buildroot%_sysconfdir/php.d/52-n
 
 install -D test/configs/kohana-configs/exception.php %buildroot%prefix/application/config/custom/exception.php
 rm %buildroot%prefix/test/configs/kohana-configs/exception.php
+
+# brp-mangle-shebangs still runs after install;
+# Set shebangs to Python 3.12, normalize, then byte-compile final sources.
+%py3_shebang_fix \
+	%{buildroot}%{nacoma_hooks_path}/ninja_hooks.py \
+	%{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py \
+	%{buildroot}%prefix/test/tools
+# pathfix writes "#! /path" (space after #!); normalize to "#!/path"
+sed -i '1s/^#! \//#!\//' \
+	%{buildroot}%{nacoma_hooks_path}/ninja_hooks.py \
+	%{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py
+find %{buildroot}%prefix/test/tools \
+	-name '*.py' -exec grep -Il '^#! ' {} + 2>/dev/null \
+	| while read -r f; do sed -i '1s/^#! \//#!\//' "$f"; done
+%py_byte_compile %{__python3} %{buildroot}%{nacoma_hooks_path}/ninja_hooks.py
+%py_byte_compile %{__python3} %{buildroot}%{base_prefix}/libexec/op5_scheduled_reports.py
+%py_byte_compile %{__python3} %{buildroot}%prefix/test/tools/
 
 %post
 # Verify that mysql-server is installed and running before executing sql scripts
@@ -222,6 +240,7 @@ fi
 
 %files
 %license ASL2.txt
+%pycached %{nacoma_hooks_path}/ninja_hooks.py
 %base_prefix/*
 %_unitdir/*
 %attr(-,root,%daemon_group) %_sysconfdir/%{httpconfdir}/monitor-ninja.conf
