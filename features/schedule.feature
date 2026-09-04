@@ -96,7 +96,7 @@ Feature: Scheduled reports
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
-		Then "objects" should have option "monitor"
+		Then "objects" should have option "monitor" waiting patiently
 		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
 		Then "objects_tmp" should have option "monitor"
@@ -205,7 +205,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@yeet
+	@yeet1
 	Scenario: Save summary report
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
@@ -221,7 +221,7 @@ Feature: Scheduled reports
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 	
-	@yeet
+	@yeet1
 	Scenario: Schedule summary report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -239,7 +239,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@yeet
+	@yeet1
 	Scenario: View scheduled summary report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -250,7 +250,7 @@ Feature: Scheduled reports
 		When I click "View report" on the row where "Report" is "saved test report"
 		Then I should see "Top alert producers"
 
-	@yeet
+	@yeet1
 	Scenario: Delete previously created summary report
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
@@ -264,7 +264,7 @@ Feature: Scheduled reports
 		Then "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "monitor"
 
-	@yeet
+	@yeet1
 	Scenario: Ensure previously added summary schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
