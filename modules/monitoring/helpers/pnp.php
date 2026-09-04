@@ -131,6 +131,6 @@ class pnp
 		} else {
 			$service = '_HOST_';
 		}
-		return $base . "/graph?host=$host&srv=$service";
+		return rtrim($base, '/') . "/graph?host=$host&srv=$service";
 	}
 }
