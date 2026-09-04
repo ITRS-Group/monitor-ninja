@@ -13,7 +13,7 @@ Feature: Scheduled reports
 		And I click "Create Availability Report"
 		And I select "Hosts" from "report_type"
 		And I wait for 1 second
-		And I select "monitor" from the multiselect "objects_tmp"
+		And I select "monitor" from the multiselect "objects_tmp" waiting patiently
 		Then "objects" should have option "monitor"
 		When I click "Show report"
 		Then I should see "Host details for monitor"
