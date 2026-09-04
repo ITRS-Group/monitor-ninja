@@ -95,7 +95,7 @@ Feature: Scheduled reports
 		And I click "Create Availability Report"
 		Then I should see "Saved reports"
 		And "Saved reports" should have option "saved test report"
-		When I select "saved test report" from "Saved reports"
+		When I select "saved test report"
 		Then "objects" should have option "monitor"
 		When I click "Delete" and confirm popup
 		# Test available first, to force capybara to wait for page reload
