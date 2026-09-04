@@ -6,7 +6,7 @@ Feature: Scheduled reports
 		Given I am logged in as administrator
 		And I am on the main page
 
-	@editedhappypath
+	@yeet
 	Scenario: Save availability report
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
@@ -25,7 +25,7 @@ Feature: Scheduled reports
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 	
-	@editedhappypath
+	@yeet
 	Scenario: Schedule availability report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -42,7 +42,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@editedhappypath
+	@yeet
 	Scenario: Send availability report now
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -53,7 +53,7 @@ Feature: Scheduled reports
 		And I wait for 10 seconds
 		Then I should see "Report was emailed"
 
-	@editedhappypath
+	@yeet
 	Scenario: View scheduled availability report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -66,7 +66,7 @@ Feature: Scheduled reports
 		And I should see "monitor"
 		And I should see "SSH server"
 
-	@editedhappypath
+	@yeet
 	Scenario: Add second availability schedule
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -88,7 +88,7 @@ Feature: Scheduled reports
 		And I click "OK" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 		Then the "Description" column should be "A description" on the row where "Filename" is "saved_test_report_Monthly.pdf"
 
-	@editedhappypath
+	@yeet
 	Scenario: Delete previously created availability report
 		When I hover over the "Report" menu
 		And I hover over the "Availability" menu
@@ -103,7 +103,7 @@ Feature: Scheduled reports
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "monitor"
 
-	@editedhappypath
+	@yeet
 	Scenario: Ensure previously added availability schedule is gone
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -112,7 +112,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@editedhappypath
+	@yeet
 	Scenario: Save SLA report
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
@@ -129,7 +129,7 @@ Feature: Scheduled reports
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 
-	@editedhappypath
+	@yeet
 	Scenario: Schedule SLA report on first day of every second month
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -150,7 +150,7 @@ Feature: Scheduled reports
 		And I should see "dev@op5.com"
 		And I should see "Every 2 months on the first day of month at 12:00"
 
-	@editedhappypath
+	@yeet
 	Scenario: View scheduled SLA report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -162,7 +162,7 @@ Feature: Scheduled reports
 		Then I should see "SLA breakdown for: monitor"
 		And I should see "SSH server"
 	
-	@editedhappypath
+	@yeet
 	Scenario: Delete SLA schedule
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -180,7 +180,7 @@ Feature: Scheduled reports
 		When I select "SLA report" from "Select report type"
 		Then "Select report" should have option "saved test report"
 
-	@editedhappypath
+	@yeet
 	Scenario: Delete previously created SLA report
 		When I hover over the "Report" menu
 		And I hover over the "SLA" menu
@@ -195,7 +195,7 @@ Feature: Scheduled reports
 		And "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "monitor"
 	
-	@editedhappypath
+	@yeet
 	Scenario: Ensure previously added sla schedule is gone
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -205,7 +205,7 @@ Feature: Scheduled reports
 		And I shouldn't see "saved test report"
 		And "Select report" shouldn't have option "saved test report"
 
-	@editedhappypath
+	@yeet
 	Scenario: Save summary report
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
@@ -221,7 +221,7 @@ Feature: Scheduled reports
 		And I wait for 1 second
 		Then I should see "Report was successfully saved"
 	
-	@editedhappypath
+	@yeet
 	Scenario: Schedule summary report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -239,7 +239,7 @@ Feature: Scheduled reports
 		And I should see "saved_test_report_Weekly.pdf"
 		And I should see "dev@op5.com"
 
-	@editedhappypath
+	@yeet
 	Scenario: View scheduled summary report
 		When I hover over the "Report" menu
 		And I click "Schedule reports"
@@ -250,7 +250,7 @@ Feature: Scheduled reports
 		When I click "View report" on the row where "Report" is "saved test report"
 		Then I should see "Top alert producers"
 
-	@editedhappypath
+	@yeet
 	Scenario: Delete previously created summary report
 		When I hover over the "Report" menu
 		And I hover over the "Summary" menu
@@ -264,7 +264,7 @@ Feature: Scheduled reports
 		Then "Saved reports" shouldn't have option "saved test report"
 		And "objects" shouldn't have option "monitor"
 
-	@editedhappypath
+	@yeet
 	Scenario: Ensure previously added summary schedule is gone
 		Given I am on the Host details page
 		And I hover over the "Report" menu
