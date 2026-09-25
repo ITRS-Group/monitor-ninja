@@ -13,6 +13,9 @@ class Ninja_widgets_Test extends \PHPUnit\Framework\TestCase {
 	const DUMMY_WIDGET = 'netw_health';
 	const DUMMY_WIDGET_CLASS = 'Netw_health_Widget';
 
+	/** @var array */
+	protected $orig_widgets;
+
 	public function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		Auth::instance(array('session_key' => false))->force_user(new User_AlwaysAuth_Model());
@@ -93,6 +96,7 @@ class Ninja_widgets_Test extends \PHPUnit\Framework\TestCase {
 	 * flagged as deprecated
 	 */
 	public function test_old_model_interface() {
+		putenv('OP5_NINJA_DEPRECATION_SHOULD_EXIT=');
 		/* Print out log, so we can verify that it's correct */
 		op5objstore::instance()->mock_add('op5log', new MockLog(true));
 		$this->expectOutputString(
@@ -106,5 +110,6 @@ class Ninja_widgets_Test extends \PHPUnit\Framework\TestCase {
 
 		$this->assertEquals(array("title" => "my custom title"), $model->setting);
 		$this->assertEquals("my_widget", $model->name);
+		putenv('OP5_NINJA_DEPRECATION_SHOULD_EXIT=1');
 	}
 }

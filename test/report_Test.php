@@ -28,6 +28,48 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	}
 
 	/**
+	 * Mock livestatus with objects from test/configs/all-host_service-states.
+	 */
+	private function mock_livestatus_for_all_host_service_states() {
+		$hosts = array();
+		foreach (array(
+			'monitor',
+			'host_down_acknowledged',
+			'host_down_notifications_disabled',
+		) as $name) {
+			$hosts[] = array(
+				'name' => $name,
+				'groups' => array('hostgroup_all'),
+			);
+		}
+		$services = array(
+			array('host_name' => 'host_down_acknowledged', 'description' => 'service critical'),
+			array('host_name' => 'host_down_notifications_disabled', 'description' => 'service ok scheduled'),
+			array('host_name' => 'monitor', 'description' => 'Disk usage /'),
+			array('host_name' => 'monitor', 'description' => 'Local hardware status'),
+			array('host_name' => 'monitor', 'description' => 'MySQL'),
+			array('host_name' => 'monitor', 'description' => 'SSH'),
+			array('host_name' => 'monitor', 'description' => 'Swap Usage'),
+			array('host_name' => 'monitor', 'description' => 'System Load'),
+			array('host_name' => 'monitor', 'description' => 'Users'),
+			array('host_name' => 'monitor', 'description' => 'Zombie Processes'),
+			array('host_name' => 'monitor', 'description' => 'cron process'),
+			array('host_name' => 'monitor', 'description' => 'syslogd process'),
+		);
+		$ls = new MockLivestatus(
+			array(
+				'hosts' => $hosts,
+				'services' => $services,
+				'hostgroups' => array(),
+				'servicegroups' => array(),
+				'timeperiods' => array(),
+			),
+			array('allow_undefined_columns' => true)
+		);
+		op5objstore::instance()->mock_add('op5Livestatus', $ls);
+	}
+
+	/**
 	 * Check that the result Summary_Reports::histogram() looks correct.
 	 *
 	 * We only look at the array keys to check that we the correct states (OK,
@@ -130,6 +172,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 
 	#[Group('nonlocal')]
 	public function test_restricted_access() {
+		$this->mock_livestatus_for_all_host_service_states();
 		/* Store old user, so we can reset afterward */
 		$authmod = op5auth::instance();
 		$stasheduser = $authmod->get_user();
@@ -160,7 +203,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 
 		$substr = "AND "
 				."("
-					."((host_name IN ('monitor')) and (service_description = ''))"
+					."((host_name IN ('monitor', 'host_down_acknowledged', 'host_down_notifications_disabled')) and (service_description = ''))"
 					." OR "
 					."((host_name, service_description) IN ("
 							."('host_down_acknowledged', 'service critical'), "
@@ -288,6 +331,7 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 */
 	#[Group('nonlocal')]
 	function test_saved_filter_hostgroup_collission() {
+		$this->mock_livestatus_for_all_host_service_states();
 
 		try {
 			/* Mock a saved query */
@@ -326,6 +370,30 @@ class report_Test extends \PHPUnit\Framework\TestCase {
 	 */
 	#[Group('nonlocal')]
 	function test_saved_filter_servicegroup_collission() {
+		$this->mock_livestatus_for_all_host_service_states();
+		$services = array();
+		foreach (array(
+			array('host_down_acknowledged', 'service critical'),
+			array('host_down_notifications_disabled', 'service ok scheduled'),
+			array('monitor', 'Disk usage /'),
+		) as $svc) {
+			$services[] = array(
+				'host_name' => $svc[0],
+				'description' => $svc[1],
+				'groups' => array('servicegroup_all'),
+			);
+		}
+		$ls = new MockLivestatus(
+			array(
+				'hosts' => array(array('name' => 'monitor', 'groups' => array('hostgroup_all'))),
+				'services' => $services,
+				'hostgroups' => array(),
+				'servicegroups' => array(array('name' => 'servicegroup_all', 'members' => array('monitor;Disk usage /'))),
+				'timeperiods' => array(),
+			),
+			array('allow_undefined_columns' => true)
+		);
+		op5objstore::instance()->mock_add('op5Livestatus', $ls);
 
 		try {
 			/* Mock a saved query */

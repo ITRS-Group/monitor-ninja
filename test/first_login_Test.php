@@ -24,12 +24,21 @@ class first_login_Test extends \PHPUnit\Framework\TestCase {
 
 	private function mock_data($tables) {
 		$this->mock_data_path = __DIR__ . '/' . $this->toString() . '.json';
+		file_put_contents($this->mock_data_path, json_encode($tables));
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
 				$driver,
 				new ORMDriverNative($tables, $this->mock_data_path, $driver)
 			);
 		}
+	}
+
+	protected function tearDown() : void {
+		if ($this->mock_data_path !== false && file_exists($this->mock_data_path)) {
+			unlink($this->mock_data_path);
+			$this->mock_data_path = false;
+		}
+		op5objstore::instance()->mock_clear();
 	}
 
 	public function test_first_login_sets_login_time () {

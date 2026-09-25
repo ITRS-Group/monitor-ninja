@@ -18,6 +18,10 @@ class flag {
 	 * @return boolean
 	 */
 	public static function deprecation_kills() {
+		$env = getenv('OP5_NINJA_DEPRECATION_SHOULD_EXIT');
+		if ($env !== false) {
+			return $env === '1';
+		}
 		return (boolean) op5config::instance()
 			->getConfig('ninja.deprecation_should_exit');
 	}

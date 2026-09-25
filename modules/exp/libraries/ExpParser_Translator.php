@@ -6,6 +6,9 @@
  */
 class ExpParser_Translator {
 
+	/** @var array */
+	protected $search_columns;
+
 	/**
 	 * Creates a new instance of the translator
 	 */

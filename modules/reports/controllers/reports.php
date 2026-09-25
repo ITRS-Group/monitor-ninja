@@ -506,7 +506,7 @@ class Reports_Controller extends Base_reports_Controller {
 					else
 						$table_data[$period_start] = array($real_val, $this->options['months'][$month_idx]);
 				}
-				$source = false;
+				$source = array();
 				foreach ($tmp_data as $subobj) {
 					if (!is_array($subobj) || !isset($subobj['states']))
 						continue;

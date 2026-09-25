@@ -281,6 +281,38 @@ class AuthDriverLDAPTest extends \PHPUnit\Framework\TestCase
 		}
 	}
 
+	function test_ldap_search_runtime_failure_no_warning() {
+		$warnings = array();
+		set_error_handler(function ($errno, $errstr) use (&$warnings) {
+			if ($errno === E_WARNING) {
+				$warnings[] = $errstr;
+			}
+			return true;
+		}, E_WARNING);
+		try {
+			$this->connect(array('group_base_dn' => 'ou=nonexisting,o=op5test'));
+			try {
+				$this->drv->login('singlegroup', 'singlegrouppassword');
+				$this->fail('Login should fail with exception, nonexisting group_base_dn');
+			} catch (op5AuthException $e) {
+				$this->assertTrue(
+					0 != preg_match(
+						':^op5AuthDriver_LDAP / Test driver\\: Error during LDAP search using query:',
+						$e->getMessage()
+					),
+					'Incorrect exception message'
+				);
+			}
+		} finally {
+			restore_error_handler();
+		}
+		$this->assertSame(
+			array(),
+			$warnings,
+			'Runtime LDAP search failures must not emit PHP warnings'
+		);
+	}
+
 	function test_user_base_dn() {
 		$this->connect(array('user_base_dn' => 'ou=nonexisting,o=op5test'));
 		try {

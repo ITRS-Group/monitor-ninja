@@ -3,6 +3,9 @@ require_once('op5/objstore.php');
 
 class Orm_Command_Rights_Test extends \PHPUnit\Framework\TestCase {
 
+	/** @var User_AlwaysAuth_Model|User_NoAuth_Model */
+	protected $user;
+
 	protected function setUp() : void {
 		op5objstore::instance()->mock_clear();
 		$mayi_auth = new mayi_auth_hooks();

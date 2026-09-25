@@ -22,12 +22,12 @@ class Flag_Test extends \PHPUnit\Framework\TestCase {
 
 	protected function setUp() : void {
 		$_SESSION = array();
-		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'='));
 	}
 
 	protected function tearDown() : void {
 		$_SESSION = array();
-		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR));
+		$this->assertSame(true, putenv(self::DEPRECATION_ENV_VAR.'=1'));
 		op5objstore::instance()->mock_clear();
 	}
 

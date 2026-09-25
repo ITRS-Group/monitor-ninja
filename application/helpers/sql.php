@@ -54,7 +54,7 @@ class sql
 	public static function sqlor() {
 		$args = func_get_args();
 		$function = 'or';
-		$res = false;
+		$res = array();
 		foreach ($args as $arg) {
 			if (!empty($arg))
 				$res[] = $arg;
@@ -73,13 +73,15 @@ class sql
 	public static function sqland() {
 		$args = func_get_args();
 		$function = 'and';
-		$res = false;
+		$res = array();
 		foreach ($args as $arg) {
 			if (!empty($arg))
 				$res[] = $arg;
 		}
 		if (!empty($res))
 			$res = '(' . implode(') '.$function.' (', $res) . ')';
+		else
+			$res = false;
 		return $res;
 	}
 }

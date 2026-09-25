@@ -66,6 +66,7 @@ abstract class StateCalculator
 	protected $prev_row; /**< The last db row, so we can get duration */
 
 	protected $options; /**< A Report_options object for this report */
+	protected $timeperiod; /**< Resolved timeperiod used throughout calculations */
 
 	/**
 	 * Create a new state calculator

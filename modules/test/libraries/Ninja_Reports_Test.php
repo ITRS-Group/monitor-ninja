@@ -33,6 +33,10 @@ class Ninja_Reports_Test extends Status_Reports_Model
 	public $db_host; /**< Database hostname */
 	public $importer; /**< The command used to import logs into the database */
 	public $params;
+	/** @var string|null $result Last report uptime result (per sub-test) */
+	public $result;
+	/** @var array<string, Status_Reports_Model> $report_objects Reports built per sub-test */
+	public $report_objects = [];
 
 	private $details;
 	private $cur_test;
@@ -230,12 +234,20 @@ class Ninja_Reports_Test extends Status_Reports_Model
 
 		$this->details = array();
 		if ($this->sqlfile) {
-			exec('mysql -u'.$this->db_user.' -p'.$this->db_pass.' '.$this->db_name.' < '.'test/reports/'.$this->sqlfile);
+			$sql_path = $this->resolve_fixture_path('test/reports/'.$this->sqlfile);
+			$cmd = 'mysql -u'.escapeshellarg($this->db_user)
+				.' -p'.escapeshellarg($this->db_pass)
+				.' '.escapeshellarg($this->db_name)
+				.' < '.escapeshellarg($sql_path);
+			exec($cmd, $out, $retval);
+			if ($retval !== 0) {
+				throw new RuntimeException('Failed to load SQL fixture: '.$sql_path);
+			}
 			$this->table_name = substr($this->sqlfile, 0, strpos($this->sqlfile, '.'));
 		}
 		else {
 			if ($this->logfile)
-				$this->logfiles[] = "test/reports/".$this->logfile;
+				$this->logfiles[] = $this->resolve_fixture_path('test/reports/'.$this->logfile);
 
 			$result = $this->import_logs();
 			if ($result < 0)
@@ -262,13 +274,26 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		return $this->failed;
 	}
 
+	private function resolve_fixture_path($path)
+	{
+		if ($path !== '' && $path[0] === '/') {
+			return $path;
+		}
+		$ninja_root = dirname(dirname(dirname($this->test_file)));
+		return $ninja_root.'/'.$path;
+	}
+
 	private function import_logs()
 	{
 		if (!$this->logfiles) {
 			echo "No logfiles to import\n";
 			return true;
 		}
-		$lfiles = join(" ", $this->logfiles);
+		$resolved_logfiles = array();
+		foreach ($this->logfiles as $logfile) {
+			$resolved_logfiles[] = $this->resolve_fixture_path($logfile);
+		}
+		$lfiles = join(' ', array_map('escapeshellarg', $resolved_logfiles));
 
 		$line = exec("cat $lfiles | md5sum", $output, $retcode);
 		$ary = explode(" ", $line);
@@ -284,7 +309,7 @@ class Ninja_Reports_Test extends Status_Reports_Model
 		try {
 			$db->query("SELECT * FROM ".$this->table_name." LIMIT 1");
 		}
-		catch (Kohana_Database_Exception $e) {
+		catch (Exception $e) {
 			$cached = false;
 		}
 
@@ -297,22 +322,22 @@ class Ninja_Reports_Test extends Status_Reports_Model
 				$this->crash("Error creating table $table_name: ".$db->error_message());
 			}
 			echo "Importing $lfiles to '$table_name'\n";
-			$cmd = $this->importer .
-				" --db-name=".$this->db_name .
-				" --db-table=".$this->table_name .
-				" --db-user=".$this->db_user .
-				" --db-pass=".$this->db_pass." " .
-				" --db-host=".$this->db_host." " .
-				" --db-type=".$this->db_type." " .
-				join(" ", $this->logfiles).' 2>&1';
+			$cmd = $this->importer
+				.' --db-name='.escapeshellarg($this->db_name)
+				.' --db-table='.escapeshellarg($this->table_name)
+				.' --db-user='.escapeshellarg($this->db_user)
+				.' --db-pass='.escapeshellarg($this->db_pass)
+				.' --db-host='.escapeshellarg($this->db_host)
+				.' --db-type='.escapeshellarg($this->db_type)
+				.' '.$lfiles.' 2>&1';
 			$out = [];
 			exec($cmd, $out, $retval);
 			echo "$cmd\n".implode("\n", $out);
 			if ($retval) {
 				echo "import failed. cleaning up and skipping test\n";
 				echo $cmd."\n";
-				$db->query("DROP TABLE ".$this->table_name);
-				$this->crash("Import failed");
+				$db->query('DROP TABLE IF EXISTS '.$this->table_name);
+				throw new RuntimeException('Merlin import failed (exit '.$retval.'): '.$cmd);
 			}
 		}
 
@@ -449,7 +474,6 @@ class Ninja_Reports_Test extends Status_Reports_Model
 
 	private function crash($msg)
 	{
-		echo "test.php: $msg\n";
-		exit(1);
+		throw new RuntimeException('test.php: '.$msg);
 	}
 }

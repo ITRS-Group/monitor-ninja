@@ -44,7 +44,7 @@ class form {
 			// Works with open(), open('') and open(null)
 			$action = url::site(Router::$complete_uri);
 		}
-		elseif (strpos($action, '://') === FALSE)
+		elseif (strpos($action, '://') === FALSE && (isset($action[0]) && $action[0] !== '/'))
 		{
 			// Make the action URI into a URL
 			$action = url::site($action);

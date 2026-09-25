@@ -2,7 +2,7 @@
 	<div id="link_container" class="form-dropdown"></div>
 	<div id="save_report_form" class="form-dropdown">
 	<?php
-		echo form::open(url::base(true).Router::$controller."/save");
+		echo form::open(Router::$controller.'/save');
 		$report_name = $options['report_name'];
 		unset($options['report_name']);
 		echo $options->as_form();

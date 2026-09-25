@@ -7,7 +7,6 @@ if (php_sapi_name() != 'cli') {
 require_once (__DIR__ . "/src/op5/ninja_sdk/Ninja_Builder.php");
 
 $builder = new Ninja_Builder();
-
 $modules = false;
 
 /* First, get module names from command line */

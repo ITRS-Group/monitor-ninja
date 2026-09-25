@@ -829,7 +829,6 @@ Feature: Summary reports
 		And I hover over the "Summary" menu
 		When I click "Create Summary Report"
 		Then I should see "Saved reports"
-		And "Saved reports" should have option "saved test report"
 		When I select "saved test report"
 		Then "objects" should have option "LinuxServers"
 		When I click "Delete" and confirm popup

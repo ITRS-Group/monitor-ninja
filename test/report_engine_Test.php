@@ -39,7 +39,7 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 			}
 		}
 
-		$importer = '$(rpm --eval %{_libdir})/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg';
+		$importer = self::merlin_importer_command();
 
 		$glob_path = __DIR__.'/reports/*.tst.php';
 		$test_dir_glob = glob($glob_path);
@@ -70,13 +70,31 @@ class Report_Engine_Test extends \PHPUnit\Framework\TestCase {
 	#[DataProvider('report_test_files_provider')]
 	#[Group('nonlocal')]
 	public function test_report_engine($test_file, $description, Ninja_Reports_Test $test) {
-		
+
 		ob_start();
-		$failed_tests = $test->run_test_series();
-		$test_result_output = ob_get_clean();
-		
+		try {
+			$failed_tests = $test->run_test_series();
+		} finally {
+			$test_result_output = ob_get_clean();
+		}
+
 		$this->assertNotEmpty($test_result_output, "Test result output is empty");
-		$this->assertEquals($failed_tests, $test_result_output);
-		ob_end_clean();
+		$this->assertSame(0, $failed_tests, $test_result_output);
+	}
+
+	/**
+	 * Resolve merlin/import path at runtime (not via unexpanded shell in PHP exec).
+	 */
+	private static function merlin_importer_command() {
+		$libdir = trim((string) shell_exec('rpm --eval %{_libdir} 2>/dev/null'));
+		if ($libdir === '' || strpos($libdir, '%{') !== false) {
+			foreach (array('/usr/lib64', '/usr/lib') as $candidate) {
+				if (is_executable($candidate . '/merlin/import')) {
+					$libdir = $candidate;
+					break;
+				}
+			}
+		}
+		return $libdir . '/merlin/import --nagios-cfg=/tmp/ninja-test/nagios.cfg';
 	}
 }

@@ -59,7 +59,7 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 		foreach($tables as $driver => $tables) {
 			op5objstore::instance()->mock_add(
 				$driver,
-				new ORMDriverNative($tables, 0, $driver)
+				new ORMDriverNative($tables, null, $driver)
 			);
 		}
 	}
@@ -711,7 +711,6 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 			'setting' => array('a' => 'b'),
 			'dashboard_id' => '1'
 		);
-		$this->template = null;
 		$this->tac->on_widget_save_settings();
 		$this->assertTrue($this->tac->template->success, var_export($this->tac->template->value, true));
 		$this->assertEquals(array('result' => 'ok'), $this->tac->template->value);
@@ -732,7 +731,6 @@ class Tac_Test extends \PHPUnit\Framework\TestCase {
 			'setting' => array('this_is' => 'updated'),
 			'dashboard_id' => '1'
 		);
-		$this->template = null;
 		$this->tac->on_widget_save_settings();
 		$this->assertFalse($this->tac->template->success);
 		$this->assertEquals(

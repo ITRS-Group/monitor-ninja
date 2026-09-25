@@ -1,6 +1,9 @@
 <?php
 class proc_Test extends \PHPUnit\Framework\TestCase {
 
+	/** @var string */
+	private $executable;
+
 	public function setUp() : void {
 		$this->executable = __DIR__.'/fixture_proc.php';
 	}

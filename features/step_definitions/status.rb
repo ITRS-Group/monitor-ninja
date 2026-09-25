@@ -87,7 +87,16 @@ end
 
 When /^I search for "([^"]*)"$/ do |query|
 	fill_in('query', :with => query)
-  page.execute_script("$('#query').keyup();");
+	# Global search defers AJAX by 300ms (deferRequestBy); wait for that and the request.
+	page.execute_script(<<~JS)
+		(function() {
+			var $q = jQuery('#query');
+			$q.val(#{query.to_json});
+			$q.trigger('keyup');
+		})();
+	JS
+	sleep(0.35)
+	WaitForAjax.wait_for_ajax
 end
 
 When /^I submit the search$/ do
@@ -97,7 +106,10 @@ end
 Then /^I should see the search result:$/ do |table|
   rows = table.raw
   rows.each do |row|
-    page.find('.autocomplete a', :text => row[0]).visible?
+    expected = row[0]
+    Synchronization::wait_until do
+      page.all('.autocomplete a', :visible => true).any? { |link| link.text == expected }
+    end
   end
 end
 

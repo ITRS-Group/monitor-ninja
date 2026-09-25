@@ -3,6 +3,9 @@ require_once('op5/objstore.php');
 
 /** Record incoming commands instead of executing them */
 class mock_queryhandler extends op5queryhandler {
+	/** @var string[] */
+	public $history = array();
+
 	/** Reset history */
 	function __construct() {
 		parent::__construct();
@@ -35,6 +38,12 @@ class mock_queryhandler extends op5queryhandler {
 }
 
 class Orm_Command_Test extends \PHPUnit\Framework\TestCase {
+
+	/** @var mock_queryhandler */
+	protected $m;
+
+	/** @var string */
+	protected $author;
 
 	protected $objects = array (
 		"hosts" => array(

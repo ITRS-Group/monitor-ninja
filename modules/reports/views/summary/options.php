@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
-echo form::open(url::base(true) . 'summary/generate', array('class' => 'report_form'), array('report_id' => $options['report_id']));
+echo form::open('summary/generate', array('class' => 'report_form'), array('report_id' => $options['report_id']));
 ?>
 	<div class="standard setup-table">
 		<table class="setup-tbl report_block auto_width">
@@ -30,7 +30,7 @@ echo form::open(url::base(true) . 'summary/generate', array('class' => 'report_f
 	</div>
 <?php echo form::close();
 
-echo form::open(url::base(true) . 'summary/generate', array('class' => 'report_form'), array('report_id' => $options['report_id']));
+echo form::open('summary/generate', array('class' => 'report_form'), array('report_id' => $options['report_id']));
 ?>
 	<div class="custom setup-table">
 		<?php echo new View('reports/objselector'); ?>
