@@ -26,15 +26,16 @@ Provides: monitor-gui = %version
 Provides: monitor-reports-gui = %version
 Provides: op5-nagios-gui-core = %version
 Provides: php-op5lib = %version
-Requires: wkhtmltopdf
+# Temporary: not in the EL9 ci-build-artifacts repo yet. Restore when they resolve.
+# Requires: wkhtmltopdf
 Requires: op5-mysql
 Requires: op5-monitor-supported-webserver
-Requires: monitor-livestatus
-Requires: op5-lmd
-Requires: monitor-backup
-Requires: op5-bootstrap
+# Requires: monitor-livestatus
+# Requires: op5-lmd
+# Requires: monitor-backup
+# Requires: op5-bootstrap
 # Merlin creates our database
-Requires: merlin
+# Requires: merlin
 Requires: monitor-ninja-monitoring
 BuildRequires: doxygen
 BuildRequires: graphviz
@@ -66,12 +67,13 @@ Webgui for Naemon.
 Summary: Test files for ninja
 Group: op5/Monitor
 Requires: monitor-ninja = %version
-Requires: op5-naemon
+# Temporary: not in the EL9 ci-build-artifacts repo yet. Restore when they resolve.
+# Requires: op5-naemon
 Requires: op5-monitor-user
-Requires: monitor-livestatus
-Requires: op5-lmd
-Requires: monitor-nagvis
-Requires: monitor-nacoma
+# Requires: monitor-livestatus
+# Requires: op5-lmd
+# Requires: monitor-nagvis
+# Requires: monitor-nacoma
 Requires: monitor-plugin-check_dummyv2
 Requires: php-phpunit-PHPUnit
 Requires: op5int_webtest
@@ -82,7 +84,8 @@ Requires: op5int_webtest
 Requires: openldap-servers
 
 # For performance graph links on extinfo
-Requires: monitor-pnp
+# Temporary: not in the EL9 ci-build-artifacts repo yet. Restore when it resolves.
+# Requires: monitor-pnp
 
 Requires: gcc
 Requires: chromedriver
@@ -97,10 +100,11 @@ Additional test files for ninja
 Summary: Naemon and Livestatus module for ninja
 Group: op5/monitor
 Requires: op5-monitor-user
-Requires: op5-naemon
-Requires: monitor-merlin
-Requires: monitor-livestatus
-Requires: op5-lmd
+# Temporary: not in the EL9 ci-build-artifacts repo yet. Restore when they resolve.
+# Requires: op5-naemon
+# Requires: monitor-merlin
+# Requires: monitor-livestatus
+# Requires: op5-lmd
 
 %description monitoring
 Provides ORM, bindings and interfaces for Livestatus, Naemon and queryhandler.
@@ -203,7 +207,8 @@ find %{buildroot}%prefix/test/tools \
 # Verify that mysql-server is installed and running before executing sql scripts
 if mysql -Be "quit" 2>/dev/null; then
 	%prefix/install_scripts/ninja_db_init.sh
-	php %prefix/install_scripts/migrate_tac_hostperf_to_listview.php
+	# Temporary: queries Livestatus. Skip until the socket exists on EL9.
+	# php %prefix/install_scripts/migrate_tac_hostperf_to_listview.php
 else
 	echo "WARNING: mysql-server is not installed or not running."
 	echo "If a database is to be used you need to maually run:"
