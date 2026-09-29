@@ -207,7 +207,8 @@ find %{buildroot}%prefix/test/tools \
 # Verify that mysql-server is installed and running before executing sql scripts
 if mysql -Be "quit" 2>/dev/null; then
 	%prefix/install_scripts/ninja_db_init.sh
-	php %prefix/install_scripts/migrate_tac_hostperf_to_listview.php
+	# Temporary: queries Livestatus. Skip until the socket exists on EL9.
+	# php %prefix/install_scripts/migrate_tac_hostperf_to_listview.php
 else
 	echo "WARNING: mysql-server is not installed or not running."
 	echo "If a database is to be used you need to maually run:"
