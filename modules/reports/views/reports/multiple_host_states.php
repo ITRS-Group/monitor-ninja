@@ -10,7 +10,7 @@ foreach ($multiple_states as $data) {
 		foreach ($data['groupname'] as $gn) {
 			if ($options['use_alias'])
 				$gn = reports::get_alias('hostgroups', $gn).' ('.$gn.')';
-			$groupname[] = '<a href="'.url::base(true).$type.'/generate?hostgroup%5B%5D='.$gn.'&amp;'.$options->as_keyval_string(true).'">'.$gn.'</a>';
+			$groupname[] = '<a href="'.url::base(true).$type.'/generate?hostgroup%5B%5D='.rawurlencode($gn).'&amp;'.$options->as_keyval_string(true).'">'.html::specialchars($gn).'</a>';
 		}
 		$groupname = implode(', ', $groupname);
 	} else {
@@ -21,7 +21,7 @@ foreach ($multiple_states as $data) {
 			$name = reports::get_alias('hosts', $data['states']['HOST_NAME']).' ('.$data['states']['HOST_NAME'].')';
 		else
 			$name = $data['states']['HOST_NAME'];
-		return '<td><a href="'.url::base(true).$type.'/generate?report_type=hosts&amp;objects%5B%5D='.$data['states']['HOST_NAME'].'&amp;'.$options->as_keyval_string(true).'">'.$name.'</a></td>';
+		return '<td><a href="'.url::base(true).$type.'/generate?report_type=hosts&amp;objects%5B%5D='.rawurlencode($data['states']['HOST_NAME']).'&amp;'.$options->as_keyval_string(true).'">'.html::specialchars($name).'</a></td>';
 	}, 'host', $columns, false, $options, $i);
 	echo reports::format_multi_object_table(array($data), sprintf(_('Summary of %s'), $groupname?:_('selected hosts')), function($data) use ($options) {
 		return '<td>'.$options->get_value('sla_mode').'</td>';
