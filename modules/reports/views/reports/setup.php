@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
 <div id="response"><?php
 	if (isset($error_msg)) {
-		echo '<ul class="alert error"><li>'.$error_msg.'</li></ul>';
+		echo '<ul class="alert error"><li>'.html::specialchars($error_msg).'</li></ul>';
 	}
 ?></div>
 
