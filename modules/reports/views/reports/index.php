@@ -29,7 +29,7 @@
 					)
 				),
 				array('style' => 'border: 0px')).
-			' <a href="'.url::site($url).'">'.$name.'</a>';
+			' <a href="'.html::specialchars(url::site($url), FALSE).'">'.html::specialchars($name).'</a>';
 		}
 		echo implode(', &nbsp;', $html_links);
 		echo '</div>';
