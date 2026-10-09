@@ -11,7 +11,7 @@
 
 			foreach ($graph_pure_data as $service => $statechanges) {
 
-				$labels[] = $service;
+				$labels[] = html::specialchars($service);
 
 				$servicerow = array();
 
@@ -22,7 +22,7 @@
 						$output_id = $outputs_r[$cur_out];
 					} else {
 						$output_id = count($outputs);
-						$outputs[] = $cur_out;
+						$outputs[] = html::specialchars($cur_out);
 						$outputs_r[$cur_out] = $output_id;
 					}
 
@@ -42,7 +42,7 @@
 						default:
 							$state_name = 'N/A';
 					}
-					$state_names[$statechanges[$i]['state']] = ucfirst($state_name);
+					$state_names[$statechanges[$i]['state']] = html::specialchars(ucfirst($state_name));
 
 				}
 				$rawdata[] = $servicerow;

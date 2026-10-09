@@ -103,7 +103,7 @@ class Toolbar_Controller extends Ninja_Controller {
 		foreach ( $this->buttons as $b ) {
 			$a = array();
 			foreach ( $b[ "attr" ] as $k => $v )
-				$a[] = "$k=\"$v\"";
+				$a[] = html::specialchars($k).'="'.html::specialchars($v).'"';
 			$h .= "<a " . implode( " ", $a ) . ">" . $b["name"] . "</a>";
 		}
 
