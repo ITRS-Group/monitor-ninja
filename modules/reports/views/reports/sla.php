@@ -19,7 +19,7 @@ foreach($report_data as $i =>  $report) {
 	}
 	?>
 	<div class="setup-table members">
-		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.$str_source; ?></h2>
+		<h2 style="margin-top: 20px; margin-bottom: 4px"><?php echo help::render('sla_graph').' '.html::specialchars($str_source); ?></h2>
 <?php
 	echo form::open(url::site() . 'avail/generate', array(), array('report_type' => $options['report_type']));
 	echo form::input(array('type' => 'image',
@@ -47,7 +47,7 @@ foreach($report_data as $i =>  $report) {
 	<?php  if (!empty($report['table_data'])) {
 		$data = $report['table_data']; ?>
 		<div class="sla_table">
-		<h2 style="margin: 15px 0px 4px 0px"><?php echo help::render('sla_breakdown').' '.$str_source; ?></h2>
+		<h2 style="margin: 15px 0px 4px 0px"><?php echo help::render('sla_breakdown').' '.html::specialchars($str_source); ?></h2>
 		<table class="auto" border="1">
 
 			<tr>
@@ -94,7 +94,7 @@ foreach($report_data as $i =>  $report) {
 
 		<table style="margin-bottom: 20px;">
 			<caption style="margin-top: 15px;"><?php echo help::render('sla_group_members').' '._('Group members');?></caption>
-			<tr><th><?php echo implode(',', $names); ?></th></tr>
+			<tr><th><?php echo html::specialchars(implode(',', $names)); ?></th></tr>
 			<?php
 				$x = 0;
 				if (strpos($options['report_type'], 'service') !== false) {
@@ -110,7 +110,7 @@ foreach($report_data as $i =>  $report) {
 						$name = $member;
 					$x++;
 					echo '<tr class="'.($x%2 == 0 ? 'odd' : 'even').'"><td>';
-					echo '<a href="'.url::site().'sla/generate?objects[]='. $member. '&report_type='.$type.'&amp;'.$options->as_keyval_string(true).'">'.$name.'</a>';
+					echo '<a href="'.url::site().'sla/generate?objects[]='.rawurlencode($member).'&amp;report_type='.rawurlencode($type).'&amp;'.$options->as_keyval_string(true).'">'.html::specialchars($name).'</a>';
 					echo "</td></tr>\n";
 				}
 				?>
