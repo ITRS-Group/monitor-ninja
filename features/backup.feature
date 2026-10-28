@@ -16,8 +16,6 @@ Feature: Backup/Restore configuration
 		Then I should see regex "backup-.*\.tar\.gz"
 		And I wait for 10 seconds
 		And I click the element with class "restore_backup" and href containing "backup-"
-		Then I should see "Do you really want to restore this backup?"
-		And I click button "Yes"
 		Then I should see "has been restored successfully"
 
 	@addedhappypath

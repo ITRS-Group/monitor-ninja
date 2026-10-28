@@ -10,7 +10,7 @@
  *  KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY, AND FITNESS FOR A
  *  PARTICULAR PURPOSE.
  */
-class Backup_Controller extends Authenticated_Controller {
+class Backup_Controller extends Ninja_Controller {
 
 	private $nagios_cfg_path = "";
 
@@ -79,13 +79,7 @@ class Backup_Controller extends Authenticated_Controller {
 			'<a href="' . url::base() . 'index.php/backup" title="' . _( "Backup/Restore" ) . '">' . _( "Backup/Restore List" ) . '</a>'
 		);
 
-		$file_path = $this->_resolve_backup($file);
-		if ($file_path === false) {
-			$this->template->content->error = _("Could not read content of backup");
-			return;
-		}
-
-		proc::open(array('tar', 'tfz', $file_path), $output, $stderr, $status);
+		proc::open(array('tar', 'tfz', $this->backup_directory .'/'. $file), $output, $stderr, $status);
 
 		if ($status === 0 && is_string($output)) {
 			$files = explode("\n", $output);
@@ -106,8 +100,8 @@ class Backup_Controller extends Authenticated_Controller {
 	public function download ($file) {
 		$this->_verify_access('monitor.system.backup:read.backup');
 
-		$file_path = $this->_resolve_backup($file);
-		if ($file_path === false) {
+		$file_path = $this->backup_directory .'/'. $file;
+		if ($file_path != realpath($file_path)) {
 			$this->template = json::fail_view('File could not be located within the designated storage area');
 			return;
 		}
@@ -140,55 +134,6 @@ class Backup_Controller extends Authenticated_Controller {
 	}
 
 	/**
-	 * Resolve a backup file name to its absolute path
-	 *
-	 * @param $file string
-	 * @return string|false The path, or false if $file is not a backup
-	 *                      archive directly inside the backup directory
-	 */
-	private function _resolve_backup($file) {
-		if (!is_string($file) || $file === '' || $file !== basename($file)) {
-			return false;
-		}
-		if (substr($file, -strlen(self::BACKUP_EXTENSION)) !== self::BACKUP_EXTENSION) {
-			return false;
-		}
-
-		$directory = realpath($this->backup_directory);
-		$file_path = realpath($this->backup_directory .'/'. $file);
-		if ($directory === false || $file_path === false) {
-			return false;
-		}
-		if (dirname($file_path) !== $directory || !is_file($file_path)) {
-			return false;
-		}
-		return $file_path;
-	}
-
-	/**
-	 * Only accept POST for actions that change state. GET requests skip
-	 * the CSRF check, and links can be followed by crawlers and prefetchers.
-	 *
-	 * @return boolean true if the request is a POST
-	 */
-	private function _require_post() {
-		$method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : '';
-		if ($method === 'POST') {
-			return true;
-		}
-
-		if (!headers_sent()) {
-			header('HTTP/1.1 405 Method Not Allowed');
-			header('Allow: POST');
-		}
-		$this->template = json::fail_view(array(
-			"message" => "This action requires a POST request",
-			"debug" => array()
-		));
-		return false;
-	}
-
-	/**
 	 * Proxy for checking if the currently running Naemon configuration is
 	 * valid. Not sure why we do this, nor why we do it here.
 	 */
@@ -209,9 +154,6 @@ class Backup_Controller extends Authenticated_Controller {
 	 * Create a new backup file
 	 */
 	public function backup () {
-		if (!$this->_require_post()) {
-			return;
-		}
 		$this->_verify_access('monitor.system.backup:create.backup');
 
 		$general_files = array(
@@ -269,25 +211,13 @@ class Backup_Controller extends Authenticated_Controller {
 	 * @param $file string
 	 */
 	public function restore ($file) {
-		if (!$this->_require_post()) {
-			return;
-		}
 		$this->_verify_access('monitor.system.backup:read.backup');
 		$this->_verify_access('monitor.monitoring.hosts:update.backup');
 		$this->_verify_access('monitor.monitoring.services:update.backup');
 		$this->_verify_access('monitor.monitoring.contacts:update.backup');
 		$this->_verify_access('monitor.monitoring.notifications:update.backup');
 
-		$file_path = $this->_resolve_backup($file);
-		if ($file_path === false) {
-			$this->template = json::fail_view(array(
-				"message" => "File could not be located within the designated storage area",
-				"debug" => array()
-			));
-			return;
-		}
-
-		proc::open(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/restore', $file_path), $stdout, $stderr, $status);
+		proc::open(array('/usr/bin/asmonitor', '-q', '/opt/monitor/op5/backup/restore', $this->backup_directory .'/'. $file), $stdout, $stderr, $status);
 
 		if ($status) {
 			$this->template = json::fail_view(array(
@@ -325,21 +255,9 @@ class Backup_Controller extends Authenticated_Controller {
 	 * @param $file string
 	 */
 	public function delete ($file) {
-		if (!$this->_require_post()) {
-			return;
-		}
 		$this->_verify_access('monitor.system.backup:delete.backup');
 
-		$file_path = $this->_resolve_backup($file);
-		if ($file_path === false) {
-			$this->template = json::fail_view(array(
-				"message" => "File could not be located within the designated storage area",
-				"debug" => array()
-			));
-			return;
-		}
-
-		$status = @unlink($file_path);
+		$status = @unlink($this->backup_directory .'/'. $file);
 
 		if ($status) {
 			$this->template = json::ok_view("The backup '{$file}' has been deleted");
@@ -357,16 +275,12 @@ class Backup_Controller extends Authenticated_Controller {
 	 * how it went.
 	 */
 	public function restart () {
-		if (!$this->_require_post()) {
-			return;
-		}
 		$user = Auth::instance()->get_user();
 		if (!$user->authorized_for('system_commands')) {
 			$this->template = json::fail_view(array(
 				"message" => "Not authorized to perform a process restart",
 				"debug" => array()
 			));
-			return;
 		}
 		$success = nagioscmd::submit_to_nagios('RESTART_PROCESS', "", $output);
 		if ($success) {

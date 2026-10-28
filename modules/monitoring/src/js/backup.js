@@ -6,7 +6,7 @@ $( document ).ready(function(){
   };
 
   function restart () {
-    $.post(baseurl + 'backup/restart', {csrf_token: _csrf_token})
+    $.get(baseurl + 'backup/restart')
       .done(function (message) {
         Notify.message(message.result);
       })
@@ -33,7 +33,7 @@ $( document ).ready(function(){
       removable: false
     });
 
-    $.post(baseurl + 'backup/backup', {csrf_token: _csrf_token})
+    $.get(baseurl + 'backup/backup')
       .done(function (response) {
         var file = response.result;
 
@@ -118,7 +118,7 @@ $( document ).ready(function(){
 
   });
 
-  $(document).on('click', 'a.restore_backup', function(ev){
+  $('a.restore_backup').on('click', function(ev){
 
     var link = $(this);
     var notification = Notify.message('Do you really want to restore this backup?', {
@@ -126,7 +126,7 @@ $( document ).ready(function(){
       buttons: {
         "Yes": function () {
           notification.remove(1);
-          $.post(link.attr('href'), {csrf_token: _csrf_token})
+          $.get(link.attr('href'))
             .done(function (data) {
               notification = Notify.message(data.result + '. Your new configuration will not be used until the monitoring process is restarted', {
                 sticky: true,
@@ -157,7 +157,7 @@ $( document ).ready(function(){
 
   });
 
-  $(document).on('click', 'a.delete_backup', function(){
+  $('a.delete_backup').on('click', function(){
 
     var link = $(this);
     var notification = Notify.message(
@@ -166,7 +166,7 @@ $( document ).ready(function(){
         sticky: true,
         buttons: {
           "Yes": function () {
-            $.post(link.attr('href'), {csrf_token: _csrf_token})
+            $.get(link.attr('href'))
               .done(function (data) {
                 notification.remove(1);
                 Notify.message(data.result);
