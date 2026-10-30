@@ -11,8 +11,12 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 
 	private $controller;
 	private $backup_location;
+	private $request_method;
 
 	public function setUp(): void {
+		$this->request_method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : null;
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+
 		exec("id monitor", $output, $exit_code);
 		if($exit_code != 0) {
 			$this->markTestSkipped("Could not find the ".
@@ -51,6 +55,73 @@ class Backup_Test extends \PHPUnit\Framework\TestCase {
 			exec("rm -rf $this->backup_location", $output, $exit_code);
 		}
 		unset($this->controller);
+
+		if ($this->request_method === null) {
+			unset($_SERVER['REQUEST_METHOD']);
+		} else {
+			$_SERVER['REQUEST_METHOD'] = $this->request_method;
+		}
+	}
+
+	public function test_backup_rejects_get(): void {
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$this->controller->backup();
+		$this->assertFalse($this->controller->template->success);
+		$this->assertSame(
+			array(),
+			glob($this->backup_location.'/*'),
+			"A GET request must not create a backup"
+		);
+	}
+
+	public function test_restart_rejects_get(): void {
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$this->controller->restart();
+		$this->assertFalse($this->controller->template->success);
+	}
+
+	public function test_restore_rejects_get(): void {
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$this->controller->restore('backup-1970-01-01_00.00.00.tar.gz');
+		$this->assertFalse($this->controller->template->success);
+	}
+
+	public function test_delete_rejects_get(): void {
+		$file = 'backup-1970-01-01_00.00.00.tar.gz';
+		touch($this->backup_location.'/'.$file);
+
+		$_SERVER['REQUEST_METHOD'] = 'GET';
+		$this->controller->delete($file);
+		$this->assertFalse($this->controller->template->success);
+		$this->assertFileExists(
+			$this->backup_location.'/'.$file,
+			"A GET request must not delete a backup"
+		);
+	}
+
+	public function test_delete_rejects_path_outside_backup_directory(): void {
+		$outside = $this->backup_location.'/../outside_heyo.tar.gz';
+		touch($outside);
+		try {
+			$this->controller->delete('../outside_heyo.tar.gz');
+			$this->assertFalse($this->controller->template->success);
+			$this->assertFileExists($outside);
+
+			symlink(realpath($outside), $this->backup_location.'/link_heyo.tar.gz');
+			$this->controller->delete('link_heyo.tar.gz');
+			$this->assertFalse($this->controller->template->success);
+			$this->assertFileExists($outside);
+		} finally {
+			@unlink($outside);
+		}
+	}
+
+	public function test_delete_rejects_non_backup_file(): void {
+		$file = $this->backup_location.'/not_a_backup.txt';
+		touch($file);
+		$this->controller->delete('not_a_backup.txt');
+		$this->assertFalse($this->controller->template->success);
+		$this->assertFileExists($file);
 	}
 
 	public function test_backup(): void {
